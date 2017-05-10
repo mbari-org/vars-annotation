@@ -1,9 +1,10 @@
 package org.mbari.m3.vars.annotation;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
-import rx.subjects.SerializedSubject;
-import rx.subjects.Subject;
+
+import io.reactivex.Observable;
+import io.reactivex.processors.FlowableProcessor;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 
 /**
  * @author Brian Schlining
@@ -11,7 +12,7 @@ import rx.subjects.Subject;
  */
 public class EventBus {
 
-    private final Subject<Object, Object> rxSubject = new SerializedSubject<>(PublishSubject.create());
+    private final Subject<Object> rxSubject = PublishSubject.create().toSerialized();
 
     public void send(Object o) {
         rxSubject.onNext(o);

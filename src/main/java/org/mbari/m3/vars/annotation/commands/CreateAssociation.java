@@ -15,4 +15,9 @@ public class CreateAssociation implements Command {
     public void unapply() {
 
     }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
 }
