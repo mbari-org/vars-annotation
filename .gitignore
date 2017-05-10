@@ -1,0 +1,23 @@
+# General files to be ignored
+*.class
+.DS_Store
+*.orig
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Build Directory #
+target/
+
+# Ignore IntelliJ files
+.idea/
+*.iml
+
+# eclipse conf file
+.settings
+.classpath
+.project
+.manager
+.scala_dependencies
