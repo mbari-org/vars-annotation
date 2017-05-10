@@ -1,4 +1,4 @@
-package org.mbari.m3.vars;
+package org.mbari.m3.vars.annotation;
 
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 public class App extends Application {
 
     public static void main(String[] args) {
+        System.getProperties().setProperty("user.timezone", "UTC");
         launch(args);
     }
 

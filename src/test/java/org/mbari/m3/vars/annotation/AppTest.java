@@ -1,4 +1,4 @@
-package org.mbari.m3.vars;
+package org.mbari.m3.vars.annotation;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
