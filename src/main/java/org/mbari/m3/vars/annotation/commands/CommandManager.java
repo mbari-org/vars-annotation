@@ -1,9 +1,6 @@
-package org.mbari.m3.vars.annotation.services;
+package org.mbari.m3.vars.annotation.commands;
 
 import org.mbari.m3.vars.annotation.EventBus;
-import org.mbari.m3.vars.annotation.commands.Command;
-import org.mbari.m3.vars.annotation.commands.Redo;
-import org.mbari.m3.vars.annotation.commands.Undo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,8 +11,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The CommandManager listens on the eventbus for 3 different kinds of classes: {@link Command},
- * {@link Redo} and {@link Undo}
+ * The CommandManager listens on the eventbus for 4 different kinds of classes: {@link Command},
+ * {@link Redo}, {@link Undo}, {@link ClearCommandManager}.
+ *
+ * On a {@link Command} it will immediately execute the command's `apply()` method and add it
+ * to the undo queue.
+ *
+ * ON a {@link Undo}, it will call the commands `unapply()` method and add it to the redo queue
+ *
+ * On a {@link Redo}, it will call the commands `apply()` method and add it to the undo queue.
+ *
  * @author Brian Schlining
  * @since 2017-05-10T09:00:00
  */
@@ -88,6 +93,10 @@ public class CommandManager {
         eventBus.toObserverable()
                 .ofType(Redo.class)
                 .forEach(u -> redo());
+
+        eventBus.toObserverable()
+                .ofType(ClearCommandManager.class)
+                .forEach(u -> clear());
     }
 
     private void redo() {
@@ -106,21 +115,22 @@ public class CommandManager {
         }
     }
 
+    private void clear() {
+        undos.clear();
+        redos.clear();
+    }
+
 }
 
 class CommandEvent {
 
-    public static enum State {
+    public enum State {
         DO,
         UNDO
     }
 
     private final Command command;
     private final State state;
-
-    public CommandEvent(Command command) {
-        this(command, State.DO);
-    }
 
     public CommandEvent(Command command, State state) {
         this.command = command;

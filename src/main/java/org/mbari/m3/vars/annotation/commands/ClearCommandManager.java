@@ -1,9 +1,8 @@
 package org.mbari.m3.vars.annotation.commands;
 
 /**
- *
  * @author Brian Schlining
- * @since 2017-05-10T16:23:00
+ * @since 2017-05-11T12:57:00
  */
-public class Redo {
+public class ClearCommandManager {
 }
