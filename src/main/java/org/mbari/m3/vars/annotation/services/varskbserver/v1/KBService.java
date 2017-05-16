@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.services.varskbserver;
+package org.mbari.m3.vars.annotation.services.varskbserver.v1;
 
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.model.ConceptAssociationTemplate;
@@ -17,7 +17,7 @@ import java.util.List;
  */
 public interface KBService {
 
-    @GET("concept/root")
+    @GET("phylogeny/down/object")
     Call<Concept> findRoot();
 
     @GET("concept")
@@ -28,7 +28,5 @@ public interface KBService {
 
     @GET("links/{name}")
     Call<List<ConceptAssociationTemplate>> findTemplates(@Path("name") String name);
-
-
 
 }

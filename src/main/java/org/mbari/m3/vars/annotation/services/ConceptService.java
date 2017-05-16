@@ -1,10 +1,12 @@
 package org.mbari.m3.vars.annotation.services;
 
+import com.sun.xml.internal.ws.util.CompletedFuture;
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.model.ConceptDetails;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Brian Schlining
@@ -16,11 +18,10 @@ public interface ConceptService {
      * Fetch all concepts and return the root node. You can walk the tree to find other nodes.
      * @return
      */
-    Concept fetchConceptTree();
+    CompletableFuture<Concept> fetchConceptTree();
 
-    Optional<ConceptDetails> findDetails(String name);
+    CompletableFuture<Optional<ConceptDetails>> findDetails(String name);
 
-    List<String> fetchAllNames();
-
+    CompletableFuture<List<String>> findAllNames();
 
 }

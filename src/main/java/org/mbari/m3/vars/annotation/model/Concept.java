@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.model;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -10,4 +11,31 @@ public class Concept {
     private String name;
     private String rank;
     private List<Concept> children;
+    private ConceptDetails conceptDetails
+
+    public Concept(String name, String rank, List<Concept> children) {
+        this.name = name;
+        this.rank = rank;
+        this.children = Collections.unmodifiableList(children);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
+    public List<Concept> getChildren() {
+        return children;
+    }
+
+    public ConceptDetails getConceptDetails() {
+        return conceptDetails;
+    }
+
+    public void setConceptDetails(ConceptDetails conceptDetails) {
+        this.conceptDetails = conceptDetails;
+    }
 }
