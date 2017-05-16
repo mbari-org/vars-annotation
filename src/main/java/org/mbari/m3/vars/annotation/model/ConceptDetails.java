@@ -3,6 +3,7 @@ package org.mbari.m3.vars.annotation.model;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
@@ -16,7 +17,9 @@ public class ConceptDetails {
 
     public ConceptDetails(String name, List<String> alternateNames, List<ConceptMedia> media, List<ConceptDescriptor> descriptors) {
         this.name = name;
-        this.alternateNames = Collections.unmodifiableList(alternateNames);
+        this.alternateNames = Collections.unmodifiableList(alternateNames.stream()
+                .sorted((a, b) -> a.compareToIgnoreCase(b))
+                .collect(Collectors.toList()));
         this.media = Collections.unmodifiableList(media);
         this.descriptors = Collections.unmodifiableList(descriptors);
     }

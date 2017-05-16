@@ -1,10 +1,8 @@
 package org.mbari.m3.vars.annotation.services.varskbserver.v1;
 
 import com.fatboyindustrial.gsonjavatime.Converters;
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.mbari.m3.vars.annotation.Constants;
 import org.mbari.m3.vars.annotation.gson.ByteArrayConverter;
 import org.mbari.m3.vars.annotation.gson.DurationConverter;
 import org.mbari.m3.vars.annotation.gson.TimecodeConverter;
@@ -28,12 +26,17 @@ import java.util.concurrent.CompletableFuture;
  */
 public class KBConceptService implements ConceptService {
 
-    private Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(Constants.CONFIG.getString("concept.service.url"))
-            .addConverterFactory(GsonConverterFactory.create(getGson()))
-            .build();
 
-    private KBService service = retrofit.create(KBService.class);
+
+    private final KBService service;
+
+    public KBConceptService(String endpoint) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(endpoint)
+                .addConverterFactory(GsonConverterFactory.create(getGson()))
+                .build();
+        service = retrofit.create(KBService.class);
+    }
 
     @Override
     public CompletableFuture<Concept> fetchConceptTree() {
@@ -96,7 +99,6 @@ public class KBConceptService implements ConceptService {
     private static Gson getGson() {
         GsonBuilder gsonBuilder = new GsonBuilder()
                 .setPrettyPrinting()
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
                 .registerTypeAdapter(Duration.class, new DurationConverter())
                 .registerTypeAdapter(Timecode.class, new TimecodeConverter())

@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.services;
 
+import io.reactivex.Observable;
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.model.ConceptDetails;
 
@@ -9,6 +10,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Caching implementation of a ConceptService. This one wraps another service. Initial calls
@@ -34,6 +37,11 @@ public class CachedConceptService implements ConceptService {
         this.conceptService = conceptService;
     }
 
+    public CompletableFuture<Void> prefetch() {
+        return fetchConceptTree().thenApply(n -> null);
+    }
+
+
 
     @Override
     public CompletableFuture<Concept> fetchConceptTree() {
@@ -41,12 +49,12 @@ public class CachedConceptService implements ConceptService {
         if (root == null) {
             f = conceptService.fetchConceptTree()
                     .thenApply(c -> {
-                        addToCache(root);
-                        return root;
+                        addToCache(c);
+                        return c;
                     })
                     .thenApply(c -> {
                         root = c;
-                        return root;
+                        return c;
                     });
         }
         else {
@@ -57,21 +65,31 @@ public class CachedConceptService implements ConceptService {
 
     @Override
     public CompletableFuture<Optional<ConceptDetails>> findDetails(String name) {
-        CompletableFuture<Optional<ConceptDetails>> f;
+        CompletableFuture<Optional<ConceptDetails>> f = CompletableFuture.completedFuture(Optional.empty());
+
+        boolean fetchDetails = false;
         if (cache.containsKey(name)) {
-            Optional<ConceptDetails> cd = Optional.of(cache.get(name).getConceptDetails());
-            f = CompletableFuture.completedFuture(cd);
+            Optional<ConceptDetails> cd = Optional.ofNullable(cache.get(name).getConceptDetails());
+            if (cd.isPresent()) {
+                f = CompletableFuture.completedFuture(cd);
+            }
+            else {
+                fetchDetails = true;
+            }
         }
-        else {
+
+        if (fetchDetails) {
             CompletableFuture<Optional<ConceptDetails>> g = conceptService.findDetails(name);
             f = g.thenApply(cd -> {
                 if (cd.isPresent() && cache.containsKey(name)) {
                     Concept c = cache.get(name);
                     c.setConceptDetails(cd.get());
+                    addToCache(c);
                 }
                 return cd;
             });
         }
+
         return f;
     }
 
@@ -90,14 +108,19 @@ public class CachedConceptService implements ConceptService {
     }
 
     private void addToCache(Concept concept) {
-        cache.putIfAbsent(concept.getName(), concept);
-        if (concept.getConceptDetails() != null) {
-            concept.getConceptDetails()
-                    .getAlternateNames()
-                    .forEach(s -> cache.putIfAbsent(s, concept));
+        if (concept != null) {
+            cache.putIfAbsent(concept.getName(), concept);
+            if (concept.getConceptDetails() == null) {
+                findDetails(concept.getName());
+            }
+            else {
+                concept.getConceptDetails()
+                        .getAlternateNames()
+                        .forEach(s -> cache.putIfAbsent(s, concept));
+            }
+            concept.getChildren()
+                    .forEach(this::addToCache);
         }
-        concept.getChildren()
-                .forEach(this::addToCache);
     }
 
     public synchronized void clear() {

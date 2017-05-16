@@ -1,93 +1,110 @@
 package org.mbari.m3.vars.annotation.ui.concepttree;
 
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.cell.TextFieldTreeCell;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.model.ConceptDetails;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
  * @since 2017-05-15T13:58:00
  */
-public class TreeCellFactory {
+class TreeCellFactory {
 
     private final ConceptService conceptService;
 
-    public TreeCellFactory(ConceptService conceptService) {
+    TreeCellFactory(ConceptService conceptService) {
         this.conceptService = conceptService;
     }
 
-    public TreeCell<Concept> newTreeCell() {
+    TreeCell<Concept> build() {
         return new ConceptTreeCell();
     }
 
     private final class ConceptTreeCell extends TextFieldTreeCell<Concept> {
 
-        MediaMouseEvent eventHandler = new MediaMouseEvent();
+        public ConceptTreeCell() {
+            setOnDragDetected(evt -> {
+                Concept concept = getItem();
+                if (concept != null) {
+                    // Drag the string name to some target.
+                    Dragboard db = startDragAndDrop(TransferMode.ANY);
+                    ClipboardContent content = new ClipboardContent();
+                    content.putString(concept.getName());
+                    db.setContent(content);
+                    evt.consume();
+                }
+            });
+        }
 
         @Override
         public void updateItem(Concept item, boolean empty) {
             super.updateItem(item, empty);
             setStyle("");
+
             if (item == null || empty) {
                 setText(null);
             }
             else {
-                String s = item.getName() + "[" + item.getRank() + "]";
-                setText(s);
-                conceptService.findDetails(item.getName())
-                        .thenAccept(opt -> {
-                            if (opt.isPresent()) {
-                                ConceptDetails cd = opt.get();
-                                // Add alternate names
-                                if (!cd.getAlternateNames().isEmpty()) {
-                                    String names = cd.getAlternateNames()
-                                            .stream()
-                                            .collect(Collectors.joining(", "));
-                                    String t = item.getName() + " (" + names +
-                                            ") [" + item.getRank() + "]";
-                                    setText(t);
-                                }
-                                if (!cd.getMedia().isEmpty()) {
-                                    setStyle("-fx-background-color: darkseagreen");
-                                }
+                updateCell(item);
+                if (item.getConceptDetails() == null) {
+                    conceptService.findDetails(item.getName())
+                            .thenAccept(opt -> {
+                                opt.ifPresent(cd -> {
+                                    item.setConceptDetails(cd);
+                                    updateCell(item);
+                                });
+                            });
+                }
+            }
+        }
 
-                                eventHandler.setConceptDetails(cd);
-                            }
-                            else {
-                                eventHandler.setConceptDetails(null);
-                            }
-                        });
+        private String asString(Concept item) {
+            String s = item.getName();
+            if (item.getConceptDetails() != null) {
+                ConceptDetails cd = item.getConceptDetails();
+                List<String> ans = cd.getAlternateNames();
+                String names = cd.getAlternateNames()
+                        .stream()
+                        .collect(Collectors.joining(", "));
+                s = (ans == null || ans.isEmpty()) ? item.getName() :
+                        item.getName() + " (" + names + ")";
+            }
+            return s;
+        }
 
+        private void updateCell(Concept item) {
+            String text = asString(item);
+            Runnable r = () -> {
+                setText(text);
+                ConceptDetails cd = item.getConceptDetails();
+                if (cd != null) {
+                    if (!cd.getMedia().isEmpty()) {
+                        setStyle("-fx-background-color: #E0F7FA");
+                    }
+                }
+            };
+            if (Platform.isFxApplicationThread()) {
+                r.run();
+            }
+            else {
+                Platform.runLater(r);
             }
         }
 
 
     }
 
-    private final class MediaMouseEvent implements EventHandler<MouseEvent> {
 
-        private ConceptDetails conceptDetails;
-
-        @Override
-        public void handle(MouseEvent event) {
-            if (event.getClickCount() == 2) {
-                // TODO open images in a separate window
-            }
-        }
-
-        public ConceptDetails getConceptDetails() {
-            return conceptDetails;
-        }
-
-        public void setConceptDetails(ConceptDetails conceptDetails) {
-            this.conceptDetails = conceptDetails;
-        }
-    }
 
 }

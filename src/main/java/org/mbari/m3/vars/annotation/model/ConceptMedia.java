@@ -12,4 +12,32 @@ public class ConceptMedia {
     private String credit;
     private String mimeType;
     private boolean isPrimary = false;
+
+    public ConceptMedia(URL url, String caption, String credit, String mimeType, boolean isPrimary) {
+        this.url = url;
+        this.caption = caption;
+        this.credit = credit;
+        this.mimeType = mimeType;
+        this.isPrimary = isPrimary;
+    }
+
+    public URL getUrl() {
+        return url;
+    }
+
+    public String getCaption() {
+        return caption;
+    }
+
+    public String getCredit() {
+        return credit;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public boolean isPrimary() {
+        return isPrimary;
+    }
 }

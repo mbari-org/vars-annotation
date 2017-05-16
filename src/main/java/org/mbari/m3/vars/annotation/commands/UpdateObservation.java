@@ -15,4 +15,9 @@ public class UpdateObservation implements Command {
     public void unapply() {
 
     }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
 }

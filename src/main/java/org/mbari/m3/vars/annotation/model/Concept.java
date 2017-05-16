@@ -2,6 +2,7 @@ package org.mbari.m3.vars.annotation.model;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
@@ -11,12 +12,14 @@ public class Concept {
     private String name;
     private String rank;
     private List<Concept> children;
-    private ConceptDetails conceptDetails
+    private ConceptDetails conceptDetails;
 
     public Concept(String name, String rank, List<Concept> children) {
         this.name = name;
         this.rank = rank;
-        this.children = Collections.unmodifiableList(children);
+        this.children = Collections.unmodifiableList(children.stream()
+                    .sorted((a, b) -> a.getName().compareToIgnoreCase(b.getName()))
+                    .collect(Collectors.toList()));
     }
 
     public String getName() {
