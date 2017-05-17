@@ -24,10 +24,7 @@ public class SearchTreePaneFactory {
     // searches results will be incomplete but the user won't know that the load
     // process is ongoing.
 
-    // TODO often Kyra will search for a known term, say malacostrea, then browse
-    // to see what's underneath it. Maybe add "show this node" item to the
-    // context menu that clears the search, , scrolls to the selected node and
-    // expands all children.
+
 
     private ConceptService conceptService;
 
@@ -55,6 +52,12 @@ public class SearchTreePaneFactory {
             }
         });
 
+        /*
+         Often Kyra will search for a known term, say malacostrea, then browse
+         to see what's underneath it. Maybe add "show this node" item to the
+         context menu that clears the search, , scrolls to the selected node and
+         expands all children.
+        */
         ContextMenu contextMenu = treeView.getContextMenu();
         MenuItem showChildren = new MenuItem("Show All Children");
         contextMenu.getItems().addAll(showChildren);
@@ -69,7 +72,7 @@ public class SearchTreePaneFactory {
 
         /*
           The KB tree is lazy loaded. So we have to listen for when the root is added before
-          we can
+          we can bind to it.
          */
         ChangeListener<TreeItem<Concept>> rootListener = new ChangeListener<TreeItem<Concept>>() {
 
