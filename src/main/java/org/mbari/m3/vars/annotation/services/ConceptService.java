@@ -1,6 +1,5 @@
 package org.mbari.m3.vars.annotation.services;
 
-import com.sun.xml.internal.ws.util.CompletedFuture;
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.model.ConceptDetails;
 

@@ -24,6 +24,11 @@ public class SearchTreePaneFactory {
     // searches results will be incomplete but the user won't know that the load
     // process is ongoing.
 
+    // TODO often Kyra will search for a known term, say malacostrea, then browse
+    // to see what's underneath it. Maybe add "show this node" item to the
+    // context menu that clears the search, , scrolls to the selected node and
+    // expands all children.
+
     private ConceptService conceptService;
 
     public SearchTreePaneFactory(ConceptService conceptService) {
@@ -31,7 +36,9 @@ public class SearchTreePaneFactory {
     }
 
     protected BorderPane build() {
-        TreeView<Concept> treeView = new TreeViewFactory(conceptService).build();
+        final TreeView<Concept> treeView = new TreeViewFactory(conceptService).build();
+
+
         TextField textField = new TextField();
         textField.setPromptText("Filter ...");
         textField.textProperty().addListener((obs, oldValue, newValue) -> {
@@ -46,6 +53,17 @@ public class SearchTreePaneFactory {
                     collapse(root);
                 }
             }
+        });
+
+        ContextMenu contextMenu = treeView.getContextMenu();
+        MenuItem showChildren = new MenuItem("Show All Children");
+        contextMenu.getItems().addAll(showChildren);
+        showChildren.setOnAction(event -> {
+            // Get node
+            final TreeItem<Concept> selectedItem = treeView.getSelectionModel().getSelectedItem();
+            textField.setText("");
+            treeView.getSelectionModel().select(selectedItem);
+            expand(selectedItem);
         });
 
 

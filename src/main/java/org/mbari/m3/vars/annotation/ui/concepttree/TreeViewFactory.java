@@ -30,11 +30,12 @@ class TreeViewFactory {
     TreeView<Concept> build() {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem showImage = new MenuItem("Show image");
+
         ImageStage imageStage = new ImageStage();
         BorderPane imageStageRoot = imageStage.getRoot();
         imageStageRoot.setStyle("-fx-background-color: black");
-
         contextMenu.getItems().addAll(showImage);
+
         TreeCellFactory cellFactory = new TreeCellFactory(conceptService);
         TreeView<Concept> tree = new TreeView<>();
         tree.setEditable(false);
@@ -57,10 +58,9 @@ class TreeViewFactory {
                             imageStage.setImage(image);
                             imageStage.show();
                         });
-
-
             }
         });
+
         conceptService.fetchConceptTree()
                 .thenApply(root -> {
                     Platform.runLater(() -> {
