@@ -32,7 +32,7 @@ public class SearchTreePaneFactory {
         this.conceptService = conceptService;
     }
 
-    protected BorderPane build() {
+    public BorderPane build() {
         final TreeView<Concept> treeView = new TreeViewFactory(conceptService).build();
 
 

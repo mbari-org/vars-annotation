@@ -1,7 +1,7 @@
 package org.mbari.m3.vars.annotation.services;
 
-import io.reactivex.Observable;
 import org.mbari.m3.vars.annotation.model.Concept;
+import org.mbari.m3.vars.annotation.model.ConceptAssociationTemplate;
 import org.mbari.m3.vars.annotation.model.ConceptDetails;
 
 import java.util.Collections;
@@ -10,13 +10,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Caching implementation of a ConceptService. This one wraps another service. Initial calls
  * will be sent to the remote API while subsequent ones use the cache. If you need to force
  * reload, then call the `clear()` method.
+ *
+ * This class does not make any calls to the remote service itself, that is done by the
+ * {@link ConceptService} that this class wraps.
  *
  * Usage:
  * <pre>
@@ -33,12 +34,25 @@ public class CachedConceptService implements ConceptService {
     private List<String> allNames = Collections.emptyList();
     private final ConceptService conceptService;
 
+    /**
+     *
+     * @param conceptService The service that makes the actual calls
+     */
     public CachedConceptService(ConceptService conceptService) {
         this.conceptService = conceptService;
     }
 
+    /**
+     * Convienence method to load the main tree and start loading of details.
+     *
+     * @return A future that completes when the conceptTree is loaded (but details
+     * will continue to load in the background)
+     */
     public CompletableFuture<Void> prefetch() {
-        return fetchConceptTree().thenApply(n -> null);
+        return fetchConceptTree().thenCompose(n -> {
+            findAllNames();
+            return null;
+        });
     }
 
 
@@ -49,6 +63,8 @@ public class CachedConceptService implements ConceptService {
         if (root == null) {
             f = conceptService.fetchConceptTree()
                     .thenApply(c -> {
+                        // Note that these are done in background, so the tree is
+                        // returned while the details are still being fetched.
                         addToCache(c);
                         return c;
                     })
@@ -105,6 +121,17 @@ public class CachedConceptService implements ConceptService {
         else {
             return CompletableFuture.completedFuture(allNames);
         }
+    }
+
+    /**
+     * We do not cache the linkTemplates, (too much data). Instead, we just pass through to the
+     * underlying service.
+     * @param name
+     * @return
+     */
+    @Override
+    public CompletableFuture<List<ConceptAssociationTemplate>> findTemplates(String name) {
+        return conceptService.findTemplates(name);
     }
 
     private void addToCache(Concept concept) {

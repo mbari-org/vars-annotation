@@ -7,6 +7,7 @@ import org.mbari.m3.vars.annotation.gson.ByteArrayConverter;
 import org.mbari.m3.vars.annotation.gson.DurationConverter;
 import org.mbari.m3.vars.annotation.gson.TimecodeConverter;
 import org.mbari.m3.vars.annotation.model.Concept;
+import org.mbari.m3.vars.annotation.model.ConceptAssociationTemplate;
 import org.mbari.m3.vars.annotation.model.ConceptDetails;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.vcr4j.time.Timecode;
@@ -28,32 +29,33 @@ public class KBConceptService implements ConceptService {
 
 
 
+    /** Underlying retrofit API service */
     private final KBService service;
 
+    /**
+     * Constructor for the vars-kb-service interface.
+     * @param endpoint The endpoint of the vars-kb-service. e.g. http://m3.shore.mbari.org/kb/v1
+     */
     public KBConceptService(String endpoint) {
+        String correctEndpoint = (endpoint.endsWith("/")) ? endpoint : endpoint + "/";
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(endpoint)
+                .baseUrl(correctEndpoint)
                 .addConverterFactory(GsonConverterFactory.create(getGson()))
                 .build();
         service = retrofit.create(KBService.class);
     }
 
+
     @Override
     public CompletableFuture<Concept> fetchConceptTree() {
-        CompletableFuture<Concept> f = new CompletableFuture<>();
-        service.findRoot()
-                .enqueue(new Callback<Concept>() {
-                    @Override
-                    public void onResponse(Response<Concept> response) {
-                        f.complete(response.body());
-                    }
-
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        f.completeExceptionally(throwable);
-                    }
-                });
-        return f;
+        // f1 finds the root name. f2 then looks up the tree using that root
+        CompletableFuture<ConceptDetails> f1 = new CompletableFuture<>();
+        service.findRootDetails().enqueue(newCallback(f1));
+        return f1.thenCompose(root -> {
+            CompletableFuture<Concept> f2 = new CompletableFuture<>();
+            service.findTree(root.getName()).enqueue(newCallback(f2));
+            return f2;
+        });
     }
 
     @Override
@@ -71,30 +73,22 @@ public class KBConceptService implements ConceptService {
                         f.completeExceptionally(throwable);
                     }
                 });
-
         return f;
     }
 
     @Override
     public CompletableFuture<List<String>> findAllNames() {
         CompletableFuture<List<String>> f = new CompletableFuture<>();
-        service.listConceptNames()
-                .enqueue(new Callback<List<String>>() {
-                    @Override
-                    public void onResponse(Response<List<String>> response) {
-                        f.complete(response.body());
-                    }
-
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        f.completeExceptionally(throwable);
-                    }
-                });
-
+        service.listConceptNames().enqueue(newCallback(f));
         return f;
     }
 
-
+    @Override
+    public CompletableFuture<List<ConceptAssociationTemplate>> findTemplates(String name) {
+        CompletableFuture<List<ConceptAssociationTemplate>> f = new CompletableFuture<>();
+        service.findTemplates(name).enqueue(newCallback(f));
+        return f;
+    }
 
     private static Gson getGson() {
         GsonBuilder gsonBuilder = new GsonBuilder()
@@ -109,7 +103,23 @@ public class KBConceptService implements ConceptService {
 
     }
 
+    /**
+     * Factory method to create a Retrofit Callback that completes the service provided as an arg.
+     * @param future The future to be completed by the Callback
+     * @param <T> The return type of the future
+     * @return A Retrofit Callback.
+     */
+    private static <T> Callback<T> newCallback(CompletableFuture<T> future) {
+        return new Callback<T>() {
+            @Override
+            public void onResponse(Response<T> response) {
+                future.complete(response.body());
+            }
 
-
-
+            @Override
+            public void onFailure(Throwable throwable) {
+                future.completeExceptionally(throwable);
+            }
+        };
+    }
 }
