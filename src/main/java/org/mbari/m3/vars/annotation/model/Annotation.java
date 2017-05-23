@@ -26,5 +26,5 @@ public class Annotation {
     private String group;
     private String activity;
     private List<Association> associations;
-    private List<Image> images;
+    private List<ImageReference> images;
 }

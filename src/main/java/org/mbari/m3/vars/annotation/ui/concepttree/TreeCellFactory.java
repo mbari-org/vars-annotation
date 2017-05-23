@@ -45,6 +45,7 @@ class TreeCellFactory {
                     evt.consume();
                 }
             });
+            getStyleClass().add("searchtreecell");
         }
 
         @Override

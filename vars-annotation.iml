@@ -22,12 +22,12 @@
     <orderEntry type="library" name="Maven: org.mbari.vcr4j:vcr4j-core:3.0.1" level="project" />
     <orderEntry type="library" name="Maven: io.reactivex:rxjava:1.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.13" level="project" />
-    <orderEntry type="library" name="Maven: com.squareup.retrofit2:retrofit:2.0.0-beta3" level="project" />
-    <orderEntry type="library" name="Maven: com.squareup.okhttp3:okhttp:3.0.0-RC1" level="project" />
-    <orderEntry type="library" name="Maven: com.squareup.okio:okio:1.6.0" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup.retrofit2:retrofit:2.3.0" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup.okhttp3:okhttp:3.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup.okio:okio:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.0" level="project" />
     <orderEntry type="library" name="Maven: com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.1" level="project" />
-    <orderEntry type="library" name="Maven: com.squareup.retrofit2:converter-gson:2.0.0-beta3" level="project" />
+    <orderEntry type="library" name="Maven: com.squareup.retrofit2:converter-gson:2.3.0" level="project" />
     <orderEntry type="library" name="Maven: org.controlsfx:controlsfx:8.40.11" level="project" />
     <orderEntry type="library" name="Maven: no.tornado:fxlauncher:1.0.16" level="project" />
     <orderEntry type="library" name="Maven: io.reactivex.rxjava2:rxjava:2.1.0" level="project" />

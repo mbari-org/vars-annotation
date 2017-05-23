@@ -12,6 +12,7 @@ import org.mbari.m3.vars.annotation.model.ConceptDetails;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.vcr4j.time.Timecode;
 import retrofit2.*;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.time.Duration;
 import java.util.List;
@@ -28,9 +29,8 @@ import java.util.concurrent.CompletableFuture;
 public class KBConceptService implements ConceptService {
 
 
-
     /** Underlying retrofit API service */
-    private final KBService service;
+    private final KBWebService service;
 
     /**
      * Constructor for the vars-kb-service interface.
@@ -42,7 +42,7 @@ public class KBConceptService implements ConceptService {
                 .baseUrl(correctEndpoint)
                 .addConverterFactory(GsonConverterFactory.create(getGson()))
                 .build();
-        service = retrofit.create(KBService.class);
+        service = retrofit.create(KBWebService.class);
     }
 
 
@@ -64,12 +64,12 @@ public class KBConceptService implements ConceptService {
         service.findDetails(name)
                 .enqueue(new Callback<ConceptDetails>() {
                     @Override
-                    public void onResponse(Response<ConceptDetails> response) {
+                    public void onResponse(Call<ConceptDetails> call, Response<ConceptDetails> response) {
                         f.complete(Optional.ofNullable(response.body()));
                     }
 
                     @Override
-                    public void onFailure(Throwable throwable) {
+                    public void onFailure(Call<ConceptDetails> call, Throwable throwable) {
                         f.completeExceptionally(throwable);
                     }
                 });
@@ -112,14 +112,15 @@ public class KBConceptService implements ConceptService {
     private static <T> Callback<T> newCallback(CompletableFuture<T> future) {
         return new Callback<T>() {
             @Override
-            public void onResponse(Response<T> response) {
+            public void onResponse(Call<T> call, Response<T> response) {
                 future.complete(response.body());
             }
 
             @Override
-            public void onFailure(Throwable throwable) {
+            public void onFailure(Call<T> call, Throwable throwable) {
                 future.completeExceptionally(throwable);
             }
         };
     }
+
 }

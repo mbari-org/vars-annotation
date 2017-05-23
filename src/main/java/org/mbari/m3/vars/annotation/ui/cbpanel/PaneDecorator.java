@@ -22,7 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Decorates a pane to accept drag and drop of text to create buttons. Also,
- * allows buttons to be dragged and reordered.
+ * allows buttons to be dragged and reordered. It also has a locked method that
+ * prevents buttons from being reordered or added.
  *
  * @author Brian Schlining
  * @since 2017-05-17T15:15:00
@@ -31,11 +32,21 @@ public class PaneDecorator {
 
     private final ConceptButtonFactory conceptButtonFactory;
     private final ConceptService conceptService;
+    private boolean locked = false;
 
     @Inject
     public PaneDecorator(ConceptService conceptService, EventBus eventBus, ResourceBundle uiBundle) {
         this.conceptService = conceptService;
         conceptButtonFactory = new ConceptButtonFactory(conceptService, eventBus, uiBundle);
+    }
+
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
     public Pane decorate(Pane pane) {
@@ -52,7 +63,9 @@ public class PaneDecorator {
             boolean success = false;
             if (db.hasString()) {
                 // Create a button and add to pane
-                addButton(db.getString(), pane, evt.getScreenX(), evt.getScreenY());
+                if (!locked) {
+                    addButton(db.getString(), pane, evt.getScreenX(), evt.getScreenY());
+                }
                 success = true;
             }
             // Let the source know whether the string was dropped successfully

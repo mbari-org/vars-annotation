@@ -40,7 +40,7 @@ public class DragAndDropDemo extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Platform.setImplicitExit(true);
-        SearchTreePaneFactory paneBuilder = new SearchTreePaneFactory(conceptService);
+        SearchTreePaneFactory paneBuilder = new SearchTreePaneFactory(conceptService, uiBundle);
         BorderPane node = paneBuilder.build();
         FlowPane pane = new FlowPane();
         pane.setPrefSize(800, 250);
@@ -48,6 +48,7 @@ public class DragAndDropDemo extends Application {
         paneDecorator.decorate(pane);
         node.setBottom(pane);
         Scene scene = new Scene(node, 800, 800);
+        scene.getStylesheets().add("/application.css");
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {

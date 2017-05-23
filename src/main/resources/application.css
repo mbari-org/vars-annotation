@@ -1,0 +1,41 @@
+.associationstablecell {
+
+}
+
+.conceptbutton {
+    /*-fx-padding: 0.7em 0.57em;*/
+    -fx-font-size: 14px;
+    /*-jfx-button-type: RAISED;*/
+    /*-fx-background-color: rgb(77, 102, 204);*/
+    /*-fx-pref-width: 200;*/
+    /*-fx-text-fill: WHITE;*/
+    -fx-background-color: cornsilk;
+}
+
+.conceptbutton:hover {
+    -fx-font-style: italic;
+    -fx-background-color: burlywood;
+}
+
+.root {
+    -fx-background-color: cornsilk;
+}
+
+.searchtreecell {
+    -fx-background-color: cornsilk;
+}
+
+.searchtreecell:selected {
+    -fx-text-fill: coral;
+}
+
+.searchtextfield {
+    -fx-padding: 5 10 5 10;
+    /*-fx-background-color: cornsilk;*/
+}
+
+.searchtreeview {
+    -fx-padding: 10 5 5 5;
+    -fx-background-color: cornsilk;
+}
+

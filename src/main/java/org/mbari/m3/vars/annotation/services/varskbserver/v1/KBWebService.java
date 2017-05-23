@@ -18,7 +18,7 @@ import java.util.List;
  * @author Brian Schlining
  * @since 2017-05-11T16:40:00
  */
-public interface KBService {
+public interface KBWebService {
 
     @GET("phylogeny/down/{name}")
     Call<Concept> findTree(@Path("name") String name);

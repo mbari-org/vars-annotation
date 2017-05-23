@@ -8,7 +8,11 @@ import org.mbari.m3.vars.annotation.model.Association;
  * @author Brian Schlining
  * @since 2017-05-22T16:20:00
  */
-public class AssociationListTableCell<S> extends TableCell<S, Association> {
+public class AssociationsTableCell<S> extends TableCell<S, Association> {
 
     private ListView<Association> listView;
+
+    public AssociationsTableCell() {
+        getStyleClass().add("associationstablecell");
+    }
 }

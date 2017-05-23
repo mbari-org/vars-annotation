@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.services.varskbserver;
+package org.mbari.m3.vars.annotation.services.varskbserver.v1;
 
 import org.junit.Test;
 import static org.junit.Assert.*;

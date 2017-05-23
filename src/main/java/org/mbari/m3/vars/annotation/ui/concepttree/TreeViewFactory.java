@@ -38,6 +38,7 @@ class TreeViewFactory {
 
         TreeCellFactory cellFactory = new TreeCellFactory(conceptService);
         TreeView<Concept> tree = new TreeView<>();
+        tree.getStyleClass().add("searchtreeview");
         tree.setEditable(false);
         tree.setCellFactory(tv -> cellFactory.build());
         tree.setContextMenu(contextMenu);

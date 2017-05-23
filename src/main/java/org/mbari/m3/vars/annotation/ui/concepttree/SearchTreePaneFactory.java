@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.ui.concepttree;
 
+import com.jfoenix.controls.JFXTextField;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -12,6 +13,7 @@ import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.shared.FilterableTreeItem;
 import org.mbari.m3.vars.annotation.ui.shared.TreeItemPredicate;
 
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 /**
@@ -27,17 +29,22 @@ public class SearchTreePaneFactory {
 
 
     private ConceptService conceptService;
+    private ResourceBundle uiBundle;
 
-    public SearchTreePaneFactory(ConceptService conceptService) {
+    public SearchTreePaneFactory(ConceptService conceptService, ResourceBundle uiBundle) {
         this.conceptService = conceptService;
+        this.uiBundle = uiBundle;
     }
 
     public BorderPane build() {
         final TreeView<Concept> treeView = new TreeViewFactory(conceptService).build();
 
 
-        TextField textField = new TextField();
-        textField.setPromptText("Filter ...");
+        //
+        TextField textField = new JFXTextField();
+        textField.getStyleClass().add("searchtextfield");
+        //TextField textField = new TextField();
+        textField.setPromptText(uiBundle.getString("searchtreeview.prompt"));
         textField.textProperty().addListener((obs, oldValue, newValue) -> {
             TreeItem<Concept> root = treeView.getRoot();
             if (newValue.length() > oldValue.length()) {
