@@ -13,4 +13,31 @@ public class Association {
     private String linkValue;
     private String mimeType;
 
+    public Association(String linkName, String toConcept, String linkValue, String mimeType) {
+        this.linkName = linkName;
+        this.toConcept = toConcept;
+        this.linkValue = linkValue;
+        this.mimeType = mimeType;
+    }
+
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public String getLinkName() {
+        return linkName;
+    }
+
+    public String getToConcept() {
+        return toConcept;
+    }
+
+    public String getLinkValue() {
+        return linkValue;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
 }

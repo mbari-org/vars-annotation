@@ -45,8 +45,13 @@ public class AuthInterceptor implements Interceptor {
     }
 
     private boolean isExpired(Authorization a) {
-        JWT jwt = JWT.decode(a.getAccessToken());
-        Instant iat = jwt.getExpiresAt().toInstant();
-        return iat.isBefore(Instant.now());
+        try {
+            JWT jwt = JWT.decode(a.getAccessToken());
+            Instant iat = jwt.getExpiresAt().toInstant();
+            return iat.isBefore(Instant.now());
+        }
+        catch (Exception e) {
+            return true;
+        }
     }
 }

@@ -24,4 +24,47 @@ public class Image {
     private Duration elapsedTime;
     private Instant recordedTimestamp;
 
+    public UUID getImageReferenceUuid() {
+        return imageReferenceUuid;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public URL getUrl() {
+        return url;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public UUID getVideoReferenceUuid() {
+        return videoReferenceUuid;
+    }
+
+    public UUID getImagedMomentUuid() {
+        return imagedMomentUuid;
+    }
+
+    public Timecode getTimecode() {
+        return timecode;
+    }
+
+    public Duration getElapsedTime() {
+        return elapsedTime;
+    }
+
+    public Instant getRecordedTimestamp() {
+        return recordedTimestamp;
+    }
 }

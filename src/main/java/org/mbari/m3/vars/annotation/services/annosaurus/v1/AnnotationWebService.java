@@ -23,8 +23,8 @@ public interface AnnotationWebService {
 
     @GET("annotations/videoreference/{uuid}")
     Call<List<Annotation>> findByVideoReferenceUuid(@Path("uuid") UUID uuid,
-                                                    @Query("limit") long limit,
-                                                    @Query("offset") long offset);
+                                                    @Query("limit") Long limit,
+                                                    @Query("offset") Long offset);
 
 
     /**
@@ -35,7 +35,7 @@ public interface AnnotationWebService {
      * @param observationTimestamp
      * @param timecode
      * @param recordedTimestamp
-     * @param duration
+     * @param durationMillis
      * @param group
      * @param activity
      * @param headers Should include the token type: "Authorization":"BEARER [jwtstuff]"
@@ -49,7 +49,7 @@ public interface AnnotationWebService {
                             @Field("observation_timestamp") Instant observationTimestamp,
                             @Field("timecode") Timecode timecode,
                             @Field("recorded_timestamp") Instant recordedTimestamp,
-                            @Field("duration_millis") Duration duration,
+                            @Field("duration_millis") Long durationMillis,
                             @Field("group") String group,
                             @Field("activity") String activity,
                             @HeaderMap Map<String, String> headers);

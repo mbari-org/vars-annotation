@@ -17,19 +17,19 @@ public interface AnnotationService {
 
     CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid);
 
-    CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, int limit, int offset);
+    CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, Long limit, Long offset);
 
-    CompletableFuture<List<Annotation>> countAnnotations(UUID videoReferenceUuid);
+    CompletableFuture<Long> countAnnotations(UUID videoReferenceUuid);
 
     CompletableFuture<Annotation> createAnnotation(Annotation annotation);
 
-    CompletableFuture<Annotation> createAssociation(UUID observationUuid, Association association);
+    CompletableFuture<Association> createAssociation(UUID observationUuid, Association association);
 
     CompletableFuture<Image> createImage(Image image);
 
     CompletableFuture<Annotation> updateAnnotation(Annotation annotation);
 
-    CompletableFuture<Annotation> updateAssociation(Association association);
+    CompletableFuture<Association> updateAssociation(Association association);
 
     CompletableFuture<Image> updateImage(Image image);
 
