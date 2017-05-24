@@ -9,7 +9,7 @@ import retrofit2.http.POST;
  * @author Brian Schlining
  * @since 2017-05-23T15:57:00
  */
-public interface AuthWebService {
+public interface BasicJWTAuthWebService {
 
     /**
      *

@@ -7,11 +7,13 @@ import okhttp3.OkHttpClient;
 import org.mbari.m3.vars.annotation.gson.ByteArrayConverter;
 import org.mbari.m3.vars.annotation.gson.DurationConverter;
 import org.mbari.m3.vars.annotation.gson.TimecodeConverter;
-import org.mbari.m3.vars.annotation.model.Authorization;
+import org.mbari.m3.vars.annotation.services.AuthService;
 import org.mbari.vcr4j.time.Timecode;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.time.Duration;
 
 /**
@@ -22,7 +24,8 @@ public class ServiceGenerator {
 
     private final Retrofit.Builder retrofitBuilder;
 
-    public ServiceGenerator(String endpoint) {
+    @Inject
+    public ServiceGenerator(@Named("ANNO_ENDPOINT") String endpoint) {
         String correctedEndpoint = (endpoint.endsWith("/")) ? endpoint : endpoint + "/";
 
         retrofitBuilder  = new Retrofit.Builder()
@@ -35,7 +38,7 @@ public class ServiceGenerator {
     }
 
 
-    public <S> S create(Class<S> clazz, Authorization auth) {
+    public <S> S create(Class<S> clazz, AuthService auth) {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
         if (auth != null) {

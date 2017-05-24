@@ -1,7 +1,6 @@
 package org.mbari.m3.vars.annotation.services.annosaurus.v1;
 
 import org.mbari.m3.vars.annotation.model.Annotation;
-import org.mbari.m3.vars.annotation.model.Authorization;
 import org.mbari.vcr4j.time.Timecode;
 import retrofit2.Call;
 import retrofit2.http.*;
@@ -61,11 +60,10 @@ public interface AnnotationWebService {
                             @FieldMap Map<String, String> fields,
                             @HeaderMap Map<String, String> headers);
 
-    @DELETE("annotations/{uuid}")
-    Call<Boolean> delete(@Path("uuid") UUID annotationUuid,
+    @DELETE("observations/{uuid}")
+    Call<Boolean> delete(@Path("uuid") UUID observationUuid,
                          @HeaderMap Map<String, String> headers);
 
-    @He
     @GET("observations/videoreference/count/{uuid}")
     Call<Long> countByVideoReferenceUuid(@Path("uuid") UUID videoReferenceUuid);
 

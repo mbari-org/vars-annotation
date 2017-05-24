@@ -17,4 +17,5 @@ public class Constants {
     public static final ResourceBundle uiBundle = ResourceBundle.getBundle("UIBundle",
             Locale.getDefault());
 
+
 }

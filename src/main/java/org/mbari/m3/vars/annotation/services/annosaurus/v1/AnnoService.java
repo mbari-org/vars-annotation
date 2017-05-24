@@ -5,7 +5,9 @@ import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Authorization;
 import org.mbari.m3.vars.annotation.model.Image;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
+import org.mbari.m3.vars.annotation.services.AuthService;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -16,10 +18,15 @@ import java.util.concurrent.CompletableFuture;
  */
 public class AnnoService implements AnnotationService {
 
-    private final AnnotationWebService service;
+    private final AnnotationWebService annoService;
+    private final AssociationWebService assService;
+    private final ImageWebService imageService;
 
-    public AnnoService(ServiceGenerator serviceGenerator, Authorization authorization) {
-        service = serviceGenerator.create(AnnotationWebService.class, authorization);
+    @Inject
+    public AnnoService(ServiceGenerator serviceGenerator, AuthService authService) {
+        annoService = serviceGenerator.create(AnnotationWebService.class, authService);
+        assService = serviceGenerator.create(AssociationWebService.class, authService);
+        imageService = serviceGenerator.create(ImageWebService.class, authService);
     }
 
     @Override
