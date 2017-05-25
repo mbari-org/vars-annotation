@@ -26,6 +26,15 @@ public interface AnnotationWebService {
                                                     @Query("limit") Long limit,
                                                     @Query("offset") Long offset);
 
+    /**
+     * This looks up the single imaged moment that the image is associated with, but
+     * since this can contain several observations, it maps to a list of annotations.
+     * @param uuid The image reference UUID
+     * @return Annotations that are associated with this image
+     */
+    @GET("annotations/imagereference/{uuid")
+    Call<List<Annotation>> findByImageReferenceUuid(@Path("uuid") UUID uuid);
+
 
     /**
      *

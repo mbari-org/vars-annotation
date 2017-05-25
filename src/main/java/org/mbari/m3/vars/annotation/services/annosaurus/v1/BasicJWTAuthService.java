@@ -30,6 +30,7 @@ public class BasicJWTAuthService implements AuthService {
     public Optional<Authorization> authorize() {
         Authorization a = null;
         try {
+            // Block! We need to wait for authorization before we can move on
             a = service.authorize(clientSecret.toString())
                     .execute()
                     .body();

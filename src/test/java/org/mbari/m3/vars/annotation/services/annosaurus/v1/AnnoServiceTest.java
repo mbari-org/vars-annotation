@@ -194,8 +194,11 @@ public class AnnoServiceTest {
 
         // --- 3. Delete Image
         await(annoService.deleteImage(img0.getImageReferenceUuid()), timeout);
-        //Optional<Image> imgOpt1 = await(annoService.) // TODO need to find by imagereferencuuid which I added to annosaurus
+        Optional<List<Annotation>> imgOpt1 = await(annoService.findByImageReference(img0.getImageReferenceUuid()), timeout);
+        assertFalse("Image was still in database after delete", imgOpt0.isPresent());
 
+        // Cleanup and delete original annotation
+        await(annoService.deleteAnnotation(anno.getObservationUuid()), timeout);
 
 
     }

@@ -50,6 +50,10 @@ public class AnnoService implements AnnotationService {
         return sendRequest(annoService.findByVideoReferenceUuid(videoReferenceUuid, limit, offset));
     }
 
+    public CompletableFuture<List<Annotation>> findByImageReference(UUID imageReferenceUuid) {
+        return sendRequest(annoService.findByImageReferenceUuid(imageReferenceUuid));
+    }
+
     @Override
     public CompletableFuture<AnnotationCount> countAnnotations(UUID videoReferenceUuid) {
         return sendRequest(annoService.countByVideoReferenceUuid(videoReferenceUuid));
