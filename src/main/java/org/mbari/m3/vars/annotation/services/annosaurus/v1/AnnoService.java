@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation.services.annosaurus.v1;
 
 import org.mbari.m3.vars.annotation.model.Annotation;
+import org.mbari.m3.vars.annotation.model.AnnotationCount;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Image;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
@@ -35,6 +36,10 @@ public class AnnoService implements AnnotationService {
         defaultHeaders.put("Accept-Charset", "utf-8");
     }
 
+    public CompletableFuture<Annotation> findByUuid(UUID observationUuid) {
+        return sendRequest(annoService.findByUuid(observationUuid));
+    }
+
     @Override
     public CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid) {
         return findAnnotations(videoReferenceUuid, null, null);
@@ -42,12 +47,12 @@ public class AnnoService implements AnnotationService {
 
     @Override
     public CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, Long limit, Long offset) {
-        return newResult(annoService.findByVideoReferenceUuid(videoReferenceUuid, limit, offset));
+        return sendRequest(annoService.findByVideoReferenceUuid(videoReferenceUuid, limit, offset));
     }
 
     @Override
-    public CompletableFuture<Long> countAnnotations(UUID videoReferenceUuid) {
-        return newResult(annoService.countByVideoReferenceUuid(videoReferenceUuid));
+    public CompletableFuture<AnnotationCount> countAnnotations(UUID videoReferenceUuid) {
+        return sendRequest(annoService.countByVideoReferenceUuid(videoReferenceUuid));
     }
 
     @Override
@@ -64,7 +69,7 @@ public class AnnoService implements AnnotationService {
                 annotation.getGroup(),
                 annotation.getActivity(),
                 defaultHeaders);
-        return newResult(call);
+        return sendRequest(call);
     }
 
 
@@ -76,7 +81,7 @@ public class AnnoService implements AnnotationService {
                 association.getLinkValue(),
                 association.getMimeType(),
                 defaultHeaders);
-        return newResult(call);
+        return sendRequest(call);
     }
 
     @Override
@@ -95,7 +100,7 @@ public class AnnoService implements AnnotationService {
                 image.getHeight(),
                 image.getDescription(),
                 defaultHeaders);
-        return newResult(call);
+        return sendRequest(call);
     }
 
     @Override
@@ -112,7 +117,7 @@ public class AnnoService implements AnnotationService {
         addField(fieldMap, "duration_millis", durationMillis);
         addField(fieldMap, "group", annotation.getGroup());
         addField(fieldMap, "activity", annotation.getActivity());
-        return newResult(annoService.update(annotation.getObservationUuid(), fieldMap, defaultHeaders));
+        return sendRequest(annoService.update(annotation.getObservationUuid(), fieldMap, defaultHeaders));
     }
 
     @Override
@@ -122,7 +127,7 @@ public class AnnoService implements AnnotationService {
         addField(fieldMap, "to_concept", association.getToConcept());
         addField(fieldMap, "link_value", association.getLinkValue());
         addField(fieldMap, "mime_type", association.getMimeType());
-        return newResult(assService.update(association.getUuid(), fieldMap, defaultHeaders));
+        return sendRequest(assService.update(association.getUuid(), fieldMap, defaultHeaders));
     }
 
     @Override
@@ -139,26 +144,26 @@ public class AnnoService implements AnnotationService {
         addField(fieldMap, "width_pixels", image.getWidth());
         addField(fieldMap, "height_pixels", image.getHeight());
         addField(fieldMap, "description", image.getDescription());
-        return newResult(imageService.update(image.getImageReferenceUuid(), fieldMap, defaultHeaders));
+        return sendRequest(imageService.update(image.getImageReferenceUuid(), fieldMap, defaultHeaders));
     }
 
     @Override
     public CompletableFuture<Boolean> deleteAnnotation(UUID observationUuid) {
-        return newResult(annoService.delete(observationUuid, defaultHeaders));
+        return sendRequest(annoService.delete(observationUuid, defaultHeaders));
     }
 
     @Override
     public CompletableFuture<Boolean> deleteAssociation(UUID associationUuid) {
-        return newResult(assService.delete(associationUuid));
+        return sendRequest(assService.delete(associationUuid));
     }
 
     @Override
     public CompletableFuture<Boolean> deleteImage(UUID imageReferenceUuid) {
-        return newResult(imageService.delete(imageReferenceUuid));
+        return sendRequest(imageService.delete(imageReferenceUuid));
     }
 
 
-    private static <T> CompletableFuture<T> newResult(Call<T> call) {
+    private static <T> CompletableFuture<T> sendRequest(Call<T> call) {
         CompletableFuture<T> f = new CompletableFuture<>();
         call.enqueue(new Callback<T>() {
             @Override

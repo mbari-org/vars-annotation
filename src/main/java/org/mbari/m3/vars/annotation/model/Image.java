@@ -67,4 +67,48 @@ public class Image {
     public Instant getRecordedTimestamp() {
         return recordedTimestamp;
     }
+
+    public void setImageReferenceUuid(UUID imageReferenceUuid) {
+        this.imageReferenceUuid = imageReferenceUuid;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public void setUrl(URL url) {
+        this.url = url;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setVideoReferenceUuid(UUID videoReferenceUuid) {
+        this.videoReferenceUuid = videoReferenceUuid;
+    }
+
+    public void setImagedMomentUuid(UUID imagedMomentUuid) {
+        this.imagedMomentUuid = imagedMomentUuid;
+    }
+
+    public void setTimecode(Timecode timecode) {
+        this.timecode = timecode;
+    }
+
+    public void setElapsedTime(Duration elapsedTime) {
+        this.elapsedTime = elapsedTime;
+    }
+
+    public void setRecordedTimestamp(Instant recordedTimestamp) {
+        this.recordedTimestamp = recordedTimestamp;
+    }
 }

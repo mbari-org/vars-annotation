@@ -1,11 +1,11 @@
 package org.mbari.m3.vars.annotation.services.annosaurus.v1;
 
 import org.mbari.m3.vars.annotation.model.Annotation;
+import org.mbari.m3.vars.annotation.model.AnnotationCount;
 import org.mbari.vcr4j.time.Timecode;
 import retrofit2.Call;
 import retrofit2.http.*;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,7 @@ public interface AnnotationWebService {
 
 
     @GET("annotations/{uuid}")
-    Call<Annotation> findByUuid(@Path("uuid") UUID annotationUuid);
+    Call<Annotation> findByUuid(@Path("uuid") UUID observationUuid);
 
     @GET("annotations/videoreference/{uuid}")
     Call<List<Annotation>> findByVideoReferenceUuid(@Path("uuid") UUID uuid,
@@ -65,7 +65,7 @@ public interface AnnotationWebService {
                          @HeaderMap Map<String, String> headers);
 
     @GET("observations/videoreference/count/{uuid}")
-    Call<Long> countByVideoReferenceUuid(@Path("uuid") UUID videoReferenceUuid);
+    Call<AnnotationCount> countByVideoReferenceUuid(@Path("uuid") UUID videoReferenceUuid);
 
 
 }

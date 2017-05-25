@@ -20,6 +20,14 @@ public class Association {
         this.mimeType = mimeType;
     }
 
+    public Association(String linkName, String toConcept, String linkValue, String mimeType, UUID uuid) {
+        this.linkName = linkName;
+        this.toConcept = toConcept;
+        this.linkValue = linkValue;
+        this.mimeType = mimeType;
+        this.uuid = uuid;
+    }
+
 
     public UUID getUuid() {
         return uuid;
@@ -40,4 +48,6 @@ public class Association {
     public String getMimeType() {
         return mimeType;
     }
+
+
 }

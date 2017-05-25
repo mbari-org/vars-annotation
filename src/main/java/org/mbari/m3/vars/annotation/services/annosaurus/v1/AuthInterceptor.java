@@ -1,11 +1,14 @@
 package org.mbari.m3.vars.annotation.services.annosaurus.v1;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.mbari.m3.vars.annotation.model.Authorization;
 import org.mbari.m3.vars.annotation.services.AuthService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -20,6 +23,7 @@ public class AuthInterceptor implements Interceptor {
     private final AtomicReference<Authorization> authorization = new AtomicReference<>();
 
     private final AuthService authService;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public AuthInterceptor(AuthService authService) {
         this.authService = authService;
@@ -38,6 +42,7 @@ public class AuthInterceptor implements Interceptor {
 
     private Authorization reauthorize(Authorization a) {
         if ((a == null) || isExpired(a)) {
+            log.debug("Reauthorizing using {}", authService);
             a = authService.authorize()
                     .orElseGet(null);
         }
@@ -46,7 +51,7 @@ public class AuthInterceptor implements Interceptor {
 
     private boolean isExpired(Authorization a) {
         try {
-            JWT jwt = JWT.decode(a.getAccessToken());
+            DecodedJWT jwt = JWT.decode(a.getAccessToken());
             Instant iat = jwt.getExpiresAt().toInstant();
             return iat.isBefore(Instant.now());
         }

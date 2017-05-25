@@ -14,7 +14,6 @@
     </appender>
 
     <logger name="java.util.Date" level="WARN" />
-    <logger name="org.mbari.m3.vars.annotation.services.annosaurus.v1.ServiceGenerator" level="DEBUG" />
 
     <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>
