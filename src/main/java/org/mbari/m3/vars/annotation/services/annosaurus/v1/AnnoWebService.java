@@ -15,7 +15,7 @@ import java.util.UUID;
  * @author Brian Schlining
  * @since 2017-05-22T16:17:00
  */
-public interface AnnotationWebService {
+public interface AnnoWebService {
 
 
     @GET("annotations/{uuid}")

@@ -6,9 +6,8 @@ import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Image;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.AuthService;
+import org.mbari.m3.vars.annotation.services.RetrofitWebService;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -18,19 +17,19 @@ import java.util.concurrent.CompletableFuture;
  * @author Brian Schlining
  * @since 2017-05-23T10:09:00
  */
-public class AnnoService implements AnnotationService {
+public class AnnoService implements AnnotationService, RetrofitWebService {
 
-    private final AnnotationWebService annoService;
+    private final AnnoWebService annoService;
     private final AssociationWebService assService;
     private final ImageWebService imageService;
 
     private final Map<String, String> defaultHeaders;
 
     @Inject
-    public AnnoService(ServiceGenerator serviceGenerator, AuthService authService) {
-        annoService = serviceGenerator.create(AnnotationWebService.class, authService);
-        assService = serviceGenerator.create(AssociationWebService.class, authService);
-        imageService = serviceGenerator.create(ImageWebService.class, authService);
+    public AnnoService(AnnoWebServiceFactory serviceFactory, AuthService authService) {
+        annoService = serviceFactory.create(AnnoWebService.class, authService);
+        assService = serviceFactory.create(AssociationWebService.class, authService);
+        imageService = serviceFactory.create(ImageWebService.class, authService);
         defaultHeaders = new HashMap<>();
         defaultHeaders.put("Accept", "application/json");
         defaultHeaders.put("Accept-Charset", "utf-8");
@@ -167,29 +166,7 @@ public class AnnoService implements AnnotationService {
     }
 
 
-    private static <T> CompletableFuture<T> sendRequest(Call<T> call) {
-        CompletableFuture<T> f = new CompletableFuture<>();
-        call.enqueue(new Callback<T>() {
-            @Override
-            public void onResponse(Call<T> call, Response<T> response) {
-                f.complete(response.body());
-            }
-
-            @Override
-            public void onFailure(Call<T> call, Throwable throwable) {
-                f.completeExceptionally(throwable);
-            }
-        });
-        return f;
-    }
-
-    private static String asString(Object obj) {
-        return Optional.ofNullable(obj)
-                .map(Object::toString)
-                .orElseGet(null);
-    }
-
-    private static void addField(Map<String, String> map, String key, Object value) {
+    private void addField(Map<String, String> map, String key, Object value) {
         if (value != null) {
             map.put(key, asString(value));
         }

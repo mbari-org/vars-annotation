@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.util.Optional;
 
 /**
+ * This service handles the handshake to get the authorization from Annosaurus that
+ * implement Basic JWT handshake (i.e. we send a client secret and get back a JWT token to
+ * use for authentication. It
  * @author Brian Schlining
  * @since 2017-05-24T09:14:00
  */
@@ -20,7 +23,7 @@ public class BasicJWTAuthService implements AuthService {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Named
-    public BasicJWTAuthService(ServiceGenerator serviceGenerator, Authorization clientSecret) {
+    public BasicJWTAuthService(AnnoWebServiceFactory serviceGenerator, Authorization clientSecret) {
         service = serviceGenerator.create(BasicJWTAuthWebService.class);
         this.clientSecret = clientSecret;
     }

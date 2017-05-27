@@ -1,6 +1,6 @@
 package org.mbari.m3.vars.annotation.services;
 
-import org.mbari.m3.vars.annotation.services.annosaurus.v1.ServiceGenerator;
+import org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoWebServiceFactory;
 
 /**
  * @author Brian Schlining
@@ -9,5 +9,5 @@ import org.mbari.m3.vars.annotation.services.annosaurus.v1.ServiceGenerator;
 public class TestConfig {
 
     public static final String ANNO_ENDPOINT = "http://m3.shore.mbari.org/anno/v1/";
-    public static final ServiceGenerator ANNO_SERVICE_GEN = new ServiceGenerator(ANNO_ENDPOINT);
+    public static final AnnoWebServiceFactory ANNO_SERVICE_GEN = new AnnoWebServiceFactory(ANNO_ENDPOINT);
 }

@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.services.annosaurus;
+package org.mbari.m3.vars.annotation.services;
 
 import org.mbari.m3.vars.annotation.model.Authorization;
 import org.mbari.m3.vars.annotation.services.AuthService;

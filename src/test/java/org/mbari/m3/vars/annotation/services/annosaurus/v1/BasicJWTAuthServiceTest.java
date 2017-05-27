@@ -15,7 +15,7 @@ import java.util.Optional;
  */
 public class BasicJWTAuthServiceTest {
 
-    ServiceGenerator serviceGenerator = TestConfig.ANNO_SERVICE_GEN;
+    AnnoWebServiceFactory serviceGenerator = TestConfig.ANNO_SERVICE_GEN;
     AuthService authService = new BasicJWTAuthService(serviceGenerator,
             new Authorization("APIKEY", ""));
     Duration timeout = Duration.ofMillis(15000);

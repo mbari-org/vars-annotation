@@ -4,8 +4,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.model.ConceptDetails;
-import org.mbari.m3.vars.annotation.services.ConceptService;
-import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBConceptService;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -18,7 +16,7 @@ import java.util.concurrent.ExecutionException;
 public class KBConceptServiceTest {
 
     String endpoint = "http://m3.shore.mbari.org/kb/v1/";
-    KBConceptService conceptService = new KBConceptService(endpoint);
+    KBConceptService conceptService = new KBConceptService(new KBWebServiceFactory(endpoint));
 
     @Test
     public void testFetchConceptTree() throws InterruptedException, ExecutionException {

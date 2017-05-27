@@ -2,7 +2,6 @@ package org.mbari.m3.vars.annotation.services.annosaurus.v1;
 
 import static org.junit.Assert.*;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.AuthService;
@@ -26,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class AnnoServiceTest {
 
-    ServiceGenerator serviceGenerator = TestConfig.ANNO_SERVICE_GEN;
+    AnnoWebServiceFactory serviceGenerator = TestConfig.ANNO_SERVICE_GEN;
     AuthService authService = new BasicJWTAuthService(serviceGenerator,
             new Authorization("APIKEY", ""));
     AnnoService annoService = new AnnoService(serviceGenerator, authService);

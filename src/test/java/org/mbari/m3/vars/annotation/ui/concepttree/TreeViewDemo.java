@@ -9,6 +9,7 @@ import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBConceptService;
+import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBWebServiceFactory;
 
 /**
  * @author Brian Schlining
@@ -17,7 +18,7 @@ import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBConceptService;
 public class TreeViewDemo extends Application {
 
     private ConceptService conceptService = new CachedConceptService(
-            new KBConceptService("http://m3.shore.mbari.org/kb/v1/"));
+            new KBConceptService(new KBWebServiceFactory("http://m3.shore.mbari.org/kb/v1/")));
 
 //    private ConceptService conceptService = new KBConceptService("http://m3.shore.mbari.org/kb/v1/");
     private TreeViewFactory treeViewFactory = new TreeViewFactory(conceptService);
