@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
-import org.mbari.m3.vars.annotation.services.annosaurus.v1.AuthInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Retrofit;
@@ -43,7 +42,7 @@ public abstract class RetrofitServiceFactory {
                 .addInterceptor(logger);
 
         if (auth != null) {
-            httpClient.addInterceptor(new AuthInterceptor(auth));
+            httpClient.addInterceptor(new BasicJWTAuthInterceptor(auth));
         }
         retrofitBuilder.client(httpClient.build());
 

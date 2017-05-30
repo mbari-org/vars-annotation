@@ -57,11 +57,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.jfoenix</groupId>
-      <artifactId>jfoenix</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-    <dependency>
       <groupId>de.jensd</groupId>
       <artifactId>fontawesomefx-commons</artifactId>
       <version>8.15</version>
@@ -146,7 +141,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.1.8</version>
+      <version>1.2.3</version>
     </dependency>
   </dependencies>
 
@@ -318,6 +313,9 @@
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
+          <compilerArgs>
+            <arg>-Xlint:all,-options,-path</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
     </plugins>

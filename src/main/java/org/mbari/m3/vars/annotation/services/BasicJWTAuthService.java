@@ -1,7 +1,6 @@
-package org.mbari.m3.vars.annotation.services.annosaurus.v1;
+package org.mbari.m3.vars.annotation.services;
 
 import org.mbari.m3.vars.annotation.model.Authorization;
-import org.mbari.m3.vars.annotation.services.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,9 +9,10 @@ import java.io.IOException;
 import java.util.Optional;
 
 /**
- * This service handles the handshake to get the authorization from Annosaurus that
- * implement Basic JWT handshake (i.e. we send a client secret and get back a JWT token to
- * use for authentication. It
+ * This service handles the handshake to get the authorization from Annosaurus and vampire-squid
+ * that implement Basic JWT handshake (i.e. we send a client secret and get back a JWT token to
+ * use for authentication.)
+ *
  * @author Brian Schlining
  * @since 2017-05-24T09:14:00
  */
@@ -23,8 +23,8 @@ public class BasicJWTAuthService implements AuthService {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Named
-    public BasicJWTAuthService(AnnoWebServiceFactory serviceGenerator, Authorization clientSecret) {
-        service = serviceGenerator.create(BasicJWTAuthWebService.class);
+    public BasicJWTAuthService(RetrofitServiceFactory serviceFactory, Authorization clientSecret) {
+        service = serviceFactory.create(BasicJWTAuthWebService.class);
         this.clientSecret = clientSecret;
     }
 

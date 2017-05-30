@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.services.annosaurus.v1;
+package org.mbari.m3.vars.annotation.services;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -6,7 +6,6 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.mbari.m3.vars.annotation.model.Authorization;
-import org.mbari.m3.vars.annotation.services.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,17 +14,21 @@ import java.time.Instant;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * Configures and interceptor that handles the Basic JWT handshake using the Authservice
+ * you provide. This may make a request to the server for authentication if a
+ * JWT token is missing or if it's expired.
+ *
  * @author Brian Schlining
  * @since 2017-05-23T15:45:00
  */
-public class AuthInterceptor implements Interceptor {
+public class BasicJWTAuthInterceptor implements Interceptor {
 
     private final AtomicReference<Authorization> authorization = new AtomicReference<>();
 
     private final AuthService authService;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public AuthInterceptor(AuthService authService) {
+    public BasicJWTAuthInterceptor(AuthService authService) {
         this.authService = authService;
     }
 

@@ -45,8 +45,8 @@ public class DragAndDropDemo extends Application {
         BorderPane node = paneBuilder.build();
         FlowPane pane = new FlowPane();
         pane.setPrefSize(800, 250);
-        PaneDecorator paneDecorator = new PaneDecorator(conceptService, eventBus, uiBundle);
-        paneDecorator.decorate(pane);
+        DragPaneDecorator dragPaneDecorator = new DragPaneDecorator(conceptService, eventBus, uiBundle);
+        dragPaneDecorator.decorate(pane);
         node.setBottom(pane);
         Scene scene = new Scene(node, 800, 800);
         scene.getStylesheets().add("/application.css");

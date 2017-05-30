@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.AuthService;
+import org.mbari.m3.vars.annotation.services.BasicJWTAuthService;
 import org.mbari.m3.vars.annotation.services.TestConfig;
 
 import java.io.UnsupportedEncodingException;

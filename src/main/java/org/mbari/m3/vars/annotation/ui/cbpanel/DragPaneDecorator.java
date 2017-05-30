@@ -28,14 +28,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Brian Schlining
  * @since 2017-05-17T15:15:00
  */
-public class PaneDecorator {
+public class DragPaneDecorator {
 
     private final ConceptButtonFactory conceptButtonFactory;
     private final ConceptService conceptService;
     private boolean locked = false;
 
     @Inject
-    public PaneDecorator(ConceptService conceptService, EventBus eventBus, ResourceBundle uiBundle) {
+    public DragPaneDecorator(ConceptService conceptService, EventBus eventBus, ResourceBundle uiBundle) {
         this.conceptService = conceptService;
         conceptButtonFactory = new ConceptButtonFactory(conceptService, eventBus, uiBundle);
     }

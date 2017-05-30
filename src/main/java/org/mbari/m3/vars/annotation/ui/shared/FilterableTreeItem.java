@@ -44,6 +44,7 @@ public class FilterableTreeItem<T> extends TreeItem<T> {
         setHiddenFieldChildren(this.filteredList);
     }
 
+    @SuppressWarnings("unchecked") // Yes, I know the cast below is unchecked
     protected void setHiddenFieldChildren(ObservableList<TreeItem<T>> list) {
         try {
             Field childrenField = TreeItem.class.getDeclaredField("children"); //$NON-NLS-1$

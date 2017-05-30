@@ -39,3 +39,8 @@
     -fx-background-color: cornsilk;
 }
 
+/* For JFXSlider */
+-jfx-indicator-position {
+
+}
+
