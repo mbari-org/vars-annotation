@@ -27,6 +27,7 @@ public class Media {
     private String videoCodec;
     private String audioCodec;
     private String description;
+    private String videoName;
 
     public String getVideoCodec() {
         return videoCodec;
@@ -162,5 +163,13 @@ public class Media {
 
     public void setSha512(byte[] sha512) {
         this.sha512 = sha512;
+    }
+
+    public String getVideoName() {
+        return videoName;
+    }
+
+    public void setVideoName(String videoName) {
+        this.videoName = videoName;
     }
 }

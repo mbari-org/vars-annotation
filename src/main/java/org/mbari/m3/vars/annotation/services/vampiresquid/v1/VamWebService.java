@@ -58,5 +58,11 @@ public interface VamWebService {
     @GET("videosequences/cameras")
     Call<List<String>> findAllCameraIds();
 
+    @GET("videosequences/names/camera/{camera_id}")
+    Call<List<String>> findVideoSequenceNamesByCameraId(@Path("camera_id") String cameraId);
+
+    @GET("videos/names/videosequence/{name}")
+    Call<List<String>> findVideoNamesByVideoSequenceName(@Path("name") String name);
+
 
 }

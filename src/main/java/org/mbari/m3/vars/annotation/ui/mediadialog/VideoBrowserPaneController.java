@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.*;
@@ -90,11 +91,6 @@ public class VideoBrowserPaneController {
         if (cameraIdListView == null) {
             cameraIdListView = new ListView<>();
             cameraIdListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-            cameraIdListView.getSelectionModel()
-                    .selectedItemProperty()
-                    .addListener(((observable, oldValue, newValue) -> {
-                        // TODO get a
-                    }));
 
             // Populate the cameraIds
             mediaService.findAllCameraIds()
@@ -103,27 +99,60 @@ public class VideoBrowserPaneController {
                             cameraIdListView.setItems(FXCollections.observableArrayList(cameras));
                         });
                     });
+
+            // When a camera_id is selected set the next list to all the videosequence names
+            // for that camera_id.
+            cameraIdListView.getSelectionModel()
+                    .selectedItemProperty()
+                    .addListener(((observable, oldValue, newValue) -> {
+                        mediaService.findVideoSequenceNamesByCameraId(newValue)
+                                .thenAccept(vs -> Platform.runLater(() -> {
+                                    getVideoSequenceListView().setItems(FXCollections.observableArrayList(vs));
+                                }));
+                    }));
+
+
         }
         return cameraIdListView;
     }
 
-    public ListView getVideoSequenceListView() {
+    public ListView<String> getVideoSequenceListView() {
         if (videoSequenceListView == null) {
             videoSequenceListView = new ListView<>();
+
+            // When a video sequence is selected set the next list to all the video names
+            // available in the video sequence
+            videoSequenceListView.getSelectionModel()
+                    .selectedItemProperty()
+                    .addListener((obs, oldValue, newValue) -> {
+                        mediaService.findVideoNamesByVideoSequenceName(newValue)
+                                .thenAccept(vs -> Platform.runLater(() -> {
+                                    getVideoListView().setItems(FXCollections.observableArrayList(vs));
+                                }));
+                    });
         }
         return videoSequenceListView;
     }
 
-    public ListView getVideoListView() {
+    public ListView<String> getVideoListView() {
         if (videoListView == null) {
             videoListView = new ListView<>();
+            videoListView.getSelectionModel()
+                    .selectedItemProperty()
+                    .addListener((obs, oldValue, newValue) -> {
+                        mediaService.findByVideoName(newValue)
+                                .thenAccept(vs -> Platform.runLater(() -> {
+                                    getMediaListView().setItems(FXCollections.observableArrayList(vs));
+                                }));
+                    });
         }
         return videoListView;
     }
 
-    public ListView getMediaListView() {
+    public ListView<Media> getMediaListView() {
         if (mediaListView == null) {
             mediaListView = new ListView<>();
+            mediaListView.setCellFactory(lv -> new MediaCell());
         }
         return mediaListView;
     }
@@ -144,8 +173,24 @@ public class VideoBrowserPaneController {
                         return timestamp.toString();
                     }
                 });
-            //timeSlider.get
+
         }
         return timeSlider;
+    }
+
+    class MediaCell extends ListCell<Media> {
+        private final Label label = new Label();
+        @Override
+        protected void updateItem(Media item, boolean empty) {
+            super.updateItem(item, empty);
+
+            if (item == null) {
+                label.setText("");
+            }
+            else {
+                label.setText(item.getUri().toString());
+            }
+            setGraphic(label);
+        }
     }
 }

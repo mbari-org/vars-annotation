@@ -31,4 +31,12 @@ public interface MediaService {
 
     CompletableFuture<List<String>> findAllCameraIds();
 
+    /**
+     *
+     * @return A list of VideoSequence names available for the camera id
+     */
+    CompletableFuture<List<String>> findVideoSequenceNamesByCameraId(String cameraId);
+
+    CompletableFuture<List<String>> findVideoNamesByVideoSequenceName(String videoSequenceName);
+
 }
