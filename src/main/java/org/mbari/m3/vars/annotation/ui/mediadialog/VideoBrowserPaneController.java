@@ -1,20 +1,25 @@
 package org.mbari.m3.vars.annotation.ui.mediadialog;
 
+import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXSlider;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.m3.vars.annotation.ui.shared.DateTimePickerController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 
@@ -38,6 +43,8 @@ public class VideoBrowserPaneController {
     private Label fromLabel = new Label();
     private Label toLabel = new Label();
     private final ResourceBundle uiBundle;
+    private MediaPaneController mediaPaneController;
+    private Logger log = LoggerFactory.getLogger(getClass());
 
 
     @Inject
@@ -48,6 +55,8 @@ public class VideoBrowserPaneController {
         toLabel.setText(uiBundle.getString("mediadialog.tolabel"));
         root = new BorderPane(getCenterPane());
         root.setTop(getTopPane());
+        root.setRight(getMediaPaneController().getRoot());
+
     }
 
     public StackPane getCenterPane() {
@@ -108,6 +117,9 @@ public class VideoBrowserPaneController {
                         mediaService.findVideoSequenceNamesByCameraId(newValue)
                                 .thenAccept(vs -> Platform.runLater(() -> {
                                     getVideoSequenceListView().setItems(FXCollections.observableArrayList(vs));
+                                    if (vs.size() == 1) {
+                                        getVideoSequenceListView().getSelectionModel().select(0);
+                                    }
                                 }));
                     }));
 
@@ -119,6 +131,7 @@ public class VideoBrowserPaneController {
     public ListView<String> getVideoSequenceListView() {
         if (videoSequenceListView == null) {
             videoSequenceListView = new ListView<>();
+            videoSequenceListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
             // When a video sequence is selected set the next list to all the video names
             // available in the video sequence
@@ -128,8 +141,15 @@ public class VideoBrowserPaneController {
                         mediaService.findVideoNamesByVideoSequenceName(newValue)
                                 .thenAccept(vs -> Platform.runLater(() -> {
                                     getVideoListView().setItems(FXCollections.observableArrayList(vs));
+                                    if (vs.size() == 1) {
+                                        getVideoListView().getSelectionModel().select(0);
+                                    }
                                 }));
                     });
+
+            videoSequenceListView.getSelectionModel()
+                    .selectedItemProperty()
+                    .addListener(obs ->  getVideoListView().setItems(FXCollections.emptyObservableList()));
         }
         return videoSequenceListView;
     }
@@ -137,14 +157,24 @@ public class VideoBrowserPaneController {
     public ListView<String> getVideoListView() {
         if (videoListView == null) {
             videoListView = new ListView<>();
+            videoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+            // When a video is selected
             videoListView.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldValue, newValue) -> {
                         mediaService.findByVideoName(newValue)
                                 .thenAccept(vs -> Platform.runLater(() -> {
                                     getMediaListView().setItems(FXCollections.observableArrayList(vs));
+                                    if (vs.size() == 1) {
+                                        getMediaListView().getSelectionModel().select(0);
+                                    }
                                 }));
                     });
+
+            videoListView.getSelectionModel()
+                    .selectedItemProperty()
+                    .addListener(obs -> getMediaListView().setItems(FXCollections.emptyObservableList()));
         }
         return videoListView;
     }
@@ -152,7 +182,19 @@ public class VideoBrowserPaneController {
     public ListView<Media> getMediaListView() {
         if (mediaListView == null) {
             mediaListView = new ListView<>();
+            mediaListView.getSelectionModel()
+                    .setSelectionMode(SelectionMode.SINGLE);
             mediaListView.setCellFactory(lv -> new MediaCell());
+
+            mediaListView.getSelectionModel()
+                    .selectedItemProperty()
+                    .addListener((obs, oldValue, newValue) -> {
+                        getMediaPaneController().setMedia(newValue);
+                    });
+
+            mediaListView.getSelectionModel()
+                    .selectedItemProperty()
+                    .addListener(obs -> getMediaPaneController().setMedia(null));
         }
         return mediaListView;
     }
@@ -178,6 +220,23 @@ public class VideoBrowserPaneController {
         return timeSlider;
     }
 
+    public MediaPaneController getMediaPaneController() {
+        if (mediaPaneController == null) {
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("/fxml/MediaPane.fxml"), uiBundle);
+            try {
+                // The controller has a reference to this.
+                Pane mediaPane = (Pane) loader.load();
+            }
+            catch (IOException e) {
+                log.warn("Failed to load media pane from FXML", e);
+            }
+            mediaPaneController = loader.getController();
+
+        }
+        return mediaPaneController;
+    }
+
     class MediaCell extends ListCell<Media> {
         private final Label label = new Label();
         @Override
@@ -186,11 +245,21 @@ public class VideoBrowserPaneController {
 
             if (item == null) {
                 label.setText("");
+                setTooltip(null);
             }
             else {
-                label.setText(item.getUri().toString());
+                String uri = item.getUri().toString();
+                label.setText(uri);
+                setTooltip(new Tooltip(uri));
             }
             setGraphic(label);
+
         }
     }
+
+    public Optional<Media> getSelectedMedia() {
+        return Optional.ofNullable(getMediaPaneController().getMedia());
+    }
+
+
 }

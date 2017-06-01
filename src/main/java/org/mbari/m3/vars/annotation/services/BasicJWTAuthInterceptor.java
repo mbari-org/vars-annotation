@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Configures and interceptor that handles the Basic JWT handshake using the Authservice
  * you provide. This may make a request to the server for authentication if a
- * JWT token is missing or if it's expired.
+ * JWT token is missing or if it's expired. No Auth is applied to GET requests
  *
  * @author Brian Schlining
  * @since 2017-05-23T15:45:00
@@ -35,12 +35,18 @@ public class BasicJWTAuthInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request original = chain.request();
-        Authorization a = authorization.updateAndGet(this::reauthorize);
-        Request request = original.newBuilder()
-                .header("Authorization", a.toString())
-                .method(original.method(), original.body())
-                .build();
-        return chain.proceed(request);
+        if (original.method().equalsIgnoreCase("GET")) {
+            return chain.proceed(chain.request());
+        }
+        else {
+            Authorization a = authorization.updateAndGet(this::reauthorize);
+            Request request = original.newBuilder()
+                    .header("Authorization", a.toString())
+                    .method(original.method(), original.body())
+                    .build();
+            return chain.proceed(request);
+        }
+
     }
 
     private Authorization reauthorize(Authorization a) {

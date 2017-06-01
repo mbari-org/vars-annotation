@@ -2,6 +2,12 @@
 
 }
 
+.gridpane {
+    -fx-hgap: 5;
+    -fx-vgap: 5;
+    -fx-padding: 10 10 10 10;
+}
+
 .conceptbutton {
     /*-fx-padding: 0.7em 0.57em;*/
     -fx-font-size: 14px;
@@ -9,7 +15,7 @@
     /*-fx-background-color: rgb(77, 102, 204);*/
     /*-fx-pref-width: 200;*/
     /*-fx-text-fill: WHITE;*/
-    -fx-background-color: cornsilk;
+    -fx-background-color: powderblue;
 }
 
 .conceptbutton:hover {
@@ -18,11 +24,11 @@
 }
 
 .root {
-    -fx-background-color: cornsilk;
+    -fx-background-color: powderblue;
 }
 
 .searchtreecell {
-    -fx-background-color: cornsilk;
+    -fx-background-color: powderblue;
 }
 
 .searchtreecell:selected {
@@ -36,7 +42,7 @@
 
 .searchtreeview {
     -fx-padding: 10 5 5 5;
-    -fx-background-color: cornsilk;
+    -fx-background-color: powderblue;
 }
 
 /* For JFXSlider */
@@ -44,3 +50,10 @@
 
 }
 
+.vars-dialog-label {
+
+}
+
+.vars-dialog-textfield {
+
+}

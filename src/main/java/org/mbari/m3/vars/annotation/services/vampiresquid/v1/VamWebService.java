@@ -27,7 +27,7 @@ public interface VamWebService {
     Call<List<Media>> findByVideoSequenceName(@Path("name") String videoSequenceName);
 
     @GET("media/video/{name}")
-    Call<List<Media>> findByVideoName(String videoName);
+    Call<List<Media>> findByVideoName(@Path("name") String videoName);
 
     @GET("videosequences/names")
     Call<List<String>> findAllVideoSequenceNames();

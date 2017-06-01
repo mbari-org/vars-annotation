@@ -1,154 +1,147 @@
+/*
+ * @(#)MediaPropertiesPaneController.java   2017.05.31 at 04:38:46 PDT
+ *
+ * Copyright 2011 MBARI
+ *
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.mbari.m3.vars.annotation.ui.mediadialog;
 
-import javafx.beans.binding.Binding;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import org.controlsfx.control.PropertySheet;
-import org.controlsfx.property.BeanPropertyUtils;
 import org.mbari.m3.vars.annotation.model.Media;
 
 import java.time.Duration;
+import java.util.ResourceBundle;
 
 /**
  * @author Brian Schlining
- * @since 2017-05-31T15:01:00
+ * @since 2017-05-31T16:38:00
  */
 public class MediaPaneController {
+    @FXML
+    private ResourceBundle bundle;
 
-    private ObjectProperty<Media> mediaProperty = new SimpleObjectProperty<>();
-    private ObjectProperty<PropertySheet> propertySheetProperty = new SimpleObjectProperty<>();
-    private final Pane root = new Pane();
+    @FXML
+    private TextField camerIdTextField;
+    @FXML
+    private TextField videoSequenceNameTextField;
+    @FXML
+    private TextField videoNameTextField;
+    @FXML
+    private TextField startTimestampTextField;
+    @FXML
+    private TextField uriTextField;
+    @FXML
+    private TextField containerTextField;
+    @FXML
+    private TextField videoSizeTextField;
+    @FXML
+    private TextField videoDimensionTextField;
+    @FXML
+    private TextField frameRateTextField;
+    @FXML
+    private TextField endTimestampTextField;
+    @FXML
+    private TextField durationTextField;
+    @FXML
+    private Pane root;
+
+    ObjectProperty<Media> media = new SimpleObjectProperty<>();
 
 
-    public MediaPaneController() {
-
-        // When a new Media is set we need to create a new property sheet and set it in it's property
-        Binding<PropertySheet> binding = Bindings.createObjectBinding(() -> {
-            if (mediaProperty.get() != null) {
-                ObservableList<PropertySheet.Item> props = BeanPropertyUtils.getProperties(new MiniMedia(mediaProperty.get()));
-                return new PropertySheet(props);
-            }
-            else {
-                return null;
-            }
-        }, mediaProperty);
-        propertySheetProperty.bind(binding);
-
-        // When a property sheet changes, discard the old one and add the new one to root
-        propertySheetProperty.addListener((obs, oldValue, newValue) -> {
-            if (oldValue != null) {
-                root.getChildren().remove(oldValue);
-            }
-            if (newValue != null) {
-                root.getChildren().add(newValue);
-            }
+    @FXML // This method is called by the FXMLLoader when initialization is complete
+    void initialize() {
+        mediaProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue == null) resetView();
+            else updateView(newValue);
         });
     }
+
+    private void updateView(Media media) {
+        camerIdTextField.setText(media.getCameraId());
+        videoSequenceNameTextField.setText(media.getVideoSequenceName());
+        videoNameTextField.setText(media.getVideoName());
+        String st = (media.getStartTimestamp() == null) ? "" : media.getStartTimestamp().toString();
+        startTimestampTextField.setText(st);
+        String uri = (media.getUri() == null) ? "" : media.getUri().toString();
+        uriTextField.setText(uri);
+        containerTextField.setText(media.getContainer());
+        String size = (media.getSizeBytes() == null) ? "" : formatSizeBytes(media.getSizeBytes());
+        videoSizeTextField.setText(size);
+        String dims = (media.getWidth() == null || media.getHeight() == null) ? "" :
+                media.getWidth() + " x " + media.getHeight();
+        videoDimensionTextField.setText(dims);
+        String fr = (media.getFrameRate() == null) ? "" : media.getFrameRate().toString();
+        frameRateTextField.setText(fr);
+        String et = (media.getStartTimestamp() == null || media.getDuration() == null) ? "" :
+                media.getStartTimestamp().plus(media.getDuration()).toString();
+        endTimestampTextField.setText(et);
+        String duration = (media.getDuration() == null) ? "" : formatDuration(media.getDuration());
+        durationTextField.setText(duration);
+    }
+
+    private void resetView() {
+        camerIdTextField.setText("");
+        videoSequenceNameTextField.setText("");
+        videoNameTextField.setText("");
+        startTimestampTextField.setText("");
+        uriTextField.setText("");
+        containerTextField.setText("");
+        videoSizeTextField.setText("");
+        videoDimensionTextField.setText("");
+        frameRateTextField.setText("");
+        endTimestampTextField.setText("");
+        durationTextField.setText("");
+    }
+
+    String formatSizeBytes(Long bytes) {
+        Double gb = bytes * 1e-9;
+        if (gb > 1) {
+            return String.format("%.2f GB", gb);
+        }
+        else {
+            Double mb = bytes * 1e-6;
+            return String.format("%.2f MB", mb);
+        }
+    }
+
+    String formatDuration(Duration duration) {
+        long seconds = duration.getSeconds();
+        long absSeconds = Math.abs(seconds);
+        String positive = String.format(
+                "%02d:%02d:%02d",
+                absSeconds / 3600,
+                (absSeconds % 3600) / 60,
+                absSeconds % 60);
+        return seconds < 0 ? "-" + positive : positive;
+    }
+
 
     public Pane getRoot() {
         return root;
     }
 
+
     public Media getMedia() {
-        return mediaProperty.get();
+        return media.get();
     }
 
     public ObjectProperty<Media> mediaProperty() {
-        return mediaProperty;
+        return media;
     }
 
     public void setMedia(Media media) {
-        mediaProperty.set(media);
+        this.media.set(media);
     }
-
-    /**
-     * Facade over media the handles help handle nulls and makes things pretty.
-     */
-    class MiniMedia {
-        private final Media media;
-        String cameraId;
-
-
-        MiniMedia(Media media) {
-            this.media = media;
-        }
-
-        String getCameraId() {
-            return (media.getCameraId() == null) ? "" : media.getCameraId();
-        }
-
-        void setCameraId(String id) {}
-
-        String getContainer() {
-            return (media.getContainer() == null) ? "" : media.getContainer();
-        }
-
-        String getDescription() {
-            return (media.getDescription() == null) ? "" : media.getDescription();
-        }
-
-        String getDuration() {
-            return (media.getDuration() == null) ? "" : formatDuration(media.getDuration());
-        }
-
-        Double getFrameRate() {
-            return (media.getFrameRate() == null) ? 0D : media.getFrameRate();
-        }
-
-        String getSize() {
-            return (media.getSizeBytes() == null) ? "" : formatSizeBytes(media.getSizeBytes());
-        }
-
-        String getStart() {
-            return (media.getStartTimestamp() == null) ? "" : media.getStartTimestamp().toString();
-        }
-
-        String getUri() {
-            return (media.getUri() == null) ? "" : media.getUri().toString();
-        }
-
-        String getVideoName() {
-            return (media.getVideoName() == null) ? "" : media.getVideoName();
-        }
-
-        String getVideoSequenceName() {
-            return (media.getVideoSequenceName() == null) ? "" : media.getVideoSequenceName();
-        }
-
-        Integer getPixelWidth() {
-            return (media.getWidth() == null) ? 0 : media.getWidth();
-        }
-
-        Integer getPixelHeight() {
-            return (media.getHeight() == null) ? 0 : media.getHeight();
-        }
-
-        String formatSizeBytes(Long bytes) {
-            Double gb = bytes * 1e-9;
-            if (gb > 1) {
-                return String.format("%.2f GB", gb);
-            }
-            else {
-                Double mb = bytes * 1e-6;
-                return String.format(".2f MB", mb);
-            }
-        }
-
-        String formatDuration(Duration duration) {
-            long seconds = duration.getSeconds();
-            long absSeconds = Math.abs(seconds);
-            String positive = String.format(
-                    "%d:%02d:%02d",
-                    absSeconds / 3600,
-                    (absSeconds % 3600) / 60,
-                    absSeconds % 60);
-            return seconds < 0 ? "-" + positive : positive;
-        }
-    }
-
 }

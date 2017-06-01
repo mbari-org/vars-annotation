@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="gridpane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.mediadialog.MediaPaneController">
+    <columnConstraints>
+        <ColumnConstraints />
+        <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+        <RowConstraints vgrow="NEVER" />
+    </rowConstraints>
+    <children>
+        <Label fx:id="cameraIdLabel" styleClass="vars-dialog-label" text="%mediadialog.cameraId" />
+        <Label fx:id="videoSequenceNameLabel" styleClass="vars-dialog-label" text="%mediadialog.videoSequenceName" GridPane.rowIndex="1" />
+        <Label fx:id="videoNameLabel" styleClass="vars-dialog-label" text="%mediadialog.videoName" GridPane.rowIndex="2" />
+        <Label fx:id="uriLabel" styleClass="vars-dialog-label" text="%mediadialog.uri" GridPane.rowIndex="6" />
+        <Label fx:id="containerLabel" styleClass="vars-dialog-label" text="%mediadialog.container" GridPane.rowIndex="10" />
+        <Label fx:id="videoSizeLabel" styleClass="vars-dialog-label" text="%mediadialog.videoSize" GridPane.rowIndex="7" />
+        <Label fx:id="videoDimensionsLabel" styleClass="vars-dialog-label" text="%mediadialog.videoDimensions" GridPane.rowIndex="8" />
+        <Label fx:id="startTimestampLabel" styleClass="vars-dialog-label" text="%mediadialog.startTimestamp" GridPane.rowIndex="3" />
+        <Label fx:id="endTimestampLabel" styleClass="vars-dialog-label" text="%mediadialog.endTimestamp" GridPane.rowIndex="4" />
+        <Label fx:id="durationLabel" styleClass="vars-dialog-label" text="%mediadialog.duration" GridPane.rowIndex="5" />
+        <Label fx:id="frameRateLabel" styleClass="vars-dialog-label" text="%mediadialog.frameRate" GridPane.rowIndex="9" />
+        <TextField fx:id="camerIdTextField" styleClass="vars-dialog-textfield" GridPane.columnIndex="1" />
+        <TextField fx:id="videoSequenceNameTextField" styleClass="vars-dialog-textfield" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <TextField fx:id="videoNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <TextField fx:id="startTimestampTextField" styleClass="vars-dialog-textfield" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <TextField fx:id="uriTextField" minWidth="300.0" styleClass="vars-dialog-textfield" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+        <TextField fx:id="containerTextField" styleClass="vars-dialog-textfield" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+        <TextField fx:id="videoSizeTextField" styleClass="vars-dialog-textfield" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+        <TextField fx:id="videoDimensionTextField" styleClass="vars-dialog-textfield" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+        <TextField fx:id="frameRateTextField" styleClass="vars-dialog-textfield" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+        <TextField fx:id="endTimestampTextField" styleClass="vars-dialog-textfield" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+        <TextField fx:id="durationTextField" styleClass="vars-dialog-textfield" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+    </children>
+    <stylesheets>
+        <URL value="@../application.css" />
+    </stylesheets>
+</GridPane>

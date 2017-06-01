@@ -28,6 +28,7 @@ public class DateTimePickerController {
     public DateTimePickerController() {
         root = new HBox(datePicker, timePicker);
 
+
         ObjectBinding<Instant> dateBinding = Bindings.createObjectBinding(
                 this::getTimestamp, datePicker.valueProperty());
 
@@ -36,7 +37,10 @@ public class DateTimePickerController {
 
         timestampProperty.bind(dateBinding);
         timestampProperty.bind(timeBinding);
-        timestampProperty.set(getTimestamp());
+
+        LocalDateTime now = LocalDateTime.now();
+        datePicker.setValue(now.toLocalDate());
+        timePicker.setValue(now.toLocalTime());
 
     }
 
