@@ -96,7 +96,6 @@ class TreeCellFactory {
                     if (!cd.getMedia().isEmpty()) {
                         getStyleClass().removeAll(styleClassPlain);
                         getStyleClass().addAll(styleClassWithMedia);
-                        //setStyle("-fx-background-color: #E0F7FA");
                     }
                     else {
                         getStyleClass().removeAll(styleClassWithMedia);

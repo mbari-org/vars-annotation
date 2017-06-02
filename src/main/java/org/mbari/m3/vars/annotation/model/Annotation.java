@@ -12,7 +12,7 @@ import java.util.UUID;
  * @author Brian Schlining
  * @since 2017-05-11T13:26:00
  */
-public class Annotation {
+public class Annotation implements ImagedMoment {
 
     private UUID observationUuid;
     private String concept;

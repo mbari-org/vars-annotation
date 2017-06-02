@@ -11,7 +11,7 @@ import java.util.UUID;
  * @author Brian Schlining
  * @since 2017-05-11T13:30:00
  */
-public class Image {
+public class Image implements ImagedMoment {
     private UUID imageReferenceUuid;
     private String format;
     private Integer width;

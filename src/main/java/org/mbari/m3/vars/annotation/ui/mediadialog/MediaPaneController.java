@@ -19,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import org.mbari.m3.vars.annotation.FormatUtils;
 import org.mbari.m3.vars.annotation.model.Media;
 
 import java.time.Duration;
@@ -77,7 +78,7 @@ public class MediaPaneController {
         String uri = (media.getUri() == null) ? "" : media.getUri().toString();
         uriTextField.setText(uri);
         containerTextField.setText(media.getContainer());
-        String size = (media.getSizeBytes() == null) ? "" : formatSizeBytes(media.getSizeBytes());
+        String size = (media.getSizeBytes() == null) ? "" : FormatUtils.formatSizeBytes(media.getSizeBytes());
         videoSizeTextField.setText(size);
         String dims = (media.getWidth() == null || media.getHeight() == null) ? "" :
                 media.getWidth() + " x " + media.getHeight();
@@ -87,7 +88,7 @@ public class MediaPaneController {
         String et = (media.getStartTimestamp() == null || media.getDuration() == null) ? "" :
                 media.getStartTimestamp().plus(media.getDuration()).toString();
         endTimestampTextField.setText(et);
-        String duration = (media.getDuration() == null) ? "" : formatDuration(media.getDuration());
+        String duration = (media.getDuration() == null) ? "" : FormatUtils.formatDuration(media.getDuration());
         durationTextField.setText(duration);
     }
 
@@ -105,27 +106,7 @@ public class MediaPaneController {
         durationTextField.setText("");
     }
 
-    String formatSizeBytes(Long bytes) {
-        Double gb = bytes * 1e-9;
-        if (gb > 1) {
-            return String.format("%.2f GB", gb);
-        }
-        else {
-            Double mb = bytes * 1e-6;
-            return String.format("%.2f MB", mb);
-        }
-    }
 
-    String formatDuration(Duration duration) {
-        long seconds = duration.getSeconds();
-        long absSeconds = Math.abs(seconds);
-        String positive = String.format(
-                "%02d:%02d:%02d",
-                absSeconds / 3600,
-                (absSeconds % 3600) / 60,
-                absSeconds % 60);
-        return seconds < 0 ? "-" + positive : positive;
-    }
 
 
     public Pane getRoot() {
