@@ -1,4 +1,4 @@
-.associationstablecell {
+.annotable-tablecell {
 
 }
 
@@ -27,23 +27,33 @@
     -fx-background-color: powderblue;
 }
 
-.searchtreecell {
+.concepttree-treecell {
     -fx-background-color: powderblue;
 }
 
-.searchtreecell:selected {
+.concepttree-treecell:selected {
     -fx-text-fill: coral;
 }
 
-.searchtextfield {
+.concepttree-treecell-media {
+    -fx-background-color: lightblue;
+}
+
+.concepttree-treecell-media:selected {
+    -fx-background-color: deepskyblue;
+}
+
+.concepttree-treeview {
+    -fx-padding: 10 5 5 5;
+    -fx-background-color: powderblue;
+}
+
+.concepttree-textfield {
     -fx-padding: 5 10 5 10;
     /*-fx-background-color: cornsilk;*/
 }
 
-.searchtreeview {
-    -fx-padding: 10 5 5 5;
-    -fx-background-color: powderblue;
-}
+
 
 /* For JFXSlider */
 -jfx-indicator-position {

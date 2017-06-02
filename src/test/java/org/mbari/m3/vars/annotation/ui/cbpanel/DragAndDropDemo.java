@@ -11,7 +11,6 @@ import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBConceptService;
 import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBWebServiceFactory;
 import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
-import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneFactory;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -21,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
  * @author Brian Schlining
  * @since 2017-06-01T17:01:00
  */
-public class DragAndDropDemo2 extends Application {
+public class DragAndDropDemo extends Application {
 
     private static CachedConceptService conceptService = new CachedConceptService(
             new KBConceptService(new KBWebServiceFactory("http://m3.shore.mbari.org/kb/v1/")));

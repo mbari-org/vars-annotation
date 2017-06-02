@@ -21,6 +21,9 @@ import java.util.stream.Collectors;
  */
 class TreeCellFactory {
 
+
+    private String styleClassPlain = "concepttree-treecell";
+    private String styleClassWithMedia = "concepttree-treecell-media";
     private final ConceptService conceptService;
 
     TreeCellFactory(ConceptService conceptService) {
@@ -45,7 +48,7 @@ class TreeCellFactory {
                     evt.consume();
                 }
             });
-            getStyleClass().add("searchtreecell");
+            getStyleClass().add(styleClassPlain);
         }
 
         @Override
@@ -91,7 +94,13 @@ class TreeCellFactory {
                 ConceptDetails cd = item.getConceptDetails();
                 if (cd != null) {
                     if (!cd.getMedia().isEmpty()) {
-                        setStyle("-fx-background-color: #E0F7FA");
+                        getStyleClass().removeAll(styleClassPlain);
+                        getStyleClass().addAll(styleClassWithMedia);
+                        //setStyle("-fx-background-color: #E0F7FA");
+                    }
+                    else {
+                        getStyleClass().removeAll(styleClassWithMedia);
+                        getStyleClass().addAll(styleClassPlain);
                     }
                 }
             };

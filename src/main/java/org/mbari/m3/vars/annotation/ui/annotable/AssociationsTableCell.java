@@ -13,6 +13,6 @@ public class AssociationsTableCell<S> extends TableCell<S, Association> {
     private ListView<Association> listView;
 
     public AssociationsTableCell() {
-        getStyleClass().add("associationstablecell");
+        getStyleClass().add("annotable-tablecell");
     }
 }

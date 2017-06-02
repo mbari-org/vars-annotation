@@ -21,7 +21,7 @@ public class TreeViewDemo extends Application {
             new KBConceptService(new KBWebServiceFactory("http://m3.shore.mbari.org/kb/v1/")));
 
 //    private ConceptService conceptService = new KBConceptService("http://m3.shore.mbari.org/kb/v1/");
-    private TreeViewFactory treeViewFactory = new TreeViewFactory(conceptService);
+    private TreeViewController controller = new TreeViewController(conceptService);
 
     public static void main(String[] args) {
         launch(args);
@@ -30,7 +30,7 @@ public class TreeViewDemo extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Platform.setImplicitExit(true);
-        TreeView<Concept> treeView = treeViewFactory.build();
+        TreeView<Concept> treeView = controller.getTreeView();
         Scene scene = new Scene(treeView, 800, 800);
         primaryStage.setScene(scene);
 

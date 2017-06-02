@@ -20,14 +20,14 @@ public class DateTimePickerController {
 
     private final HBox root;
 
-    private final JFXDatePicker datePicker = new JFXDatePicker();
-    private final JFXTimePicker timePicker = new JFXTimePicker();
+    private final JFXDatePicker datePicker = new JFXDatePicker(LocalDate.now());
+    private final JFXTimePicker timePicker = new JFXTimePicker(LocalTime.now());
     private final ReadOnlyObjectWrapper<Instant> timestampProperty  = new ReadOnlyObjectWrapper<>();
 
 
     public DateTimePickerController() {
-        root = new HBox(datePicker, timePicker);
 
+        root = new HBox(datePicker, timePicker);
 
         ObjectBinding<Instant> dateBinding = Bindings.createObjectBinding(
                 this::getTimestamp, datePicker.valueProperty());
@@ -37,10 +37,6 @@ public class DateTimePickerController {
 
         timestampProperty.bind(dateBinding);
         timestampProperty.bind(timeBinding);
-
-        LocalDateTime now = LocalDateTime.now();
-        datePicker.setValue(now.toLocalDate());
-        timePicker.setValue(now.toLocalTime());
 
     }
 
