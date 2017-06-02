@@ -1,99 +1,112 @@
 package org.mbari.m3.vars.annotation.ui.annotable;
 
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 import org.mbari.m3.vars.annotation.FormatUtils;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.vcr4j.time.Timecode;
 
+import javax.inject.Inject;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * @author Brian Schlining
  * @since 2017-05-10T10:04:00
+ *
+ * TODO all strings need to be put in uiBundle
  */
 public class AnnotationTableController {
 
     private TableView<Annotation> tableView;
-    private final TableColumn<Annotation, Instant> timestampCol;
-    private final TableColumn<Annotation, Timecode> timecodeCol;
-    private final TableColumn<Annotation, Duration> elapsedTimeCol;
+    private final ResourceBundle uiBundle;
 
-    public AnnotationTableController() {
-        timestampCol = new TableColumn<>("Recorded Timestamp");
-        timestampCol.setCellValueFactory(new PropertyValueFactory<>("recordedTimestamp"));
-        timecodeCol = new TableColumn<>("Timecode");
-        timecodeCol.setCellValueFactory(new PropertyValueFactory<>("timecode"));
-        elapsedTimeCol = new TableColumn<>("Elapsed Time");
-        elapsedTimeCol.setCellValueFactory(new PropertyValueFactory<>("elapsedTime"));
-        elapsedTimeCol.setCellFactory( c -> new TableCell<Annotation, Duration>() {
-            @Override
-            protected void updateItem(Duration item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setText(null);
-                }
-                else {
-                    setText(FormatUtils.formatDuration(item));
-                }
-            }
-        });
+    @Inject
+    public AnnotationTableController(ResourceBundle uiBundle) {
+        this.uiBundle = uiBundle;
 
-        // TODO this should set the index column based on last used in prefs
-    }
-
-    public enum TimeIndex {
-        TIMESTAMP,
-        TIMECODE,
-        ELAPSED_TIME
+        // TODO this should set the visible columns from prefs
+        // TODO this should save the column order from prefs
     }
 
 
     public TableView<Annotation> getTableView() {
         if (tableView == null) {
             tableView = new TableView<>();
-            // TODO add all columns
+            tableView.setTableMenuButtonVisible(true);
 
-            TableColumn<Annotation, String> obsCol = new TableColumn<>("Observation");
+            // --- Add all columns
+            TableColumn<Annotation, Instant> timestampCol = new TableColumn<>(uiBundle.getString("annotable.col.timestamp"));
+            timestampCol.setCellValueFactory(new PropertyValueFactory<>("recordedTimestamp"));
+
+            TableColumn<Annotation, Timecode> timecodeCol= new TableColumn<>(uiBundle.getString("annotable.col.timecode"));
+            timecodeCol.setCellValueFactory(new PropertyValueFactory<>("timecode"));
+
+            TableColumn<Annotation, Duration> elapsedTimeCol = new TableColumn<>(uiBundle.getString("annotable.col.elapsedtime"));
+            elapsedTimeCol.setCellValueFactory(new PropertyValueFactory<>("elapsedTime"));
+            elapsedTimeCol.setCellFactory( c -> new TableCell<Annotation, Duration>() {
+                @Override
+                protected void updateItem(Duration item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setText(null);
+                    }
+                    else {
+                        setText(FormatUtils.formatDuration(item));
+                    }
+                }
+            });
+
+            TableColumn<Annotation, String> obsCol =
+                    new TableColumn<>(uiBundle.getString("annotable.col.concept"));
             obsCol.setCellValueFactory(new PropertyValueFactory<>("concept"));
 
-            TableColumn<Annotation, List<Association>> assCol = new TableColumn<>("Details");
+            TableColumn<Annotation, List<Association>> assCol =
+                    new TableColumn<>(uiBundle.getString("annotable.col.association"));
             assCol.setCellValueFactory(new PropertyValueFactory<>("associations"));
-            //assCol.setCellFactory(); // TODO add custom renderer to display listview of associations
+            assCol.setSortable(false);
+            assCol.setCellFactory(c -> new AssociationsTableCell());
 
-            //TableColumn<Annotation, >
+            TableColumn<Annotation, FGSValue> fgsCol =
+                    new TableColumn<>(uiBundle.getString("annotable.col.framegrab"));
+            fgsCol.setCellValueFactory(param ->
+                    new SimpleObjectProperty<>(new FGSValue(param.getValue())));
+            fgsCol.setSortable(false);
+            fgsCol.setCellFactory(c -> new TableCell<Annotation, FGSValue>() {
+                @Override
+                protected void updateItem(FGSValue item, boolean empty) {
+                    super.updateItem(item, empty);
+                }
+            });
 
+            TableColumn<Annotation, String> obvCol
+                    = new TableColumn<>(uiBundle.getString("annotable.col.observer"));
+            obvCol.setCellValueFactory(new PropertyValueFactory<>("observer"));
 
-            tableView.getColumns().addAll(elapsedTimeCol);
+            TableColumn<Annotation, String> actCol
+                    = new TableColumn<>(uiBundle.getString("annotable.col.activity"));
+            actCol.setCellValueFactory(new PropertyValueFactory<>("activity"));
+
+            TableColumn<Annotation, String> grpCol
+                    = new TableColumn<>(uiBundle.getString("annotable.col.group"));
+            grpCol.setCellValueFactory(new PropertyValueFactory<>("group"));
+
+            // TODO get index column from preferences
+            tableView.getColumns().addAll(timecodeCol, elapsedTimeCol, timestampCol,
+                    obsCol, assCol, fgsCol, obvCol, actCol, grpCol);
 
         }
         return tableView;
     }
 
-    /**
-     * Sets the index column to whatever teh user specifies. This is the first column
-     * in the table that shows elapsed time, timecode or recorded timestamp.
-     * @param ti
-     */
-    public void setViewIndex(TimeIndex ti) {
-        // TODO show the requested index
-        TableColumn<Annotation, ?> idxCol;
-        switch (ti) {
-            case ELAPSED_TIME:
-                idxCol = elapsedTimeCol;
-                break;
-            case TIMECODE:
-                idxCol = timecodeCol;
-                break;
-            default:
-                idxCol = timestampCol;
-        }
-        getTableView().getColumns().remove(0);
-        getTableView().getColumns().add(0, idxCol);
-    }
 }

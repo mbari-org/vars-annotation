@@ -1,5 +1,33 @@
-.annotable-tablecell {
+.annotable-association-cell {
 
+}
+
+.annotable-fgs-cell {
+
+}
+
+.annotable-sample-active {
+
+}
+
+.annotable-image-active {
+
+}
+
+.icon-inactive {
+    -fx-background-color: lightgray;
+}
+
+.icon-active {
+    -fx-background-color: black;
+}
+
+.icon-error {
+    -fx-background-color: red;
+}
+
+.icon-ok {
+    -fx-background-color: green;
 }
 
 .gridpane {
