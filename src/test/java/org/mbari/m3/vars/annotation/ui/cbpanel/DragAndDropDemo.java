@@ -10,6 +10,7 @@ import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBConceptService;
 import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBWebServiceFactory;
+import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
 import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneFactory;
 
 import java.util.Locale;
@@ -18,9 +19,9 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Brian Schlining
- * @since 2017-05-17T16:03:00
+ * @since 2017-06-01T17:01:00
  */
-public class DragAndDropDemo extends Application {
+public class DragAndDropDemo2 extends Application {
 
     private static CachedConceptService conceptService = new CachedConceptService(
             new KBConceptService(new KBWebServiceFactory("http://m3.shore.mbari.org/kb/v1/")));
@@ -41,8 +42,8 @@ public class DragAndDropDemo extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Platform.setImplicitExit(true);
-        SearchTreePaneFactory paneBuilder = new SearchTreePaneFactory(conceptService, uiBundle);
-        BorderPane node = paneBuilder.build();
+        SearchTreePaneController paneBuilder = new SearchTreePaneController(conceptService, uiBundle);
+        BorderPane node = paneBuilder.getRoot();
         FlowPane pane = new FlowPane();
         pane.setPrefSize(800, 250);
         DragPaneDecorator dragPaneDecorator = new DragPaneDecorator(conceptService, eventBus, uiBundle);
@@ -57,5 +58,4 @@ public class DragAndDropDemo extends Application {
             System.exit(0);
         });
     }
-
 }

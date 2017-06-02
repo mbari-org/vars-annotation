@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.ui;
+package org.mbari.m3.vars.annotation.ui.annotable;
 
 /**
  * @author Brian Schlining
