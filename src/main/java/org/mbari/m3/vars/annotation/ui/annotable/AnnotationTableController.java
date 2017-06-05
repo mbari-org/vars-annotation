@@ -82,12 +82,7 @@ public class AnnotationTableController {
             fgsCol.setCellValueFactory(param ->
                     new SimpleObjectProperty<>(new FGSValue(param.getValue())));
             fgsCol.setSortable(false);
-            fgsCol.setCellFactory(c -> new TableCell<Annotation, FGSValue>() {
-                @Override
-                protected void updateItem(FGSValue item, boolean empty) {
-                    super.updateItem(item, empty);
-                }
-            });
+            fgsCol.setCellFactory(c -> new FGSTableCell());
 
             TableColumn<Annotation, String> obvCol
                     = new TableColumn<>(uiBundle.getString("annotable.col.observer"));
@@ -101,7 +96,7 @@ public class AnnotationTableController {
                     = new TableColumn<>(uiBundle.getString("annotable.col.group"));
             grpCol.setCellValueFactory(new PropertyValueFactory<>("group"));
 
-            // TODO get index column from preferences
+            // TODO get column order from preferences
             tableView.getColumns().addAll(timecodeCol, elapsedTimeCol, timestampCol,
                     obsCol, assCol, fgsCol, obvCol, actCol, grpCol);
 

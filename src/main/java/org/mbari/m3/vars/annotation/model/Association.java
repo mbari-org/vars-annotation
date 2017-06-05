@@ -49,5 +49,8 @@ public class Association {
         return mimeType;
     }
 
-
+    @Override
+    public String toString() {
+        return linkName + " | "  + toConcept + " | " + linkValue;
+    }
 }

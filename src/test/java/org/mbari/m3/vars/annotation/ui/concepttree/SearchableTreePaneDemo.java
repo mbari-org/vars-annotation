@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBConceptService;
 import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBWebServiceFactory;
+import org.mbari.m3.vars.annotation.ui.DemoConstants;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -19,11 +20,8 @@ import java.util.concurrent.CompletableFuture;
  */
 public class SearchableTreePaneDemo extends Application {
 
-    private static CachedConceptService conceptService = new CachedConceptService(
-            new KBConceptService(new KBWebServiceFactory("http://m3.shore.mbari.org/kb/v1/")));
-
-    private static ResourceBundle uiBundle = ResourceBundle.getBundle("UIBundle",
-            Locale.getDefault());
+    private static CachedConceptService conceptService = DemoConstants.newConceptService();
+    private static ResourceBundle uiBundle = DemoConstants.UI_BUNDLE;
 
     public static void main(String[] args) throws InterruptedException {
         CompletableFuture<Void> f = conceptService.prefetch();

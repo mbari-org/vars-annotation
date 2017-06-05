@@ -3,20 +3,9 @@
 }
 
 .annotable-fgs-cell {
-
-}
-
-.annotable-sample-active {
-
-}
-
-.annotable-image-active {
-
-}
-
-.icon-inactive {
     -fx-background-color: lightgray;
 }
+
 
 .icon-active {
     -fx-background-color: black;
@@ -79,6 +68,19 @@
 .concepttree-textfield {
     -fx-padding: 5 10 5 10;
     /*-fx-background-color: cornsilk;*/
+}
+
+.list-cell:empty {
+    -fx-opacity: 0;
+}
+
+
+.table-row-cell:empty {
+    -fx-background-color: lightyellow;
+}
+
+.table-row-cell:empty .table-cell {
+    -fx-border-width: 0px;
 }
 
 

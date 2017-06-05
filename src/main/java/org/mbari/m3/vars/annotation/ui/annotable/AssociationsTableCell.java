@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.ui.annotable;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
@@ -26,11 +27,13 @@ public class AssociationsTableCell extends TableCell<Annotation, List<Associatio
         if (item  == null || empty) {
             setText(null);
             listView.setItems(FXCollections.emptyObservableList());
-            setGraphic(listView);
+            listView.setPrefSize(listView.getWidth(), 0);
+            setGraphic(null);
         }
         else {
             setText(null);
             listView.setItems(FXCollections.observableArrayList(item));
+            listView.setPrefSize(listView.getWidth(), item.size() * 24 + 24);
             setGraphic(listView);
         }
     }

@@ -73,37 +73,37 @@ public class MediaPaneController {
         camerIdTextField.setText(media.getCameraId());
         videoSequenceNameTextField.setText(media.getVideoSequenceName());
         videoNameTextField.setText(media.getVideoName());
-        String st = (media.getStartTimestamp() == null) ? "" : media.getStartTimestamp().toString();
+        String st = (media.getStartTimestamp() == null) ? null : media.getStartTimestamp().toString();
         startTimestampTextField.setText(st);
-        String uri = (media.getUri() == null) ? "" : media.getUri().toString();
+        String uri = (media.getUri() == null) ? null : media.getUri().toString();
         uriTextField.setText(uri);
         containerTextField.setText(media.getContainer());
-        String size = (media.getSizeBytes() == null) ? "" : FormatUtils.formatSizeBytes(media.getSizeBytes());
+        String size = (media.getSizeBytes() == null) ? null : FormatUtils.formatSizeBytes(media.getSizeBytes());
         videoSizeTextField.setText(size);
-        String dims = (media.getWidth() == null || media.getHeight() == null) ? "" :
+        String dims = (media.getWidth() == null || media.getHeight() == null) ? null :
                 media.getWidth() + " x " + media.getHeight();
         videoDimensionTextField.setText(dims);
-        String fr = (media.getFrameRate() == null) ? "" : media.getFrameRate().toString();
+        String fr = (media.getFrameRate() == null) ? null : media.getFrameRate().toString();
         frameRateTextField.setText(fr);
-        String et = (media.getStartTimestamp() == null || media.getDuration() == null) ? "" :
+        String et = (media.getStartTimestamp() == null || media.getDuration() == null) ? null :
                 media.getStartTimestamp().plus(media.getDuration()).toString();
         endTimestampTextField.setText(et);
-        String duration = (media.getDuration() == null) ? "" : FormatUtils.formatDuration(media.getDuration());
+        String duration = (media.getDuration() == null) ? null : FormatUtils.formatDuration(media.getDuration());
         durationTextField.setText(duration);
     }
 
     private void resetView() {
-        camerIdTextField.setText("");
-        videoSequenceNameTextField.setText("");
-        videoNameTextField.setText("");
-        startTimestampTextField.setText("");
-        uriTextField.setText("");
-        containerTextField.setText("");
-        videoSizeTextField.setText("");
-        videoDimensionTextField.setText("");
-        frameRateTextField.setText("");
-        endTimestampTextField.setText("");
-        durationTextField.setText("");
+        camerIdTextField.setText(null);
+        videoSequenceNameTextField.setText(null);
+        videoNameTextField.setText(null);
+        startTimestampTextField.setText(null);
+        uriTextField.setText(null);
+        containerTextField.setText(null);
+        videoSizeTextField.setText(null);
+        videoDimensionTextField.setText(null);
+        frameRateTextField.setText(null);
+        endTimestampTextField.setText(null);
+        durationTextField.setText(null);
     }
 
 

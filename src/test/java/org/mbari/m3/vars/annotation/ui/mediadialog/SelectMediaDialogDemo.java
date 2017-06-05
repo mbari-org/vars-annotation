@@ -15,6 +15,7 @@ import org.mbari.m3.vars.annotation.services.BasicJWTAuthService;
 import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.m3.vars.annotation.services.vampiresquid.v1.VamService;
 import org.mbari.m3.vars.annotation.services.vampiresquid.v1.VamWebServiceFactory;
+import org.mbari.m3.vars.annotation.ui.DemoConstants;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -26,8 +27,7 @@ import java.util.ResourceBundle;
  */
 public class SelectMediaDialogDemo extends Application {
 
-    private static ResourceBundle uiBundle = ResourceBundle.getBundle("UIBundle",
-            Locale.getDefault());
+    private static ResourceBundle uiBundle = DemoConstants.UI_BUNDLE;
 
     public static void main(String[] args) {
         launch(args);
@@ -35,10 +35,7 @@ public class SelectMediaDialogDemo extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Authorization auth = new Authorization("BEARER", "foo");
-        VamWebServiceFactory factory = new VamWebServiceFactory("http://m3.shore.mbari.org/vam/v1");
-        MediaService mediaService = new VamService(factory,
-                new BasicJWTAuthService(factory, auth));
+        MediaService mediaService = DemoConstants.newMediaService();
 
         Label label = new Label();
         Button button = new JFXButton("Browse");
