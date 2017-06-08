@@ -12,6 +12,14 @@ public class User {
     private String affiliation;
     private String email;
 
+    public User(String userName, String firstName, String lastName, String affiliation, String email) {
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.affiliation = affiliation;
+        this.email = email;
+    }
+
     public String getUserName() {
         return userName;
     }

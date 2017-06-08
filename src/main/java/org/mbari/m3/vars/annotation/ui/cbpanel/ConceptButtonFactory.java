@@ -34,7 +34,7 @@ public class ConceptButtonFactory {
     public Button build(String name) {
 
         Button button = new JFXButton(name);
-        button.getStyleClass().add("conceptbutton");
+        button.getStyleClass().add("cbpanel-button");
         button.setOnAction(event ->
             eventBus.send(new CreateAnnotation(button.getText())));
 

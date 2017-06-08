@@ -20,6 +20,13 @@ public class Association {
         this.mimeType = mimeType;
     }
 
+    public Association(String linkName, String toConcept, String linkValue) {
+        this.linkName = linkName;
+        this.toConcept = toConcept;
+        this.linkValue = linkValue;
+        this.mimeType = "text/plain";
+    }
+
     public Association(String linkName, String toConcept, String linkValue, String mimeType, UUID uuid) {
         this.linkName = linkName;
         this.toConcept = toConcept;

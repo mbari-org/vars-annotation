@@ -1,31 +1,27 @@
+
+
 .annotable-association-cell {
 
 }
 
-.annotable-fgs-cell {
-    -fx-background-color: lightgray;
+.annotable-association-cell:empty {
+    -fx-opacity: 0;
+}
+
+/* Hide the scroll bars in the association list in the annotation table */
+.annotable-association-cell .scroll-bar:vertical .increment-arrow,
+.annotable-association-cell .scroll-bar:vertical .decrement-arrow,
+.annotable-association-cell .scroll-bar:vertical .increment-button,
+.annotable-association-cell .scroll-bar:vertical .decrement-button,
+.annotable-association-cell .scroll-bar:horizontal .increment-arrow,
+.annotable-association-cell .scroll-bar:horizontal .decrement-arrow,
+.annotable-association-cell .scroll-bar:horizontal .increment-button,
+.annotable-association-cell .scroll-bar:horizontal .decrement-button {
+    -fx-padding:0;
 }
 
 
-.icon-active {
-    -fx-background-color: black;
-}
-
-.icon-error {
-    -fx-background-color: red;
-}
-
-.icon-ok {
-    -fx-background-color: green;
-}
-
-.gridpane {
-    -fx-hgap: 5;
-    -fx-vgap: 5;
-    -fx-padding: 10 10 10 10;
-}
-
-.conceptbutton {
+.cbpanel-button {
     /*-fx-padding: 0.7em 0.57em;*/
     -fx-font-size: 14px;
     /*-jfx-button-type: RAISED;*/
@@ -35,22 +31,16 @@
     -fx-background-color: powderblue;
 }
 
-.conceptbutton:hover {
+.cbpanel-button:hover {
     -fx-font-style: italic;
     -fx-background-color: burlywood;
 }
 
-.root {
-    -fx-background-color: powderblue;
-}
 
 .concepttree-treecell {
     -fx-background-color: powderblue;
 }
 
-.concepttree-treecell:selected {
-    -fx-text-fill: coral;
-}
 
 .concepttree-treecell-media {
     -fx-background-color: lightblue;
@@ -58,6 +48,10 @@
 
 .concepttree-treecell-media:selected {
     -fx-background-color: deepskyblue;
+}
+
+.concepttree-treecell:selected {
+    -fx-text-fill: coral;
 }
 
 .concepttree-treeview {
@@ -70,24 +64,58 @@
     /*-fx-background-color: cornsilk;*/
 }
 
-.list-cell:empty {
-    -fx-opacity: 0;
+.icon-active {
+    -fx-background-color: black;
+}
+
+.icon-active-image {
+    -fx-fill: green;
+}
+
+.icon-active-sample {
+    -fx-fill: blue;
+}
+
+.icon-inactive {
+    -fx-fill: lightgray;
+}
+
+.icon-error {
+    -fx-background-color: red;
+}
+
+.icon-ok {
+    -fx-background-color: green;
 }
 
 
+
+.gridpane {
+    -fx-hgap: 5;
+    -fx-vgap: 5;
+    -fx-padding: 10 10 10 10;
+}
+
+/* Hide empty lists
+.list-cell:empty {
+    -fx-opacity: 0;
+} */
+
+
+.root {
+    -fx-background-color: powderblue;
+}
+
+
+
+/* Set background color of empty rows */
 .table-row-cell:empty {
     -fx-background-color: lightyellow;
 }
 
+/* Hide empty rows */
 .table-row-cell:empty .table-cell {
     -fx-border-width: 0px;
-}
-
-
-
-/* For JFXSlider */
--jfx-indicator-position {
-
 }
 
 .vars-dialog-label {
@@ -97,3 +125,12 @@
 .vars-dialog-textfield {
 
 }
+
+
+
+/* For JFXSlider */
+-jfx-indicator-position {
+
+}
+
+

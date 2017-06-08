@@ -19,6 +19,7 @@ public class AssociationsTableCell extends TableCell<Annotation, List<Associatio
 
     public AssociationsTableCell() {
         getStyleClass().add("annotable-association-cell");
+        listView.setEditable(false);
     }
 
     @Override
@@ -33,7 +34,7 @@ public class AssociationsTableCell extends TableCell<Annotation, List<Associatio
         else {
             setText(null);
             listView.setItems(FXCollections.observableArrayList(item));
-            listView.setPrefSize(listView.getWidth(), item.size() * 24 + 24);
+            listView.setPrefSize(listView.getWidth(), item.size() * 26);
             setGraphic(listView);
         }
     }

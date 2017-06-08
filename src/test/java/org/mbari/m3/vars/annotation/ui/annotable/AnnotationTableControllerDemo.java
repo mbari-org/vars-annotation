@@ -18,6 +18,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Brian Schlining
@@ -64,17 +65,17 @@ public class AnnotationTableControllerDemo extends Application {
         a2.setConcept("Pandalus platyceros");
         a2.setObserver("schlin");
         as.add(a2);
-        Association a = new Association("sampled-by", "big arm", "nil", "text/plain");
+        Association a = new Association("sampled-by", "big arm", "nil");
         List<Association> ass = new ArrayList<>();
         ass.add(a);
         a2.setAssociations(ass);
 
         Annotation ann3 = new Annotation();
         ann3.setRecordedTimestamp(Instant.now());
-        ann3.setConcept("Pandalus platyceros");
+        ann3.setConcept("Grimpoteuthis");
         ann3.setObserver("schlin");
         as.add(ann3);
-        Association a3 = new Association("sampled-by", "big arm", "nil", "text/plain");
+        Association a3 = new Association("sampled-by", "big arm", "nil");
         List<Association> ass3 = new ArrayList<>();
         ass3.add(a3);
         ann3.setAssociations(ass3);
@@ -88,6 +89,18 @@ public class AnnotationTableControllerDemo extends Application {
         catch (MalformedURLException e) {
             e.printStackTrace();
         }
+
+        Annotation ann4 = new Annotation();
+        ann4.setElapsedTime(Duration.ofMillis(1111));
+        ann4.setConcept("Raja");
+        ann4.setObserver("brian");
+        Association a4a = new Association("eating", UUID.randomUUID().toString(), "nil");
+        Association a4b = new Association("swimming", "self", "nil");
+        Association a4c = new Association("surface-color", "self", "red");
+        List<Association> ass4 = new ArrayList<>();
+        ann4.setAssociations(Lists.newArrayList(a4a, a4b, a4c));
+        as.add(ann4);
+
 
         return as;
     }

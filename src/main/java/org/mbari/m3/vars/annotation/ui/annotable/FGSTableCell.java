@@ -33,17 +33,23 @@ public class FGSTableCell extends TableCell<Annotation, FGSValue> {
     protected void updateItem(FGSValue item, boolean empty) {
         super.updateItem(item, empty);
         setText(null);
+        graphic.getChildren().remove(imageIcon);
+        graphic.getChildren().remove(sampleIcon);
         if (empty) {
-            graphic.getChildren().remove(imageIcon);
-            graphic.getChildren().remove(sampleIcon);
-
+            // Do nothing
         }
         else {
             graphic.getChildren().addAll(imageIcon, sampleIcon);
-            Color image = (item == null || !item.hasImage()) ? Color.LIGHTGRAY : Color.GREEN;
-            Color sample = (item == null || !item.hasSample()) ? Color.LIGHTGRAY : Color.BLUE;
-            imageIcon.setFill(image);
-            sampleIcon.setFill(sample);
+//            Color image = (item == null || !item.hasImage()) ? Color.LIGHTGRAY : Color.GREEN;
+//            Color sample = (item == null || !item.hasSample()) ? Color.LIGHTGRAY : Color.BLUE;
+//            imageIcon.setFill(image);
+//            sampleIcon.setFill(sample);
+            String imageStyle = (item == null || !item.hasImage()) ? "icon-inactive" : "icon-active-image";
+            String sampleStyle = (item == null || !item.hasSample()) ? "icon-inactive" : "icon-active-sample";
+            sampleIcon.getStyleClass().remove(0);
+            sampleIcon.getStyleClass().add(sampleStyle);
+            imageIcon.getStyleClass().remove(0);
+            imageIcon.getStyleClass().add(imageStyle);
         }
     }
 }
