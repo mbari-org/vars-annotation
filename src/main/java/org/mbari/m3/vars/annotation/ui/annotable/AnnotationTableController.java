@@ -1,15 +1,13 @@
 package org.mbari.m3.vars.annotation.ui.annotable;
 
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Callback;
-import org.mbari.m3.vars.annotation.FormatUtils;
+import org.mbari.m3.vars.annotation.EventBus;
+import org.mbari.m3.vars.annotation.util.FormatUtils;
+import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.vcr4j.time.Timecode;
@@ -30,10 +28,12 @@ public class AnnotationTableController {
 
     private TableView<Annotation> tableView;
     private final ResourceBundle uiBundle;
+    private final EventBus eventBus;
 
     @Inject
-    public AnnotationTableController(ResourceBundle uiBundle) {
-        this.uiBundle = uiBundle;
+    public AnnotationTableController(UIToolBox toolBox) {
+        this.uiBundle = toolBox.getI18nBundle();
+        this.eventBus = toolBox.getEventBus();
 
         // TODO this should set the visible columns from prefs
         // TODO this should save the column order from prefs

@@ -18,7 +18,7 @@ public interface UserWebService {
 
     @FormUrlEncoded
     @POST("users")
-    Call<Void> create(@Field("username") String username,
+    Call<User> create(@Field("username") String username,
                       @Field("password") String password,
                       @Field("role") String role,
                       @Field("first_name") String firstName,
@@ -31,4 +31,6 @@ public interface UserWebService {
     Call<User> update(@Path("name") String username,
                       @FieldMap Map<String, String> fields,
                       @HeaderMap Map<String, String> headers);
+
+
 }

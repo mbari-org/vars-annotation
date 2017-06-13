@@ -29,4 +29,15 @@ public interface PrefWebService {
                                 @Field("key") String key,
                                 @Field("value") String value,
                                 @HeaderMap Map<String, String> headers);
+
+    @FormUrlEncoded
+    @PUT("prefs/{name}/{key}")
+    Call<PreferenceNode> update(@Path("name") String name,
+                                @Path("key") String key,
+                                String value,
+                                @HeaderMap Map<String, String> headers);
+
+    @DELETE("prefs/{name/{key}")
+    Call<Void> delete(@Path("name") String name,
+                                @Path("key") String key);
 }

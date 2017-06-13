@@ -6,6 +6,8 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.mbari.m3.vars.annotation.EventBus;
+import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.ImageReference;
@@ -32,10 +34,12 @@ public class AnnotationTableControllerDemo extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        AnnotationTableController controller = new AnnotationTableController(DemoConstants.UI_BUNDLE);
+        UIToolBox toolBox = DemoConstants.getToolBox();
+        AnnotationTableController controller = new AnnotationTableController(toolBox);
 
         Scene scene = new Scene(controller.getTableView());
-        scene.getStylesheets().add("/application.css");
+        scene.getStylesheets().add("/css/common.css");
+        scene.getStylesheets().add("/css/annotable.css");
 
         primaryStage.setScene(scene);
         primaryStage.show();

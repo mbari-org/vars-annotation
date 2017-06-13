@@ -8,12 +8,9 @@ import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.services.CachedConceptService;
-import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBConceptService;
-import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBWebServiceFactory;
 import org.mbari.m3.vars.annotation.ui.DemoConstants;
 import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
@@ -46,7 +43,7 @@ public class DragAndDropDemo extends Application {
         dragPaneDecorator.decorate(pane);
         node.setBottom(pane);
         Scene scene = new Scene(node, 800, 800);
-        scene.getStylesheets().add("/application.css");
+        scene.getStylesheets().add("/css/common.css");
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {

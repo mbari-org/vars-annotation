@@ -16,13 +16,11 @@ package org.mbari.m3.vars.annotation.ui.mediadialog;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-import org.mbari.m3.vars.annotation.FormatUtils;
+import org.mbari.m3.vars.annotation.util.FormatUtils;
 import org.mbari.m3.vars.annotation.model.Media;
 
-import java.time.Duration;
 import java.util.ResourceBundle;
 
 /**

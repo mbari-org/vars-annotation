@@ -15,7 +15,7 @@ public interface RetrofitWebService {
 
     /**
      * Wraps a retrofit call with a CompletableFuture and does an async request using
-     * the Call object. This keeps us from poluting the code base with retrofit specific
+     * the Call object. This keeps us from polluting the code base with retrofit specific
      * code.
      * @param call
      * @param <T>

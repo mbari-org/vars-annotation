@@ -11,9 +11,14 @@ public class User {
     private String lastName;
     private String affiliation;
     private String email;
+    private String password;
+    private String rold;
 
-    public User(String userName, String firstName, String lastName, String affiliation, String email) {
+
+    public User(String userName, String password, String role, String firstName, String lastName, String affiliation, String email) {
         this.userName = userName;
+        this.password = password;
+        this.rold = role;
         this.firstName = firstName;
         this.lastName = lastName;
         this.affiliation = affiliation;
@@ -38,5 +43,41 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getRold() {
+        return rold;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setAffiliation(String affiliation) {
+        this.affiliation = affiliation;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRold(String rold) {
+        this.rold = rold;
     }
 }

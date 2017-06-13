@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation;
+package org.mbari.m3.vars.annotation.util;
 
 import java.time.Duration;
 

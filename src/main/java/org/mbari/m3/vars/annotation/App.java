@@ -1,13 +1,24 @@
 package org.mbari.m3.vars.annotation;
 
+import com.google.common.collect.Lists;
+import com.typesafe.config.ConfigFactory;
 import javafx.application.Application;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
-import javafx.scene.paint.Color;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+
 import javafx.stage.Stage;
+import org.mbari.m3.vars.annotation.util.ActiveAppBeacon;
+import org.mbari.m3.vars.annotation.util.ActiveAppPinger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Hello world!
@@ -15,44 +26,69 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
+    private UIToolBox toolBox;
+
+    public static final Collection<Integer> BEACON_PORTS = Lists.newArrayList(4002, 4121, 5097, 6238, 6609,
+            7407, 8169, 9069, 9669, 16569);
+    public static final String BEACON_MESSAGE = "VARS Annotation (M3)";
+    private static ActiveAppBeacon activeAppBeacon;
+    private static Path settingsDirectory;
+    private static Logger log;
+    private AppController appController;
+
     public static void main(String[] args) {
         System.getProperties().setProperty("user.timezone", "UTC");
+        log = LoggerFactory.getLogger(App.class);
+        //Log uncaught Exceptions
+        Thread.setDefaultUncaughtExceptionHandler((thread, ex) -> {
+            log.error("Exception in thread [" + thread.getName() + "]", ex);
+        });
+
         launch(args);
+    }
+
+
+    @Override
+    public void init() throws Exception {
+        super.init();
+        toolBox = new UIToolBox(new AppState(Constants.getSettingsDirectory()),
+                new EventBus(),
+                ResourceBundle.getBundle("i18n", Locale.getDefault()),
+                ConfigFactory.load());
+        appController = new AppController(toolBox);
+
+        // TODO initialize appState properties
     }
 
     @Override
     public void start(final Stage primaryStage) throws Exception {
 
-        primaryStage.setTitle(getClass().getSimpleName());
-        Group root = new Group();
-        Scene scene = new Scene(root, 400, 400, Color.CORAL);
+        if (ActiveAppPinger.pingAll(BEACON_PORTS, BEACON_MESSAGE)) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("VARS Information");
+            alert.setHeaderText("VARS is already running");
+            alert.setContentText("An instance of VARS is already running. Exiting ...");
+            alert.showAndWait();
+            Platform.exit();
+            System.exit(0);
+        }
+        else if (Constants.getSettingsDirectory() == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("VARS Error");
+            alert.setHeaderText("Unable to create a settings directory ");
+            alert.setContentText("VARS failed to create a directory for writing temporary information.");
+            alert.showAndWait();
+            Platform.exit();
+            System.exit(-1);
+        }
+        else {
+            activeAppBeacon = new ActiveAppBeacon(BEACON_PORTS, BEACON_MESSAGE);
+        }
 
-        // -- 1. A MediaView is used to display the video
-        MediaView mediaView = new MediaView();
-        root.getChildren().add(mediaView);
-
-        // -- 2. A media object is a reference to a video or audio file
-        final Media media = new Media("http://download.oracle.com/otndocs/products/javafx/oow2010-2.flv");
-
-
-        // -- 3. A MediaPlayer allows the mediaview to play the video
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setAutoPlay(true);
-        mediaView.setMediaPlayer(mediaPlayer);
-
-        // -- 4. The movie is loaded asynchronously (i.e. in a different thread). It takes a moment before
-        // it is ready to be played. This call back will set the size of the window to match the video size
-        // when enough information has been loaded to determine the movie size.
-        mediaPlayer.setOnReady(new Runnable() {
-            @Override
-            public void run() {
-                primaryStage.setWidth(media.getWidth());
-                primaryStage.setHeight(media.getHeight());
-            }
-        });
-
-
-        primaryStage.setScene(scene);
+        primaryStage.setScene(appController.getScene());
         primaryStage.show();
     }
+
+
+
 }

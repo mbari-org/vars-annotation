@@ -50,6 +50,6 @@
         <TextField fx:id="durationTextField" styleClass="vars-dialog-textfield" GridPane.columnIndex="1" GridPane.rowIndex="5" />
     </children>
     <stylesheets>
-        <URL value="@../application.css" />
+        <URL value="@../css/common.css" />
     </stylesheets>
 </GridPane>

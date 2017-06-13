@@ -148,6 +148,11 @@
       <artifactId>guava</artifactId>
       <version>20.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.anchorfx</groupId>
+      <artifactId>anchorfx</artifactId>
+      <version>0.1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
   <!-- The build plugins below perform the following steps:

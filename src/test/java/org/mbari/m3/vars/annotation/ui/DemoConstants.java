@@ -1,6 +1,8 @@
 package org.mbari.m3.vars.annotation.ui;
 
+import org.mbari.m3.vars.annotation.Constants;
 import org.mbari.m3.vars.annotation.EventBus;
+import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Authorization;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.BasicJWTAuthService;
@@ -27,13 +29,16 @@ public class DemoConstants {
     public static final String MEDIA_ENDPOINT = "http://m3.shore.mbari.org/vam/v1";
     public static final String ANNOTATION_ENDPOINT = "http://m3.shore.mbari.org/anno/v1";
 
+    private static final UIToolBox toolBox = Constants.getToolBox();
 
     private static CachedConceptService conceptService;
-    public static EventBus EVENT_BUS = new EventBus();
+    public static EventBus EVENT_BUS = toolBox.getEventBus();
 
-    public static ResourceBundle UI_BUNDLE = ResourceBundle.getBundle("UIBundle",
-            Locale.getDefault());
+    public static ResourceBundle UI_BUNDLE = toolBox.getI18nBundle();
 
+    public static UIToolBox getToolBox() {
+        return toolBox;
+    }
 
     public static final CachedConceptService newConceptService() {
         if (conceptService == null) {

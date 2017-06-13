@@ -57,7 +57,8 @@ public class FGSTableCell extends TableCell<Annotation, FGSValue> {
 class FGSValue {
 
     private final Annotation annotation;
-    private static final List<String> sampleKeys = Constants.CONFIG
+    private static final List<String> sampleKeys = Constants.getToolBox()
+            .getConfig()
             .getStringList("app.annotation.sample.linknames");
 
     FGSValue(Annotation annotation) {

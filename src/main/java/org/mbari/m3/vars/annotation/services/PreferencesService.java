@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
  * @since 2017-06-08T16:25:00
  */
 public interface PreferencesService {
-    CompletableFuture<Void> create(PreferenceNode node);
+    CompletableFuture<PreferenceNode> create(PreferenceNode node);
     CompletableFuture<Optional<PreferenceNode>> update(PreferenceNode node);
     CompletableFuture<Void> delete(PreferenceNode node);
     CompletableFuture<List<PreferenceNode>> findByName(String nodeName);
