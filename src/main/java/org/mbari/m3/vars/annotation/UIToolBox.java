@@ -14,14 +14,17 @@ public class UIToolBox {
     private final EventBus eventBus;
     private final ResourceBundle i18nBundle;
     private final Config config;
-    private final AppState appState;
+    private final Data data;
+    private final Services services;
 
     @Inject
-    public UIToolBox(AppState appState,
+    public UIToolBox(Data data,
+                     Services services,
                      EventBus eventBus,
                      ResourceBundle i18nBundle,
                      Config config) {
-        this.appState = appState;
+        this.data = data;
+        this.services = services;
         this.eventBus = eventBus;
         this.i18nBundle = i18nBundle;
         this.config = config;
@@ -39,7 +42,11 @@ public class UIToolBox {
         return config;
     }
 
-    public AppState getAppState() {
-        return appState;
+    public Data getData() {
+        return data;
+    }
+
+    public Services getServices() {
+        return services;
     }
 }

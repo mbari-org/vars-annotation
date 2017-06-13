@@ -10,8 +10,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.services.ConceptService;
-import org.mbari.m3.vars.annotation.ui.shared.FilterableTreeItem;
-import org.mbari.m3.vars.annotation.ui.shared.TreeItemPredicate;
 
 
 import java.util.ResourceBundle;

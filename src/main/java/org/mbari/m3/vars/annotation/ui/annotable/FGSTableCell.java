@@ -3,12 +3,10 @@ package org.mbari.m3.vars.annotation.ui.annotable;
 import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
-import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import org.mbari.m3.vars.annotation.Constants;
+import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.model.Annotation;
 
 import java.util.List;
@@ -57,7 +55,7 @@ public class FGSTableCell extends TableCell<Annotation, FGSValue> {
 class FGSValue {
 
     private final Annotation annotation;
-    private static final List<String> sampleKeys = Constants.getToolBox()
+    private static final List<String> sampleKeys = Initializer.getToolBox()
             .getConfig()
             .getStringList("app.annotation.sample.linknames");
 

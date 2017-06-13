@@ -4,6 +4,7 @@ import org.mbari.m3.vars.annotation.model.Authorization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class BasicJWTAuthService implements AuthService {
     private final Authorization clientSecret;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Named
+    @Inject
     public BasicJWTAuthService(RetrofitServiceFactory serviceFactory, Authorization clientSecret) {
         service = serviceFactory.create(BasicJWTAuthWebService.class);
         this.clientSecret = clientSecret;

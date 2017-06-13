@@ -21,6 +21,7 @@ public abstract class RetrofitServiceFactory {
     private final Retrofit.Builder retrofitBuilder;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+
     public RetrofitServiceFactory(String endpoint) {
         String correctedEndpoint = (endpoint.endsWith("/")) ? endpoint : endpoint + "/";
 

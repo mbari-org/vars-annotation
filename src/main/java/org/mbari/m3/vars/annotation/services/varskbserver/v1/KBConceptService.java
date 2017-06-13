@@ -15,6 +15,7 @@ import org.mbari.vcr4j.time.Timecode;
 import retrofit2.*;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import javax.inject.Inject;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,7 @@ public class KBConceptService implements ConceptService, RetrofitWebService {
     /** Underlying retrofit API service */
     private final KBWebService service;
 
+    @Inject
     public KBConceptService(KBWebServiceFactory serviceFactory) {
         service = serviceFactory.create(KBWebService.class);
     }

@@ -1,13 +1,12 @@
 package org.mbari.m3.vars.annotation.ui;
 
-import org.mbari.m3.vars.annotation.Constants;
+import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Authorization;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.BasicJWTAuthService;
 import org.mbari.m3.vars.annotation.services.CachedConceptService;
-import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoService;
 import org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoWebServiceFactory;
@@ -16,7 +15,6 @@ import org.mbari.m3.vars.annotation.services.vampiresquid.v1.VamWebServiceFactor
 import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBConceptService;
 import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBWebServiceFactory;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -29,7 +27,7 @@ public class DemoConstants {
     public static final String MEDIA_ENDPOINT = "http://m3.shore.mbari.org/vam/v1";
     public static final String ANNOTATION_ENDPOINT = "http://m3.shore.mbari.org/anno/v1";
 
-    private static final UIToolBox toolBox = Constants.getToolBox();
+    private static final UIToolBox toolBox = Initializer.getToolBox();
 
     private static CachedConceptService conceptService;
     public static EventBus EVENT_BUS = toolBox.getEventBus();

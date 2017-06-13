@@ -6,6 +6,7 @@ import org.mbari.m3.vars.annotation.services.PreferencesService;
 import org.mbari.m3.vars.annotation.services.RetrofitWebService;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class KBPrefService implements PreferencesService, RetrofitWebService {
     private final Map<String, String> defaultHeaders;
 
     @Inject
-    public KBPrefService(KBMiscServiceFactory serviceFactory, AuthService authService) {
+    public KBPrefService(KBMiscServiceFactory serviceFactory, @Named("PREFS_AUTH") AuthService authService) {
         prefService = serviceFactory.create(PrefWebService.class, authService);
         defaultHeaders = new HashMap<>();
         defaultHeaders.put("Accept", "application/json");

@@ -10,6 +10,7 @@ import org.mbari.m3.vars.annotation.services.RetrofitWebService;
 import retrofit2.Call;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -26,7 +27,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     private final Map<String, String> defaultHeaders;
 
     @Inject
-    public AnnoService(AnnoWebServiceFactory serviceFactory, AuthService authService) {
+    public AnnoService(AnnoWebServiceFactory serviceFactory, @Named("ANNO_AUTH") AuthService authService) {
         annoService = serviceFactory.create(AnnoWebService.class, authService);
         assService = serviceFactory.create(AssociationWebService.class, authService);
         imageService = serviceFactory.create(ImageWebService.class, authService);

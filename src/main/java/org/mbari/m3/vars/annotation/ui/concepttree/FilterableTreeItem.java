@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.ui.shared;
+package org.mbari.m3.vars.annotation.ui.concepttree;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;

@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.ui.shared;
+package org.mbari.m3.vars.annotation.util;
 
 import org.mbari.m3.vars.annotation.model.PreferenceNode;
 import org.mbari.m3.vars.annotation.services.PreferencesService;

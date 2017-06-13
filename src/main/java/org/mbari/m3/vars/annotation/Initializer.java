@@ -1,7 +1,9 @@
 package org.mbari.m3.vars.annotation;
 
+import com.google.inject.Injector;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -15,24 +17,30 @@ import java.util.ResourceBundle;
  * @author Brian Schlining
  * @since 2017-05-15T10:52:00
  */
-public class Constants {
+public class Initializer {
 
-    private static final Config CONFIG = ConfigFactory.load();
-
-    private static final ResourceBundle I18N_BUNDLE = ResourceBundle.getBundle("i18n",
-            Locale.getDefault());
+    public static final Config CONFIG = ConfigFactory.load();
 
     private static Path settingsDirectory;
+    private static Injector injector;
 
-    private static final EventBus EVENT_BUS = new EventBus();
-
-    private static final AppState APP_STATE = new AppState(getSettingsDirectory());
-
-    private static final UIToolBox TOOL_BOX = new UIToolBox(APP_STATE, EVENT_BUS, I18N_BUNDLE, CONFIG);
+    private static UIToolBox toolBox;
 
     public static UIToolBox getToolBox() {
-        return TOOL_BOX;
+        if (toolBox == null) {
+            Services services = getInjector().getInstance(Services.class);
+            ResourceBundle bundle = ResourceBundle.getBundle("i18n",
+                    Locale.getDefault());
+            toolBox = new UIToolBox(new Data(),
+                    services,
+                    new EventBus(),
+                    bundle,
+                    CONFIG);
+        }
+        return toolBox;
     }
+
+    private static final Logger log = LoggerFactory.getLogger(Initializer.class);
 
     /**
      * The settingsDirectory is scratch space for VARS
@@ -55,12 +63,25 @@ public class Constants {
                 }
                 catch (IOException e) {
                     String msg = "Unable to create a setting directory at " + settingsDirectory + ".";
-                    LoggerFactory.getLogger(Constants.class).error(msg, e);
+                    LoggerFactory.getLogger(Initializer.class).error(msg, e);
                     settingsDirectory = null;
                 }
             }
         }
         return settingsDirectory;
+    }
+
+    public static Injector getInjector() {
+        if (injector == null) {
+            String moduleName = CONFIG.getString("app.injector.module.class");
+            try {
+                Class clazz = Class.forName(moduleName);
+                injector = (Injector) clazz.newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to create dependency injector", e);
+            }
+        }
+        return injector;
     }
 
 

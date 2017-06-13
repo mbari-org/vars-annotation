@@ -1,10 +1,12 @@
 package org.mbari.m3.vars.annotation.ui.annotable;
 
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.mbari.m3.vars.annotation.Data;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.util.FormatUtils;
 import org.mbari.m3.vars.annotation.UIToolBox;
@@ -29,14 +31,36 @@ public class AnnotationTableController {
     private TableView<Annotation> tableView;
     private final ResourceBundle uiBundle;
     private final EventBus eventBus;
+    private final Data data;
+
 
     @Inject
     public AnnotationTableController(UIToolBox toolBox) {
         this.uiBundle = toolBox.getI18nBundle();
         this.eventBus = toolBox.getEventBus();
+        this.data = toolBox.getData();
 
         // TODO this should set the visible columns from prefs
         // TODO this should save the column order from prefs
+
+        // TODO this should save column widths to pregs
+
+//        ChangeListener<Boolean> visibleListener = (obs, oldVis, newVis) -> {
+//          data.getPreferencesService().findByNameAndKey()
+//        };
+//
+//        data.preferencesServiceProperty().addListener((obs, oldPref, newPref) -> {
+//            getTableView().getColumns()
+//                    .forEach(c -> {
+//                        c.visibleProperty().
+//                    });
+//        });
+//        tableView.getColumns()
+//                .forEach(c -> {
+//                    c.visibleProperty().addListener((obj, oldVal, newVal) -> {
+//                        data.getPreferencesService()
+//                    });
+//                });
     }
 
 
@@ -99,6 +123,9 @@ public class AnnotationTableController {
             // TODO get column order from preferences
             tableView.getColumns().addAll(timecodeCol, elapsedTimeCol, timestampCol,
                     obsCol, assCol, fgsCol, obvCol, actCol, grpCol);
+
+
+
 
         }
         return tableView;

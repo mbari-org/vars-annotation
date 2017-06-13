@@ -21,7 +21,7 @@ public class KBWebServiceFactory extends RetrofitServiceFactory {
 
 
     @Inject
-    public KBWebServiceFactory(@Named("KB_ENDPOINT") String endpoint) {
+    public KBWebServiceFactory(@Named("CONCEPT_ENDPOINT") String endpoint) {
         super(endpoint);
     }
 

@@ -10,7 +10,6 @@ import javafx.scene.layout.BorderPane;
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.model.ConceptMedia;
 import org.mbari.m3.vars.annotation.services.ConceptService;
-import org.mbari.m3.vars.annotation.ui.shared.FilterableTreeItem;
 import org.mbari.m3.vars.annotation.ui.shared.ImageStage;
 
 /**

@@ -6,6 +6,8 @@ import org.mbari.m3.vars.annotation.services.AuthService;
 import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.m3.vars.annotation.services.RetrofitWebService;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -19,7 +21,8 @@ public class VamService implements MediaService, RetrofitWebService {
     private final VamWebService vamWebService;
     private final Map<String, String> defaultHeaders;
 
-    public VamService(VamWebServiceFactory serviceFactory, AuthService authService) {
+    @Inject
+    public VamService(VamWebServiceFactory serviceFactory, @Named("MEDIA_AUTH") AuthService authService) {
         vamWebService = serviceFactory.create(VamWebService.class, authService);
         defaultHeaders = new HashMap<>();
         defaultHeaders.put("Accept", "application/json");
