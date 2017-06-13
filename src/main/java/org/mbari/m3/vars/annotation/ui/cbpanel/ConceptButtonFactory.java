@@ -21,31 +21,34 @@ import java.util.ResourceBundle;
 public class ConceptButtonFactory {
 
     private final EventBus eventBus;
-    private final ResourceBundle uiBundle;
+    private final ResourceBundle i18n;
     private final ConceptService conceptService;
+    // We use the userdata field to let us know that this is a conceptbutton.
+    public static final String BUTTON_USERDATA = "ConceptButton";
 
     @Inject
-    public ConceptButtonFactory(ConceptService conceptService, EventBus eventBus, ResourceBundle uiBundle) {
+    public ConceptButtonFactory(ConceptService conceptService, EventBus eventBus, ResourceBundle i18n) {
         this.eventBus = eventBus;
-        this.uiBundle = uiBundle;
+        this.i18n = i18n;
         this.conceptService = conceptService;
     }
 
     public Button build(String name) {
 
         Button button = new JFXButton(name);
+        button.setUserData(BUTTON_USERDATA);
         button.getStyleClass().add("cbpanel-button");
         button.setOnAction(event ->
             eventBus.send(new CreateAnnotation(button.getText())));
 
         // Add contextMenu
         ContextMenu contextMenu = new ContextMenu();
-        MenuItem showInTreeItem = new MenuItem(uiBundle.getString("cbpanel.conceptbutton.findconcept"));
+        MenuItem showInTreeItem = new MenuItem(i18n.getString("cbpanel.conceptbutton.findconcept"));
         showInTreeItem.setOnAction(event -> {
                 ShowConceptInTreeView msg = new ShowConceptInTreeView(button.getText());
                 eventBus.send(msg);
         });
-        MenuItem deleteButton = new MenuItem(uiBundle.getString("cbpanel.conceptbutton.delete"));
+        MenuItem deleteButton = new MenuItem(i18n.getString("cbpanel.conceptbutton.delete"));
         deleteButton.setOnAction(event ->
             ((Pane) button.getParent()).getChildren().remove(button));
         contextMenu.getItems().addAll(showInTreeItem, deleteButton);
@@ -54,8 +57,6 @@ public class ConceptButtonFactory {
         conceptService.findDetails(name)
                 .thenApply(opt -> {
                     if (!opt.isPresent()) {
-                        // TODO when a button is disabled the context menu is also disabled
-                        // and there's now way to remove it. We should autoremove
                         Platform.runLater(() -> button.setDisable(true));
                     }
                     return null;

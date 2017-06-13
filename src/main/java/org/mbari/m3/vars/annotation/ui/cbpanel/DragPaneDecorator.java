@@ -35,9 +35,9 @@ public class DragPaneDecorator {
     private boolean locked = false;
 
     @Inject
-    public DragPaneDecorator(ConceptService conceptService, EventBus eventBus, ResourceBundle uiBundle) {
+    public DragPaneDecorator(ConceptService conceptService, EventBus eventBus, ResourceBundle i18n) {
         this.conceptService = conceptService;
-        conceptButtonFactory = new ConceptButtonFactory(conceptService, eventBus, uiBundle);
+        conceptButtonFactory = new ConceptButtonFactory(conceptService, eventBus, i18n);
     }
 
 
@@ -114,8 +114,8 @@ public class DragPaneDecorator {
                 new KeyFrame(Duration.seconds(0.25), e -> button.setStyle("")));
         t.setCycleCount(6);
         t.setAutoReverse(true);
-        t.play();
         t.setOnFinished(event -> button.setStyle(""));
+        t.play();
 
         conceptService.findAllNames()
                 .thenApply(names -> {
