@@ -29,6 +29,7 @@ public class ConceptButtonPaneController {
     private final ConceptService conceptService;
     private final EventBus eventBus;
     private final ResourceBundle i18n;
+    private DragPaneDecorator dragPaneDecorator;
 
     private static final String PREF_BUTTON_NAME = "name";
     private static final String PREF_BUTTON_ORDER = "order";
@@ -50,27 +51,33 @@ public class ConceptButtonPaneController {
         this.panePreferences = panePreferences;
         this.eventBus = eventBus;
         this.i18n = i18n;
+        dragPaneDecorator = new DragPaneDecorator(conceptService, eventBus, i18n);
+    }
+
+    public void setLocked(boolean locked) {
+        dragPaneDecorator.setLocked(locked);
+    }
+
+    public boolean isLocked() {
+        return dragPaneDecorator.isLocked();
     }
 
     public Pane getPane() {
         if (pane == null) {
             pane = new FlowPane();
+            pane.setUserData(this);
             pane.setPrefSize(800, 250);
-            DragPaneDecorator decorator = new DragPaneDecorator(conceptService, eventBus, i18n);
-            decorator.decorate(pane);
+            dragPaneDecorator.decorate(pane);
             loadButtonsFromPreferences();
             // Save everything when a new button is added or removed
             pane.getChildren()
-                    .addListener((ListChangeListener<Node>) c -> {
-                        while (c.next()) {
-                            if (c.wasRemoved()) {
-
-                            }
-                        }
-                        saveButtonsToPreferences()
-                    } );
+                    .addListener((ListChangeListener<Node>) c ->  saveButtonsToPreferences());
         }
         return pane;
+    }
+
+    public DragPaneDecorator getDragPaneDecorator() {
+        return dragPaneDecorator;
     }
 
     private void loadButtonsFromPreferences() {
@@ -105,7 +112,7 @@ public class ConceptButtonPaneController {
     private void saveButtonsToPreferences() {
         List<Button> buttons = getPane().getChildren()
                 .stream()
-                .filter(n -> n.getUserData().toString().equalsIgnoreCase(ConceptButtonFactory.BUTTON_USERDATA))
+                .filter(n -> n.getUserData().toString().equalsIgnoreCase(ConceptButtonFactory.USERDATA))
                 .map(n -> (Button) n)
                 .collect(Collectors.toList());
 

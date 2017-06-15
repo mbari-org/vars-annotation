@@ -24,7 +24,7 @@ public class ConceptButtonFactory {
     private final ResourceBundle i18n;
     private final ConceptService conceptService;
     // We use the userdata field to let us know that this is a conceptbutton.
-    public static final String BUTTON_USERDATA = "ConceptButton";
+    public static final String USERDATA = ConceptButtonFactory.class.getSimpleName();
 
     @Inject
     public ConceptButtonFactory(ConceptService conceptService, EventBus eventBus, ResourceBundle i18n) {
@@ -36,7 +36,7 @@ public class ConceptButtonFactory {
     public Button build(String name) {
 
         Button button = new JFXButton(name);
-        button.setUserData(BUTTON_USERDATA);
+        button.setUserData(USERDATA);
         button.getStyleClass().add("cbpanel-button");
         button.setOnAction(event ->
             eventBus.send(new CreateAnnotation(button.getText())));

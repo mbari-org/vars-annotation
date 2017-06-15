@@ -32,7 +32,8 @@ public class DragPaneDecorator {
 
     private final ConceptButtonFactory conceptButtonFactory;
     private final ConceptService conceptService;
-    private boolean locked = false;
+
+    private volatile boolean locked = false;
 
     @Inject
     public DragPaneDecorator(ConceptService conceptService, EventBus eventBus, ResourceBundle i18n) {
