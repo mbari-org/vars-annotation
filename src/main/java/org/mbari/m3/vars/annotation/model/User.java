@@ -6,7 +6,7 @@ package org.mbari.m3.vars.annotation.model;
  */
 public class User {
 
-    private String userName;
+    private String username;
     private String firstName;
     private String lastName;
     private String affiliation;
@@ -16,7 +16,7 @@ public class User {
 
 
     public User(String userName, String password, String role, String firstName, String lastName, String affiliation, String email) {
-        this.userName = userName;
+        this.username = userName;
         this.password = password;
         this.rold = role;
         this.firstName = firstName;
@@ -25,8 +25,8 @@ public class User {
         this.email = email;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
     public String getFirstName() {
@@ -53,8 +53,8 @@ public class User {
         return rold;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setFirstName(String firstName) {

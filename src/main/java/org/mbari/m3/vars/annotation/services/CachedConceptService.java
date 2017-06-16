@@ -31,7 +31,7 @@ public class CachedConceptService implements ConceptService {
 
     private Concept root;
     private Map<String, Concept> cache = new ConcurrentHashMap<>();
-    private List<String> allNames = Collections.emptyList();
+    private volatile List<String> allNames = Collections.emptyList();
     private final ConceptService conceptService;
 
     /**

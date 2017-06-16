@@ -2,11 +2,13 @@ package org.mbari.m3.vars.annotation.ui.cbpanel;
 
 import com.google.common.base.Preconditions;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTabPane;
 import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -32,20 +34,20 @@ import java.util.stream.IntStream;
  */
 public class ConceptButtonPanesController {
 
-    private BorderPane pane;
+    private BorderPane root;
     private TabPane tabPane;
     private VBox controlPane;
     private final UIToolBox toolBox;
     private final ResourceBundle i18n;
     private TextInputDialog addDialog;
     private Alert removeDialog;
-    // This is the name used by the original VARS for storing tab pane prefs
+    // This is the name used by the original VARS for storing tab root prefs
     public static final String PREF_CP_NODE = "vars.annotation.ui.cbpanel.ConceptButtonPanel";
     public static final String PREFKEY_TABNAME = "tabName";
     public static final String TAB_PREFIX = "tab";
 
     private Logger log = LoggerFactory.getLogger(getClass());
-    private BooleanProperty lockProperty = new SimpleBooleanProperty(true);
+    private BooleanProperty lockProperty = new SimpleBooleanProperty(false);
 
     public ConceptButtonPanesController(UIToolBox toolBox) {
         Preconditions.checkNotNull(toolBox, "The UIToolbox arg can not be null");
@@ -57,24 +59,41 @@ public class ConceptButtonPanesController {
                 .addListener(e -> loadTabsFromPreferences());
     }
 
-    public VBox getControlPane() {
+    public BorderPane getRoot() {
+        if (root == null) {
+            root = new BorderPane();
+            root.setCenter(getTabPane());
+            root.setRight(getControlPane());
+        }
+        return root;
+    }
+
+    private VBox getControlPane() {
         if (controlPane == null) {
 
             GlyphsFactory gf = MaterialIconFactory.get();
 
             // Add
             Button addButton = new JFXButton();
-            Text addIcon = gf.createIcon(MaterialIcon.ADD, "20px");
+            Text addIcon = gf.createIcon(MaterialIcon.ADD, "30px");
             addButton.setGraphic(addIcon);
             addButton.setTooltip(new Tooltip(toolBox.getI18nBundle().getString("cppanel.tabpane.add.tooltip")));
             addButton.setOnAction(e -> addTab());
 
-            // Remove - no button anymore. Each tab is individually closeable
+            // Remove - Each tab is also individually closeable
+            Button removeButton = new JFXButton();
+            Text removeIcon = gf.createIcon(MaterialIcon.REMOVE, "30px");
+            removeButton.setGraphic(removeIcon);
+            removeButton.setTooltip(new Tooltip(i18n.getString("cppanel.tabpane.remove.tooltip")));
+            removeButton.setOnAction(e -> {
+                Tab tab = getTabPane().getSelectionModel().getSelectedItem();
+                removeTab(tab);
+            });
 
             // Lock
             Button lockButton = new JFXButton();
-            Text lockIcon = gf.createIcon(MaterialIcon.LOCK);
-            Text unlockIcon = gf.createIcon(MaterialIcon.LOCK_OPEN);
+            Text lockIcon = gf.createIcon(MaterialIcon.LOCK, "30px");
+            Text unlockIcon = gf.createIcon(MaterialIcon.LOCK_OPEN, "30px");
             lockButton.setGraphic(lockIcon);
             lockButton.setOnAction(e -> {
                 boolean v = lockProperty.get();
@@ -89,18 +108,20 @@ public class ConceptButtonPanesController {
                         .map(Tab::getContent)
                         .filter(n -> n.getUserData() instanceof ConceptButtonPaneController)
                         .map(n -> (ConceptButtonPaneController) n.getUserData())
-                        .forEach(n -> n.setLocked(true));
+                        .forEach(n -> n.setLocked(newV));
             });
+            lockProperty.set(true);
 
             // COntrol Pane
-            controlPane = new VBox(addButton, lockButton);
+            controlPane = new VBox(addButton, removeButton, lockButton);
         }
         return controlPane;
     }
 
     private TabPane getTabPane() {
         if (tabPane == null) {
-            tabPane = new TabPane();
+            tabPane = new JFXTabPane();
+            tabPane.setSide(Side.BOTTOM);
         }
         return tabPane;
     }
@@ -138,7 +159,7 @@ public class ConceptButtonPanesController {
         if (user != null) {
             userPreferences = toolBox.getServices()
                     .getPreferencesFactory()
-                    .remoteUserRoot(user.getUserName());
+                    .remoteUserRoot(user.getUsername());
             Preferences cpPrefs = userPreferences.node(PREF_CP_NODE);
         }
         return Optional.ofNullable(userPreferences);
@@ -234,10 +255,12 @@ public class ConceptButtonPanesController {
                                 newTabPrefs,
                                 toolBox.getEventBus(),
                                 toolBox.getI18nBundle());
+                        dropPanel.setLocked(lockProperty.get());
                         Tab tab = new Tab(tabName, dropPanel.getPane());
                         tab.setClosable(true);
                         tab.setOnClosed(e -> removeTab(tab));
                         getTabPane().getTabs().add(tab);
+                        getTabPane().getSelectionModel().select(tab);
                     } else {
                         toolBox.getEventBus()
                                 .send(new ShowInfoAlert(i18n.getString("cppanel.tabpane.addtab.dub.title"),

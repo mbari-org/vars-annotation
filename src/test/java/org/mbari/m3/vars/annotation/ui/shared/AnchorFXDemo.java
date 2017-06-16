@@ -12,6 +12,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.services.CachedConceptService;
+import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.DemoConstants;
 import org.mbari.m3.vars.annotation.ui.annotable.AnnotationTableController;
 import org.mbari.m3.vars.annotation.ui.cbpanel.DragPaneDecorator;
@@ -25,13 +26,9 @@ import java.util.concurrent.CompletableFuture;
  */
 public class AnchorFXDemo extends Application {
 
-    private static CachedConceptService conceptService = DemoConstants.newConceptService();
+    private static ConceptService conceptService = DemoConstants.newConceptService();
 
     public static void main(String[] args) throws Exception {
-        CompletableFuture<Void> f = conceptService.prefetch();
-        while (!f.isDone()) {
-            Thread.sleep(20);
-        }
         launch(args);
     }
 

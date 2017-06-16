@@ -76,12 +76,16 @@ public class MBARIInjectorModule implements Module {
     private void configureConceptService(Binder binder) {
         String endpoint = config.getString("concept.service.url");
         KBWebServiceFactory factory = new KBWebServiceFactory(endpoint);
+        KBConceptService service = new KBConceptService(factory);
+        // --- Using a local cache
+        CachedConceptService cachedService = new CachedConceptService(service);
         binder.bind(String.class)
                 .annotatedWith(Names.named("CONCEPT_ENDPOINT"))
                 .toInstance(endpoint);
         binder.bind(KBWebServiceFactory.class).toInstance(factory);
-        binder.bind(ConceptService.class).to(KBConceptService.class);
+        binder.bind(ConceptService.class).toInstance(cachedService);
     }
+
     private void configurePrefsServices(Binder binder) {
         String endpoint = config.getString("preferences.service.url");
         String clientSecret = config.getString("preferences.service.client.secret");

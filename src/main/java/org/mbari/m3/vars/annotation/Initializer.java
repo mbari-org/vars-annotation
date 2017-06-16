@@ -1,6 +1,8 @@
 package org.mbari.m3.vars.annotation;
 
+import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
@@ -76,7 +78,8 @@ public class Initializer {
             String moduleName = CONFIG.getString("app.injector.module.class");
             try {
                 Class clazz = Class.forName(moduleName);
-                injector = (Injector) clazz.newInstance();
+                Module module = (Module) clazz.newInstance();
+                injector = Guice.createInjector(module);
             } catch (Exception e) {
                 throw new RuntimeException("Failed to create dependency injector", e);
             }

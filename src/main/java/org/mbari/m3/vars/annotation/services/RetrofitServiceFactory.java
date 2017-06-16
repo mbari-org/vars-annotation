@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
 
 /**
  * Base interface for generating services from Retrofit interfaces.
@@ -18,11 +21,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public abstract class RetrofitServiceFactory {
 
+    private final Duration timeout;
     private final Retrofit.Builder retrofitBuilder;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
 
     public RetrofitServiceFactory(String endpoint) {
+        this(endpoint, Duration.ofMillis(10000));
+    }
+
+    public RetrofitServiceFactory(String endpoint, Duration timeout) {
+        this.timeout = timeout;
         String correctedEndpoint = (endpoint.endsWith("/")) ? endpoint : endpoint + "/";
 
         retrofitBuilder  = new Retrofit.Builder()
@@ -40,6 +49,8 @@ public abstract class RetrofitServiceFactory {
         HttpLoggingInterceptor logger = new HttpLoggingInterceptor(log::debug);
         logger.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
+                .readTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS)
+                .writeTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS)
                 .addInterceptor(logger);
 
         if (auth != null) {

@@ -8,6 +8,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.services.CachedConceptService;
+import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.DemoConstants;
 import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
 
@@ -20,15 +21,11 @@ import java.util.concurrent.CompletableFuture;
  */
 public class DragAndDropDemo extends Application {
 
-    private static CachedConceptService conceptService = DemoConstants.newConceptService();
+    private static ConceptService conceptService = DemoConstants.newConceptService();
     private static EventBus eventBus = DemoConstants.EVENT_BUS;
     private static ResourceBundle uiBundle = DemoConstants.UI_BUNDLE;
 
     public static void main(String[] args) throws InterruptedException {
-        CompletableFuture<Void> f = conceptService.prefetch();
-        while (!f.isDone()) {
-            Thread.sleep(20);
-        }
         launch(args);
     }
 

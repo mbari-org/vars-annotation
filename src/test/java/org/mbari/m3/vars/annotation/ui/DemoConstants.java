@@ -4,10 +4,7 @@ import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Authorization;
-import org.mbari.m3.vars.annotation.services.AnnotationService;
-import org.mbari.m3.vars.annotation.services.BasicJWTAuthService;
-import org.mbari.m3.vars.annotation.services.CachedConceptService;
-import org.mbari.m3.vars.annotation.services.MediaService;
+import org.mbari.m3.vars.annotation.services.*;
 import org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoService;
 import org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoWebServiceFactory;
 import org.mbari.m3.vars.annotation.services.vampiresquid.v1.VamService;
@@ -23,10 +20,6 @@ import java.util.ResourceBundle;
  */
 public class DemoConstants {
 
-    public static final String CONCEPT_ENDPOINT = "http://m3.shore.mbari.org/kb/v1/";
-    public static final String MEDIA_ENDPOINT = "http://m3.shore.mbari.org/vam/v1";
-    public static final String ANNOTATION_ENDPOINT = "http://m3.shore.mbari.org/anno/v1";
-
     private static final UIToolBox toolBox = Initializer.getToolBox();
 
     private static CachedConceptService conceptService;
@@ -38,23 +31,17 @@ public class DemoConstants {
         return toolBox;
     }
 
-    public static final CachedConceptService newConceptService() {
-        if (conceptService == null) {
-            conceptService = new CachedConceptService(
-                    new KBConceptService(new KBWebServiceFactory("http://m3.shore.mbari.org/kb/v1/")));
-        }
-        return conceptService;
+    public static final ConceptService newConceptService() {
+        return getToolBox().getServices().getConceptService();
     }
 
     public static final MediaService newMediaService() {
-        Authorization auth = new Authorization("BEARER", "foo");
-        VamWebServiceFactory factory = new VamWebServiceFactory("http://m3.shore.mbari.org/vam/v1");
-        return new VamService(factory, new BasicJWTAuthService(factory, auth));
+        return getToolBox().getServices().getMediaService();
     }
 
     public static final AnnotationService newAnnotationService() {
-        Authorization auth = new Authorization("BEARER", "foo");
-        final AnnoWebServiceFactory factory = new AnnoWebServiceFactory(ANNOTATION_ENDPOINT);
-        return new AnnoService(factory, new BasicJWTAuthService(factory, auth));
+        return getToolBox().getServices().getAnnotationService();
     }
+
+
 }
