@@ -34,13 +34,13 @@
 } */
 
 .root {
-    -fx-background-color: powderblue;
+    -fx-background-color: rgb(100,100,100);
 }
 
 
 /* Set background color of empty rows */
 .table-row-cell:empty {
-    -fx-background-color: lightyellow;
+    -fx-background-color: rgb(100,100,100);
 }
 
 /* Hide empty rows */
@@ -63,3 +63,6 @@
 }
 
 
+.jfx-button {
+    -fx-text-fill: orangered;
+}

@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation.ui.cbpanel;
 
 import com.anchorage.docks.node.DockNode;
+import com.anchorage.docks.node.interfaces.DockNodeCloseRequestHandler;
 import com.anchorage.docks.stations.DockStation;
 import com.anchorage.system.AnchorageSystem;
 import javafx.application.Application;
@@ -34,18 +35,25 @@ public class FancyDragAndDropDemo extends Application {
 
         UIToolBox toolBox = DemoConstants.getToolBox();
         CompletableFuture<List<User>> allUsers = toolBox.getServices().getUserService().findAllUsers();
-        List<User> users = allUsers.get(7000, TimeUnit.MILLISECONDS);
-        Optional<User> brian = users.stream()
-                .filter(u -> u.getUsername().equalsIgnoreCase("brian"))
-                .findFirst();
-        toolBox.getData().setUser(brian.get());
+        try {
+            List<User> users = allUsers.get(7000, TimeUnit.MILLISECONDS);
+            Optional<User> brian = users.stream()
+                    .filter(u -> u.getUsername().equalsIgnoreCase("brian"))
+                    .findFirst();
+            toolBox.getData().setUser(brian.get());
+        }
+        catch (Exception e) {
+            // Do nothing
+        }
         AnnotationTableController annoController = new AnnotationTableController(toolBox);
         DockNode annotationNode = AnchorageSystem.createDock("Annotations", annoController.getTableView());
+        annotationNode.setCloseRequestHandler(() -> false);
         annotationNode.dock(station, DockNode.DockPosition.CENTER);
 
         SearchTreePaneController treeController = new SearchTreePaneController(toolBox.getServices().getConceptService(),
                 toolBox.getI18nBundle());
         DockNode treeNode = AnchorageSystem.createDock("Knowledgebase", treeController.getRoot());
+        treeNode.setCloseRequestHandler(() -> false);
         treeNode.setPrefSize(400, 400);
         treeNode.dock(station, DockNode.DockPosition.RIGHT);
 
@@ -53,11 +61,16 @@ public class FancyDragAndDropDemo extends Application {
         Pane pane = panesController.getRoot();
         pane.setPrefSize(800, 250);
         DockNode cbNode = AnchorageSystem.createDock("Quick Buttons", pane);
+        cbNode.setCloseRequestHandler(() -> false);
         cbNode.dock(station, DockNode.DockPosition.BOTTOM);
 
         Scene scene = new Scene(station);
 
-        scene.getStylesheets().addAll("/css/common.css", "/css/annotable.css", "/css/concepttree.css", "/css/cbpanel.css");
+        scene.getStylesheets().addAll("/css/dark.css",
+                "/css/common.css",
+                "/css/annotable.css",
+                "/css/concepttree.css",
+                "/css/cbpanel.css");
 
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(e -> {

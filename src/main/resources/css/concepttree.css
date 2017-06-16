@@ -1,15 +1,15 @@
 
 .concepttree-treecell {
-    -fx-background-color: powderblue;
+    -fx-background-color: #3D3D3D;
 }
 
 
 .concepttree-treecell-media {
-    -fx-background-color: lightblue;
+    -fx-background-color: darkred;
 }
 
 .concepttree-treecell-media:selected {
-    -fx-background-color: deepskyblue;
+    -fx-background-color: #F0544C;
 }
 
 .concepttree-treecell:selected {
@@ -18,7 +18,7 @@
 
 .concepttree-treeview {
     -fx-padding: 10 5 5 5;
-    -fx-background-color: powderblue;
+    -fx-background-color: #3D3D3D;
 }
 
 .concepttree-textfield {
