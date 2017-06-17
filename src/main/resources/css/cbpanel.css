@@ -5,10 +5,11 @@
     /*-fx-background-color: rgb(77, 102, 204);*/
     /*-fx-pref-width: 200;*/
     /*-fx-text-fill: WHITE;*/
-    -fx-background-color: powderblue;
+    -fx-background-color: #3D3D3D;
 }
 
 .cbpanel-button:hover {
     -fx-font-style: italic;
-    -fx-background-color: burlywood;
+    -fx-background-color: #F0544C;
+    -fx-text-fill: black;
 }

@@ -62,7 +62,15 @@
 
 }
 
+.jfx-text-field {
+    -jfx-focus-color: #F0544C;
+}
+
 
 .jfx-button {
-    -fx-text-fill: orangered;
+    -fx-text-fill: #F0544C;
+}
+
+.jfx-rippler {
+    -jfx-rippler-fill: black;
 }

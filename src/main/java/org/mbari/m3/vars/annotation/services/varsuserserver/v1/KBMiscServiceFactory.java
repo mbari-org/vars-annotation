@@ -28,7 +28,6 @@ public class KBMiscServiceFactory extends RetrofitServiceFactory {
     public Gson getGson() {
         GsonBuilder gsonBuilder = new GsonBuilder()
                 .setPrettyPrinting()
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
                 .registerTypeAdapter(Duration.class, new DurationConverter())
                 .registerTypeAdapter(Timecode.class, new TimecodeConverter())
