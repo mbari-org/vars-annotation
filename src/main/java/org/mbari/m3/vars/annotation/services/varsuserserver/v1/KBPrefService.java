@@ -33,24 +33,24 @@ public class KBPrefService implements PreferencesService, RetrofitWebService {
 
     @Override
     public CompletableFuture<PreferenceNode> create(PreferenceNode node) {
-        return sendRequest(prefService.create(node.getNodeName(),
-                node.getPrefKey(),
-                node.getPrefValue(),
+        return sendRequest(prefService.create(node.getName(),
+                node.getKey(),
+                node.getValue(),
                 defaultHeaders));
     }
 
     @Override
     public CompletableFuture<Optional<PreferenceNode>> update(PreferenceNode node) {
-        sendRequest(prefService.update(node.getNodeName(),
-                node.getPrefKey(),
-                node.getPrefValue(),
+        sendRequest(prefService.update(node.getName(),
+                node.getKey(),
+                node.getValue(),
                 defaultHeaders));
         return null;
     }
 
     @Override
     public CompletableFuture<Void> delete(PreferenceNode node) {
-        return sendRequest(prefService.delete(node.getNodeName(), node.getPrefKey()));
+        return sendRequest(prefService.delete(node.getName(), node.getKey()));
     }
 
     @Override

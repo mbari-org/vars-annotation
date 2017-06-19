@@ -45,12 +45,13 @@ public class WebPreferences extends AbstractPreferences {
 
     @Override
     protected void putSpi(String key, String value) {
+        log.debug("putSpi({}, {})", key, value);
         service.findByNameAndKey(absolutePath(), key)
                 .thenCompose(opt -> {
                     if (opt.isPresent()) {
                         PreferenceNode node = opt.get();
-                        if (!node.getPrefValue().equals(value)) {
-                            node.setPrefValue(value);
+                        if (!node.getValue().equals(value)) {
+                            node.setValue(value);
                             service.update(node);
                         }
                     } else {
@@ -63,10 +64,11 @@ public class WebPreferences extends AbstractPreferences {
 
     @Override
     protected String getSpi(String key) {
+        log.debug("getSpi({})", key);
         try {
             Optional<PreferenceNode> opt = service.findByNameAndKey(absolutePath(), key)
                     .get(timeoutMillis, TimeUnit.MILLISECONDS);
-            return opt.orElse(null).getPrefValue();
+            return opt.isPresent() ? opt.get().getValue() : null;
         } catch (Exception e) {
             log.warn("Failed to call getSpi(" + key + ")", e);
             return null;
@@ -75,6 +77,7 @@ public class WebPreferences extends AbstractPreferences {
 
     @Override
     protected void removeSpi(String key) {
+        log.debug("removeSpi({})", key);
         service.findByNameAndKey(absolutePath(), key)
                 .thenCompose(opt -> {
                     if (opt.isPresent()) {
@@ -87,6 +90,7 @@ public class WebPreferences extends AbstractPreferences {
 
     @Override
     protected void removeNodeSpi() throws BackingStoreException {
+        log.debug("removeNodeSpi()");
         service.findByNameLike(absolutePath())
                 .thenCompose(nodes -> {
                     List<CompletableFuture<Void>> fs = nodes.stream()
@@ -101,9 +105,10 @@ public class WebPreferences extends AbstractPreferences {
 
     @Override
     protected String[] keysSpi() throws BackingStoreException {
+        log.debug("keysSpi()");
         try {
             CompletableFuture<Stream<String>> f = service.findByNameLike(absolutePath())
-                    .thenApply(nodes -> nodes.stream().map(PreferenceNode::getPrefKey));
+                    .thenApply(nodes -> nodes.stream().map(PreferenceNode::getKey));
             return f.get(timeoutMillis, TimeUnit.MILLISECONDS)
                     .toArray(String[]::new);
         }
@@ -115,13 +120,14 @@ public class WebPreferences extends AbstractPreferences {
 
     @Override
     protected String[] childrenNamesSpi() throws BackingStoreException {
+        log.debug("childrenNamesSpi()");
         String parentNodeName = absolutePath();
         CompletableFuture<List<PreferenceNode>> f = service.findByNameLike(parentNodeName);
         try {
             List<PreferenceNode> nodes = f.get(timeoutMillis, TimeUnit.MILLISECONDS);
             return nodes.stream()
                     .map(n -> {
-                        String nodeName = n.getNodeName();
+                        String nodeName = n.getName();
                         // Strip off base path
                         String childPath = nodeName.substring(parentNodeName.length(),
                                 nodeName.length());
@@ -138,13 +144,14 @@ public class WebPreferences extends AbstractPreferences {
                     .distinct()
                     .toArray(String[]::new);
         } catch (Exception e) {
-            log.warn("Failed to look up child node names");
+            log.warn("Failed to look up child node names", e);
             return new String[0];
         }
     }
 
     @Override
     protected AbstractPreferences childSpi(String name) {
+        log.debug("childSpi({})", name);
         return new WebPreferences(service, timeoutMillis, this, name);
     }
 

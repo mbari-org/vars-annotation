@@ -154,15 +154,15 @@ public class ConceptButtonPanesController {
     }
 
     private Optional<Preferences> getTabsPreferences() {
-        Preferences userPreferences = null;
+        Preferences cpPrefs = null;
         User user = toolBox.getData().getUser();
         if (user != null) {
-            userPreferences = toolBox.getServices()
+            Preferences userPreferences = toolBox.getServices()
                     .getPreferencesFactory()
                     .remoteUserRoot(user.getUsername());
-            Preferences cpPrefs = userPreferences.node(PREF_CP_NODE);
+            cpPrefs = userPreferences.node(PREF_CP_NODE);
         }
-        return Optional.ofNullable(userPreferences);
+        return Optional.ofNullable(cpPrefs);
     }
 
     private void removeTab(Tab tab) {

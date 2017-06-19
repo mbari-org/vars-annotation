@@ -9,8 +9,10 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.User;
+import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.ui.DemoConstants;
 import org.mbari.m3.vars.annotation.ui.annotable.AnnotationTableController;
 import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
@@ -26,7 +28,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class FancyDragAndDropDemo extends Application {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        ((CachedConceptService) Initializer.getToolBox()
+                .getServices()
+                .getConceptService()).prefetch();
+        Thread.sleep(2000);
         launch(args);
     }
     @Override
@@ -35,16 +41,7 @@ public class FancyDragAndDropDemo extends Application {
 
         UIToolBox toolBox = DemoConstants.getToolBox();
         CompletableFuture<List<User>> allUsers = toolBox.getServices().getUserService().findAllUsers();
-        try {
-            List<User> users = allUsers.get(7000, TimeUnit.MILLISECONDS);
-            Optional<User> brian = users.stream()
-                    .filter(u -> u.getUsername().equalsIgnoreCase("brian"))
-                    .findFirst();
-            toolBox.getData().setUser(brian.get());
-        }
-        catch (Exception e) {
-            // Do nothing
-        }
+
         AnnotationTableController annoController = new AnnotationTableController(toolBox);
         DockNode annotationNode = AnchorageSystem.createDock("Annotations", annoController.getTableView());
         annotationNode.setCloseRequestHandler(() -> false);
@@ -71,6 +68,17 @@ public class FancyDragAndDropDemo extends Application {
                 "/css/annotable.css",
                 "/css/concepttree.css",
                 "/css/cbpanel.css");
+
+        try {
+            List<User> users = allUsers.get(7000, TimeUnit.MILLISECONDS);
+            Optional<User> brian = users.stream()
+                    .filter(u -> u.getUsername().equalsIgnoreCase("brian"))
+                    .findFirst();
+            toolBox.getData().setUser(brian.get());
+        }
+        catch (Exception e) {
+            // Do nothing
+        }
 
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(e -> {
