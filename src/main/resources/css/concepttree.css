@@ -13,7 +13,7 @@
 }
 
 .concepttree-treecell:selected {
-    -fx-text-fill: ##F0544C;
+    -fx-text-fill: black;
 }
 
 .concepttree-treeview {

@@ -66,7 +66,7 @@ public class WebPreferences extends AbstractPreferences {
         try {
             Optional<PreferenceNode> opt = service.findByNameAndKey(absolutePath(), key)
                     .get(timeoutMillis, TimeUnit.MILLISECONDS);
-            return opt.orElse(null).getPrefValue();
+            return opt.map(PreferenceNode::getPrefValue).orElse(null);
         } catch (Exception e) {
             log.warn("Failed to call getSpi(" + key + ")", e);
             return null;

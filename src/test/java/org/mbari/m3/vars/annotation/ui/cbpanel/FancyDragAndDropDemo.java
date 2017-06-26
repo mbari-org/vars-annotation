@@ -35,16 +35,7 @@ public class FancyDragAndDropDemo extends Application {
 
         UIToolBox toolBox = DemoConstants.getToolBox();
         CompletableFuture<List<User>> allUsers = toolBox.getServices().getUserService().findAllUsers();
-        try {
-            List<User> users = allUsers.get(7000, TimeUnit.MILLISECONDS);
-            Optional<User> brian = users.stream()
-                    .filter(u -> u.getUsername().equalsIgnoreCase("brian"))
-                    .findFirst();
-            toolBox.getData().setUser(brian.get());
-        }
-        catch (Exception e) {
-            // Do nothing
-        }
+
         AnnotationTableController annoController = new AnnotationTableController(toolBox);
         DockNode annotationNode = AnchorageSystem.createDock("Annotations", annoController.getTableView());
         annotationNode.setCloseRequestHandler(() -> false);
@@ -63,6 +54,17 @@ public class FancyDragAndDropDemo extends Application {
         DockNode cbNode = AnchorageSystem.createDock("Quick Buttons", pane);
         cbNode.setCloseRequestHandler(() -> false);
         cbNode.dock(station, DockNode.DockPosition.BOTTOM);
+
+        try {
+            List<User> users = allUsers.get(7000, TimeUnit.MILLISECONDS);
+            Optional<User> brian = users.stream()
+                    .filter(u -> u.getUsername().equalsIgnoreCase("brian"))
+                    .findFirst();
+            toolBox.getData().setUser(brian.get());
+        }
+        catch (Exception e) {
+            // Do nothing
+        }
 
         Scene scene = new Scene(station);
 

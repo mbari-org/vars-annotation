@@ -99,6 +99,7 @@
     -fx-background-insets: 0;
     -fx-background-radius: 0;
     -fx-background-color: #2E2E2E;
+    -fx-border-width: 3px;
 }
 
 .tab:hover {
@@ -109,7 +110,7 @@
     -fx-focus-color: transparent;
     -fx-background-color: #3D3D3D;
     -fx-border-color: #F0544C #F0544C #3D3D3D #F0544C;
-    -fx-border-radius: 1;
+    -fx-border-radius: 2;
 }
 
 .tab-label {
@@ -200,4 +201,11 @@
 
 .cell:selected {
     -fx-background-color: #F0544C;
+}
+
+.tree-cell > .tree-disclosure-node > .arrow  {
+    -fx-background-color: #B3A9A3;
+}
+.tree-cell:expanded > .tree-disclosure-node > .arrow {
+    -fx-background-color: #B3A9A3;
 }
