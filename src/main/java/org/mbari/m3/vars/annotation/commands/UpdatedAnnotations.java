@@ -2,7 +2,7 @@ package org.mbari.m3.vars.annotation.commands;
 
 /**
  * @author Brian Schlining
- * @since 2017-05-11T13:06:00
+ * @since 2017-06-28T13:12:00
  */
-public class DeleteAnnotation {
+public class UpdatedAnnotations {
 }

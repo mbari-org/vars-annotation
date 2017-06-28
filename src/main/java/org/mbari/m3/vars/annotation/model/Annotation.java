@@ -4,6 +4,7 @@ import org.mbari.vcr4j.time.Timecode;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -153,11 +154,12 @@ public class Annotation implements ImagedMoment {
     }
 
     public List<Association> getAssociations() {
-        return associations;
+        return associations == null ? new ArrayList<>() : associations;
     }
 
     public void setAssociations(List<Association> associations) {
-        this.associations = Collections.unmodifiableList(associations);
+        List<Association> ass = associations == null ? new ArrayList<>() : associations;
+        this.associations = Collections.unmodifiableList(ass);
     }
 
     public List<ImageReference> getImages() {

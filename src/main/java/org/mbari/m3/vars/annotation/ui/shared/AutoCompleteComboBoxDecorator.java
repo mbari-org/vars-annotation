@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.ui.shared.animation;
+package org.mbari.m3.vars.annotation.ui.shared;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

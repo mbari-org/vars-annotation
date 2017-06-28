@@ -7,14 +7,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.CompletableFuture;
 
 import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,11 +24,11 @@ import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.ClearCache;
 import org.mbari.m3.vars.annotation.commands.DeleteAssociations;
+import org.mbari.m3.vars.annotation.commands.SelectedAnnotations;
 import org.mbari.m3.vars.annotation.commands.UpdateAnnotation;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
-import org.mbari.m3.vars.annotation.model.ConceptDetails;
-import org.mbari.m3.vars.annotation.ui.shared.animation.AutoCompleteComboBoxDecorator;
+import org.mbari.m3.vars.annotation.ui.shared.AutoCompleteComboBoxDecorator;
 
 public class RowEditorPaneController {
 
@@ -57,7 +55,7 @@ public class RowEditorPaneController {
 
     private final UIToolBox toolBox = Initializer.getToolBox();
     private final EventBus eventBus = toolBox.getEventBus();
-
+    private volatile Annotation annotation;
 
 
     @FXML
@@ -83,27 +81,8 @@ public class RowEditorPaneController {
 
     @FXML
     void initialize() {
-        assert addButton != null : "fx:id=\"addButton\" was not injected: check your FXML file 'RowEditorPane.fxml'.";
-        assert editButton != null : "fx:id=\"editButton\" was not injected: check your FXML file 'RowEditorPane.fxml'.";
-        assert removeButton != null : "fx:id=\"removeButton\" was not injected: check your FXML file 'RowEditorPane.fxml'.";
-        assert conceptComboBox != null : "fx:id=\"conceptComboBox\" was not injected: check your FXML file 'RowEditorPane.fxml'.";
-        assert associationListView != null : "fx:id=\"associationListView\" was not injected: check your FXML file 'RowEditorPane.fxml'.";
 
-        // If the cache is cleared reload combobox data
-        eventBus.toObserverable()
-                .ofType(ClearCache.class)
-                .subscribe(c -> loadComboBoxData());
-
-
-
-        initAssociationListView();
-        initAssociationButtons();
-        initConceptComboBox();
-    }
-
-    private void initAssociationButtons() {
-        UIToolBox toolBox = Initializer.getToolBox();
-
+        // -- Make buttons pretty
         GlyphsFactory gf = MaterialIconFactory.get();
         Text deleteIcon = gf.createIcon(MaterialIcon.DELETE);
         removeButton.setText(null);
@@ -115,17 +94,82 @@ public class RowEditorPaneController {
         addButton.setText(null);
         addButton.setGraphic(addIcon);
 
-        // -- If no annotation is selected disable all association buttons
-        ObservableList<Annotation> selectedAnnotations = toolBox.getData()
-                .getSelectedAnnotations();
+        // -- If no association is selected disable edit and remove buttons
+        associationListView.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, oldv, newv) -> {
+                    boolean disable = newv == null;
+                    editButton.setDisable(disable);
+                    removeButton.setDisable(disable);
+                });
 
-        selectedAnnotations.addListener((ListChangeListener.Change<? extends Annotation> change) -> {
-            boolean disable = selectedAnnotations.size() != 1;
-            addButton.setDisable(disable);
-            editButton.setDisable(disable);
-            removeButton.setDisable(disable);
+        // -- Configure combobox autocomplete
+        new AutoCompleteComboBoxDecorator<>(conceptComboBox);
+        conceptComboBox.setOnKeyTyped(e -> {
+            if (e.getCode().equals(KeyCode.ENTER) && annotation != null) {
+                Annotation oldA = this.annotation;
+                Annotation newA = new Annotation(oldA);
+                newA.setConcept(conceptComboBox.getValue());
+                eventBus.send(new UpdateAnnotation(oldA, newA));
+                e.consume();
+            }
         });
+        loadComboBoxData();
 
+        // If the cache is cleared reload combobox data
+        eventBus.toObserverable()
+                .ofType(ClearCache.class)
+                .subscribe(c -> loadComboBoxData());
+
+        // Listen for Annotation selections
+        eventBus.toObserverable()
+                .ofType(SelectedAnnotations.class)
+                .subscribe(sa -> {
+                    Annotation a0 = sa.getAnnotations().size() == 1 ? sa.getAnnotations().get(0) : null;
+                    setAnnotation(a0);
+                });
+
+        setAnnotation(null);
+    }
+
+    private void setAnnotation(Annotation annotation) {
+        this.annotation = annotation;
+        boolean isNull = annotation == null;
+        setEnabled(!isNull);
+
+        // -- When an annotation is selected set its associations in the listview
+        if (isNull) {
+            toolBox.getServices()
+                    .getConceptService()
+                    .findRootDetails()
+                    .thenApply(root -> {
+                        Platform.runLater(() -> {
+                            conceptComboBox.setValue(root.getName());
+                            conceptComboBox.getEditor().selectAll();
+                            conceptComboBox.getEditor().requestFocus();
+                            associationListView.setItems(null);
+                        });
+                        return null;
+                    });
+        }
+        else {
+            Platform.runLater(() -> {
+                conceptComboBox.setValue(annotation.getConcept());
+                conceptComboBox.getEditor().selectAll();
+                conceptComboBox.getEditor().requestFocus();
+                ObservableList<Association> ass = FXCollections.observableArrayList(annotation.getAssociations());
+                associationListView.setItems(ass);
+            });
+        }
+
+    }
+
+    private void setEnabled(boolean enable) {
+        boolean disable = !enable;
+        addButton.setDisable(disable);
+        editButton.setDisable(disable);
+        removeButton.setDisable(disable);
+        conceptComboBox.setEditable(enable);
     }
 
     private void loadComboBoxData() {
@@ -141,71 +185,4 @@ public class RowEditorPaneController {
                 });
     }
 
-    private void initAssociationListView() {
-        // -- If no association is selected disable edit and remove buttons
-        associationListView.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((obs, oldv, newv) -> {
-                    boolean disable = newv == null;
-                    editButton.setDisable(disable);
-                    removeButton.setDisable(disable);
-                });
-
-        // -- When an annotation is selected set its associations in the listview
-        ObservableList<Annotation> selectedAnnotations = toolBox.getData().getSelectedAnnotations();
-        selectedAnnotations.addListener((ListChangeListener.Change<? extends Annotation> change) -> {
-            if (selectedAnnotations.size() == 1) {
-                Annotation a = selectedAnnotations.get(0);
-                ObservableList<Association> ass = FXCollections.observableArrayList(a.getAssociations());
-                associationListView.setItems(ass);
-            }
-        });
-    }
-
-    private void initConceptComboBox() {
-
-
-        // -- Configure combobox autocomplete
-        new AutoCompleteComboBoxDecorator<>(conceptComboBox);
-        loadComboBoxData();
-
-        // -- Listen for selected annotations
-        ObservableList<Annotation> selectedAnnotations = toolBox.getData()
-                .getSelectedAnnotations();
-
-        selectedAnnotations.addListener((ListChangeListener.Change<? extends Annotation> change) -> {
-            if (selectedAnnotations.size() == 1) {
-                conceptComboBox.setEditable(true);
-                String value = selectedAnnotations.stream()
-                        .findFirst()
-                        .map(Annotation::getConcept)
-                        .get();
-                conceptComboBox.setValue(value);
-            }
-            else {
-                toolBox.getServices()
-                        .getConceptService()
-                        .findRootDetails()
-                        .thenApply(root -> {
-                            Platform.runLater(() -> {
-                                conceptComboBox.setValue(root.getName());
-                                conceptComboBox.setEditable(false);
-                            });
-                            return null;
-                        });
-            }
-            conceptComboBox.getEditor().selectAll();
-            conceptComboBox.getEditor().requestFocus();
-        });
-
-        conceptComboBox.setOnKeyTyped(e -> {
-            if (e.getCode().equals(KeyCode.ENTER) && selectedAnnotations.size() == 1) {
-                Annotation oldA = selectedAnnotations.get(0);
-                Annotation newA = new Annotation(oldA);
-                newA.setConcept(conceptComboBox.getValue());
-                eventBus.send(new UpdateAnnotation(oldA, newA));
-                e.consume();
-            }
-        });
-    }
 }
