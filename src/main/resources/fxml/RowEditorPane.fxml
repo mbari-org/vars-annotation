@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RowEditorPaneController">
+   <bottom>
+      <HBox BorderPane.alignment="BOTTOM_RIGHT">
+         <children>
+            <HBox HBox.hgrow="ALWAYS" />
+            <JFXButton fx:id="addButton" alignment="CENTER" contentDisplay="CENTER" onAction="#onAdd" HBox.hgrow="NEVER" />
+            <JFXButton fx:id="editButton" alignment="CENTER" contentDisplay="CENTER" onAction="#onEdit" HBox.hgrow="NEVER" />
+            <JFXButton fx:id="removeButton" alignment="CENTER" contentDisplay="CENTER" onAction="#onRemove" HBox.hgrow="NEVER" />
+         </children>
+      </HBox>
+   </bottom>
+   <top>
+      <JFXComboBox fx:id="conceptComboBox" maxWidth="1.7976931348623157E308" BorderPane.alignment="TOP_LEFT" />
+   </top>
+   <center>
+      <JFXListView fx:id="associationListView" onMouseClicked="#onAssociationSelected" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
