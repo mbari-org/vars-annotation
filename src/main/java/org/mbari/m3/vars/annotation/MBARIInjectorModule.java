@@ -13,9 +13,7 @@ import org.mbari.m3.vars.annotation.services.vampiresquid.v1.VamService;
 import org.mbari.m3.vars.annotation.services.vampiresquid.v1.VamWebServiceFactory;
 import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBConceptService;
 import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBWebServiceFactory;
-import org.mbari.m3.vars.annotation.services.varsuserserver.v1.KBMiscServiceFactory;
-import org.mbari.m3.vars.annotation.services.varsuserserver.v1.KBPrefService;
-import org.mbari.m3.vars.annotation.services.varsuserserver.v1.KBUserService;
+import org.mbari.m3.vars.annotation.services.varsuserserver.v1.*;
 import org.mbari.m3.vars.annotation.util.PreferencesFactory;
 import org.mbari.m3.vars.annotation.util.WebPreferencesFactory;
 
@@ -39,6 +37,7 @@ public class MBARIInjectorModule implements Module {
         configureMediaService(binder);
         configureConceptService(binder);
         configurePrefsServices(binder);
+        configureUserServices(binder);
     }
 
     private void configureAnnotationService(Binder binder) {
@@ -89,28 +88,34 @@ public class MBARIInjectorModule implements Module {
     private void configurePrefsServices(Binder binder) {
         String endpoint = config.getString("preferences.service.url");
         String clientSecret = config.getString("preferences.service.client.secret");
-        Duration prefsTimeout = config.getDuration("preferences.service.timeout");
-        KBMiscServiceFactory factory = new KBMiscServiceFactory(endpoint);
-        AuthService authService = new BasicJWTAuthService(factory,
+        Duration timeout = config.getDuration("preferences.service.timeout");
+        PrefWebServiceFactory factory = new PrefWebServiceFactory(endpoint, timeout);
+        RetrofitServiceFactory authFactory = new BasicJWTAuthServiceFactorySC(endpoint, timeout);
+        AuthService authService = new BasicJWTAuthService(authFactory,
                 new Authorization("APIKEY", clientSecret));
-        binder.bind(String.class)
-                .annotatedWith(Names.named("MISC_ENDPOINT"))
-                .toInstance(endpoint);
+        KBPrefService preferencesService = new KBPrefService(factory, authService);
         binder.bind(Long.class)
                 .annotatedWith(Names.named("PREFS_TIMEOUT"))
-                .toInstance(prefsTimeout.toMillis());
-        binder.bind(AuthService.class)
-                .annotatedWith(Names.named("PREFS_AUTH"))
-                .toInstance(authService);
-        binder.bind(AuthService.class)
-                .annotatedWith(Names.named("USERS_AUTH"))
-                .toInstance(authService);
-        binder.bind(KBMiscServiceFactory.class).toInstance(factory);
-        binder.bind(PreferencesService.class).to(KBPrefService.class);
-        binder.bind(UserService.class).to(KBUserService.class);
+                .toInstance(timeout.toMillis());
+        binder.bind(PreferencesService.class).toInstance(preferencesService);
+        binder.bind(KBPrefService.class).toInstance(preferencesService);
         binder.bind(PreferencesFactory.class).to(WebPreferencesFactory.class);
     }
 
-
+    private void configureUserServices(Binder binder) {
+        String endpoint = config.getString("accounts.service.url");
+        String clientSecret = config.getString("accounts.service.client.secret");
+        Duration timeout = config.getDuration("accounts.service.timeout");
+        UserWebServiceFactory factory = new UserWebServiceFactory(endpoint, timeout);
+        RetrofitServiceFactory authFactory = new BasicJWTAuthServiceFactorySC(endpoint, timeout);
+        AuthService authService = new BasicJWTAuthService(authFactory,
+                new Authorization("APIKEY", clientSecret));
+        KBUserService userService = new KBUserService(factory, authService);
+        binder.bind(Long.class)
+                .annotatedWith(Names.named("ACCOUNTS_TIMEOUT"))
+                .toInstance(timeout.toMillis());
+        binder.bind(UserService.class).toInstance(userService);
+        binder.bind(KBUserService.class).toInstance(userService);
+    }
 
 }

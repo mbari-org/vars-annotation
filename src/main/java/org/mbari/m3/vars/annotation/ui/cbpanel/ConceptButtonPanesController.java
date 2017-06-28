@@ -132,7 +132,6 @@ public class ConceptButtonPanesController {
         if (tabsPrefsOpt.isPresent()) {
             Preferences tabsPrefs = tabsPrefsOpt.get();
             try {
-                String[] s = tabsPrefs.childrenNames();
                 Arrays.stream(tabsPrefs.childrenNames())
                         .forEach(tabName -> {
                             Preferences tabPrefs = tabsPrefs.node(tabName);
@@ -142,9 +141,11 @@ public class ConceptButtonPanesController {
                                     tabsPrefs.node(tabName),
                                     toolBox.getEventBus(),
                                     i18n);
+                            controller.setLocked(lockProperty.get());
                             Tab tab = new Tab(name, controller.getPane());
                             tab.setClosable(true);
                             tab.setOnClosed(e -> removeTab(tab));
+
                             getTabPane().getTabs().add(tab);
                         });
             }

@@ -2,6 +2,7 @@ package org.mbari.m3.vars.annotation.services.varsuserserver.v1;
 
 import org.mbari.m3.vars.annotation.model.User;
 import org.mbari.m3.vars.annotation.services.AuthService;
+import org.mbari.m3.vars.annotation.services.RetrofitServiceFactory;
 import org.mbari.m3.vars.annotation.services.RetrofitWebService;
 import org.mbari.m3.vars.annotation.services.UserService;
 
@@ -23,7 +24,8 @@ public class KBUserService implements UserService, RetrofitWebService {
     private final Map<String, String> defaultHeaders;
 
     @Inject
-    public KBUserService(KBMiscServiceFactory serviceFactory, @Named("USERS_AUTH") AuthService authService) {
+    public KBUserService(UserWebServiceFactory serviceFactory,
+                         @Named("ACCOUNTS_AUTH") AuthService authService) {
         userService = serviceFactory.create(UserWebService.class, authService);
         defaultHeaders = new HashMap<>();
         defaultHeaders.put("Accept", "application/json");

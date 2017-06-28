@@ -50,12 +50,12 @@ public abstract class RetrofitServiceFactory {
         logger.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
                 .readTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS)
-                .writeTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS)
-                .addInterceptor(logger);
+                .writeTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS);
 
         if (auth != null) {
             httpClient.addInterceptor(new BasicJWTAuthInterceptor(auth));
         }
+        httpClient.addInterceptor(logger);
         retrofitBuilder.client(httpClient.build());
 
         return retrofitBuilder.build()

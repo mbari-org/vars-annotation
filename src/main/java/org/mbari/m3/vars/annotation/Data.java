@@ -8,7 +8,9 @@ import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -21,6 +23,8 @@ public class Data {
 
     private ObservableList<Annotation> annotations = FXCollections.emptyObservableList();
 
+    private ObservableList<Annotation> selectedAnnotations = FXCollections.emptyObservableList();
+
     private ObjectProperty<User> user  = new SimpleObjectProperty<>();
 
     public ObservableList<Media> getMedia() {
@@ -32,6 +36,7 @@ public class Data {
         this.media.addAll(media);
     }
 
+
     public ObservableList<Annotation> getAnnotations() {
         return annotations;
     }
@@ -39,14 +44,6 @@ public class Data {
     public void setAnnotations(Collection<Annotation> annotations) {
         this.annotations.clear();
         this.annotations.addAll(annotations);
-    }
-
-    public void setMedia(ObservableList<Media> media) {
-        this.media = media;
-    }
-
-    public void setAnnotations(ObservableList<Annotation> annotations) {
-        this.annotations = annotations;
     }
 
     public User getUser() {
@@ -59,5 +56,14 @@ public class Data {
 
     public void setUser(User user) {
         this.user.set(user);
+    }
+
+    public ObservableList<Annotation> getSelectedAnnotations() {
+        return selectedAnnotations;
+    }
+
+    public void setSelectedAnnotations(ObservableList<Annotation> selectedAnnotations) {
+        this.selectedAnnotations.clear();
+        this.selectedAnnotations.addAll(selectedAnnotations);
     }
 }

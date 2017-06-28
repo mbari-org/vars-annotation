@@ -153,6 +153,11 @@
       <artifactId>anchorfx</artifactId>
       <version>0.1-SNAPSHOT</version>
     </dependency>
+      <dependency>
+          <groupId>org.glassfish.jersey.core</groupId>
+          <artifactId>jersey-client</artifactId>
+          <version>2.25.1</version>
+      </dependency>
   </dependencies>
 
   <!-- The build plugins below perform the following steps:

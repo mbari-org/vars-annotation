@@ -5,9 +5,8 @@ import org.junit.Test;
 import org.mbari.m3.vars.annotation.model.Authorization;
 import org.mbari.m3.vars.annotation.services.AuthService;
 import org.mbari.m3.vars.annotation.services.BasicJWTAuthService;
-import org.mbari.m3.vars.annotation.services.TestConfig;
+import org.mbari.m3.vars.annotation.ui.DemoConstants;
 
-import java.time.Duration;
 import java.util.Optional;
 
 /**
@@ -16,10 +15,10 @@ import java.util.Optional;
  */
 public class BasicJWTAuthServiceTest {
 
-    AnnoWebServiceFactory serviceGenerator = TestConfig.ANNO_SERVICE_GEN;
-    AuthService authService = new BasicJWTAuthService(serviceGenerator,
-            new Authorization("APIKEY", ""));
-    Duration timeout = Duration.ofMillis(15000);
+    AnnoWebServiceFactory serviceFactory = DemoConstants.newAnnoWebServiceFactory();
+    String clientSecret = DemoConstants.getToolBox().getConfig().getString("annotation.service.client.secret");
+    AuthService authService = new BasicJWTAuthService(serviceFactory,
+            new Authorization("APIKEY", clientSecret));
 
     @Test
     public void testAuth() {

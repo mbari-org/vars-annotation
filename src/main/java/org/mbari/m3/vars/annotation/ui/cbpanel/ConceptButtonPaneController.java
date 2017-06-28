@@ -11,10 +11,7 @@ import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -33,6 +30,7 @@ public class ConceptButtonPaneController {
 
     private static final String PREF_BUTTON_NAME = "name";
     private static final String PREF_BUTTON_ORDER = "order";
+    private static final String BAD_KEY = "__unknown__";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -87,11 +85,12 @@ public class ConceptButtonPaneController {
             List<Button> buttons = Arrays.stream(panePreferences.childrenNames())
                     .map(nodeName -> {
                         Preferences buttonPreferences = panePreferences.node(nodeName);
-                        String conceptName = buttonPreferences.get(PREF_BUTTON_NAME, "unknown");
+                        String conceptName = buttonPreferences.get(PREF_BUTTON_NAME, BAD_KEY);
                         int order = buttonPreferences.getInt(PREF_BUTTON_ORDER, 0);
                         Button button = factory.build(conceptName);
                         return new ButtonPref(button, order);
                     })
+                    .filter(buttonPref -> !buttonPref.getButton().getText().equals(BAD_KEY))
                     .sorted(Comparator.comparingInt(ButtonPref::getOrder))
                     .map(ButtonPref::getButton)
                     .collect(Collectors.toList());
@@ -128,7 +127,8 @@ public class ConceptButtonPaneController {
 
         // Remove non-longer used buttons
         try {
-            List<String> storedButtons = Arrays.asList(panePreferences.childrenNames());
+            // Arrays.asList returns unmodifiable list. Need to create ArrayList.
+            List<String> storedButtons = new ArrayList<>(Arrays.asList(panePreferences.childrenNames()));
             List<String> existingButtons = buttons.stream()
                     .map(Button::getText)
                     .collect(Collectors.toList());

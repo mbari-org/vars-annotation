@@ -3,6 +3,7 @@ package org.mbari.m3.vars.annotation.services.varsuserserver.v1;
 import org.mbari.m3.vars.annotation.model.PreferenceNode;
 import org.mbari.m3.vars.annotation.services.AuthService;
 import org.mbari.m3.vars.annotation.services.PreferencesService;
+import org.mbari.m3.vars.annotation.services.RetrofitServiceFactory;
 import org.mbari.m3.vars.annotation.services.RetrofitWebService;
 
 import javax.inject.Inject;
@@ -24,7 +25,7 @@ public class KBPrefService implements PreferencesService, RetrofitWebService {
     private final Map<String, String> defaultHeaders;
 
     @Inject
-    public KBPrefService(KBMiscServiceFactory serviceFactory, @Named("PREFS_AUTH") AuthService authService) {
+    public KBPrefService(PrefWebServiceFactory serviceFactory, @Named("PREFS_AUTH") AuthService authService) {
         prefService = serviceFactory.create(PrefWebService.class, authService);
         defaultHeaders = new HashMap<>();
         defaultHeaders.put("Accept", "application/json");
@@ -33,24 +34,24 @@ public class KBPrefService implements PreferencesService, RetrofitWebService {
 
     @Override
     public CompletableFuture<PreferenceNode> create(PreferenceNode node) {
-        return sendRequest(prefService.create(node.getNodeName(),
-                node.getPrefKey(),
-                node.getPrefValue(),
+        return sendRequest(prefService.create(node.getName(),
+                node.getKey(),
+                node.getValue(),
                 defaultHeaders));
     }
 
     @Override
     public CompletableFuture<Optional<PreferenceNode>> update(PreferenceNode node) {
-        sendRequest(prefService.update(node.getNodeName(),
-                node.getPrefKey(),
-                node.getPrefValue(),
-                defaultHeaders));
-        return null;
+        return sendRequest(prefService.update(node.getName(),
+                node.getKey(),
+                node.getValue(),
+                defaultHeaders))
+                .thenApply(Optional::ofNullable);
     }
 
     @Override
     public CompletableFuture<Void> delete(PreferenceNode node) {
-        return sendRequest(prefService.delete(node.getNodeName(), node.getPrefKey()));
+        return sendRequest(prefService.delete(node.getName(), node.getKey()));
     }
 
     @Override

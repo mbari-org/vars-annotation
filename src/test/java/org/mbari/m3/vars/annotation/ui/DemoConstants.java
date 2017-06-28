@@ -22,7 +22,6 @@ public class DemoConstants {
 
     private static final UIToolBox toolBox = Initializer.getToolBox();
 
-    private static CachedConceptService conceptService;
     public static EventBus EVENT_BUS = toolBox.getEventBus();
 
     public static ResourceBundle UI_BUNDLE = toolBox.getI18nBundle();
@@ -31,17 +30,20 @@ public class DemoConstants {
         return toolBox;
     }
 
-    public static final ConceptService newConceptService() {
+    public static ConceptService newConceptService() {
         return getToolBox().getServices().getConceptService();
     }
 
-    public static final MediaService newMediaService() {
+    public static MediaService newMediaService() {
         return getToolBox().getServices().getMediaService();
     }
 
-    public static final AnnotationService newAnnotationService() {
+    public static AnnotationService newAnnotationService() {
         return getToolBox().getServices().getAnnotationService();
     }
 
+    public static AnnoWebServiceFactory newAnnoWebServiceFactory() {
+        return Initializer.getInjector().getInstance(AnnoWebServiceFactory.class);
+    }
 
 }

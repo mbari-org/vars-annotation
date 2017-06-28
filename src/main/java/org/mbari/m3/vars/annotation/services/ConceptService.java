@@ -27,6 +27,8 @@ public interface ConceptService {
      */
     CompletableFuture<Optional<ConceptDetails>> findDetails(String name);
 
+    CompletableFuture<ConceptDetails> findRootDetails();
+
     /**
      *
      * @return A list of all concept names found in the knowledgebase.

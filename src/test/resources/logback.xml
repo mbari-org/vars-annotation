@@ -14,6 +14,7 @@
     </appender>
 
     <logger name="java.util.Date" level="WARN" />
+    <logger name="org.mbari.m3.vars.annotation.services.varskbserver.v1.KBWebServiceFactory" level="WARN" />
 
     <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>

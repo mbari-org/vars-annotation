@@ -1,7 +1,6 @@
 package org.mbari.m3.vars.annotation.services.varsuserserver.v1;
 
 import com.fatboyindustrial.gsonjavatime.Converters;
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.mbari.m3.vars.annotation.gson.ByteArrayConverter;
@@ -16,13 +15,14 @@ import java.time.Duration;
 
 /**
  * @author Brian Schlining
- * @since 2017-06-09T08:29:00
+ * @since 2017-06-27T10:10:00
  */
-public class KBMiscServiceFactory extends RetrofitServiceFactory {
+public class PrefWebServiceFactory extends RetrofitServiceFactory {
 
     @Inject
-    public KBMiscServiceFactory(@Named("MISC_ENDPOINT") String endpoint) {
-        super(endpoint);
+    public PrefWebServiceFactory(@Named("PREFS_ENDPOINT") String endpoint,
+                                 @Named("PREFS_TIMEOUT") Duration timeout) {
+        super(endpoint, timeout);
     }
 
     public Gson getGson() {

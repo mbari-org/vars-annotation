@@ -24,6 +24,10 @@ public interface AnnotationService {
 
     CompletableFuture<List<Annotation>> findByImageReference(UUID imageReferenceUuid);
 
+    CompletableFuture<Image> findImageByUuid(UUID imageReferenceUuid);
+
+    CompletableFuture<Association> findAssociationByUuid(UUID associationUuid);
+
     CompletableFuture<AnnotationCount> countAnnotations(UUID videoReferenceUuid);
 
     CompletableFuture<Annotation> createAnnotation(Annotation annotation);

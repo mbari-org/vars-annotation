@@ -44,7 +44,7 @@ public interface ImageWebService {
                        @FieldMap Map<String, String> fields,
                        @HeaderMap Map<String, String> headers);
 
-    @DELETE("images/{uuid}")
+    @DELETE("imagereferences/{uuid}")
     Call<Boolean> delete(@Path("uuid") UUID imageReferenceUuid);
 
 }

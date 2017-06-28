@@ -32,7 +32,7 @@ public interface AnnoWebService {
      * @param uuid The image reference UUID
      * @return Annotations that are associated with this image
      */
-    @GET("annotations/imagereference/{uuid")
+    @GET("annotations/imagereference/{uuid}")
     Call<List<Annotation>> findByImageReferenceUuid(@Path("uuid") UUID uuid);
 
 

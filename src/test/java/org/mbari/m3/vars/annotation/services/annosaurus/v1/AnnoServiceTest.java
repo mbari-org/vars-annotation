@@ -3,10 +3,10 @@ package org.mbari.m3.vars.annotation.services.annosaurus.v1;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.model.*;
-import org.mbari.m3.vars.annotation.services.AuthService;
-import org.mbari.m3.vars.annotation.services.BasicJWTAuthService;
-import org.mbari.m3.vars.annotation.services.TestConfig;
+import org.mbari.m3.vars.annotation.services.AnnotationService;
+import static org.mbari.m3.vars.annotation.util.AsyncUtils.await;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Brian Schlining
@@ -26,10 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class AnnoServiceTest {
 
-    AnnoWebServiceFactory serviceGenerator = TestConfig.ANNO_SERVICE_GEN;
-    AuthService authService = new BasicJWTAuthService(serviceGenerator,
-            new Authorization("APIKEY", ""));
-    AnnoService annoService = new AnnoService(serviceGenerator, authService);
+    AnnotationService annoService = Initializer.getInjector().getInstance(AnnoService.class);
     Duration timeout = Duration.ofMillis(15000);
 
     private final UUID uuid = UUID.fromString("ccbe1c1b-100d-41ab-87ac-7e48d57c8278");
@@ -194,8 +190,8 @@ public class AnnoServiceTest {
 
         // --- 3. Delete Image
         await(annoService.deleteImage(img0.getImageReferenceUuid()), timeout);
-        Optional<List<Annotation>> imgOpt1 = await(annoService.findByImageReference(img0.getImageReferenceUuid()), timeout);
-        assertFalse("Image was still in database after delete", imgOpt0.isPresent());
+        Optional<Image> imgOpt1 = await(annoService.findImageByUuid(img0.getImageReferenceUuid()), timeout);
+        assertFalse("Image was still in database after delete", imgOpt1.isPresent());
 
         // Cleanup and delete original annotation
         await(annoService.deleteAnnotation(anno.getObservationUuid()), timeout);
@@ -203,17 +199,6 @@ public class AnnoServiceTest {
 
     }
 
-
-    private <T> Optional<T> await(CompletableFuture<T> f, Duration timeout) {
-        Optional<T> r;
-        try {
-            r = Optional.ofNullable(f.get(timeout.toMillis(), TimeUnit.MILLISECONDS));
-        }
-        catch (Exception e) {
-            r = Optional.empty();
-        }
-        return r;
-    }
 
 
 

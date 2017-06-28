@@ -8,42 +8,42 @@ import com.google.common.base.Preconditions;
  */
 public class PreferenceNode {
 
-    private final String nodeName;
-    private final String prefKey;
-    private String prefValue;
+    private final String name;
+    private final String key;
+    private String value;
 
-    public PreferenceNode(String nodeName, String prefKey, String prefValue) {
-        Preconditions.checkNotNull(nodeName);
-        Preconditions.checkNotNull(prefKey);
-        Preconditions.checkNotNull(prefKey);
-        this.nodeName = nodeName;
-        this.prefKey = prefKey;
-        this.prefValue = prefValue;
+    public PreferenceNode(String name, String key, String value) {
+        Preconditions.checkNotNull(name);
+        Preconditions.checkNotNull(key);
+        Preconditions.checkNotNull(key);
+        this.name = name;
+        this.key = key;
+        this.value = value;
     }
 
-    public String getNodeName() {
-        return nodeName;
+    public String getName() {
+        return name;
     }
 
-    public String getPrefKey() {
-        return prefKey;
+    public String getKey() {
+        return key;
     }
 
-    public String getPrefValue() {
-        return prefValue;
+    public String getValue() {
+        return value;
     }
 
-    public void setPrefValue(String prefValue) {
-        Preconditions.checkNotNull(prefValue);
-        this.prefValue = prefValue;
+    public void setValue(String value) {
+        Preconditions.checkNotNull(value);
+        this.value = value;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
 
-        hash = 61 * hash + ((this.nodeName != null) ? this.nodeName.hashCode() : 0);
-        hash = 61 * hash + ((this.prefKey != null) ? this.prefKey.hashCode() : 0);
+        hash = 61 * hash + ((this.name != null) ? this.name.hashCode() : 0);
+        hash = 61 * hash + ((this.key != null) ? this.key.hashCode() : 0);
 
         return hash;
     }
@@ -60,11 +60,11 @@ public class PreferenceNode {
 
         final PreferenceNode other = (PreferenceNode) obj;
 
-        if ((this.nodeName == null) ? (other.nodeName != null) : !this.nodeName.equals(other.nodeName)) {
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
 
-        if ((this.prefKey == null) ? (other.prefKey != null) : !this.prefKey.equals(other.prefKey)) {
+        if ((this.key == null) ? (other.key != null) : !this.key.equals(other.key)) {
             return false;
         }
 

@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CachedConceptService implements ConceptService {
 
     private Concept root;
+    private ConceptDetails rootDetails;
     private Map<String, Concept> cache = new ConcurrentHashMap<>();
     private volatile List<String> allNames = Collections.emptyList();
     private final ConceptService conceptService;
@@ -110,6 +111,19 @@ public class CachedConceptService implements ConceptService {
     }
 
     @Override
+    public CompletableFuture<ConceptDetails> findRootDetails() {
+        CompletableFuture<ConceptDetails> f;
+        if (rootDetails == null) {
+            f = conceptService.findRootDetails()
+                    .thenApply(cd -> rootDetails = cd);
+        }
+        else {
+            f = CompletableFuture.completedFuture(rootDetails);
+        }
+        return f;
+    }
+
+    @Override
     public CompletableFuture<List<String>> findAllNames() {
         if (allNames.isEmpty()) {
             return conceptService.findAllNames()
@@ -154,5 +168,6 @@ public class CachedConceptService implements ConceptService {
         cache.clear();
         allNames = Collections.emptyList();
         root = null;
+        rootDetails = null;
     }
 }

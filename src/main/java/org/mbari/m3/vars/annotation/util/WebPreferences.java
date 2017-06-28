@@ -5,6 +5,7 @@ import org.mbari.m3.vars.annotation.services.PreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -22,7 +23,7 @@ public class WebPreferences extends AbstractPreferences {
 
     private final PreferencesService service;
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final long timeoutMillis;
+    private final Duration timeout;
 
 
     /**
@@ -40,33 +41,41 @@ public class WebPreferences extends AbstractPreferences {
                           String name) {
         super(parent, name);
         this.service = service;
-        this.timeoutMillis = timeoutMillis;
+        this.timeout = Duration.ofMillis(timeoutMillis);
     }
 
     @Override
     protected void putSpi(String key, String value) {
-        service.findByNameAndKey(absolutePath(), key)
-                .thenCompose(opt -> {
+        log.debug("putSpi({}, {})", key, value);
+        CompletableFuture<String> f = service.findByNameAndKey(absolutePath(), key)
+                .thenApply(opt -> {
                     if (opt.isPresent()) {
                         PreferenceNode node = opt.get();
-                        if (!node.getPrefValue().equals(value)) {
-                            node.setPrefValue(value);
+                        if (!node.getValue().equals(value)) {
+                            node.setValue(value);
                             service.update(node);
                         }
                     } else {
                         PreferenceNode node = new PreferenceNode(absolutePath(), key, value);
                         service.create(node);
                     }
-                    return null;
+                    return "dummy";
                 });
+        try {
+            f.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+        }
+        catch (Exception e) {
+            log.warn("Failed to call putSpi(" + key + ", " + value + ")", e);
+        }
     }
 
     @Override
     protected String getSpi(String key) {
+        log.debug("getSpi({})", key);
         try {
             Optional<PreferenceNode> opt = service.findByNameAndKey(absolutePath(), key)
-                    .get(timeoutMillis, TimeUnit.MILLISECONDS);
-            return opt.map(PreferenceNode::getPrefValue).orElse(null);
+                    .get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+            return opt.map(PreferenceNode::getValue).orElse(null);
         } catch (Exception e) {
             log.warn("Failed to call getSpi(" + key + ")", e);
             return null;
@@ -75,36 +84,51 @@ public class WebPreferences extends AbstractPreferences {
 
     @Override
     protected void removeSpi(String key) {
-        service.findByNameAndKey(absolutePath(), key)
-                .thenCompose(opt -> {
+        log.debug("removeSpi({})", key);
+        CompletableFuture<String> f = service.findByNameAndKey(absolutePath(), key)
+                .thenApply(opt -> {
                     if (opt.isPresent()) {
                         PreferenceNode node = opt.get();
                         service.delete(node);
                     }
-                    return null;
+                    return "dummy";
                 });
+        try {
+            f.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+        }
+        catch (Exception e) {
+            log.warn("Failed to call removeSpi(" + key + ")", e);
+        }
     }
 
     @Override
     protected void removeNodeSpi() throws BackingStoreException {
-        service.findByNameLike(absolutePath())
-                .thenCompose(nodes -> {
+        log.debug("removeNodeSpi()");
+        CompletableFuture<String> f = service.findByNameLike(absolutePath())
+                .thenApply(nodes -> {
                     List<CompletableFuture<Void>> fs = nodes.stream()
                             .map(service::delete)
                             .collect(Collectors.toList());
 
                     CompletableFuture[] fa = fs.toArray(new CompletableFuture[fs.size()]);
                     CompletableFuture.allOf(fa);
-                    return null;
+                    return "dummy";
                 });
+        try {
+            f.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+        }
+        catch (Exception e) {
+            log.warn("Failed to call removeNodeSpi()", e);
+        }
     }
 
     @Override
     protected String[] keysSpi() throws BackingStoreException {
+        log.debug("keysSpi()");
         try {
             CompletableFuture<Stream<String>> f = service.findByNameLike(absolutePath())
-                    .thenApply(nodes -> nodes.stream().map(PreferenceNode::getPrefKey));
-            return f.get(timeoutMillis, TimeUnit.MILLISECONDS)
+                    .thenApply(nodes -> nodes.stream().map(PreferenceNode::getKey));
+            return f.get(timeout.toMillis(), TimeUnit.MILLISECONDS)
                     .toArray(String[]::new);
         }
         catch (Exception e) {
@@ -115,13 +139,14 @@ public class WebPreferences extends AbstractPreferences {
 
     @Override
     protected String[] childrenNamesSpi() throws BackingStoreException {
+        log.debug("childrenNamesSpi()");
         String parentNodeName = absolutePath();
         CompletableFuture<List<PreferenceNode>> f = service.findByNameLike(parentNodeName);
         try {
-            List<PreferenceNode> nodes = f.get(timeoutMillis, TimeUnit.MILLISECONDS);
+            List<PreferenceNode> nodes = f.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
             return nodes.stream()
                     .map(n -> {
-                        String nodeName = n.getNodeName();
+                        String nodeName = n.getName();
                         // Strip off base path
                         String childPath = nodeName.substring(parentNodeName.length(),
                                 nodeName.length());
@@ -136,16 +161,18 @@ public class WebPreferences extends AbstractPreferences {
                         return childPath;
                     })
                     .distinct()
+                    .filter(s -> s != null && !s.isEmpty())
                     .toArray(String[]::new);
         } catch (Exception e) {
-            log.warn("Failed to look up child node names");
+            log.warn("Failed to look up child node names", e);
             return new String[0];
         }
     }
 
     @Override
     protected AbstractPreferences childSpi(String name) {
-        return new WebPreferences(service, timeoutMillis, this, name);
+        log.debug("childSpi({})", name);
+        return new WebPreferences(service, timeout.toMillis(), this, name);
     }
 
     @Override
