@@ -6,12 +6,13 @@ import java.util.UUID;
  * @author Brian Schlining
  * @since 2017-05-11T13:29:00
  */
-public class Association {
+public class Association implements Cloneable {
     private UUID uuid;
     private String linkName;
     private String toConcept;
     private String linkValue;
     private String mimeType;
+
 
     public Association(String linkName, String toConcept, String linkValue, String mimeType) {
         this.linkName = linkName;
@@ -33,6 +34,14 @@ public class Association {
         this.linkValue = linkValue;
         this.mimeType = mimeType;
         this.uuid = uuid;
+    }
+
+    public Association(Association a) {
+        uuid = a.uuid;
+        linkName = a.linkName;
+        toConcept = a.toConcept;
+        linkValue = a.linkValue;
+        mimeType = a.mimeType;
     }
 
 

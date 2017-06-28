@@ -11,7 +11,7 @@ import java.util.UUID;
  * @author Brian Schlining
  * @since 2017-05-11T13:30:00
  */
-public class Image implements ImagedMoment {
+public class Image implements ImagedMoment, Cloneable {
     private UUID imageReferenceUuid;
     private String format;
     private Integer width;
@@ -111,4 +111,6 @@ public class Image implements ImagedMoment {
     public void setRecordedTimestamp(Instant recordedTimestamp) {
         this.recordedTimestamp = recordedTimestamp;
     }
+
+
 }

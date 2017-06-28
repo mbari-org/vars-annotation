@@ -3,6 +3,7 @@ package org.mbari.m3.vars.annotation.model;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -28,6 +29,34 @@ public class Media {
     private String audioCodec;
     private String description;
     private String videoName;
+
+    public Media() {
+    }
+
+    /**
+     * Copy constructor
+     * @param media
+     */
+    public Media(Media media) {
+        videoSequenceUuid = media.videoSequenceUuid;
+        videoReferenceUuid = media.videoReferenceUuid;
+        videoUuid = media.videoUuid;
+        videoSequenceName = media.videoSequenceName;
+        cameraId = media.cameraId;
+        uri = media.uri;
+        startTimestamp = media.startTimestamp;
+        durationMillis = media.durationMillis;
+        container = media.container;
+        width = media.width;
+        height = media.height;
+        frameRate = media.frameRate;
+        sizeBytes = media.sizeBytes;
+        sha512 = Arrays.copyOf(media.sha512, media.sha512.length);
+        videoCodec = media.videoCodec;
+        audioCodec = media.audioCodec;
+        description = media.description;
+        videoName = media.videoName;
+    }
 
     public String getVideoCodec() {
         return videoCodec;
@@ -172,4 +201,5 @@ public class Media {
     public void setVideoName(String videoName) {
         this.videoName = videoName;
     }
+
 }

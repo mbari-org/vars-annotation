@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
@@ -28,6 +29,32 @@ public class Annotation implements ImagedMoment {
     private String activity;
     private List<Association> associations;
     private List<ImageReference> images;
+
+    public Annotation() {
+    }
+
+    public Annotation(Annotation a) {
+        observationUuid = a.observationUuid;
+        concept = a.concept;
+        observer = a.observer;
+        observationTimestamp = a.observationTimestamp;
+        videoReferenceUuid = a.videoReferenceUuid;
+        imagedMomentUuid = a.imagedMomentUuid;
+        timecode = a.timecode;
+        elapsedTime = a.elapsedTime;
+        recordedTimestamp = a.recordedTimestamp;
+        duration = a.duration;
+        group = a.group;
+        activity = a.activity;
+        associations = a.associations
+                .stream()
+                .map(Association::new)
+                .collect(Collectors.toList());
+        images = a.images
+                .stream()
+                .map(ImageReference::new)
+                .collect(Collectors.toList());
+    }
 
     public UUID getObservationUuid() {
         return observationUuid;
@@ -140,4 +167,5 @@ public class Annotation implements ImagedMoment {
     public void setImages(List<ImageReference> images) {
         this.images = images;
     }
+
 }
