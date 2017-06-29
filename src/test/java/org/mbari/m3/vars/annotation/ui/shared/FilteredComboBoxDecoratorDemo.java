@@ -1,19 +1,18 @@
 package org.mbari.m3.vars.annotation.ui.shared;
 
+import com.jfoenix.controls.JFXComboBox;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import org.mbari.m3.vars.annotation.util.StringUtils;
 
 /**
  * @author Brian Schlining
- * @since 2017-06-28T15:41:00
+ * @since 2017-06-29T09:39:00
  */
-public class AutoCompleteComboBoxDemo extends Application {
+public class FilteredComboBoxDecoratorDemo extends Application {
 
     private static final String[] LISTA = { "Abacate", "Abacaxi", "Ameixa", "Amora", "Araticum", "Atemoia", "Avocado",
             "Banana prata", "Caju", "Cana descascada", "Caqui", "Caqui Fuyu", "Carambola", "Cereja", "Coco verde",
@@ -43,17 +42,13 @@ public class AutoCompleteComboBoxDemo extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        // Startswith matcher
-//        ComboBox<String> cmb = new AutoCompleteComboBox<String>((txt, obj) -> {
-//            return obj.toUpperCase().startsWith(txt.toUpperCase());
-//        });
-
-        // Fuzzy matcher
-        ComboBox<String> cmb = new AutoCompleteComboBox<String>((txt, obj) ->
-                StringUtils.containsOrderedChars(txt.toUpperCase(), obj.toUpperCase()));
-        cmb.setTooltip(new Tooltip());
+        ComboBox<String> cmb = new JFXComboBox<>();
+        new FilteredComboBoxDecorator<>(cmb, FilteredComboBoxDecorator.CONTAINS_CHARS_IN_ORDER);
         cmb.setItems(FXCollections.observableArrayList(LISTA));
-        stage.setScene(new Scene(new StackPane(cmb)));
+        cmb.getStylesheets().add("/css/roweditor.css");
+        Scene scene = new Scene(new StackPane(cmb));
+        scene.getStylesheets().add("/css/roweditor.css");
+        stage.setScene(scene);
         stage.show();
         stage.setTitle("Filtrando um ComboBox");
         stage.setWidth(300);

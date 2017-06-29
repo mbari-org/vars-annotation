@@ -29,6 +29,10 @@ public class AutoCompleteComboBoxDecorator<T> implements EventHandler<KeyEvent> 
 
         data = comboBox.getItems();
 
+        comboBox.itemsProperty().addListener((obs, oldV, newV) -> {
+            data = FXCollections.observableArrayList(newV);
+        });
+
         this.comboBox.setEditable(true);
         this.comboBox.setOnKeyPressed(e -> comboBox.hide());
         this.comboBox.setOnKeyReleased(AutoCompleteComboBoxDecorator.this);

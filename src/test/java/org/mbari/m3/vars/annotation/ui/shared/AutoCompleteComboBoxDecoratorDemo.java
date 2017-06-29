@@ -4,16 +4,14 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import org.mbari.m3.vars.annotation.util.StringUtils;
 
 /**
  * @author Brian Schlining
- * @since 2017-06-28T15:41:00
+ * @since 2017-06-29T11:00:00
  */
-public class AutoCompleteComboBoxDemo extends Application {
+public class AutoCompleteComboBoxDecoratorDemo extends Application {
 
     private static final String[] LISTA = { "Abacate", "Abacaxi", "Ameixa", "Amora", "Araticum", "Atemoia", "Avocado",
             "Banana prata", "Caju", "Cana descascada", "Caqui", "Caqui Fuyu", "Carambola", "Cereja", "Coco verde",
@@ -43,15 +41,8 @@ public class AutoCompleteComboBoxDemo extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        // Startswith matcher
-//        ComboBox<String> cmb = new AutoCompleteComboBox<String>((txt, obj) -> {
-//            return obj.toUpperCase().startsWith(txt.toUpperCase());
-//        });
-
-        // Fuzzy matcher
-        ComboBox<String> cmb = new AutoCompleteComboBox<String>((txt, obj) ->
-                StringUtils.containsOrderedChars(txt.toUpperCase(), obj.toUpperCase()));
-        cmb.setTooltip(new Tooltip());
+        ComboBox<String> cmb = new ComboBox<>();
+        new AutoCompleteComboBoxDecorator<>(cmb);
         cmb.setItems(FXCollections.observableArrayList(LISTA));
         stage.setScene(new Scene(new StackPane(cmb)));
         stage.show();

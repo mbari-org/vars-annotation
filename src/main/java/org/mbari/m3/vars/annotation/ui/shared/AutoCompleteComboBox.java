@@ -20,10 +20,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Window;
+import org.mbari.m3.vars.annotation.util.StringUtils;
 
 /**
  *
@@ -58,9 +60,9 @@ public class AutoCompleteComboBox<T> extends ComboBox<T> {
     }
 
     private void handleFilterChanged(String newValue) {
-        if (!isBlank(newValue)) {
+        if (!StringUtils.isBlank(newValue)) {
             show();
-            if (isBlank(filter.get())) {
+            if (StringUtils.isBlank(filter.get())) {
                 restoreOriginalItems();
             }
             else {
@@ -130,18 +132,6 @@ public class AutoCompleteComboBox<T> extends ComboBox<T> {
     }
 
 
-    private static boolean isBlank(final CharSequence cs) {
-        int strLen;
-        if (cs == null || (strLen = cs.length()) == 0) {
-            return true;
-        }
-        for (int i = 0; i < strLen; i++) {
-            if (!Character.isWhitespace(cs.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     /**
      *
