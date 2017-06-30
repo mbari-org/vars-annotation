@@ -10,7 +10,7 @@ import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
-public class AssociationListView {
+public class AssociationListViewController {
 
     @FXML
     private ResourceBundle resources;

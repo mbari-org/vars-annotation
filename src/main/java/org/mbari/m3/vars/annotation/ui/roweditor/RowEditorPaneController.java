@@ -16,9 +16,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
@@ -95,6 +101,7 @@ public class RowEditorPaneController {
         addButton.setGraphic(addIcon);
 
         // -- If no association is selected disable edit and remove buttons
+        associationListView.setCellFactory(lv -> new AssociationCell());
         associationListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldv, newv) -> {
@@ -183,6 +190,45 @@ public class RowEditorPaneController {
                     });
                     return null;
                 });
+    }
+
+    public static Pair<Pane, RowEditorPaneController> newInstance() {
+        final ResourceBundle bundle = Initializer.getToolBox().getI18nBundle();
+        FXMLLoader loader = new FXMLLoader(RowEditorPaneController.class
+                .getResource("/fxml/RowEditorPane.fxml"), bundle);
+
+        try {
+            Pane root = loader.load();
+            RowEditorPaneController controller = loader.getController();
+            return new Pair<>(root, controller);
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Failed to load RowEditorPane from FXML", e);
+        }
+    }
+
+    class AssociationCell extends ListCell<Association> {
+        private final Label label = new Label();
+        private final Tooltip tooltip = new Tooltip();
+
+        public AssociationCell() {
+            setTooltip(tooltip);
+            setGraphic(label);
+        }
+
+        @Override
+        protected void updateItem(Association item, boolean empty) {
+            super.updateItem(item, empty);
+            if (item == null) {
+                label.setText(null);
+                setTooltip(null);
+            }
+            else {
+                String s = item.toString();
+                label.setText(s);
+                tooltip.setText(s);
+            }
+        }
     }
 
 }
