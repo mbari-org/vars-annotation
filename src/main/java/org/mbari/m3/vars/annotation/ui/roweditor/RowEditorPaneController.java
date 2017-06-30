@@ -35,6 +35,7 @@ import org.mbari.m3.vars.annotation.commands.UpdateAnnotation;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.ui.shared.AutoCompleteComboBoxDecorator;
+import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
 
 public class RowEditorPaneController {
 
@@ -90,13 +91,13 @@ public class RowEditorPaneController {
 
         // -- Make buttons pretty
         GlyphsFactory gf = MaterialIconFactory.get();
-        Text deleteIcon = gf.createIcon(MaterialIcon.DELETE);
+        Text deleteIcon = gf.createIcon(MaterialIcon.DELETE, "30px");
         removeButton.setText(null);
         removeButton.setGraphic(deleteIcon);
-        Text editIcon = gf.createIcon(MaterialIcon.EDIT);
+        Text editIcon = gf.createIcon(MaterialIcon.EDIT, "30px");
         editButton.setText(null);
         editButton.setGraphic(editIcon);
-        Text addIcon = gf.createIcon(MaterialIcon.ADD);
+        Text addIcon = gf.createIcon(MaterialIcon.ADD, "30px");
         addButton.setText(null);
         addButton.setGraphic(addIcon);
 
@@ -111,7 +112,7 @@ public class RowEditorPaneController {
                 });
 
         // -- Configure combobox autocomplete
-        new AutoCompleteComboBoxDecorator<>(conceptComboBox);
+        new FilteredComboBoxDecorator<>(conceptComboBox, FilteredComboBoxDecorator.CONTAINS_CHARS_IN_ORDER);
         conceptComboBox.setOnKeyTyped(e -> {
             if (e.getCode().equals(KeyCode.ENTER) && annotation != null) {
                 Annotation oldA = this.annotation;
@@ -174,8 +175,8 @@ public class RowEditorPaneController {
     private void setEnabled(boolean enable) {
         boolean disable = !enable;
         addButton.setDisable(disable);
-        editButton.setDisable(disable);
-        removeButton.setDisable(disable);
+        //editButton.setDisable(disable);
+        //removeButton.setDisable(disable);
         conceptComboBox.setEditable(enable);
     }
 

@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RowEditorPaneController">
+<BorderPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.roweditor.RowEditorPaneController">
    <bottom>
       <HBox BorderPane.alignment="BOTTOM_RIGHT">
          <children>
@@ -22,6 +21,6 @@
       <JFXComboBox fx:id="conceptComboBox" maxWidth="1.7976931348623157E308" BorderPane.alignment="TOP_LEFT" />
    </top>
    <center>
-      <JFXListView fx:id="associationListView" onMouseClicked="#onAssociationSelected" BorderPane.alignment="CENTER" />
+      <JFXListView fx:id="associationListView" onMouseClicked="#onAssociationSelected" prefHeight="200.0" prefWidth="500.0" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

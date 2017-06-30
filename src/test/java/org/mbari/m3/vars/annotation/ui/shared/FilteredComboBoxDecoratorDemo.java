@@ -47,7 +47,7 @@ public class FilteredComboBoxDecoratorDemo extends Application {
         cmb.setItems(FXCollections.observableArrayList(LISTA));
         cmb.getStylesheets().add("/css/roweditor.css");
         Scene scene = new Scene(new StackPane(cmb));
-        scene.getStylesheets().add("/css/roweditor.css");
+        scene.getStylesheets().addAll("/css/roweditor.css");
         stage.setScene(scene);
         stage.show();
         stage.setTitle("Filtrando um ComboBox");
