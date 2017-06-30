@@ -113,6 +113,7 @@ public class RowEditorPaneController {
 
         // -- Configure combobox autocomplete
         new FilteredComboBoxDecorator<>(conceptComboBox, FilteredComboBoxDecorator.CONTAINS_CHARS_IN_ORDER);
+        conceptComboBox.setEditable(false);
         conceptComboBox.setOnKeyTyped(e -> {
             if (e.getCode().equals(KeyCode.ENTER) && annotation != null) {
                 Annotation oldA = this.annotation;
@@ -162,8 +163,13 @@ public class RowEditorPaneController {
         }
         else {
             Platform.runLater(() -> {
-                conceptComboBox.setValue(annotation.getConcept());
-                conceptComboBox.getEditor().selectAll();
+                if (!conceptComboBox.getItems().contains(annotation.getConcept())) {
+                    conceptComboBox.getItems().add(annotation.getConcept());
+                }
+                else {
+                    conceptComboBox.getSelectionModel().select(annotation.getConcept());
+                }
+
                 conceptComboBox.getEditor().requestFocus();
                 ObservableList<Association> ass = FXCollections.observableArrayList(annotation.getAssociations());
                 associationListView.setItems(ass);
@@ -175,9 +181,9 @@ public class RowEditorPaneController {
     private void setEnabled(boolean enable) {
         boolean disable = !enable;
         addButton.setDisable(disable);
-        //editButton.setDisable(disable);
-        //removeButton.setDisable(disable);
-        conceptComboBox.setEditable(enable);
+        editButton.setDisable(disable);
+        removeButton.setDisable(disable);
+        //conceptComboBox.setEditable(enable);
     }
 
     private void loadComboBoxData() {
