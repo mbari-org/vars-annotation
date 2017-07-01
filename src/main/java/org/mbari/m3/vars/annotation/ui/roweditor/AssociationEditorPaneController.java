@@ -6,6 +6,9 @@ import com.jfoenix.controls.JFXTextField;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import de.jensd.fx.glyphs.GlyphsFactory;
@@ -14,7 +17,6 @@ import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -25,6 +27,9 @@ import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.SelectedAnnotations;
 import org.mbari.m3.vars.annotation.model.Annotation;
+import org.mbari.m3.vars.annotation.model.Association;
+import org.mbari.m3.vars.annotation.model.ConceptAssociationTemplate;
+import org.mbari.m3.vars.annotation.services.ConceptService;
 
 public class AssociationEditorPaneController {
 
@@ -53,7 +58,7 @@ public class AssociationEditorPaneController {
     private JFXButton cancelButton;
 
     @FXML
-    private JFXComboBox<?> associationComboBox;
+    private JFXComboBox<Association> associationComboBox;
 
     @FXML
     private JFXTextField searchTextField;
@@ -62,7 +67,7 @@ public class AssociationEditorPaneController {
     private JFXTextField linkNameTextField;
 
     @FXML
-    private JFXComboBox<?> toConceptComboBox;
+    private JFXComboBox<String> toConceptComboBox;
 
     @FXML
     private JFXTextField linkValueTextField;
@@ -81,6 +86,18 @@ public class AssociationEditorPaneController {
 
     }
 
+    public GridPane getRoot() {
+        return root;
+    }
+
+    public JFXButton getAddButton() {
+        return addButton;
+    }
+
+    public JFXButton getCancelButton() {
+        return cancelButton;
+    }
+
     @FXML
     void initialize() {
         GlyphsFactory gf = MaterialIconFactory.get();
@@ -91,27 +108,60 @@ public class AssociationEditorPaneController {
         cancelButton.setText(null);
         cancelButton.setGraphic(cancelIcon);
 
-        eventBus.toObserverable()
-                .ofType(SelectedAnnotations.class)
-                .subscribe(sa -> {
-                    Annotation a0 = sa.getAnnotations().size() == 1 ? sa.getAnnotations().get(0) : null;
-                    setAnnotation(a0);
-                });
     }
 
-    private void setAnnotation(Annotation annotation) {
+    public void setAssociation(Association association) {
         this.annotation = annotation;
+        linkNameTextField.setText(association.getLinkName());
+        linkValueTextField.setText(association.getLinkValue());
+        String toConcept = association.getToConcept();
+        if (toConcept == null) toConcept = Association.VALUE_NIL;
+        toConceptComboBox.getItems().clear();
+        if (toConcept.equalsIgnoreCase(Association.VALUE_NIL) ||
+                toConcept.equalsIgnoreCase(Association.VALUE_SELF)) {
+            toConceptComboBox.getItems().add(toConcept);
+        }
+        else {
+
+            ConceptService cs = toolBox.getServices().getConceptService();
+            cs.findTemplates(toConcept)
+                    .thenApply(templates -> templates.stream()
+                                .filter(t -> t.getLinkName().equalsIgnoreCase(association.getLinkName()))
+                                .findFirst()
+                                .map(ConceptAssociationTemplate::getToConcept))
+                    .thenApply(opt -> {
+                        opt.ifPresent(c -> {
+                            cs.fetchConceptTree(toConcept) // TODO finish. Get tree put concepts in comobo box. Slect current tooncept
+                        });
+                    });
+
+                        List<String> toConcepts = new ArrayList<>();
+                        if (opt.isPresent()) {
+                            toolBox.getServices()
+                                    .getConceptService()
+                                    .fetchConceptTree(opt.get())
+                                    .thenApply(opt0 -> {
+                                        if (opt0.isPresent()) {
+
+                                        }
+                                    })
+                        }
+                        else {
+
+                        }
+                    });
+
+        }
     }
 
-    public static Pair<Pane, AssociationEditorPaneController> newInstance() {
+    public static AssociationEditorPaneController newInstance() {
 
         final ResourceBundle bundle = Initializer.getToolBox().getI18nBundle();
         FXMLLoader loader = new FXMLLoader(AssociationEditorPaneController.class
                 .getResource("/fxml/AssociationEditorPane.fxml"), bundle);
         try {
-            Pane root = loader.load();
-            AssociationEditorPaneController controller = loader.getController();
-            return new Pair<>(root, controller);
+            loader.load();
+            return loader.getController();
         } catch (IOException e) {
             throw new RuntimeException("Failed to load AssociationEditorPane from FXML", e);
         }

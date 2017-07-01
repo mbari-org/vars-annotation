@@ -65,4 +65,9 @@ public class KBConceptService implements ConceptService, RetrofitWebService {
         return sendRequest(service.findTemplates(name));
     }
 
+    @Override
+    public CompletableFuture<Optional<Concept>> fetchConceptTree(String name) {
+        return sendRequest(service.findTree(name)).thenApply(Optional::ofNullable);
+    }
+
 }

@@ -148,6 +148,11 @@ public class CachedConceptService implements ConceptService {
         return conceptService.findTemplates(name);
     }
 
+    @Override
+    public CompletableFuture<Optional<Concept>> fetchConceptTree(String name) {
+        return conceptService.fetchConceptTree(name);
+    }
+
     private void addToCache(Concept concept) {
         if (concept != null) {
             cache.putIfAbsent(concept.getName(), concept);

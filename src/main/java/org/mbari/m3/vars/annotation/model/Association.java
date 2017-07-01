@@ -13,6 +13,8 @@ public class Association implements Cloneable {
     private String linkValue;
     private String mimeType;
 
+    public static final String VALUE_NIL = "nil";
+    public static final String VALUE_SELF = "self";
 
     public Association(String linkName, String toConcept, String linkValue, String mimeType) {
         this.linkName = linkName;

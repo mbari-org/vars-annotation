@@ -8,4 +8,16 @@ public class ConceptAssociationTemplate {
     private String linkName;
     private String toConcept;
     private String linkValue;
+
+    public String getLinkName() {
+        return linkName;
+    }
+
+    public String getToConcept() {
+        return toConcept;
+    }
+
+    public String getLinkValue() {
+        return linkValue;
+    }
 }

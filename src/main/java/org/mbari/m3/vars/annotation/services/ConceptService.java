@@ -37,4 +37,12 @@ public interface ConceptService {
 
     CompletableFuture<List<ConceptAssociationTemplate>> findTemplates(String name);
 
+    /**
+     * Fetch a branch of the concept tree from the provided name on down
+     * @param name
+     * @return
+     */
+    CompletableFuture<Optional<Concept>> fetchConceptTree(String name);
+
+
 }

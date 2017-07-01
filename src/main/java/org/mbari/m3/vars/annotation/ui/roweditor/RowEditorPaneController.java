@@ -22,6 +22,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
@@ -38,6 +39,9 @@ import org.mbari.m3.vars.annotation.ui.shared.AutoCompleteComboBoxDecorator;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
 
 public class RowEditorPaneController {
+
+    @FXML
+    private BorderPane root;
 
     @FXML
     private ResourceBundle resources;
@@ -64,6 +68,21 @@ public class RowEditorPaneController {
     private final EventBus eventBus = toolBox.getEventBus();
     private volatile Annotation annotation;
 
+    public BorderPane getRoot() {
+        return root;
+    }
+
+    public JFXButton getAddButton() {
+        return addButton;
+    }
+
+    public JFXButton getEditButton() {
+        return editButton;
+    }
+
+    public JFXButton getRemoveButton() {
+        return removeButton;
+    }
 
     @FXML
     void onAdd(ActionEvent event) {
@@ -141,7 +160,7 @@ public class RowEditorPaneController {
         setAnnotation(null);
     }
 
-    private void setAnnotation(Annotation annotation) {
+    public void setAnnotation(Annotation annotation) {
         this.annotation = annotation;
         boolean isNull = annotation == null;
         setEnabled(!isNull);
@@ -199,15 +218,14 @@ public class RowEditorPaneController {
                 });
     }
 
-    public static Pair<Pane, RowEditorPaneController> newInstance() {
+    public static RowEditorPaneController newInstance() {
         final ResourceBundle bundle = Initializer.getToolBox().getI18nBundle();
         FXMLLoader loader = new FXMLLoader(RowEditorPaneController.class
                 .getResource("/fxml/RowEditorPane.fxml"), bundle);
 
         try {
-            Pane root = loader.load();
-            RowEditorPaneController controller = loader.getController();
-            return new Pair<>(root, controller);
+            loader.load();
+            return loader.getController();
         }
         catch (Exception e) {
             throw new RuntimeException("Failed to load RowEditorPane from FXML", e);
