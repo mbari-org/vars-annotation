@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,5 +41,22 @@ public class Concept {
 
     public void setConceptDetails(ConceptDetails conceptDetails) {
         this.conceptDetails = conceptDetails;
+    }
+
+    public List<String> flatten() {
+        return flatten(this);
+    }
+
+    private static List<String> flatten(Concept concept) {
+        List<String> accum = new ArrayList<>();
+        flatten(concept, new ArrayList<>());
+        accum.sort(String::compareToIgnoreCase);
+        return accum;
+    }
+
+    private static void flatten(Concept concept, List<String> accum) {
+        accum.add(concept.getName());
+        concept.getChildren()
+                .forEach(c -> flatten(concept, accum));
     }
 }
