@@ -9,6 +9,15 @@ public class ConceptAssociationTemplate {
     private String toConcept;
     private String linkValue;
 
+    public static final ConceptAssociationTemplate NIL = new ConceptAssociationTemplate(Association.VALUE_NIL,
+            Association.VALUE_NIL, Association.VALUE_NIL);
+
+    public ConceptAssociationTemplate(String linkName, String toConcept, String linkValue) {
+        this.linkName = linkName;
+        this.toConcept = toConcept;
+        this.linkValue = linkValue;
+    }
+
     public String getLinkName() {
         return linkName;
     }

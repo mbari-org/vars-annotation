@@ -43,6 +43,9 @@ public class Concept {
         this.conceptDetails = conceptDetails;
     }
 
+    /**
+     * @return An alphabetical listing of all descendants of this concept
+     */
     public List<String> flatten() {
         return flatten(this);
     }
@@ -56,6 +59,9 @@ public class Concept {
 
     private static void flatten(Concept concept, List<String> accum) {
         accum.add(concept.getName());
+        if (concept.getConceptDetails() != null) {
+            accum.addAll(concept.getConceptDetails().getAlternateNames());
+        }
         concept.getChildren()
                 .forEach(c -> flatten(concept, accum));
     }

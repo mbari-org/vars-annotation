@@ -25,7 +25,7 @@ public class CachedConceptServiceTest {
 
     @Test
     public void testFetchConceptTree() throws InterruptedException, ExecutionException {
-        CompletableFuture<Concept> f = conceptService.fetchConceptTree();
+        CompletableFuture<Concept> f = conceptService.findRoot();
         while (!f.isDone()) {
             Thread.sleep(20);
         }
@@ -35,7 +35,7 @@ public class CachedConceptServiceTest {
 
     @Test
     public void testFindDetails() throws InterruptedException, ExecutionException  {
-        CompletableFuture<Concept> f0 = conceptService.fetchConceptTree();
+        CompletableFuture<Concept> f0 = conceptService.findRoot();
         while (!f0.isDone()) {
             Thread.sleep(20);
         }

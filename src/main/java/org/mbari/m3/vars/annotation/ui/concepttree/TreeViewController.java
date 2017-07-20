@@ -83,7 +83,7 @@ public class TreeViewController {
             treeView.setEditable(false);
             treeView.setCellFactory(tv -> cellFactory.build());
             treeView.setContextMenu(getContextMenu());
-            conceptService.fetchConceptTree()
+            conceptService.findRoot()
                     .thenApply(root -> {
                         Platform.runLater(() -> {
                             TreeItem<Concept> rootItem = buildTreeItem(root, null);

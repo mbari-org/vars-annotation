@@ -23,8 +23,8 @@ public class RowEditorPaneControllerDemo extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Pair<Pane, RowEditorPaneController> rowEditor = RowEditorPaneController.newInstance();
-        Scene scene = new Scene(rowEditor.getKey());
+        RowEditorPaneController rowEditor = RowEditorPaneController.newInstance();
+        Scene scene = new Scene(rowEditor.getRoot());
         scene.getStylesheets().addAll("/css/roweditor.css");
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(e -> {

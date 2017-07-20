@@ -50,19 +50,17 @@ public class CachedConceptService implements ConceptService {
      * will continue to load in the background)
      */
     public CompletableFuture<Void> prefetch() {
-        return fetchConceptTree().thenCompose(n -> {
+        return findRoot().thenCompose(n -> {
             findAllNames();
             return null;
         });
     }
 
-
-
     @Override
-    public CompletableFuture<Concept> fetchConceptTree() {
+    public CompletableFuture<Concept> findRoot() {
         CompletableFuture<Concept> f;
         if (root == null) {
-            f = conceptService.fetchConceptTree()
+            f = conceptService.findRoot()
                     .thenApply(c -> {
                         // Note that these are done in background, so the tree is
                         // returned while the details are still being fetched.
@@ -146,11 +144,25 @@ public class CachedConceptService implements ConceptService {
     @Override
     public CompletableFuture<List<ConceptAssociationTemplate>> findTemplates(String name) {
         return conceptService.findTemplates(name);
+        // We should cache these
     }
 
     @Override
-    public CompletableFuture<Optional<Concept>> fetchConceptTree(String name) {
-        return conceptService.fetchConceptTree(name);
+    public CompletableFuture<List<ConceptAssociationTemplate>> findTemplates(String name,
+                                                                             String linkname) {
+        return conceptService.findTemplates(name, linkname);
+    }
+
+    @Override
+    public CompletableFuture<Optional<Concept>> findConcept(String name) {
+        if (cache.containsKey(name)) {
+            return CompletableFuture.completedFuture(Optional.of(cache.get(name)));
+        }
+        else {
+            CompletableFuture<Optional<Concept>> f = conceptService.findConcept(name);
+            f.thenAccept(opt -> opt.ifPresent(this::addToCache));
+            return f;
+        }
     }
 
     private void addToCache(Concept concept) {

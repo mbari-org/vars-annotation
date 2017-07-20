@@ -15,6 +15,7 @@ public class Association implements Cloneable {
 
     public static final String VALUE_NIL = "nil";
     public static final String VALUE_SELF = "self";
+    public static final Association NIL = new Association(VALUE_NIL, VALUE_NIL, VALUE_NIL);
 
     public Association(String linkName, String toConcept, String linkValue, String mimeType) {
         this.linkName = linkName;

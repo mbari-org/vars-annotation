@@ -18,7 +18,7 @@ public interface ConceptService {
      * Fetch all concepts and return the root node. You can walk the tree to find other nodes.
      * @return
      */
-    CompletableFuture<Concept> fetchConceptTree();
+    CompletableFuture<Concept> findRoot();
 
     /**
      * Retrieves details about a specific node, such as alternate names and media.
@@ -37,12 +37,13 @@ public interface ConceptService {
 
     CompletableFuture<List<ConceptAssociationTemplate>> findTemplates(String name);
 
+    CompletableFuture<List<ConceptAssociationTemplate>> findTemplates(String name, String linkname);
     /**
      * Fetch a branch of the concept tree from the provided name on down
      * @param name
      * @return
      */
-    CompletableFuture<Optional<Concept>> fetchConceptTree(String name);
+    CompletableFuture<Optional<Concept>> findConcept(String name);
 
 
 }

@@ -97,6 +97,7 @@ public class RowEditorPaneController {
     @FXML
     void onEdit(ActionEvent event) {
         // TODO show association editor panel
+
     }
 
     @FXML

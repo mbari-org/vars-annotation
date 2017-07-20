@@ -32,6 +32,10 @@ public interface KBWebService {
     @GET("links/{name}")
     Call<List<ConceptAssociationTemplate>> findTemplates(@Path("name") String name);
 
+    @GET("links/{name}/using/{linkname}")
+    Call<List<ConceptAssociationTemplate>> findTemplates(@Path("name") String name,
+                                                         @Path("linkname") String linkname);
+
     @GET("concept/root")
     Call<ConceptDetails> findRootDetails();
 

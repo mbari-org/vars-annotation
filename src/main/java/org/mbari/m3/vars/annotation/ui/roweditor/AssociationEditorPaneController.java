@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 
 import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
@@ -18,16 +19,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.model.Annotation;
-import org.mbari.m3.vars.annotation.model.Association;
-import org.mbari.m3.vars.annotation.model.Concept;
-import org.mbari.m3.vars.annotation.model.ConceptAssociationTemplate;
+import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.ConceptService;
+import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
+import org.mbari.m3.vars.annotation.ui.shared.HierarchicalConceptComboBoxDecorator;
 
 public class AssociationEditorPaneController {
 
@@ -70,9 +71,13 @@ public class AssociationEditorPaneController {
     @FXML
     private JFXTextField linkValueTextField;
 
+    private HierarchicalConceptComboBoxDecorator toConceptComboBoxDecorator;
     private final UIToolBox toolBox = Initializer.getToolBox();
     private final EventBus eventBus = toolBox.getEventBus();
     private volatile Annotation annotation;
+    private volatile Association selectedAssociation;
+    private static final ConceptAssociationTemplate nil = new ConceptAssociationTemplate(Association.VALUE_NIL, Association.VALUE_NIL, Association.VALUE_NIL);
+
 
     @FXML
     void onAdd(ActionEvent event) {
@@ -105,59 +110,101 @@ public class AssociationEditorPaneController {
         Text cancelIcon = gf.createIcon(MaterialIcon.CANCEL);
         cancelButton.setText(null);
         cancelButton.setGraphic(cancelIcon);
+        new FilteredComboBoxDecorator<>(toConceptComboBox, FilteredComboBoxDecorator.CONTAINS_CHARS_IN_ORDER);
+        toConceptComboBoxDecorator = new HierarchicalConceptComboBoxDecorator(toConceptComboBox,
+                toolBox.getServices().getConceptService());
 
     }
 
-    public void setAssociation(Association association) {
+    public synchronized void setTarget(Annotation annotation, Association association) {
         this.annotation = annotation;
-        linkNameTextField.setText(association.getLinkName());
-        linkValueTextField.setText(association.getLinkValue());
-        String toConcept = association.getToConcept() == null ?
-                Association.VALUE_NIL : association.getToConcept();
-        toConceptComboBox.getItems().clear();
-        if (toConcept.equalsIgnoreCase(Association.VALUE_NIL) ||
-                toConcept.equalsIgnoreCase(Association.VALUE_SELF)) {
-            toConceptComboBox.getItems().add(toConcept);
+        this.selectedAssociation = association;
+
+        ConceptAssociationTemplate defaultAssociation = null;
+
+        // TODO handle null annotation
+
+        /*
+         * ---- Step 1:
+         * If an association is set we're editing it. If not we're adding it.
+         *
+         * Here we figure out what the intial link and conceptName should be.
+         */
+        if (association != null) {
+            defaultAssociation = new ConceptAssociationTemplate(association.getLinkName(),
+                    association.getToConcept(), association.getLinkValue());
+            addButton.setTooltip(new Tooltip("Accept Edits"));
         }
         else {
+            defaultAssociation = nil;
+            addButton.setTooltip(new Tooltip("Add Association"));
+        }
+
+        /*
+         * ---- Step 2:
+         * Update the available templates in the UI
+         */
+        associationComboBox.getItems().clear();
+        associationComboBox.getItems().add(nil);
+        if (annotation != null) {
             ConceptService cs = toolBox.getServices().getConceptService();
-            cs.findTemplates(toConcept)
+            final ConceptAssociationTemplate cat = defaultAssociation; // final to satisfy lambda
+            cs.findTemplates(annotation.getConcept())
                     .thenApply(templates -> {
-                        // Put templates in combobos
                         Platform.runLater(() -> {
                             associationComboBox.getItems().clear();
                             associationComboBox.getItems().addAll(templates);
-                        });
-                        // Get the root concept for this link template
-                        return templates.stream()
-                                .filter(t -> t.getLinkName().equalsIgnoreCase(association.getLinkName()))
-                                .findFirst()
-                                .map(ConceptAssociationTemplate::getToConcept);
-                    })
-                    .thenApply(opt -> {
-                        opt.ifPresent(c -> {
-                            cs.fetchConceptTree(toConcept)
-                                    .thenApply(opt0 -> {
-                                        List<String> names = opt0.map(Concept::flatten)
-                                                .orElseGet(() -> {
-                                                    List<String> n = new ArrayList<>();
-                                                    n.add(Association.VALUE_NIL);
-                                                    return n;
-                                                });
-                                        Platform.runLater(() -> {
-                                            toConceptComboBox.getItems().addAll(names);
-                                            toConceptComboBox.getSelectionModel()
-                                                    .select(toConcept);
-                                        });
-                                        return null;
-                                    });
+                            if (!associationComboBox.getItems().contains(cat)) {
+                                associationComboBox.getItems().add(cat);
+                            }
+                            associationComboBox.getSelectionModel().select(cat);
+                            setAssociation(annotation.getConcept(), cat);
                         });
                         return null;
                     });
-
-
         }
     }
+
+    private void setAssociation(String name, ConceptAssociationTemplate cat) {
+        linkNameTextField.setText(cat.getLinkName());
+        linkValueTextField.setText(cat.getLinkValue());
+        String concept = cat.getToConcept();
+        if (concept.equals(Association.VALUE_NIL) || concept.equals(Association.VALUE_SELF)) {
+            toConceptComboBox.getItems().clear();
+            toConceptComboBox.getItems().add(concept);
+        }
+        else {
+            // TODO look up the link templates. Find a match linkvalue and set it's toconcept, then select the cat's toConcept
+            toConceptComboBoxDecorator.setConcept(concept);
+        }
+    }
+
+
+
+
+
+    private void setToConcepts(List<String> concepts, String selectedConcept) {
+        Platform.runLater(() -> {
+            toConceptComboBox.getItems().addAll(concepts);
+            toConceptComboBox.getSelectionModel()
+                    .select(selectedConcept);
+        });
+    }
+
+    private CompletableFuture<List<String>> findChildConcepts(String concept) {
+        ConceptService cs = toolBox.getServices().getConceptService();
+        return cs.findConcept(concept)
+                .thenApply(opt -> {
+                    List<String> childConcepts = opt.map(Concept::flatten)
+                            .orElseGet(() -> {
+                                List<String> n = new ArrayList<>();
+                                n.add(Association.VALUE_NIL);
+                                return n;
+                            });
+                    return childConcepts;
+                });
+    }
+
 
 
 
