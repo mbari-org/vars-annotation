@@ -1,10 +1,13 @@
 package org.mbari.m3.vars.annotation.ui.roweditor;
 
+import io.reactivex.Observable;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
+import org.mbari.m3.vars.annotation.commands.CreateAssociation;
 import org.mbari.m3.vars.annotation.commands.SelectedAnnotations;
 import org.mbari.m3.vars.annotation.model.Annotation;
 
@@ -55,8 +58,13 @@ public class RowEditorControllerDemo extends Application {
             }
         }).start();
 
+    }
 
-
-
+    private void initializeEventHandling() {
+        Observable<Object> obs = Initializer.getToolBox().getEventBus().toObserverable();
+        obs.ofType(SelectedAnnotations.class)
+                .subscribe(annos -> {
+                    
+                });
     }
 }

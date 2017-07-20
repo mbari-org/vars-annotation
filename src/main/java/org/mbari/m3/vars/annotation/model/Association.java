@@ -47,6 +47,14 @@ public class Association implements Cloneable {
         mimeType = a.mimeType;
     }
 
+    public Association(UUID uuid, Association a) {
+        uuid = uuid;
+        linkName = a.linkName;
+        toConcept = a.toConcept;
+        linkValue = a.linkValue;
+        mimeType = a.mimeType;
+    }
+
 
     public UUID getUuid() {
         return uuid;

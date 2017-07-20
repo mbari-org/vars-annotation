@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import de.jensd.fx.glyphs.GlyphsFactory;
@@ -150,6 +151,25 @@ public class AssociationEditorPaneController {
         toConceptComboBox.getItems().clear();
     }
 
+    /**
+     *
+     * @return A new association built from
+     */
+    public Optional<Association> getCustomAssociation() {
+        String linkName = linkNameTextField.getText();
+        String toConcept = toConceptComboBox.getValue();
+        String linkValue = linkValueTextField.getText();
+        if (linkName != null &&
+                !linkName.equals(Association.VALUE_NIL) &&
+                toConcept != null &&
+                linkValue != null) {
+            return Optional.of(new Association(linkName, toConcept, linkValue));
+        }
+        else {
+            return Optional.empty();
+        }
+    }
+
     private void searchTemplates(String search) {
         List<ConceptAssociationTemplate> templates = associationComboBox.getItems();
         int startIdx = associationComboBox.getSelectionModel().getSelectedIndex() + 1;
@@ -229,6 +249,18 @@ public class AssociationEditorPaneController {
         }
     }
 
+    public void requestFocus() {
+        searchTextField.requestFocus();
+    }
+
+    /**
+     *
+     * @return The association that was original set in the editor. May be null if you're
+     *      creating a new one.
+     */
+    public Association getSelectedAssociation() {
+        return selectedAssociation;
+    }
 
     public static AssociationEditorPaneController newInstance() {
 

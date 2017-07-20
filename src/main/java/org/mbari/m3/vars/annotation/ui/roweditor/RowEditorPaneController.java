@@ -22,6 +22,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
@@ -136,6 +137,7 @@ public class RowEditorPaneController {
 
         // -- If no association is selected disable edit and remove buttons
         associationListView.setCellFactory(lv -> new AssociationCell());
+        associationListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         associationListView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldv, newv) -> {
@@ -232,7 +234,6 @@ public class RowEditorPaneController {
         }
 
     }
-
 
 
     private void loadComboBoxData() {

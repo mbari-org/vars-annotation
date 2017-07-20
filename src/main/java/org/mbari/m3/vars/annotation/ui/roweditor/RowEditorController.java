@@ -1,12 +1,21 @@
 package org.mbari.m3.vars.annotation.ui.roweditor;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Pair;
+import org.mbari.m3.vars.annotation.Initializer;
+import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.commands.Command;
+import org.mbari.m3.vars.annotation.commands.CreateAssociation;
+import org.mbari.m3.vars.annotation.commands.DeleteAssociations;
+import org.mbari.m3.vars.annotation.commands.UpdateAssociation;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
+
+import java.util.Optional;
 
 /**
  * @author Brian Schlining
@@ -17,6 +26,7 @@ public class RowEditorController {
     private RowEditorPaneController rowController;
     private Pane root;
     private volatile Annotation annotation;
+    private final UIToolBox toolBox = Initializer.getToolBox();
 
     public RowEditorController() {
         rowController = RowEditorPaneController.newInstance();
@@ -40,24 +50,50 @@ public class RowEditorController {
         associationPane.prefHeightProperty().bind(root.heightProperty());
 
         rowController.getAddButton().setOnAction(v -> {
-            associationController.setTarget(annotation, Association.NIL);
+            associationController.setTarget(annotation, null);
             this.root.getChildren().remove(rowPane);
             this.root.getChildren().add(associationPane);
         });
 
         rowController.getEditButton().setOnAction(v -> {
-            rowController.setAnnotation(annotation);
-            this.root.getChildren().remove(rowPane);
-            this.root.getChildren().add(associationPane);
+            rowController.getSelectedAssociations()
+                    .stream()
+                    .findFirst()
+                    .ifPresent(ass -> {
+                        associationController.setTarget(annotation, ass);
+                        this.root.getChildren().remove(rowPane);
+                        this.root.getChildren().add(associationPane);
+                    });
         });
 
         rowController.getRemoveButton().setOnAction(v -> {
-            // TODO handle delete
+            ObservableList<Association> selectedAssociations = rowController.getSelectedAssociations();
+            if (selectedAssociations.size() > 0) {
+                Command cmd = new DeleteAssociations(selectedAssociations);
+                toolBox.getEventBus()
+                        .send(cmd);
+            }
         });
 
         associationController.getAddButton().setOnAction(v -> {
-
-            // TODO
+            Association selectedAssociation = associationController.getSelectedAssociation();
+            Optional<Association> opt = associationController.getCustomAssociation();
+            if (opt.isPresent() && annotation != null) {
+                Association customAssociation = opt.get();
+                Command cmd;
+                if (selectedAssociation == null) {
+                    // Create new association
+                    cmd = new CreateAssociation(annotation.getObservationUuid(), customAssociation);
+                }
+                else {
+                    // Update existing association
+                    Association a = new Association(selectedAssociation.getUuid(), customAssociation);
+                    cmd = new UpdateAssociation(a);
+                }
+                toolBox.getEventBus().send(cmd);
+                this.root.getChildren().remove(associationPane);
+                this.root.getChildren().add(rowPane);
+            }
         });
 
         associationController.getCancelButton().setOnAction(v -> {
