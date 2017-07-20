@@ -29,4 +29,13 @@ public class ConceptAssociationTemplate {
     public String getLinkValue() {
         return linkValue;
     }
+
+    @Override
+    public String toString() {
+        String s = linkName + " | "  + toConcept + " | " + linkValue;
+        if (s.length() > 140) {
+            s = s.substring(0, 140) + "...";
+        }
+        return s;
+    }
 }

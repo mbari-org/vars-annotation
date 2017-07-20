@@ -1,6 +1,8 @@
 package org.mbari.m3.vars.annotation.ui.roweditor;
 
 import javafx.application.Platform;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.model.Annotation;
@@ -28,18 +30,25 @@ public class RowEditorController {
     }
 
     private void initialize() {
-        root = new Pane(rowController.getRoot());
-        // TODO wire up panes so that they switch context as needed
+        BorderPane rowPane = rowController.getRoot();
+        GridPane associationPane = associationController.getRoot();
+
+        this.root = new Pane(rowPane);
+        rowPane.prefWidthProperty().bind(root.widthProperty());
+        rowPane.prefHeightProperty().bind(root.heightProperty());
+        associationPane.prefWidthProperty().bind(root.widthProperty());
+        associationPane.prefHeightProperty().bind(root.heightProperty());
+
         rowController.getAddButton().setOnAction(v -> {
             associationController.setTarget(annotation, Association.NIL);
-            root.getChildren().remove(rowController.getRoot());
-            root.getChildren().add(associationController.getRoot());
+            this.root.getChildren().remove(rowPane);
+            this.root.getChildren().add(associationPane);
         });
 
         rowController.getEditButton().setOnAction(v -> {
             rowController.setAnnotation(annotation);
-            root.getChildren().remove(rowController.getRoot());
-            root.getChildren().add(associationController.getRoot());
+            this.root.getChildren().remove(rowPane);
+            this.root.getChildren().add(associationPane);
         });
 
         rowController.getRemoveButton().setOnAction(v -> {
@@ -47,7 +56,13 @@ public class RowEditorController {
         });
 
         associationController.getAddButton().setOnAction(v -> {
+
             // TODO
+        });
+
+        associationController.getCancelButton().setOnAction(v -> {
+            this.root.getChildren().remove(associationPane);
+            this.root.getChildren().add(rowPane);
         });
     }
 

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.111" fx:controller="org.mbari.m3.vars.annotation.ui.roweditor.AssociationEditorPaneController">
+<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.roweditor.AssociationEditorPaneController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -36,10 +36,10 @@
             <JFXButton fx:id="cancelButton" onAction="#onCancel" />
          </children>
       </HBox>
-      <JFXComboBox fx:id="associationComboBox" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
       <JFXTextField fx:id="searchTextField" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" />
+      <JFXComboBox fx:id="associationComboBox" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
       <JFXTextField fx:id="linkNameTextField" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
-      <JFXComboBox fx:id="toConceptComboBox" GridPane.columnIndex="5" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+      <JFXComboBox fx:id="toConceptComboBox" GridPane.columnIndex="5" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
       <JFXTextField fx:id="linkValueTextField" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.rowIndex="3" />
    </children>
 </GridPane>

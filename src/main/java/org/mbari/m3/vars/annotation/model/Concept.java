@@ -52,7 +52,7 @@ public class Concept {
 
     private static List<String> flatten(Concept concept) {
         List<String> accum = new ArrayList<>();
-        flatten(concept, new ArrayList<>());
+        flatten(concept, accum);
         accum.sort(String::compareToIgnoreCase);
         return accum;
     }
@@ -63,6 +63,6 @@ public class Concept {
             accum.addAll(concept.getConceptDetails().getAlternateNames());
         }
         concept.getChildren()
-                .forEach(c -> flatten(concept, accum));
+                .forEach(c -> flatten(c, accum));
     }
 }

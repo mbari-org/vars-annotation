@@ -34,6 +34,12 @@ public class Annotation implements ImagedMoment {
     public Annotation() {
     }
 
+    public Annotation(String concept, String observer) {
+        this.concept = concept;
+        this.observer = observer;
+        this.observationTimestamp = Instant.now();
+    }
+
     public Annotation(Annotation a) {
         observationUuid = a.observationUuid;
         concept = a.concept;
@@ -47,14 +53,25 @@ public class Annotation implements ImagedMoment {
         duration = a.duration;
         group = a.group;
         activity = a.activity;
-        associations = a.associations
-                .stream()
-                .map(Association::new)
-                .collect(Collectors.toList());
-        images = a.images
-                .stream()
-                .map(ImageReference::new)
-                .collect(Collectors.toList());
+        if (a.associations == null) {
+            associations = new ArrayList<>();
+        }
+        else {
+            associations = a.associations
+                    .stream()
+                    .map(Association::new)
+                    .collect(Collectors.toList());
+        }
+
+        if (a.images == null) {
+            images = new ArrayList<>();
+        }
+        else {
+            images = a.images
+                    .stream()
+                    .map(ImageReference::new)
+                    .collect(Collectors.toList());
+        }
     }
 
     public UUID getObservationUuid() {
@@ -170,4 +187,16 @@ public class Annotation implements ImagedMoment {
         this.images = images;
     }
 
+    @Override
+    public String toString() {
+        int a = associations == null ? 0 : associations.size();
+        int b = images == null ? 0 : images.size();
+        return "Annotation{" +
+                "observationUuid=" + observationUuid +
+                ", concept='" + concept + '\'' +
+                ", elapsedTime=" + elapsedTime +
+                ", numOfAssociations=" + a +
+                ", numOfImages=" + b +
+                '}';
+    }
 }

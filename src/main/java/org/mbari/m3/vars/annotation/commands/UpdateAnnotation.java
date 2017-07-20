@@ -30,4 +30,12 @@ public class UpdateAnnotation implements Command {
     public String getDescription() {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "UpdateAnnotation{" +
+                "oldAnnotation=" + oldAnnotation +
+                ", newAnnotation=" + newAnnotation +
+                '}';
+    }
 }

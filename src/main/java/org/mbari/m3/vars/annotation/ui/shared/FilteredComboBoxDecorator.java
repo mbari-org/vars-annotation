@@ -15,8 +15,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Window;
 import org.mbari.m3.vars.annotation.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -25,16 +28,17 @@ import java.util.stream.Collectors;
  */
 public class FilteredComboBoxDecorator<T>  {
 
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private static final String EMPTY = "";
     private StringProperty filter = new SimpleStringProperty(EMPTY);
     private AutoCompleteComparator<T> comparator = (typedText, objectToCompare) -> false;
     private ObservableList<T> originalItems = FXCollections.emptyObservableList();
     private final ComboBox<T> comboBox;
-    private static final KeyEvent ENTER_EVENT = new KeyEvent(KeyEvent.KEY_PRESSED,
-            null, null, KeyCode.ENTER,
-            false, false, false, false);
 
-    public FilteredComboBoxDecorator(final ComboBox<T> comboBox, AutoCompleteComparator<T> comparator) {
+
+    public FilteredComboBoxDecorator(final ComboBox<T> comboBox,
+                                     AutoCompleteComparator<T> comparator) {
         this.comboBox = comboBox;
 
         initialize(comparator);
@@ -42,13 +46,10 @@ public class FilteredComboBoxDecorator<T>  {
         comboBox.itemsProperty().addListener((obs, oldV, newV) -> {
             originalItems = FXCollections.observableArrayList(newV);
         });
+    }
 
-        comboBox.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((obs, oldv, newv) -> {
-                    System.out.println("OLD = " + oldv + ", NEW = " + newv);
-                });
-
+    public ObservableList<T> getOriginalItems() {
+        return originalItems;
     }
 
     private ObservableList<T> filterItems() {
@@ -92,7 +93,8 @@ public class FilteredComboBoxDecorator<T>  {
     private void handleOnKeyPressed(KeyEvent keyEvent) {
         KeyCode code = keyEvent.getCode();
         String filterValue = filter.get();
-        System.out.println("CODE = " + code);
+        log.debug("Handling KeyCode = " + code);
+        //System.out.println("CODE = " + code);
         if (code.isLetterKey()) {
             filterValue += keyEvent.getText();
         }

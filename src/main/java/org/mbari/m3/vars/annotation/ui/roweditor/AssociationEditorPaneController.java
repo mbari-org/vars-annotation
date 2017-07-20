@@ -9,7 +9,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.CompletableFuture;
 
 import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
@@ -20,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.EventBus;
@@ -104,16 +104,67 @@ public class AssociationEditorPaneController {
     @FXML
     void initialize() {
         GlyphsFactory gf = MaterialIconFactory.get();
-        Text addIcon = gf.createIcon(MaterialIcon.ADD);
+        Text addIcon = gf.createIcon(MaterialIcon.ADD, "30px");
         addButton.setText(null);
         addButton.setGraphic(addIcon);
-        Text cancelIcon = gf.createIcon(MaterialIcon.CANCEL);
+        addButton.defaultButtonProperty().bind(addButton.focusedProperty()); // Enter triggers button
+        Text cancelIcon = gf.createIcon(MaterialIcon.CANCEL, "30px");
         cancelButton.setText(null);
         cancelButton.setGraphic(cancelIcon);
+        cancelButton.defaultButtonProperty().bind(cancelButton.focusedProperty()); // Enter triggers button
+        linkNameTextField.setDisable(true);
+
+        // Add filtering of toConcepts
         new FilteredComboBoxDecorator<>(toConceptComboBox, FilteredComboBoxDecorator.CONTAINS_CHARS_IN_ORDER);
+
+        // Add decorator to populate combobox with all children of given concept
         toConceptComboBoxDecorator = new HierarchicalConceptComboBoxDecorator(toConceptComboBox,
                 toolBox.getServices().getConceptService());
 
+        // Set values in fields when an association is selected
+        associationComboBox.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, oldv, newv) -> {
+                    if (newv == null) {
+                        clear();
+                    }
+                    else {
+                        linkNameTextField.setText(newv.getLinkName());
+                        linkValueTextField.setText(newv.getLinkValue());
+                        toConceptComboBoxDecorator.setConcept(newv.getToConcept());
+                    }
+                });
+
+        // Trigger search when enter is pressed in search field
+        searchTextField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                searchTemplates(searchTextField.getText());
+            }
+        });
+    }
+
+    public void clear() {
+        searchTextField.setText(null);
+        linkNameTextField.setText(null);
+        linkValueTextField.setText(null);
+        toConceptComboBox.getItems().clear();
+    }
+
+    private void searchTemplates(String search) {
+        List<ConceptAssociationTemplate> templates = associationComboBox.getItems();
+        int startIdx = associationComboBox.getSelectionModel().getSelectedIndex() + 1;
+        if (startIdx >= templates.size()) {
+            startIdx = 0;
+        }
+        List<ConceptAssociationTemplate> searchTemplates = templates;
+        if (startIdx > 0) {
+            searchTemplates = new ArrayList<>(templates.subList(startIdx, templates.size()));
+            searchTemplates.addAll(templates.subList(0, startIdx));
+        }
+        searchTemplates.stream()
+                .filter(cat -> cat.toString().contains(search))
+                .findFirst()
+                .ifPresent(cat -> associationComboBox.getSelectionModel().select(cat));
     }
 
     public synchronized void setTarget(Annotation annotation, Association association) {
@@ -121,8 +172,6 @@ public class AssociationEditorPaneController {
         this.selectedAssociation = association;
 
         ConceptAssociationTemplate defaultAssociation = null;
-
-        // TODO handle null annotation
 
         /*
          * ---- Step 1:
@@ -176,36 +225,9 @@ public class AssociationEditorPaneController {
         else {
             // TODO look up the link templates. Find a match linkvalue and set it's toconcept, then select the cat's toConcept
             toConceptComboBoxDecorator.setConcept(concept);
+            toConceptComboBox.getSelectionModel().select(cat.getToConcept());
         }
     }
-
-
-
-
-
-    private void setToConcepts(List<String> concepts, String selectedConcept) {
-        Platform.runLater(() -> {
-            toConceptComboBox.getItems().addAll(concepts);
-            toConceptComboBox.getSelectionModel()
-                    .select(selectedConcept);
-        });
-    }
-
-    private CompletableFuture<List<String>> findChildConcepts(String concept) {
-        ConceptService cs = toolBox.getServices().getConceptService();
-        return cs.findConcept(concept)
-                .thenApply(opt -> {
-                    List<String> childConcepts = opt.map(Concept::flatten)
-                            .orElseGet(() -> {
-                                List<String> n = new ArrayList<>();
-                                n.add(Association.VALUE_NIL);
-                                return n;
-                            });
-                    return childConcepts;
-                });
-    }
-
-
 
 
     public static AssociationEditorPaneController newInstance() {
