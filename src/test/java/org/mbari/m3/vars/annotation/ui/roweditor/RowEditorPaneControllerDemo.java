@@ -4,11 +4,9 @@ import com.google.common.collect.Lists;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.Initializer;
-import org.mbari.m3.vars.annotation.commands.SelectedAnnotations;
+import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
 
 /**
@@ -39,6 +37,6 @@ public class RowEditorPaneControllerDemo extends Application {
 
         Initializer.getToolBox()
                 .getEventBus()
-                .send(new SelectedAnnotations(Lists.newArrayList(a)));
+                .send(new AnnotationsSelectedEvent(Lists.newArrayList(a)));
     }
 }

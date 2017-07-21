@@ -15,7 +15,6 @@ import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,19 +26,15 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.ClearCache;
 import org.mbari.m3.vars.annotation.commands.DeleteAssociations;
-import org.mbari.m3.vars.annotation.commands.SelectedAnnotations;
 import org.mbari.m3.vars.annotation.commands.UpdateAnnotation;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
-import org.mbari.m3.vars.annotation.ui.shared.AutoCompleteComboBoxDecorator;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
 
 public class RowEditorPaneController {
@@ -186,7 +181,7 @@ public class RowEditorPaneController {
 
         // Listen for Annotation selections
 //        eventBus.toObserverable()
-//                .ofType(SelectedAnnotations.class)
+//                .ofType(AnnotationsSelectedEvent.class)
 //                .subscribe(sa -> {
 //                    Annotation a0 = sa.getAnnotations().size() == 1 ? sa.getAnnotations().get(0) : null;
 //                    setAnnotation(a0);

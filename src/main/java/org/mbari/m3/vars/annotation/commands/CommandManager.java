@@ -1,6 +1,8 @@
 package org.mbari.m3.vars.annotation.commands;
 
 import org.mbari.m3.vars.annotation.EventBus;
+import org.mbari.m3.vars.annotation.Initializer;
+import org.mbari.m3.vars.annotation.UIToolBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +34,7 @@ public class CommandManager {
     private final Deque<CommandEvent> undos = new LinkedBlockingDeque<>(maxUndos);
     private final Deque<CommandEvent> redos = new LinkedBlockingDeque<>(maxUndos);
     private final Thread thread;
+    private final UIToolBox toolBox = Initializer.getToolBox();
 
     private final Runnable runnable = () -> {
         while (true) {
@@ -51,12 +54,12 @@ public class CommandManager {
                     Deque<CommandEvent> inverseCommandList = null;
                     switch (commandEvent.getState()) {
                         case DO: {
-                            command.apply();
+                            command.apply(toolBox);
                             inverseCommandList = undos;
                             break;
                         }
                         case UNDO: {
-                            command.unapply();
+                            command.unapply(toolBox);
                             inverseCommandList = redos;
                             break;
                         }
@@ -75,11 +78,12 @@ public class CommandManager {
         }
     };
 
-    public CommandManager(EventBus eventBus) {
+    public CommandManager() {
         thread = new Thread(runnable, getClass().getName());
         thread.setDaemon(true);
         thread.start();
 
+        EventBus eventBus = toolBox.getEventBus();
         // New commands go in the pending queue
         eventBus.toObserverable()
                 .ofType(Command.class)

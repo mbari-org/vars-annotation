@@ -28,6 +28,14 @@ public class CreateAssociation implements Command {
 
     }
 
+    public UUID getObservationUuid() {
+        return observationUuid;
+    }
+
+    public Association getAssociation() {
+        return association;
+    }
+
     @Override
     public String getDescription() {
         return null;

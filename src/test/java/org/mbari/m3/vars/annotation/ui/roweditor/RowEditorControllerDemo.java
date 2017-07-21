@@ -5,13 +5,13 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
+import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.commands.CreateAssociation;
-import org.mbari.m3.vars.annotation.commands.SelectedAnnotations;
 import org.mbari.m3.vars.annotation.model.Annotation;
 
 import java.time.Instant;
+import java.util.UUID;
 
 /**
  * @author Brian Schlining
@@ -43,8 +43,11 @@ public class RowEditorControllerDemo extends Application {
         primaryStage.setHeight(400);
         primaryStage.show();
 
+        // TODO create new annotation and fire off to servie
+
         Annotation a = new Annotation("Grimpoteuthis", "brian");
         a.setRecordedTimestamp(Instant.now());
+        a.setObservationUuid(UUID.randomUUID());
 
         new Thread(() -> {
             try {
@@ -52,7 +55,7 @@ public class RowEditorControllerDemo extends Application {
                 rowEditor.setAnnotation(a);
                 Initializer.getToolBox()
                         .getEventBus()
-                        .send(new SelectedAnnotations(a));
+                        .send(new AnnotationsSelectedEvent(a));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -62,9 +65,13 @@ public class RowEditorControllerDemo extends Application {
 
     private void initializeEventHandling() {
         Observable<Object> obs = Initializer.getToolBox().getEventBus().toObserverable();
-        obs.ofType(SelectedAnnotations.class)
+        obs.ofType(AnnotationsSelectedEvent.class)
                 .subscribe(annos -> {
-                    
+
+                });
+
+        obs.ofType(CreateAssociation.class)
+                .subscribe(ca -> {
                 });
     }
 }
