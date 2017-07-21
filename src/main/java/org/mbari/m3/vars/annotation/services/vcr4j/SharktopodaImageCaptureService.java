@@ -2,6 +2,7 @@ package org.mbari.m3.vars.annotation.services.vcr4j;
 
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.commands.ShowNonfatalErrorAlert;
+import org.mbari.m3.vars.annotation.services.ImageCaptureService;
 import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
 import org.mbari.vcr4j.sharktopoda.commands.FramecaptureCmd;
 import org.mbari.vcr4j.sharktopoda.decorators.FramecaptureDecorator;

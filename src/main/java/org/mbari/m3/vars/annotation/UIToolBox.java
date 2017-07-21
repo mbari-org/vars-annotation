@@ -2,6 +2,10 @@ package org.mbari.m3.vars.annotation;
 
 
 import com.typesafe.config.Config;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import org.mbari.m3.vars.annotation.services.VideoControlService;
+
 import javax.inject.Inject;
 import java.util.ResourceBundle;
 
@@ -16,6 +20,7 @@ public class UIToolBox {
     private final Config config;
     private final Data data;
     private final Services services;
+    private final ObjectProperty<VideoControlService> videoControlService = new SimpleObjectProperty<>();
 
     @Inject
     public UIToolBox(Data data,
@@ -48,5 +53,13 @@ public class UIToolBox {
 
     public Services getServices() {
         return services;
+    }
+
+    public VideoControlService getVideoControlService() {
+        return videoControlService.get();
+    }
+
+    public ObjectProperty<VideoControlService> videoControlServiceProperty() {
+        return videoControlService;
     }
 }

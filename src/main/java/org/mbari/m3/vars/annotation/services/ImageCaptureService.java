@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.services.vcr4j;
+package org.mbari.m3.vars.annotation.services;
 
 import java.awt.Image;
 import java.io.File;

@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.services.vcr4j;
+package org.mbari.m3.vars.annotation.services;
 
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIO;
@@ -43,17 +43,18 @@ public class VideoControlService<S extends VideoState, E extends VideoError> ext
 
     public CompletableFuture<Boolean> isPlaying() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        getVideoIO().getStateObservable().take(1).forEach(s -> future.complete(s.isPlaying()));
+        getVideoIO().getStateObservable()
+                .take(1)
+                .forEach(s -> future.complete(s.isPlaying()));
         getVideoIO().send(VideoCommands.REQUEST_STATUS);
         return future;
     }
 
     public CompletableFuture<VideoIndex> getVideoIndex() {
         CompletableFuture<VideoIndex> future = new CompletableFuture<>();
-        // TODO: VARS currently requires timecode. This will not be true in future versions; will need to drop filter below
         getVideoIO().getIndexObservable()
-                .filter(vi -> vi.getTimecode().isPresent())
-                .take(1).forEach(future::complete);
+                .take(1)
+                .forEach(future::complete);
         getVideoIO().send(VideoCommands.REQUEST_INDEX);
         return future;
     }

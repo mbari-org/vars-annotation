@@ -5,13 +5,11 @@ import javafx.collections.ObservableList;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.Command;
-import org.mbari.m3.vars.annotation.commands.CreateAssociation;
-import org.mbari.m3.vars.annotation.commands.DeleteAssociations;
-import org.mbari.m3.vars.annotation.commands.UpdateAssociation;
+import org.mbari.m3.vars.annotation.commands.DeleteAssociationsCmd;
+import org.mbari.m3.vars.annotation.commands.UpdateAssociationCmd;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 
@@ -69,7 +67,7 @@ public class RowEditorController {
         rowController.getRemoveButton().setOnAction(v -> {
             ObservableList<Association> selectedAssociations = rowController.getSelectedAssociations();
             if (selectedAssociations.size() > 0) {
-                Command cmd = new DeleteAssociations(selectedAssociations);
+                Command cmd = new DeleteAssociationsCmd(selectedAssociations);
                 toolBox.getEventBus()
                         .send(cmd);
             }
@@ -88,7 +86,7 @@ public class RowEditorController {
                 else {
                     // Update existing association
                     Association a = new Association(selectedAssociation.getUuid(), customAssociation);
-                    cmd = new UpdateAssociation(a);
+                    cmd = new UpdateAssociationCmd(a);
                 }
                 toolBox.getEventBus().send(cmd);
                 this.root.getChildren().remove(associationPane);

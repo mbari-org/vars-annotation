@@ -9,12 +9,12 @@ import java.util.UUID;
  * @author Brian Schlining
  * @since 2017-06-28T13:09:00
  */
-public class ChangeVideoReferenceUuids {
+public class ChangeMediaMsg implements Message {
 
 
     private final List<UUID> uuids;
 
-    public ChangeVideoReferenceUuids(List<UUID> uuids) {
+    public ChangeMediaMsg(List<UUID> uuids) {
         this.uuids = Collections.unmodifiableList(new ArrayList<>(uuids));
     }
 

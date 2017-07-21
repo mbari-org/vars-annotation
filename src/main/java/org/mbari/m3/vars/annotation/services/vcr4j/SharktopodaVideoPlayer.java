@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.services.vcr4j;
 
+import org.mbari.m3.vars.annotation.services.VideoControlService;
 import org.mbari.vcr4j.VideoIO;
 import org.mbari.vcr4j.decorators.SchedulerVideoIO;
 import org.mbari.vcr4j.decorators.StatusDecorator;

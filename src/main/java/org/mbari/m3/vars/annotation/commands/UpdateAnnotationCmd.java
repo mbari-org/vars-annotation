@@ -1,28 +1,29 @@
 package org.mbari.m3.vars.annotation.commands;
 
+import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Annotation;
 
 /**
  * @author Brian Schlining
  * @since 2017-05-10T10:05:00
  */
-public class UpdateAnnotation implements Command {
+public class UpdateAnnotationCmd implements Command {
 
     private final Annotation oldAnnotation;
     private final Annotation newAnnotation;
 
-    public UpdateAnnotation(Annotation oldAnnotation, Annotation newAnnotation) {
+    public UpdateAnnotationCmd(Annotation oldAnnotation, Annotation newAnnotation) {
         this.oldAnnotation = oldAnnotation;
         this.newAnnotation = newAnnotation;
     }
 
     @Override
-    public void apply() {
-        // TODO verify that that the conceptname is the primary one
+    public void apply(UIToolBox toolBox) {
+
     }
 
     @Override
-    public void unapply() {
+    public void unapply(UIToolBox toolBox) {
 
     }
 
@@ -33,7 +34,7 @@ public class UpdateAnnotation implements Command {
 
     @Override
     public String toString() {
-        return "UpdateAnnotation{" +
+        return "UpdateAnnotationCmd{" +
                 "oldAnnotation=" + oldAnnotation +
                 ", newAnnotation=" + newAnnotation +
                 '}';

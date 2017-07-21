@@ -7,8 +7,8 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import org.mbari.m3.vars.annotation.EventBus;
-import org.mbari.m3.vars.annotation.commands.CreateAnnotation;
-import org.mbari.m3.vars.annotation.commands.ShowConceptInTreeView;
+import org.mbari.m3.vars.annotation.commands.CreateAnnotationCmd;
+import org.mbari.m3.vars.annotation.commands.ShowConceptInTreeViewMsg;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 
 import javax.inject.Inject;
@@ -39,13 +39,13 @@ public class ConceptButtonFactory {
         button.setUserData(USERDATA);
         button.getStyleClass().add("cbpanel-button");
         button.setOnAction(event ->
-            eventBus.send(new CreateAnnotation(button.getText())));
+            eventBus.send(new CreateAnnotationCmd(button.getText())));
 
         // Add contextMenu
         ContextMenu contextMenu = new ContextMenu();
         MenuItem showInTreeItem = new MenuItem(i18n.getString("cbpanel.conceptbutton.findconcept"));
         showInTreeItem.setOnAction(event -> {
-                ShowConceptInTreeView msg = new ShowConceptInTreeView(button.getText());
+                ShowConceptInTreeViewMsg msg = new ShowConceptInTreeViewMsg(button.getText());
                 eventBus.send(msg);
         });
         MenuItem deleteButton = new MenuItem(i18n.getString("cbpanel.conceptbutton.delete"));

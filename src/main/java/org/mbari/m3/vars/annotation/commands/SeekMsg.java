@@ -4,11 +4,11 @@ package org.mbari.m3.vars.annotation.commands;
  * @author Brian Schlining
  * @since 2017-06-02T11:49:00
  */
-public class Seek<T> {
+public class SeekMsg<T> {
 
     private final T index;
 
-    public Seek(T index) {
+    public SeekMsg(T index) {
         this.index = index;
     }
 

@@ -14,14 +14,14 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * The CommandManager listens on the eventbus for 4 different kinds of classes: {@link Command},
- * {@link Redo}, {@link Undo}, {@link ClearCommandManager}.
+ * {@link RedoMsg}, {@link UndoMsg}, {@link ClearCommandManagerMsg}.
  *
  * On a {@link Command} it will immediately execute the command's `apply()` method and add it
  * to the undo queue.
  *
- * ON a {@link Undo}, it will call the commands `unapply()` method and add it to the redo queue
+ * ON a {@link UndoMsg}, it will call the commands `unapply()` method and add it to the redo queue
  *
- * On a {@link Redo}, it will call the commands `apply()` method and add it to the undo queue.
+ * On a {@link RedoMsg}, it will call the commands `apply()` method and add it to the undo queue.
  *
  * @author Brian Schlining
  * @since 2017-05-10T09:00:00
@@ -91,15 +91,15 @@ public class CommandManager {
                 .forEach(pendingQueue::offer);
 
         eventBus.toObserverable()
-                .ofType(Undo.class)
+                .ofType(UndoMsg.class)
                 .forEach(u -> undo());
 
         eventBus.toObserverable()
-                .ofType(Redo.class)
+                .ofType(RedoMsg.class)
                 .forEach(u -> redo());
 
         eventBus.toObserverable()
-                .ofType(ClearCommandManager.class)
+                .ofType(ClearCommandManagerMsg.class)
                 .forEach(u -> clear());
     }
 

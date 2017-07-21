@@ -2,7 +2,7 @@ package org.mbari.m3.vars.annotation.commands;
 
 /**
  * @author Brian Schlining
- * @since 2017-05-11T12:57:00
+ * @since 2017-07-20T22:09:00
  */
-public class ClearCommandManager {
+public interface Message {
 }

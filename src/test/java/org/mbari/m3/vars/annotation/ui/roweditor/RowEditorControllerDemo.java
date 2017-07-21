@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
-import org.mbari.m3.vars.annotation.commands.CreateAssociation;
 import org.mbari.m3.vars.annotation.model.Annotation;
 
 import java.time.Instant;

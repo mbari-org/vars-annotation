@@ -30,9 +30,9 @@ import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.commands.ClearCache;
-import org.mbari.m3.vars.annotation.commands.DeleteAssociations;
-import org.mbari.m3.vars.annotation.commands.UpdateAnnotation;
+import org.mbari.m3.vars.annotation.commands.ClearCacheMsg;
+import org.mbari.m3.vars.annotation.commands.DeleteAssociationsCmd;
+import org.mbari.m3.vars.annotation.commands.UpdateAnnotationCmd;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
@@ -103,7 +103,7 @@ public class RowEditorPaneController {
     @FXML
     void onRemove(ActionEvent event) {
         final List<Association> items = new ArrayList<>(associationListView.getSelectionModel().getSelectedItems());
-        eventBus.send(new DeleteAssociations(items));
+        eventBus.send(new DeleteAssociationsCmd(items));
     }
 
     @FXML
@@ -162,7 +162,7 @@ public class RowEditorPaneController {
                                     Annotation newA = new Annotation(oldA);
                                     newA.setConcept(primaryName);
                                     conceptComboBox.getSelectionModel().select(primaryName);
-                                    eventBus.send(new UpdateAnnotation(oldA, newA));
+                                    eventBus.send(new UpdateAnnotationCmd(oldA, newA));
                                 });
                             });
 
@@ -176,7 +176,7 @@ public class RowEditorPaneController {
 
         // If the cache is cleared reload combobox data
         eventBus.toObserverable()
-                .ofType(ClearCache.class)
+                .ofType(ClearCacheMsg.class)
                 .subscribe(c -> loadComboBoxData());
 
         // Listen for Annotation selections
