@@ -84,6 +84,10 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(call);
     }
 
+    public CompletableFuture<Annotation> createAnnotations(List<Annotation> annotations) {
+        return sendRequest(annoService.create(annotations));
+    }
+
 
     @Override
     public CompletableFuture<Association> createAssociation(UUID observationUuid, Association association) {
@@ -132,6 +136,10 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(annoService.update(annotation.getObservationUuid(), fieldMap, defaultHeaders));
     }
 
+    public CompletableFuture<Annotation> updateAnnotations(List<Annotation> annotations) {
+        return sendRequest(annoService.update(annotations));
+    }
+
     @Override
     public CompletableFuture<Association> updateAssociation(Association association) {
         Map<String, String> fieldMap = new HashMap<>();
@@ -162,6 +170,10 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     @Override
     public CompletableFuture<Boolean> deleteAnnotation(UUID observationUuid) {
         return sendRequest(annoService.delete(observationUuid, defaultHeaders));
+    }
+
+    public CompletableFuture<Void> deleteAnnotations(List<UUID> observationUuids) {
+        return sendRequest(annoService.delete(observationUuids));
     }
 
     @Override

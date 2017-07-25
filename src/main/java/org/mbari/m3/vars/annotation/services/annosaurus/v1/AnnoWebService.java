@@ -35,7 +35,6 @@ public interface AnnoWebService {
     @GET("annotations/imagereference/{uuid}")
     Call<List<Annotation>> findByImageReferenceUuid(@Path("uuid") UUID uuid);
 
-
     /**
      *
      * @param uuid
@@ -63,18 +62,26 @@ public interface AnnoWebService {
                             @Field("activity") String activity,
                             @HeaderMap Map<String, String> headers);
 
+    @POST("annotations/bulk")
+    Call<Annotation> create(@Body List<Annotation> annotations );
+
     @FormUrlEncoded
     @PUT("annotations/{uuid}")
     Call<Annotation> update(@Path("uuid") UUID annotationUuid,
                             @FieldMap Map<String, String> fields,
                             @HeaderMap Map<String, String> headers);
 
+    @PUT("annotations/bulk")
+    Call<Annotation> update(@Body List<Annotation> annotations );
+
     @DELETE("observations/{uuid}")
     Call<Boolean> delete(@Path("uuid") UUID observationUuid,
                          @HeaderMap Map<String, String> headers);
 
+    @POST("observations/delete")
+    Call<Void> delete(@Body List<UUID> observationUuids);
+
     @GET("observations/videoreference/count/{uuid}")
     Call<AnnotationCount> countByVideoReferenceUuid(@Path("uuid") UUID videoReferenceUuid);
-
 
 }

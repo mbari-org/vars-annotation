@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.model;
 
+import com.google.gson.annotations.SerializedName;
 import org.mbari.vcr4j.time.Timecode;
 
 import java.time.Duration;
@@ -23,8 +24,11 @@ public class Annotation implements ImagedMoment {
     private UUID videoReferenceUuid;
     private UUID imagedMomentUuid;
     private Timecode timecode;
+
+    @SerializedName("elapsed_time_millis")
     private Duration elapsedTime;
     private Instant recordedTimestamp;
+    @SerializedName("duration_millis")
     private Duration duration;
     private String group;
     private String activity;
