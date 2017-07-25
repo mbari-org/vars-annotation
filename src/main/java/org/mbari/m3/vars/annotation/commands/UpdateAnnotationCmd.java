@@ -1,7 +1,10 @@
 package org.mbari.m3.vars.annotation.commands;
 
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
+
+import java.util.Arrays;
 
 /**
  * @author Brian Schlining
@@ -19,17 +22,27 @@ public class UpdateAnnotationCmd implements Command {
 
     @Override
     public void apply(UIToolBox toolBox) {
-
+        doAction(toolBox, newAnnotation);
     }
 
     @Override
     public void unapply(UIToolBox toolBox) {
+        doAction(toolBox, oldAnnotation);
+    }
 
+    private void doAction(UIToolBox toolBox, Annotation annotation) {
+        toolBox.getServices()
+                .getAnnotationService()
+                .updateAnnotation(annotation)
+                .thenAccept(a -> {
+                    toolBox.getEventBus()
+                            .send(new AnnotationsChangedEvent(null, Arrays.asList(a)));
+                });
     }
 
     @Override
     public String getDescription() {
-        return null;
+        return "Update annotation";
     }
 
     @Override

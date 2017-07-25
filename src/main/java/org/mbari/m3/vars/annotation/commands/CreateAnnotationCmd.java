@@ -1,8 +1,11 @@
 package org.mbari.m3.vars.annotation.commands;
 
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
+import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -11,7 +14,7 @@ import java.util.UUID;
  */
 public class CreateAnnotationCmd implements Command {
     private final Annotation annotationTemplate;
-    private UUID annotationUuid;
+    private Annotation annotation;
 
     public CreateAnnotationCmd(Annotation annotationTemplate) {
         this.annotationTemplate = annotationTemplate;
@@ -20,19 +23,38 @@ public class CreateAnnotationCmd implements Command {
     @Override
     public void apply(UIToolBox toolBox) {
         // Timecode/elapsedtime should have already been captured  from video
-        // TODO insert into database
-        // TODO notify app of new annotation.
-        // TODO after creating it save it to annotaiton for undo.
+        toolBox.getServices()
+                .getAnnotationService()
+                .createAnnotation(annotationTemplate)
+                .thenApply(a -> {
+                    annotation = a;
+                    return a;
+                })
+                .thenAccept(a -> {
+                   toolBox.getEventBus()
+                           .send(new AnnotationsAddedEvent(CreateAnnotationCmd.this,
+                                   Arrays.asList(a)));
+                });
     }
 
     @Override
     public void unapply(UIToolBox toolBox) {
-
+        if (annotation != null) {
+            toolBox.getServices()
+                    .getAnnotationService()
+                    .deleteAnnotation(annotation.getObservationUuid())
+                    .thenAccept(b -> {
+                       annotation = null;
+                       toolBox.getEventBus()
+                               .send(new AnnotationsRemovedEvent(CreateAnnotationCmd.this,
+                                       Arrays.asList(annotation)));
+                    });
+        }
     }
 
 
     @Override
     public String getDescription() {
-        return null;
+        return "Create an annotation";
     }
 }
