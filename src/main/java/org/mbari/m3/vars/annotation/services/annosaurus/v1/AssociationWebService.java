@@ -4,6 +4,7 @@ import org.mbari.m3.vars.annotation.model.Association;
 import retrofit2.Call;
 import retrofit2.http.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -36,7 +37,13 @@ public interface AssociationWebService {
                              @FieldMap Map<String, String> fields,
                              @HeaderMap Map<String, String> headers);
 
+    @PUT("associations/bulk")
+    Call<Collection<Association>> update(@Body Collection<Association> associations);
+
     @DELETE("associations/{uuid}")
     Call<Boolean> delete(@Path("uuid") UUID associationUuid);
+
+    @POST("associations/delete")
+    Call<Void> delete(@Body Collection<UUID> associationUuids);
 
 }

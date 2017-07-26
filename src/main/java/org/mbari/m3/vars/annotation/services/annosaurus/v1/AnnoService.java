@@ -84,10 +84,9 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(call);
     }
 
-    public CompletableFuture<Annotation> createAnnotations(List<Annotation> annotations) {
+    public CompletableFuture<Collection<Annotation>> createAnnotations(Collection<Annotation> annotations) {
         return sendRequest(annoService.create(annotations));
     }
-
 
     @Override
     public CompletableFuture<Association> createAssociation(UUID observationUuid, Association association) {
@@ -136,7 +135,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(annoService.update(annotation.getObservationUuid(), fieldMap, defaultHeaders));
     }
 
-    public CompletableFuture<Annotation> updateAnnotations(List<Annotation> annotations) {
+    public CompletableFuture<Collection<Annotation>> updateAnnotations(Collection<Annotation> annotations) {
         return sendRequest(annoService.update(annotations));
     }
 
@@ -148,6 +147,10 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         addField(fieldMap, "link_value", association.getLinkValue());
         addField(fieldMap, "mime_type", association.getMimeType());
         return sendRequest(assService.update(association.getUuid(), fieldMap, defaultHeaders));
+    }
+
+    public CompletableFuture<Collection<Association>> updateAssociations(Collection<Association> associations) {
+        return sendRequest(assService.update(associations));
     }
 
     @Override
@@ -181,18 +184,19 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(assService.delete(associationUuid));
     }
 
+    public CompletableFuture<Void> deleteAssociations(Collection<UUID> associationUuids) {
+        return sendRequest(assService.delete(associationUuids));
+    }
+
     @Override
     public CompletableFuture<Boolean> deleteImage(UUID imageReferenceUuid) {
         return sendRequest(imageService.delete(imageReferenceUuid));
     }
-
 
     private void addField(Map<String, String> map, String key, Object value) {
         if (value != null) {
             map.put(key, asString(value));
         }
     }
-
-
 
 }

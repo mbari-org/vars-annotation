@@ -1,7 +1,9 @@
 package org.mbari.m3.vars.annotation.commands;
 
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
+import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.vcr4j.VideoIndex;
@@ -9,6 +11,8 @@ import org.mbari.vcr4j.time.Timecode;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -39,7 +43,7 @@ public class CopyAnnotationsCmd implements Command {
 
     @Override
     public void apply(UIToolBox toolBox) {
-        copies = originalAnnotations.stream()
+        List<Annotation> rawCopies = originalAnnotations.stream()
                 .map(Annotation::new) // Create copy
                 .peek(a -> {           // Update fields
                     a.setVideoReferenceUuid(videoReferenceUuid);
@@ -63,16 +67,28 @@ public class CopyAnnotationsCmd implements Command {
         AnnotationService service = toolBox.getServices()
                 .getAnnotationService();
 
-        copies.stream()
-
-
-        // TODO finish implemntati
+        service.createAnnotations(rawCopies)
+                .thenAccept(ans -> {
+                   copies = rawCopies;
+                   toolBox.getEventBus()
+                           .send(new AnnotationsAddedEvent(null, copies));
+                });
 
     }
 
     @Override
     public void unapply(UIToolBox toolBox) {
-
+        AnnotationService service = toolBox.getServices()
+                .getAnnotationService();
+        Collection<UUID> uuids = copies.stream()
+                .map(Annotation::getObservationUuid)
+                .collect(Collectors.toList());
+        service.deleteAnnotations(uuids)
+                .thenAccept(v -> {
+                    toolBox.getEventBus()
+                            .send(new AnnotationsRemovedEvent(null, copies));
+                    copies = new ArrayList<>();
+                });
     }
 
     @Override

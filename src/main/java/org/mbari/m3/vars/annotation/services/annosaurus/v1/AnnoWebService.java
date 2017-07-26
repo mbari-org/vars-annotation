@@ -7,6 +7,7 @@ import retrofit2.Call;
 import retrofit2.http.*;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -63,7 +64,7 @@ public interface AnnoWebService {
                             @HeaderMap Map<String, String> headers);
 
     @POST("annotations/bulk")
-    Call<Annotation> create(@Body List<Annotation> annotations );
+    Call<Collection<Annotation>> create(@Body Collection<Annotation> annotations );
 
     @FormUrlEncoded
     @PUT("annotations/{uuid}")
@@ -72,14 +73,14 @@ public interface AnnoWebService {
                             @HeaderMap Map<String, String> headers);
 
     @PUT("annotations/bulk")
-    Call<Annotation> update(@Body List<Annotation> annotations );
+    Call<Collection<Annotation>> update(@Body Collection<Annotation> annotations );
 
     @DELETE("observations/{uuid}")
     Call<Boolean> delete(@Path("uuid") UUID observationUuid,
                          @HeaderMap Map<String, String> headers);
 
     @POST("observations/delete")
-    Call<Void> delete(@Body List<UUID> observationUuids);
+    Call<Void> delete(@Body Collection<UUID> observationUuids);
 
     @GET("observations/videoreference/count/{uuid}")
     Call<AnnotationCount> countByVideoReferenceUuid(@Path("uuid") UUID videoReferenceUuid);
