@@ -33,6 +33,7 @@ public class UIToolBox {
         this.eventBus = eventBus;
         this.i18nBundle = i18nBundle;
         this.config = config;
+
     }
 
     public EventBus getEventBus() {

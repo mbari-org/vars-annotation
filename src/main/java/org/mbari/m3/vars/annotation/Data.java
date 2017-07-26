@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class Data {
 
-    private ObservableList<Media> media = FXCollections.emptyObservableList();
+    private ObjectProperty<Media> media = new SimpleObjectProperty<>();
 
     private ObservableList<Annotation> annotations = FXCollections.emptyObservableList();
 
@@ -27,15 +27,17 @@ public class Data {
 
     private ObjectProperty<User> user  = new SimpleObjectProperty<>();
 
-    public ObservableList<Media> getMedia() {
+    public Media getMedia() {
+        return media.get();
+    }
+
+    public ObjectProperty<Media> mediaProperty() {
         return media;
     }
 
-    public void setMedia(Collection<Media> media) {
-        this.media.clear();
-        this.media.addAll(media);
+    public void setMedia(Media media) {
+        this.media.set(media);
     }
-
 
     public ObservableList<Annotation> getAnnotations() {
         return annotations;
@@ -62,7 +64,7 @@ public class Data {
         return selectedAnnotations;
     }
 
-    public void setSelectedAnnotations(ObservableList<Annotation> selectedAnnotations) {
+    public void setSelectedAnnotations(Collection<Annotation> selectedAnnotations) {
         this.selectedAnnotations.clear();
         this.selectedAnnotations.addAll(selectedAnnotations);
     }

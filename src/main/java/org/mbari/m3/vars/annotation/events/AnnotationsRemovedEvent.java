@@ -14,4 +14,8 @@ public class AnnotationsRemovedEvent extends UIEvent<Collection<Annotation>> {
     public AnnotationsRemovedEvent(Object source, Collection<Annotation> annotations) {
         super(source, ImmutableList.copyOf(annotations));
     }
+
+    public AnnotationsRemovedEvent(Collection<Annotation> annotations) {
+        this(null, annotations);
+    }
 }

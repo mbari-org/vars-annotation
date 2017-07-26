@@ -6,19 +6,20 @@ import java.util.List;
 import java.util.UUID;
 
 /**
+ * Changes the media that is currently being edited
  * @author Brian Schlining
  * @since 2017-06-28T13:09:00
  */
 public class ChangeMediaMsg implements Message {
 
 
-    private final List<UUID> uuids;
+    private final UUID videoReferenceUuid;
 
-    public ChangeMediaMsg(List<UUID> uuids) {
-        this.uuids = Collections.unmodifiableList(new ArrayList<>(uuids));
+    public ChangeMediaMsg(UUID videoReferenceUuid) {
+        this.videoReferenceUuid = videoReferenceUuid;
     }
 
-    public List<UUID> getUuids() {
-        return uuids;
+    public UUID getVideoReferenceUuid() {
+        return videoReferenceUuid;
     }
 }

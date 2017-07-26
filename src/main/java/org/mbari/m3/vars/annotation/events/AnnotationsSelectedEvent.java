@@ -14,4 +14,8 @@ public class AnnotationsSelectedEvent extends UISelectionEvent<Collection<Annota
     public AnnotationsSelectedEvent(Object selectionSource, Collection<Annotation> annotations) {
         super(selectionSource, ImmutableList.copyOf(annotations));
     }
+
+    public AnnotationsSelectedEvent(Collection<Annotation> annotations) {
+        this(null, annotations);
+    }
 }

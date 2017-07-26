@@ -203,4 +203,19 @@ public class Annotation implements ImagedMoment {
                 ", numOfImages=" + b +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Annotation that = (Annotation) o;
+
+        return observationUuid.equals(that.observationUuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return observationUuid.hashCode();
+    }
 }

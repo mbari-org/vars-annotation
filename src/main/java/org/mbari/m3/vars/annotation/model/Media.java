@@ -202,4 +202,18 @@ public class Media {
         this.videoName = videoName;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Media media = (Media) o;
+
+        return videoReferenceUuid.equals(media.videoReferenceUuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return videoReferenceUuid.hashCode();
+    }
 }

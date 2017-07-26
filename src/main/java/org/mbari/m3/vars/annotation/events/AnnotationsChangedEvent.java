@@ -14,4 +14,8 @@ public class AnnotationsChangedEvent extends UIChangeEvent<Collection<Annotation
     public AnnotationsChangedEvent(Object changeSource, Collection<Annotation> annotations) {
         super(changeSource, ImmutableList.copyOf(annotations));
     }
+
+    public AnnotationsChangedEvent(Collection<Annotation> annotations) {
+        this(null, annotations);
+    }
 }

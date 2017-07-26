@@ -175,7 +175,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(annoService.delete(observationUuid, defaultHeaders));
     }
 
-    public CompletableFuture<Void> deleteAnnotations(List<UUID> observationUuids) {
+    public CompletableFuture<Void> deleteAnnotations(Collection<UUID> observationUuids) {
         return sendRequest(annoService.delete(observationUuids));
     }
 
