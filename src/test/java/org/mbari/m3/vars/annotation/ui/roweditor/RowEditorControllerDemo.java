@@ -69,8 +69,8 @@ public class RowEditorControllerDemo extends Application {
 
                 });
 
-        obs.ofType(CreateAssociation.class)
-                .subscribe(ca -> {
-                });
+//        obs.ofType(CreateAssociation.class)
+//                .subscribe(ca -> {
+//                });
     }
 }

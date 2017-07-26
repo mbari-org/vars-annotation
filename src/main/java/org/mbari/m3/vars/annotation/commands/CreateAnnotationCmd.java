@@ -24,17 +24,23 @@ public class CreateAnnotationCmd implements Command {
     public void apply(UIToolBox toolBox) {
         // Timecode/elapsedtime should have already been captured  from video
         toolBox.getServices()
-                .getAnnotationService()
-                .createAnnotation(annotationTemplate)
-                .thenApply(a -> {
-                    annotation = a;
-                    return a;
-                })
-                .thenAccept(a -> {
-                   toolBox.getEventBus()
-                           .send(new AnnotationsAddedEvent(CreateAnnotationCmd.this,
-                                   Arrays.asList(a)));
+                .getConceptService()
+                .findDetails(annotation.getConcept())
+                .thenAccept(opt -> {
+                    if (opt.isPresent()) {
+                        // Update to primary name
+                        annotationTemplate.setConcept(opt.get().getName());
+                        toolBox.getServices()
+                                .getAnnotationService()
+                                .createAnnotation(annotationTemplate)
+                                .thenAccept(a -> {
+                                    annotation = a;
+                                    toolBox.getEventBus()
+                                            .send(new AnnotationsAddedEvent(a));
+                                });
+                    }
                 });
+
     }
 
     @Override
@@ -45,9 +51,7 @@ public class CreateAnnotationCmd implements Command {
                     .deleteAnnotation(annotation.getObservationUuid())
                     .thenAccept(b -> {
                        annotation = null;
-                       toolBox.getEventBus()
-                               .send(new AnnotationsRemovedEvent(CreateAnnotationCmd.this,
-                                       Arrays.asList(annotation)));
+                       toolBox.getEventBus().send(new AnnotationsRemovedEvent(annotation));
                     });
         }
     }

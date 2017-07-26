@@ -32,12 +32,22 @@ public class UpdateAnnotationCmd implements Command {
 
     private void doAction(UIToolBox toolBox, Annotation annotation) {
         toolBox.getServices()
-                .getAnnotationService()
-                .updateAnnotation(annotation)
-                .thenAccept(a -> {
-                    toolBox.getEventBus()
-                            .send(new AnnotationsChangedEvent(null, Arrays.asList(a)));
+                .getConceptService()
+                .findDetails(annotation.getConcept())
+                .thenAccept(opt -> {
+                    if (opt.isPresent()) {
+                        // Update to primary concept name
+                        newAnnotation.setConcept(opt.get().getName());
+                        toolBox.getServices()
+                                .getAnnotationService()
+                                .updateAnnotation(annotation)
+                                .thenAccept(a -> {
+                                    toolBox.getEventBus()
+                                            .send(new AnnotationsChangedEvent(null, Arrays.asList(a)));
+                                });
+                    }
                 });
+
     }
 
     @Override

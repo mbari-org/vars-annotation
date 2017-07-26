@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation.model;
 
 import com.google.gson.annotations.SerializedName;
+import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
 
 import java.time.Duration;
@@ -38,11 +39,32 @@ public class Annotation implements ImagedMoment {
     public Annotation() {
     }
 
+    /**
+     *
+     * @param concept
+     * @param observer
+     * @deprecated
+     */
     public Annotation(String concept, String observer) {
         this.concept = concept;
         this.observer = observer;
         this.observationTimestamp = Instant.now();
     }
+
+    public Annotation(String concept,
+                      String observer,
+                      VideoIndex videoIndex,
+                      UUID videoReferenceUuid) {
+        this.concept = concept;
+        this.observer = observer;
+        this.observationTimestamp = Instant.now();
+        this.videoReferenceUuid = videoReferenceUuid;
+        videoIndex.getElapsedTime().ifPresent(this::setElapsedTime);
+        videoIndex.getTimestamp().ifPresent(this::setRecordedTimestamp);
+        videoIndex.getTimecode().ifPresent(this::setTimecode);
+    }
+
+
 
     public Annotation(Annotation a) {
         observationUuid = a.observationUuid;

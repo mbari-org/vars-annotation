@@ -5,6 +5,8 @@ import com.typesafe.config.Config;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import org.mbari.m3.vars.annotation.services.VideoControlService;
+import org.mbari.vcr4j.VideoError;
+import org.mbari.vcr4j.VideoState;
 
 import javax.inject.Inject;
 import java.util.ResourceBundle;
@@ -20,7 +22,7 @@ public class UIToolBox {
     private final Config config;
     private final Data data;
     private final Services services;
-    private final ObjectProperty<VideoControlService> videoControlService = new SimpleObjectProperty<>();
+    private final ObjectProperty<VideoControlService<? extends VideoState, ? extends VideoError>> videoControlService = new SimpleObjectProperty<>();
 
     @Inject
     public UIToolBox(Data data,
@@ -56,11 +58,11 @@ public class UIToolBox {
         return services;
     }
 
-    public VideoControlService getVideoControlService() {
+    public VideoControlService<? extends VideoState, ? extends VideoError> getVideoControlService() {
         return videoControlService.get();
     }
 
-    public ObjectProperty<VideoControlService> videoControlServiceProperty() {
+    public ObjectProperty<VideoControlService<? extends VideoState, ? extends VideoError>> videoControlServiceProperty() {
         return videoControlService;
     }
 }

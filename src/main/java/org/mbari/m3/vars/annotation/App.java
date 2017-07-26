@@ -46,7 +46,6 @@ public class App extends Application {
         toolBox = Initializer.getToolBox();
         appController = new AppController(toolBox);
 
-        // TODO initialize appState properties
     }
 
     @Override
@@ -75,6 +74,10 @@ public class App extends Application {
         }
 
         primaryStage.setScene(appController.getScene());
+        primaryStage.setOnCloseRequest(e -> {
+            Platform.exit();
+            System.exit(0);
+        });
         primaryStage.show();
     }
 

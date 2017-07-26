@@ -4,7 +4,9 @@ import com.jfoenix.controls.JFXTextField;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -122,8 +124,23 @@ public class SearchTreePaneController {
                     }
                 }
             });
+            textField.setOnKeyPressed(event -> {
+                KeyCode keyCode = event.getCode();
+                if (keyCode.equals(KeyCode.UP)) {
+                    selectNextInTree(-1);
+                }
+                else if (keyCode.equals(KeyCode.DOWN)) {
+                    selectNextInTree(1);
+                }
+            });
         }
         return textField;
+    }
+
+    private void selectNextInTree(int i) {
+        TreeView<Concept> treeView = getTreeView();
+        int idx = treeView.getSelectionModel().getSelectedIndex();
+        treeView.getSelectionModel().select(idx + i);
     }
 
     private static void expand(TreeItem<?> item) {

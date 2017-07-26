@@ -46,6 +46,7 @@ public class CopyAnnotationsCmd implements Command {
         List<Annotation> rawCopies = originalAnnotations.stream()
                 .map(Annotation::new) // Create copy
                 .peek(a -> {           // Update fields
+                    // TODO set group and activity?
                     a.setVideoReferenceUuid(videoReferenceUuid);
                     a.setObservationUuid(null);
                     a.setImagedMomentUuid(null);
@@ -64,29 +65,29 @@ public class CopyAnnotationsCmd implements Command {
                 })
                 .collect(Collectors.toList());
 
-        AnnotationService service = toolBox.getServices()
-                .getAnnotationService();
-
-        service.createAnnotations(rawCopies)
+        toolBox.getServices()
+                .getAnnotationService()
+                .createAnnotations(rawCopies)
                 .thenAccept(ans -> {
                    copies = rawCopies;
                    toolBox.getEventBus()
-                           .send(new AnnotationsAddedEvent(null, copies));
+                           .send(new AnnotationsAddedEvent(copies));
                 });
 
     }
 
     @Override
     public void unapply(UIToolBox toolBox) {
-        AnnotationService service = toolBox.getServices()
-                .getAnnotationService();
         Collection<UUID> uuids = copies.stream()
                 .map(Annotation::getObservationUuid)
                 .collect(Collectors.toList());
-        service.deleteAnnotations(uuids)
+
+        toolBox.getServices()
+                .getAnnotationService()
+                .deleteAnnotations(uuids)
                 .thenAccept(v -> {
                     toolBox.getEventBus()
-                            .send(new AnnotationsRemovedEvent(null, copies));
+                            .send(new AnnotationsRemovedEvent(copies));
                     copies = new ArrayList<>();
                 });
     }

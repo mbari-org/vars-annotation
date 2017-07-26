@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation.commands;
 
 import com.google.common.base.Preconditions;
+import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Association;
 
 import java.util.ArrayList;
@@ -24,12 +25,12 @@ public class DeleteAssociationsCmd implements Command {
     }
 
     @Override
-    public void apply() {
+    public void apply(UIToolBox toolBox) {
 
     }
 
     @Override
-    public void unapply() {
+    public void unapply(UIToolBox toolBox) {
 
     }
 

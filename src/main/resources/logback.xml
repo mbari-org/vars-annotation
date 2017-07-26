@@ -15,6 +15,7 @@
 
     <logger name="java.util.Date" level="WARN" />
     <logger name="org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoWebServiceFactory" level="DEBUG" />
+    <logger name="org.mbari.m3.vars.annotation.util.ActiveAppPinger" level="WARN" />
 
     <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>

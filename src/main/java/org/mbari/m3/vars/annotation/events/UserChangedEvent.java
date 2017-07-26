@@ -11,4 +11,8 @@ public class UserChangedEvent extends UIChangeEvent<User> {
     public UserChangedEvent(Object changeSource, User user) {
         super(changeSource, user);
     }
+
+    public UserChangedEvent(User user) {
+        this(null, user);
+    }
 }

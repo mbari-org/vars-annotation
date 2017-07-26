@@ -8,6 +8,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.commands.CreateAnnotationCmd;
+import org.mbari.m3.vars.annotation.commands.CreateAnnotationFromConceptCmd;
 import org.mbari.m3.vars.annotation.commands.ShowConceptInTreeViewMsg;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 
@@ -39,7 +40,7 @@ public class ConceptButtonFactory {
         button.setUserData(USERDATA);
         button.getStyleClass().add("cbpanel-button");
         button.setOnAction(event ->
-            eventBus.send(new CreateAnnotationCmd(button.getText())));
+            eventBus.send(new CreateAnnotationFromConceptCmd(button.getText())));
 
         // Add contextMenu
         ContextMenu contextMenu = new ContextMenu();

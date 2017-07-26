@@ -8,11 +8,13 @@ import javafx.scene.layout.Pane;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.Command;
+import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
 import org.mbari.m3.vars.annotation.commands.DeleteAssociationsCmd;
 import org.mbari.m3.vars.annotation.commands.UpdateAssociationCmd;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -81,7 +83,7 @@ public class RowEditorController {
                 Command cmd;
                 if (selectedAssociation == null) {
                     // Create new association
-                    cmd = new CreateAssociation(annotation.getObservationUuid(), customAssociation);
+                    cmd = new CreateAssociationsCmd(customAssociation, Arrays.asList(annotation));
                 }
                 else {
                     // Update existing association

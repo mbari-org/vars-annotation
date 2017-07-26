@@ -4,7 +4,9 @@ import io.reactivex.Observable;
 import javafx.scene.Scene;
 import org.mbari.m3.vars.annotation.commands.ClearCommandManagerMsg;
 import org.mbari.m3.vars.annotation.events.*;
+import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.ui.AppPaneController;
 
 import java.util.ArrayList;
 
@@ -23,7 +25,14 @@ public class AppController {
 
     public Scene getScene() {
         if (scene == null) {
-            //scene = new Scene();
+            AppPaneController paneController = new AppPaneController(toolBox);
+            scene = new Scene(paneController.getRoot());
+            scene.getStylesheets().addAll("/css/dark.css",
+                    "/css/common.css",
+                    "/css/annotable.css",
+                    "/css/concepttree.css",
+                    "/css/cbpanel.css");
+
 
         }
         return scene;
@@ -39,12 +48,18 @@ public class AppController {
                 .subscribe(e -> data.getAnnotations().addAll(e.get()));
 
         eventObservable.ofType(AnnotationsRemovedEvent.class)
-                .subscribe(e -> data.getAnnotations().removeAll(e.get()));
+                .subscribe(e -> {
+                    // Remove from both annotatins and selectedAnnotations.
+                    // Reset selected to exclude any that were removed.
+                    ArrayList<Annotation> selected = new ArrayList<>(data.getSelectedAnnotations());
+                    selected.removeAll(e.get());
+                    eventBus.send(new AnnotationsSelectedEvent(selected));
+                    data.getAnnotations().removeAll(e.get());
+                });
 
         eventObservable.ofType(AnnotationsChangedEvent.class)
                 .subscribe(e -> {
-                    // They use observation UUID as hash key. Remove the existing ones and add the
-                    // modified annotations.
+                    // They use observation UUID as hash key. Remove and replace with new ones
                     data.getAnnotations().removeAll(e.get());
                     data.getAnnotations().addAll(e.get());
                 });
