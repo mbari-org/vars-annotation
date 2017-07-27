@@ -10,6 +10,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.commands.ShowConceptInTreeViewMsg;
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 
@@ -36,6 +38,27 @@ public class SearchTreePaneController {
         // TODO constructor should take toolbox
 
         // TODO listen to ShowConceptInTreeViewMsg then select/scrollTo that node
+    }
+
+    public SearchTreePaneController(UIToolBox toolBox) {
+        this(toolBox.getServices().getConceptService(),
+                toolBox.getI18nBundle());
+
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(ShowConceptInTreeViewMsg.class)
+                .subscribe(msg -> {
+//                    toolBox.getServices()
+//                            .getConceptService()
+//                            .findConcept(msg.getName())
+//                            .thenAccept(opt -> {
+//                                opt.ifPresent(concept -> {
+//                                    TreeView<Concept> t = getTreeView();
+//                                    t.getSelectionModel().s
+//                                });
+//
+//                            })
+                });
     }
 
     public BorderPane getRoot() {

@@ -3,7 +3,11 @@ package org.mbari.m3.vars.annotation.ui;
 import com.anchorage.docks.node.DockNode;
 import com.anchorage.docks.stations.DockStation;
 import com.anchorage.system.AnchorageSystem;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import de.jensd.fx.glyphs.GlyphsFactory;
+import de.jensd.fx.glyphs.materialicons.MaterialIcon;
+import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
@@ -12,8 +16,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.commands.RedoMsg;
+import org.mbari.m3.vars.annotation.commands.UndoMsg;
 import org.mbari.m3.vars.annotation.events.UserAddedEvent;
 import org.mbari.m3.vars.annotation.events.UserChangedEvent;
 import org.mbari.m3.vars.annotation.model.User;
@@ -83,7 +91,21 @@ public class AppPaneController {
     public ToolBar getToolBar() {
         if (toolBar == null) {
             ResourceBundle bundle = toolBox.getI18nBundle();
-            toolBar = new ToolBar(new Label(bundle.getString("apppane.label.user")),
+            GlyphsFactory gf = MaterialIconFactory.get();
+
+            Text undoIcon = gf.createIcon(MaterialIcon.UNDO, "30px");
+            Button undoButton = new JFXButton();
+            undoButton.setGraphic(undoIcon);
+            undoButton.setOnAction(e -> toolBox.getEventBus().send(new UndoMsg()));
+
+            Text redoIcon = gf.createIcon(MaterialIcon.REDO, "30px");
+            Button redoButton = new JFXButton();
+            redoButton.setGraphic(redoIcon);
+            redoButton.setOnAction(e -> toolBox.getEventBus().send(new RedoMsg()));
+
+            toolBar = new ToolBar(undoButton,
+                    redoButton,
+                    new Label(bundle.getString("apppane.label.user")),
                     getUsersComboBox());
         }
         return toolBar;

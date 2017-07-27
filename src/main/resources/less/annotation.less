@@ -1,16 +1,17 @@
-@base-color: #3D3D3D;
-@base-compliment-color: spin(lighten(@base-color, 25%), 8); /* lightened by 25% and spun by 8 degrees */
+@default-color: #3D3D3D;
+@default-compliment-color: spin(lighten(@default-color, 25%), 8); /* lightened by 25% and spun by 8 degrees */
 @selected-color: #F0544C;
 @selected-text: #000000;
 @hover-color: #454545;
 @default-text: #B3A9A3;
 @cbpanel-with-media: #5D3D3D;
 
-.root{
+.root {
   /*-fx-font-size: 16pt;
   -fx-font-family: "Courier New"; */
-  -fx-base: @base-color;
-  -fx-background: @base-color;
+  -fx-base: @default-color;
+  -fx-background: @default-color;
+  -icons-color: @default-text;
 }
 
 /*
@@ -40,7 +41,7 @@
 
 .button {
   -fx-background-radius: 0 0 0 0;
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
   -fx-text-fill: @default-text;
 }
 
@@ -52,7 +53,7 @@
 /* --- Concept Button Panel --- */
 .cbpanel-button {
   -fx-font-size: 14px;
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
 }
 
 .cbpanel-button:hover {
@@ -62,12 +63,12 @@
 }
 
 .cell {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
   -fx-text-fill: @default-text;
 }
 
 .cell:odd {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
 }
 
 .cell:hover {
@@ -80,19 +81,19 @@
 }
 
 .close, .minimize {
-  -fx-border-color: @base-color;
+  -fx-border-color: @default-color;
   -fx-border-radius: 1;
 }
 
 .combo-box {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
   -fx-text-fill: @default-text;
   -fx-border-radius: 0;
   -fx-background-radius: 0;
 }
 
 .combo-box .combo-box-popup .list-view, .combo-box .combo-box-popup .list-cell {
-  -fx-background-color: @base-color ;
+  -fx-background-color: @default-color;
   -fx-text-fill: @default-text ;
 }
 
@@ -103,7 +104,7 @@
 
 /* --- Concept Tree --- */
 .concepttree-treecell {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
 }
 
 
@@ -121,7 +122,7 @@
 
 .concepttree-treeview {
   -fx-padding: 10 5 5 5;
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
 }
 
 .concepttree-textfield {
@@ -130,7 +131,7 @@
 
 
 .context-menu {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
 }
 
 .focus-indicator {
@@ -138,8 +139,18 @@
   -fx-faint-focus-color: transparent;
 }
 
+.glyph-icon {
+  -fx-text-fill: @default-text;
+  -fx-fill: @default-text;
+}
+
+.glyph-icon:hover {
+  -fx-text-fill: @selected-text;
+  -fx-fill: @selected-text;
+}
+
 .headers-region, .tab-header-background {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
 }
 
 .jfx-combo-box {
@@ -160,11 +171,11 @@
 }
 
 .list-view {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
 }
 
 .list-view:vertical, .list-cell {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
   -fx-text-fill: @default-text;
   -fx-border-radius: 0;
   -fx-background-insets: 0;
@@ -184,7 +195,7 @@
 }
 
 .menu-item {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
 }
 
 .menu-item:hover {
@@ -198,7 +209,7 @@
 
 
 .pane, .hbox, .vbox, .content, .text-area {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
   -fx-background-radius: 0;
 }
 
@@ -207,13 +218,13 @@
 }
 
 .scroll-bar {
-  -fx-background-color: @base-color;
-  -fx-color: @base-color;
+  -fx-background-color: @default-color;
+  -fx-color: @default-color;
   -fx-background-radius: 0;
 }
 
 .scroll-bar .slider {
-  -fx-background-color: @base-compliment-color;
+  -fx-background-color: @default-compliment-color;
 }
 
 .scroll-bar:hover .slider {
@@ -221,13 +232,13 @@
 }
 
 .spinner, .increment-arrow-button, .decrement-arrow-button {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
   -fx-text-fill: @default-text;
   -fx-background-radius: 0;
 }
 
 .spinner > .text-field {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
   -fx-text-fill: @default-text;
   -fx-background-radius: 0;
 }
@@ -235,8 +246,8 @@
 .tab {
   -fx-background-insets: 0;
   -fx-background-radius: 0;
-  -fx-background-color: @base-color;
-  -fx-border-width: 3px;
+  -fx-background-color: @default-color;
+  -fx-border-width: 2px;
 }
 
 .tab:hover {
@@ -245,8 +256,8 @@
 
 .tab:selected {
   -fx-focus-color: transparent;
-  -fx-background-color: @base-color;
-  -fx-border-color: @selected-color @selected-color @base-color @selected-color;
+  -fx-background-color: @default-color;
+  -fx-border-color: @selected-color @selected-color @default-color @selected-color;
   -fx-border-radius: 2;
 }
 
@@ -264,7 +275,7 @@
 }
 
 .table-view {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
   -fx-table-cell-border-color: transparent;
 }
 
@@ -278,37 +289,49 @@
 }
 
 .table-view > .column-header-background {
-  -fx-color: @base-color;
-  -fx-background-color: @base-color;
-  -fx-text-fill: @base-color;
+  -fx-color: @default-color;
+  -fx-background-color: @default-color;
+  -fx-text-fill: @default-color;
 }
 
 .table-view > .column-header-background > .column-drag-header {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
 }
 
 .table-view > .column-header-background > .nested-column-header > .column-header {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
   -fx-text-fill: @default-text;
 }
 
+//.text {
+//  -fx-fill: @default-text;
+//  -fx-text-fill: @default-text;
+//}
+
 .text-field {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
   -fx-text-fill: @default-text;
   -fx-background-radius: 0;
 }
 
 .title-pane, .title-pane > .label, .menubar {
-  -fx-background-color: @base-color;
+  -fx-background-color: @default-color;
   -fx-text-fill: @default-text;
 }
 
 .tree-cell > .tree-disclosure-node > .arrow  {
   -fx-background-color: @default-text;
 }
+
 .tree-cell:expanded > .tree-disclosure-node > .arrow {
   -fx-background-color: @default-text;
 }
+
+.tree-cell:selected > .tree-disclosure-node > .arrow  {
+  -fx-background-color: @selected-text;
+}
+
+
 
 
 /* --- Roweditor -- */

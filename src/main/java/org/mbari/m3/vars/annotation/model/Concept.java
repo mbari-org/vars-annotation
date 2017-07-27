@@ -65,4 +65,19 @@ public class Concept {
         concept.getChildren()
                 .forEach(c -> flatten(c, accum));
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Concept concept = (Concept) o;
+
+        return name.equals(concept.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }
