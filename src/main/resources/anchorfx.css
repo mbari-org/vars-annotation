@@ -1,18 +1,22 @@
+.root {
+    -dock-color: #2D2D2D;
+}
+
 .docknode-title-bar {
-    -fx-background-color: #3D3D3D;
+    -fx-background-color: #2D2D2D;
 }
 
 .docknode-title-text{
-    -fx-text-fill: #B3A9A3;
+    -fx-text-fill: derive(#B3A9A3, -50%);
 }
 
 .docknode-content-panel{
-    -fx-background-color: #3D3D3D;
+    -fx-background-color: #2D2D2D;
     -fx-padding: 0
 }
 
 .docknode-floating-stack-container-panel {
-    -fx-background-color: #3D3D3D;
+    -fx-background-color: #2D2D2D;
     -fx-padding: 4
 }
 
@@ -23,7 +27,7 @@
 .docknode-split-pane *.split-pane-divider {
     -fx-padding: 2;
     -fx-border-color:transparent;
-    -fx-color: #3D3D3D;
+    -fx-color: -dock-color;
 }
 
 .docknode-tab-panel{
@@ -53,11 +57,11 @@
 }
 
 .docknode-command-button-close:pressed{
-    -fx-background-color: #3D3D3D;
+    -fx-background-color: #2D2D2D;
 }
 
 .docknode-command-button-close:hover{
-    -fx-background-color:#3D3D3D;
+    -fx-background-color: #2D2D2D;
 }
 
 .docknode-command-button-close:focused{
