@@ -32,6 +32,10 @@ public class SearchTreePaneController {
     public SearchTreePaneController(ConceptService conceptService, ResourceBundle uiBundle) {
         this.conceptService = conceptService;
         this.uiBundle = uiBundle;
+
+        // TODO constructor should take toolbox
+
+        // TODO listen to ShowConceptInTreeViewMsg then select/scrollTo that node
     }
 
     public BorderPane getRoot() {
@@ -141,6 +145,7 @@ public class SearchTreePaneController {
         TreeView<Concept> treeView = getTreeView();
         int idx = treeView.getSelectionModel().getSelectedIndex();
         treeView.getSelectionModel().select(idx + i);
+        treeView.scrollTo(idx + i);
     }
 
     private static void expand(TreeItem<?> item) {

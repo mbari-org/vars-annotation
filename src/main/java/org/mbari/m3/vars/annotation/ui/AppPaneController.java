@@ -3,14 +3,29 @@ package org.mbari.m3.vars.annotation.ui;
 import com.anchorage.docks.node.DockNode;
 import com.anchorage.docks.stations.DockStation;
 import com.anchorage.system.AnchorageSystem;
+import com.jfoenix.controls.JFXComboBox;
+import io.reactivex.rxjavafx.observables.JavaFxObservable;
+import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.events.UserAddedEvent;
+import org.mbari.m3.vars.annotation.events.UserChangedEvent;
+import org.mbari.m3.vars.annotation.model.User;
+import org.mbari.m3.vars.annotation.services.UserService;
 import org.mbari.m3.vars.annotation.ui.annotable.AnnotationTableController;
 import org.mbari.m3.vars.annotation.ui.cbpanel.ConceptButtonPanesController;
 import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
@@ -23,6 +38,7 @@ public class AppPaneController {
     private AnnotationTableController annotationTableController;
     private ToolBar toolBar;
     private final UIToolBox toolBox;
+    private ComboBox<String> usersComboBox;
 
     public AppPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
@@ -66,9 +82,54 @@ public class AppPaneController {
 
     public ToolBar getToolBar() {
         if (toolBar == null) {
-            toolBar = new ToolBar(new Button("Open"),
-                    new Button("Quit"));
+            ResourceBundle bundle = toolBox.getI18nBundle();
+            toolBar = new ToolBar(new Label(bundle.getString("apppane.label.user")),
+                    getUsersComboBox());
         }
         return toolBar;
+    }
+
+    public ComboBox<String> getUsersComboBox() {
+        if (usersComboBox == null) {
+            UserService userService = toolBox.getServices().getUserService();
+            usersComboBox = new JFXComboBox<>();
+
+            // Listen to UserAddedEvent and add it to the combobox
+            EventBus eventBus = toolBox.getEventBus();
+            eventBus.toObserverable()
+                    .ofType(UserAddedEvent.class)
+                    .subscribe(event -> {
+                        User user = event.get();
+                        usersComboBox.getItems().add(user.getUsername());
+                        FXCollections.sort(usersComboBox.getItems());
+                        usersComboBox.getSelectionModel().select(user.getUsername());
+                    });
+
+            // When a username is selected send a change event
+            JavaFxObservable.valuesOf(usersComboBox.getSelectionModel().selectedItemProperty())
+                    .subscribe(s -> {
+                        userService.findAllUsers()
+                                .thenAccept(users -> {
+                                    Optional<User> opt = users.stream()
+                                            .filter(u -> u.getUsername().equals(s))
+                                            .findFirst();
+                                    opt.ifPresent(user -> eventBus.send(new UserChangedEvent(user)));
+                                });
+                    });
+
+            // Populate the combobox and select the user form the OS
+            userService.findAllUsers()
+                    .thenAccept(users -> {
+                        List<String> usernames = users.stream()
+                                .map(User::getUsername)
+                                .sorted()
+                                .collect(Collectors.toList());
+                        usersComboBox.setItems(FXCollections.observableList(usernames));
+                        String defaultUser = System.getProperty("user.name");
+                        usersComboBox.getSelectionModel().select(defaultUser);
+                    });
+
+        }
+        return usersComboBox;
     }
 }

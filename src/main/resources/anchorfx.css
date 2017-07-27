@@ -3,7 +3,7 @@
 }
 
 .docknode-title-text{
-    -fx-text-fill: rgb(255,255,255);
+    -fx-text-fill: #B3A9A3;
 }
 
 .docknode-content-panel{
@@ -23,7 +23,7 @@
 .docknode-split-pane *.split-pane-divider {
     -fx-padding: 2;
     -fx-border-color:transparent;
-    -fx-color: darkgray;
+    -fx-color: #3D3D3D;
 }
 
 .docknode-tab-panel{
@@ -36,11 +36,11 @@
 }
 
 .docknode-command-button:hover{
-    -fx-background-color: orangered;
+    -fx-background-color: #F0544C;
 }
 
 .docknode-command-button:pressed{
-    -fx-background-color: orangered;
+    -fx-background-color: #F0544C;
 }
 
 .docknode-command-button:focused{
@@ -74,7 +74,7 @@
 }
 
 .substation-title-text{
-    -fx-text-fill: rgb(255,255,255);
+    -fx-text-fill: #B3A9A3;
 }
 
 .dockzone-circle-container-selectors {

@@ -6,6 +6,7 @@ import com.jfoenix.controls.JFXTabPane;
 import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Side;
@@ -127,31 +128,32 @@ public class ConceptButtonPanesController {
     }
 
     private void loadTabsFromPreferences() {
-        getTabPane().getTabs().clear();
+        Platform.runLater(() -> getTabPane().getTabs().clear());
         Optional<Preferences> tabsPrefsOpt = getTabsPreferences();
         if (tabsPrefsOpt.isPresent()) {
             Preferences tabsPrefs = tabsPrefsOpt.get();
-            try {
-                Arrays.stream(tabsPrefs.childrenNames())
-                        .forEach(tabName -> {
-                            Preferences tabPrefs = tabsPrefs.node(tabName);
-                            String name = tabPrefs.get(PREFKEY_TABNAME, "dummy");
-                            ConceptButtonPaneController controller = new ConceptButtonPaneController(
-                                    toolBox.getServices().getConceptService(),
-                                    tabsPrefs.node(tabName),
-                                    toolBox.getEventBus(),
-                                    i18n);
-                            controller.setLocked(lockProperty.get());
-                            Tab tab = new Tab(name, controller.getPane());
-                            tab.setClosable(true);
-                            tab.setOnClosed(e -> removeTab(tab));
-
-                            getTabPane().getTabs().add(tab);
-                        });
-            }
-            catch (BackingStoreException e) {
-                log.error("VARS had a problem loading user tabs for user: " + toolBox.getData().getUser());
-            }
+            Platform.runLater(() -> {
+                try {
+                    Arrays.stream(tabsPrefs.childrenNames())
+                            .forEach(tabName -> {
+                                Preferences tabPrefs = tabsPrefs.node(tabName);
+                                String name = tabPrefs.get(PREFKEY_TABNAME, "dummy");
+                                ConceptButtonPaneController controller = new ConceptButtonPaneController(
+                                        toolBox.getServices().getConceptService(),
+                                        tabsPrefs.node(tabName),
+                                        toolBox.getEventBus(),
+                                        i18n);
+                                controller.setLocked(lockProperty.get());
+                                Tab tab = new Tab(name, controller.getPane());
+                                tab.setClosable(true);
+                                tab.setOnClosed(e -> removeTab(tab));
+                                getTabPane().getTabs().add(tab);
+                            });
+                }
+                catch (BackingStoreException e) {
+                    log.error("VARS had a problem loading user tabs for user: " + toolBox.getData().getUser());
+                }
+            });
         }
     }
 

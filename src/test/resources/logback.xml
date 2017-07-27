@@ -15,6 +15,8 @@
 
     <logger name="java.util.Date" level="WARN" />
     <logger name="org.mbari.m3.vars.annotation.services.varskbserver.v1.KBWebServiceFactory" level="WARN" />
+    <logger name="org.mbari.m3.vars.annotation.util.ActiveAppPinger" level="WARN" />
+    <logger name="org.mbari.m3.vars.annotation.services.varsuserserver.v1.PrefWebServiceFactory" level="info" />
 
     <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>

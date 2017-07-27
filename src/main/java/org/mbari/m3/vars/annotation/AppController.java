@@ -7,6 +7,7 @@ import org.mbari.m3.vars.annotation.events.*;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.ui.AppPaneController;
+import org.mbari.m3.vars.annotation.util.LessCSSLoader;
 
 import java.util.ArrayList;
 
@@ -27,13 +28,11 @@ public class AppController {
         if (scene == null) {
             AppPaneController paneController = new AppPaneController(toolBox);
             scene = new Scene(paneController.getRoot());
-            scene.getStylesheets().addAll("/css/dark.css",
-                    "/css/common.css",
-                    "/css/annotable.css",
-                    "/css/concepttree.css",
-                    "/css/cbpanel.css");
 
-
+            // We're using less!! Load it using our custom loader
+            LessCSSLoader lessLoader = new LessCSSLoader();
+            scene.getStylesheets()
+                    .add(lessLoader.loadLess(getClass().getResource("/less/annotation.less")).toExternalForm());
         }
         return scene;
 
