@@ -10,26 +10,29 @@ import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.collections.FXCollections;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.controlsfx.control.PopOver;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.commands.RedoMsg;
-import org.mbari.m3.vars.annotation.commands.UndoMsg;
+import org.mbari.m3.vars.annotation.messages.RedoMsg;
+import org.mbari.m3.vars.annotation.messages.ClearCacheMsg;
+import org.mbari.m3.vars.annotation.messages.UndoMsg;
+import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
 import org.mbari.m3.vars.annotation.events.UserAddedEvent;
 import org.mbari.m3.vars.annotation.events.UserChangedEvent;
+import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
 import org.mbari.m3.vars.annotation.services.UserService;
 import org.mbari.m3.vars.annotation.ui.annotable.AnnotationTableController;
 import org.mbari.m3.vars.annotation.ui.cbpanel.ConceptButtonPanesController;
 import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
+import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -47,9 +50,14 @@ public class AppPaneController {
     private ToolBar toolBar;
     private final UIToolBox toolBox;
     private ComboBox<String> usersComboBox;
+    private PopOver openPopOver;
+    private final SelectMediaDialog selectMediaDialog;
 
     public AppPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
+        selectMediaDialog = new SelectMediaDialog(toolBox.getServices().getMediaService(),
+                toolBox.getI18nBundle());
+        selectMediaDialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
         annotationTableController = new AnnotationTableController(toolBox);
     }
 
@@ -83,7 +91,6 @@ public class AppPaneController {
             cbNode.maximizableProperty().set(false);
             cbNode.dock(dockStation, DockNode.DockPosition.BOTTOM);
 
-
         }
         return dockStation;
     }
@@ -92,6 +99,11 @@ public class AppPaneController {
         if (toolBar == null) {
             ResourceBundle bundle = toolBox.getI18nBundle();
             GlyphsFactory gf = MaterialIconFactory.get();
+
+            Text openIcon = gf.createIcon(MaterialIcon.VIDEO_LIBRARY, "30px");
+            Button openButton = new JFXButton();
+            openButton.setGraphic(openIcon);
+            openButton.setOnAction(e -> getOpenPopOver().show(openButton));
 
             Text undoIcon = gf.createIcon(MaterialIcon.UNDO, "30px");
             Button undoButton = new JFXButton();
@@ -103,18 +115,77 @@ public class AppPaneController {
             redoButton.setGraphic(redoIcon);
             redoButton.setOnAction(e -> toolBox.getEventBus().send(new RedoMsg()));
 
-            toolBar = new ToolBar(undoButton,
+            Text refreshIcon = gf.createIcon(MaterialIcon.CACHED, "30px");
+            Button refreshButton = new JFXButton();
+            refreshButton.setGraphic(refreshIcon);
+            refreshButton.setOnAction(e -> toolBox.getEventBus().send(new ClearCacheMsg()));
+
+            Label videoLabel = new Label(toolBox.getI18nBundle().getString("apppane.label.media"));
+            Label mediaLabel = new Label();
+            toolBox.getEventBus()
+                    .toObserverable()
+                    .ofType(MediaChangedEvent.class)
+                    .subscribe(e -> {
+                        mediaLabel.setText(null);
+                        Media media = e.get();
+                        if (media != null) {
+                            String uri = media.getUri().toString();
+                            if (uri.length() > 70) {
+                                int n = uri.length();
+                                uri = uri.substring(n - 70, n);
+                            }
+                            mediaLabel.setText(media.getVideoName() + " [" + uri + "]");
+                        }
+                    });
+
+
+            toolBar = new ToolBar(openButton,
+                    undoButton,
                     redoButton,
+                    refreshButton,
                     new Label(bundle.getString("apppane.label.user")),
-                    getUsersComboBox());
+                    getUsersComboBox(),
+                    videoLabel,
+                    mediaLabel);
         }
         return toolBar;
     }
 
+    public PopOver getOpenPopOver() {
+        if (openPopOver == null) {
+
+            GlyphsFactory gf = MaterialIconFactory.get();
+            ResourceBundle i18n = toolBox.getI18nBundle();
+
+            Text remoteIcon = gf.createIcon(MaterialIcon.VIDEO_LIBRARY, "30px");
+            Button remoteButton = new JFXButton(null, remoteIcon);
+            remoteButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.remote")));
+            remoteButton.setOnAction(e -> {
+                Optional<Media> media = selectMediaDialog.showAndWait();
+                media.ifPresent(m -> toolBox.getEventBus().send(new MediaChangedEvent(null, m)));
+            });
+
+            Text localIcon = gf.createIcon(MaterialIcon.QUEUE, "30px");
+            Button localButton = new JFXButton(null, localIcon);
+            localButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.local")));
+
+            Text tapeIcon = gf.createIcon(MaterialIcon.PERM_MEDIA, "30px");
+            Button tapeButton = new JFXButton(null, tapeIcon);
+            tapeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.tape")));
+            VBox vbox = new VBox(remoteButton, localButton, tapeButton);
+
+            openPopOver = new PopOver(vbox);
+
+        }
+        return openPopOver;
+    }
+
     public ComboBox<String> getUsersComboBox() {
         if (usersComboBox == null) {
+
             UserService userService = toolBox.getServices().getUserService();
             usersComboBox = new JFXComboBox<>();
+            Comparator<String> sorter = Comparator.comparing(String::toString, String.CASE_INSENSITIVE_ORDER);
 
             // Listen to UserAddedEvent and add it to the combobox
             EventBus eventBus = toolBox.getEventBus();
@@ -123,7 +194,7 @@ public class AppPaneController {
                     .subscribe(event -> {
                         User user = event.get();
                         usersComboBox.getItems().add(user.getUsername());
-                        FXCollections.sort(usersComboBox.getItems());
+                        FXCollections.sort(usersComboBox.getItems(), sorter);
                         usersComboBox.getSelectionModel().select(user.getUsername());
                     });
 
@@ -144,7 +215,7 @@ public class AppPaneController {
                     .thenAccept(users -> {
                         List<String> usernames = users.stream()
                                 .map(User::getUsername)
-                                .sorted()
+                                .sorted(sorter)
                                 .collect(Collectors.toList());
                         usersComboBox.setItems(FXCollections.observableList(usernames));
                         String defaultUser = System.getProperty("user.name");

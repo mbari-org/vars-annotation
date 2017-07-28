@@ -2,14 +2,22 @@ package org.mbari.m3.vars.annotation;
 
 import io.reactivex.Observable;
 import javafx.scene.Scene;
-import org.mbari.m3.vars.annotation.commands.ClearCommandManagerMsg;
+import org.mbari.m3.vars.annotation.messages.ClearCommandManagerMsg;
+import org.mbari.m3.vars.annotation.messages.ClearCacheMsg;
 import org.mbari.m3.vars.annotation.events.*;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.services.AnnotationService;
+import org.mbari.m3.vars.annotation.services.CachedConceptService;
+import org.mbari.m3.vars.annotation.services.ConceptService;
+import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
 import org.mbari.m3.vars.annotation.ui.AppPaneController;
 import org.mbari.m3.vars.annotation.util.LessCSSLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @author Brian Schlining
@@ -18,6 +26,7 @@ import java.util.ArrayList;
 public class AppController {
     private Scene scene;
     private final UIToolBox toolBox;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public AppController(UIToolBox toolBox) {
         this.toolBox = toolBox;
@@ -27,6 +36,7 @@ public class AppController {
     public Scene getScene() {
         if (scene == null) {
             AppPaneController paneController = new AppPaneController(toolBox);
+
             scene = new Scene(paneController.getRoot());
 
             // We're using less!! Load it using our custom loader
@@ -44,7 +54,11 @@ public class AppController {
         Data data = toolBox.getData();
         Observable<Object> eventObservable = eventBus.toObserverable();
         eventObservable.ofType(AnnotationsAddedEvent.class)
-                .subscribe(e -> data.getAnnotations().addAll(e.get()));
+                .subscribe(e -> {
+                            Collection<Annotation> annotations = e.get() == null ? new ArrayList<Annotation>() : e.get();
+                            data.getAnnotations().addAll(annotations);
+                        },
+                        er -> log.error("Subscriber failed", er));
 
         eventObservable.ofType(AnnotationsRemovedEvent.class)
                 .subscribe(e -> {
@@ -71,6 +85,14 @@ public class AppController {
 
         eventObservable.ofType(UserChangedEvent.class)
                 .subscribe(e -> data.setUser(e.get()));
+
+        eventObservable.ofType(ClearCacheMsg.class)
+                .subscribe(e -> {
+                    ConceptService conceptService = toolBox.getServices().getConceptService();
+                    if (conceptService instanceof CachedConceptService) {
+                        ((CachedConceptService) conceptService).clear();
+                    }
+                });
     }
 
     private void changeMedia(Media newMedia) {
@@ -84,10 +106,8 @@ public class AppController {
 
         // Load new data
         data.setMedia(newMedia);
-        toolBox.getServices()
-                .getAnnotationService()
-                .findAnnotations(newMedia.getVideoReferenceUuid())
-                .thenAccept(annotations -> eventBus.send(new AnnotationsAddedEvent(annotations)));
+        AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
+        decorator.findAnnotations(newMedia.getVideoReferenceUuid());
 
     }
 }

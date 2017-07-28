@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.ui.annotable;
 
+import io.reactivex.Observable;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TableCell;
@@ -8,6 +9,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.mbari.m3.vars.annotation.Data;
 import org.mbari.m3.vars.annotation.EventBus;
+import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
+import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
+import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.util.FormatUtils;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Annotation;
@@ -39,6 +43,18 @@ public class AnnotationTableController {
         this.uiBundle = toolBox.getI18nBundle();
         this.eventBus = toolBox.getEventBus();
         this.data = toolBox.getData();
+
+        Observable<Object> observable = eventBus.toObserverable();
+
+        observable.ofType(AnnotationsAddedEvent.class)
+                .subscribe(e -> getTableView().getItems().addAll(e.get()));
+
+        observable.ofType(AnnotationsRemovedEvent.class)
+                .subscribe(e -> getTableView().getItems().removeAll(e.get()));
+
+//        observable.ofType(AnnotationsSelectedEvent.class)
+//                .subscribe(e -> getTableView().getSelectionModel().sele)
+
 
         // TODO this should set the visible columns from prefs
         // TODO this should save the column order from prefs

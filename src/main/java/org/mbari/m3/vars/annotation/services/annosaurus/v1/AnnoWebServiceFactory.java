@@ -4,6 +4,7 @@ import com.fatboyindustrial.gsonjavatime.Converters;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.gson.ByteArrayConverter;
 import org.mbari.m3.vars.annotation.gson.DurationConverter;
 import org.mbari.m3.vars.annotation.gson.TimecodeConverter;
@@ -22,8 +23,8 @@ public class AnnoWebServiceFactory extends RetrofitServiceFactory {
 
 
     @Inject
-    public AnnoWebServiceFactory(@Named("ANNO_ENDPOINT") String endpoint) {
-        super(endpoint);
+    public AnnoWebServiceFactory(@Named("ANNO_ENDPOINT") String endpoint, Duration timeout) {
+        super(endpoint, timeout);
     }
 
 
