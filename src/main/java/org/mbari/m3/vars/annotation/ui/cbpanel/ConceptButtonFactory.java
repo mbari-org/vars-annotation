@@ -5,6 +5,9 @@ import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.commands.CreateAnnotationCmd;
@@ -54,6 +57,17 @@ public class ConceptButtonFactory {
             ((Pane) button.getParent()).getChildren().remove(button));
         contextMenu.getItems().addAll(showInTreeItem, deleteButton);
         button.setContextMenu(contextMenu);
+
+        button.setOnDragDetected(evt -> {
+            if (button.getText() != null) {
+                // Drag the string name to some target.
+                Dragboard db = button.startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent content = new ClipboardContent();
+                content.putString(name);
+                db.setContent(content);
+                evt.consume();
+            }
+        });
 
         conceptService.findDetails(name)
                 .thenApply(opt -> {

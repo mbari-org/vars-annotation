@@ -135,16 +135,16 @@ public class DragPaneDecorator {
 
     private Button buildButton(String name, Pane pane) {
         Button button = conceptButtonFactory.build(name);
-        button.setOnDragDetected(evt -> {
-            if (name != null) {
-                // Drag the string name to some target.
-                Dragboard db = button.startDragAndDrop(TransferMode.MOVE);
-                ClipboardContent content = new ClipboardContent();
-                content.putString(name);
-                db.setContent(content);
-                evt.consume();
-            }
-        });
+//        button.setOnDragDetected(evt -> {
+//            if (name != null) {
+//                // Drag the string name to some target.
+//                Dragboard db = button.startDragAndDrop(TransferMode.MOVE);
+//                ClipboardContent content = new ClipboardContent();
+//                content.putString(name);
+//                db.setContent(content);
+//                evt.consume();
+//            }
+//        });
 
         return button;
     }
