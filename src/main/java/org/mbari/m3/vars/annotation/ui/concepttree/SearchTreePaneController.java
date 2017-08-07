@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation.ui.concepttree;
 
 import com.jfoenix.controls.JFXTextField;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -76,6 +77,10 @@ public class SearchTreePaneController {
             root.setTop(getTextField());
         }
         return root;
+    }
+
+    public void setSearchText(String searchText) {
+        Platform.runLater(() -> getTextField().setText(searchText));
     }
 
     private TreeView<Concept> getTreeView() {

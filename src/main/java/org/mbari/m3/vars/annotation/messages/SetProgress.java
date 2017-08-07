@@ -10,4 +10,15 @@ public class SetProgress implements Message {
     public SetProgress(double progress) {
         this.progress = progress;
     }
+
+    public double getProgress() {
+        return progress;
+    }
+
+    @Override
+    public String toString() {
+        return "SetProgress{" +
+                "progress=" + progress +
+                '}';
+    }
 }

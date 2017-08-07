@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.ui.annotable;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListView;
@@ -20,6 +21,11 @@ public class AssociationsTableCell extends TableCell<Annotation, List<Associatio
     public AssociationsTableCell() {
         getStyleClass().add("annotable-association-cell");
         listView.setEditable(false);
+        // Disable selection
+        listView.getSelectionModel()
+                .selectedIndexProperty()
+                .addListener((obs, oldv, newv) ->
+                        Platform.runLater(() -> listView.getSelectionModel().clearSelection()));
     }
 
     @Override

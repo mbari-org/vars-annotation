@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation;
 
 import io.reactivex.Observable;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import org.mbari.m3.vars.annotation.messages.ClearCommandManagerMsg;
 import org.mbari.m3.vars.annotation.messages.ClearCacheMsg;
@@ -55,14 +56,15 @@ public class AppController {
         Observable<Object> eventObservable = eventBus.toObserverable();
         eventObservable.ofType(AnnotationsAddedEvent.class)
                 .subscribe(e -> {
-                            Collection<Annotation> annotations = e.get() == null ? new ArrayList<Annotation>() : e.get();
-                            data.getAnnotations().addAll(annotations);
+                            if (e.get() != null) {
+                                data.getAnnotations().addAll(e.get());
+                            }
                         },
                         er -> log.error("Subscriber failed", er));
 
         eventObservable.ofType(AnnotationsRemovedEvent.class)
                 .subscribe(e -> {
-                    // Remove from both annotatins and selectedAnnotations.
+                    // Remove from both annotations and selectedAnnotations.
                     // Reset selected to exclude any that were removed.
                     ArrayList<Annotation> selected = new ArrayList<>(data.getSelectedAnnotations());
                     selected.removeAll(e.get());

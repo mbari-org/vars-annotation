@@ -1,9 +1,9 @@
 .root {
-    -dock-color: #2D2D2D;
+    -dock-color: rgb(43, 57, 64);
 }
 
 .docknode-title-bar {
-    -fx-background-color: #2D2D2D;
+    -fx-background-color: rgb(43, 57, 64);
 }
 
 .docknode-title-text{
@@ -11,12 +11,12 @@
 }
 
 .docknode-content-panel{
-    -fx-background-color: #2D2D2D;
+    -fx-background-color: rgb(43, 57, 64);
     -fx-padding: 0
 }
 
 .docknode-floating-stack-container-panel {
-    -fx-background-color: #2D2D2D;
+    -fx-background-color: rgb(43, 57, 64);
     -fx-padding: 4
 }
 
@@ -57,11 +57,11 @@
 }
 
 .docknode-command-button-close:pressed{
-    -fx-background-color: #2D2D2D;
+    -fx-background-color: rgb(43, 57, 64);
 }
 
 .docknode-command-button-close:hover{
-    -fx-background-color: #2D2D2D;
+    -fx-background-color: rgb(43, 57, 64);
 }
 
 .docknode-command-button-close:focused{

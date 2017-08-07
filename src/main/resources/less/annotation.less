@@ -1,12 +1,16 @@
 //@default-color: #3D3D3D;
 
-@default-color: #2D2D2D;
-@default-compliment-color: spin(lighten(@default-color, 25%), 8); /* lightened by 25% and spun by 8 degrees */
+//@default-color: #2D2D2D;
+@default-color: rgb(43, 57, 64);
+@default-compliment-color-light: spin(lighten(@default-color, 25%), 8); /* lightened by 25% and spun by 8 degrees */
+@default-compliment-color-dark: spin(darken(@default-color, 25%), 8); /* darkened by 25% and spun by 8 degrees */
 @selected-color: #F0544C;
-@selected-text: #000000;
+@selected-text: #FFFFFF;
 @hover-color: #454545;
 @default-text: #B3A9A3;
 @emphasis-color: #5D3D3D;
+@image-color: #3D8D3D;
+@sample-color: #3D3DAD;
 
 .root {
   /*-fx-font-size: 16pt;
@@ -233,7 +237,7 @@
 }
 
 .scroll-bar .slider {
-  -fx-background-color: @default-compliment-color;
+  -fx-background-color: @default-compliment-color-light;
 }
 
 .scroll-bar:hover .slider {
@@ -283,9 +287,23 @@
   -fx-padding: 0 0 0 0;
 }
 
+
 .table-view {
   -fx-background-color: @default-color;
-  -fx-table-cell-border-color: transparent;
+  -fx-border-color: @default-color;
+  -fx-table-cell-border-color: @default-color;
+}
+
+.table-view :selected {
+  -fx-border-color: @emphasis-color;
+  -fx-table-cell-border-color: @emphasis-color;
+  -fx-background-color: @emphasis-color;
+  -fx-text-fill: @selected-text;
+}
+
+.table-row-cell:selected .table-cell {
+  -fx-background-color: @emphasis-color;
+  -fx-text-fill: @selected-text;
 }
 
 .table-view .arrow {
@@ -301,6 +319,7 @@
   -fx-color: @default-color;
   -fx-background-color: @default-color;
   -fx-text-fill: @default-color;
+  -fx-border-color: @default-compliment-color-dark;
 }
 
 .table-view > .column-header-background > .column-drag-header {
@@ -311,11 +330,6 @@
   -fx-background-color: @default-color;
   -fx-text-fill: @default-text;
 }
-
-//.text {
-//  -fx-fill: @default-text;
-//  -fx-text-fill: @default-text;
-//}
 
 .text-field {
   -fx-background-color: @default-color;
@@ -341,8 +355,6 @@
 }
 
 
-
-
 /* --- Roweditor -- */
 .tooltip-combobox {
   -fx-background-color: @selected-color;
@@ -355,6 +367,22 @@
 
 .association-buttonbar-btn {
 
+}
+
+/* --- FGSTableCell -- */
+.icon-inactive {
+  -fx-text-fill: @default-color;
+  -fx-fill: @default-color;
+}
+
+.icon-active-image {
+  -fx-text-fill: @image-color;
+  -fx-fill: @image-color;
+}
+
+.icon-active-sample {
+  -fx-text-fill: @sample-color;
+  -fx-fill: @sample-color;
 }
 
 

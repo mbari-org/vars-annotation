@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation;
 
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -21,17 +22,17 @@ import java.util.List;
  */
 public class Data {
 
-    private ObjectProperty<Media> media = new SimpleObjectProperty<>();
+    private final ObjectProperty<Media> media = new SimpleObjectProperty<>();
 
-    private ObservableList<Annotation> annotations = FXCollections.emptyObservableList();
+    private final ObservableList<Annotation> annotations = FXCollections.observableArrayList();
 
-    private ObservableList<Annotation> selectedAnnotations = FXCollections.emptyObservableList();
+    private final ObservableList<Annotation> selectedAnnotations = FXCollections.observableArrayList();
 
-    private ObjectProperty<User> user  = new SimpleObjectProperty<>();
+    private final ObjectProperty<User> user  = new SimpleObjectProperty<>();
 
-    private StringProperty activity = new SimpleStringProperty();
+    private final StringProperty activity = new SimpleStringProperty();
 
-    private StringProperty group = new SimpleStringProperty();
+    private final StringProperty group = new SimpleStringProperty();
 
     public Media getMedia() {
         return media.get();
@@ -50,8 +51,12 @@ public class Data {
     }
 
     public void setAnnotations(Collection<Annotation> annotations) {
-        this.annotations.clear();
-        this.annotations.addAll(annotations);
+        synchronized (this.annotations) {
+            Platform.runLater(() -> {
+                this.annotations.clear();
+                this.annotations.addAll(annotations);
+            });
+        }
     }
 
     public User getUser() {
@@ -71,8 +76,12 @@ public class Data {
     }
 
     public void setSelectedAnnotations(Collection<Annotation> selectedAnnotations) {
-        this.selectedAnnotations.clear();
-        this.selectedAnnotations.addAll(selectedAnnotations);
+        synchronized (this.selectedAnnotations) {
+            Platform.runLater(() -> {
+                this.selectedAnnotations.clear();
+                this.selectedAnnotations.addAll(selectedAnnotations);
+            });
+        }
     }
 
     public String getActivity() {

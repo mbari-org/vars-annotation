@@ -34,7 +34,7 @@ public class Annotation implements ImagedMoment {
     private String group;
     private String activity;
     private List<Association> associations;
-    private List<ImageReference> images;
+    private List<ImageReference> imageReferences;
 
     public Annotation() {
     }
@@ -89,11 +89,11 @@ public class Annotation implements ImagedMoment {
                     .collect(Collectors.toList());
         }
 
-        if (a.images == null) {
-            images = new ArrayList<>();
+        if (a.imageReferences == null) {
+            imageReferences = new ArrayList<>();
         }
         else {
-            images = a.images
+            imageReferences = a.imageReferences
                     .stream()
                     .map(ImageReference::new)
                     .collect(Collectors.toList());
@@ -206,17 +206,17 @@ public class Annotation implements ImagedMoment {
     }
 
     public List<ImageReference> getImages() {
-        return images;
+        return imageReferences;
     }
 
     public void setImages(List<ImageReference> images) {
-        this.images = images;
+        this.imageReferences = images;
     }
 
     @Override
     public String toString() {
         int a = associations == null ? 0 : associations.size();
-        int b = images == null ? 0 : images.size();
+        int b = imageReferences == null ? 0 : imageReferences.size();
         return "Annotation{" +
                 "observationUuid=" + observationUuid +
                 ", concept='" + concept + '\'' +

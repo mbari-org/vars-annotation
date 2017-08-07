@@ -8,6 +8,7 @@ import com.jfoenix.controls.JFXComboBox;
 import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+import io.reactivex.Observable;
 import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
@@ -16,11 +17,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.controlsfx.control.PopOver;
+import org.controlsfx.control.StatusBar;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.messages.RedoMsg;
-import org.mbari.m3.vars.annotation.messages.ClearCacheMsg;
-import org.mbari.m3.vars.annotation.messages.UndoMsg;
+import org.mbari.m3.vars.annotation.messages.*;
 import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
 import org.mbari.m3.vars.annotation.events.UserAddedEvent;
 import org.mbari.m3.vars.annotation.events.UserChangedEvent;
@@ -51,7 +51,9 @@ public class AppPaneController {
     private final UIToolBox toolBox;
     private ComboBox<String> usersComboBox;
     private PopOver openPopOver;
+    private StatusBar utilityPane;
     private final SelectMediaDialog selectMediaDialog;
+
 
     public AppPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
@@ -65,6 +67,7 @@ public class AppPaneController {
         if (root == null) {
             root = new BorderPane(getDockStation());
             root.setTop(getToolBar());
+            root.setBottom(getUtilityPane());
         }
         return root;
     }
@@ -78,6 +81,10 @@ public class AppPaneController {
 
             SearchTreePaneController treeController = new SearchTreePaneController(toolBox.getServices().getConceptService(),
                     toolBox.getI18nBundle());
+            toolBox.getEventBus()
+                    .toObserverable()
+                    .ofType(ShowConceptInTreeViewMsg.class)
+                    .subscribe(msg -> treeController.setSearchText(msg.getName()));
             DockNode treeNode = AnchorageSystem.createDock("Knowledgebase", treeController.getRoot());
             treeNode.closeableProperty().set(false);
             treeNode.setPrefSize(400, 400);
@@ -231,5 +238,22 @@ public class AppPaneController {
 
         }
         return usersComboBox;
+    }
+
+    public StatusBar getUtilityPane() {
+        if (utilityPane == null) {
+            utilityPane = new StatusBar();
+
+            // Listen for progress bar notifications
+            Observable<Object> observable = toolBox.getEventBus().toObserverable();
+            observable.ofType(ShowProgress.class)
+                    .subscribe(s -> utilityPane.setProgress(0.00001));
+            observable.ofType(SetProgress.class)
+                    .subscribe(s -> utilityPane.setProgress(s.getProgress()));
+            observable.ofType(HideProgress.class)
+                    .subscribe(s -> utilityPane.setProgress(0.0));
+
+        }
+        return utilityPane;
     }
 }

@@ -5,6 +5,7 @@ import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.scene.control.TableCell;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.model.Annotation;
@@ -40,6 +41,9 @@ public class FGSTableCell extends TableCell<Annotation, FGSValue> {
             graphic.getChildren().addAll(imageIcon, sampleIcon);
 //            Color image = (item == null || !item.hasImage()) ? Color.LIGHTGRAY : Color.GREEN;
 //            Color sample = (item == null || !item.hasSample()) ? Color.LIGHTGRAY : Color.BLUE;
+//            if (item != null) {
+//                System.out.println("---- " + image + ", " + sample);
+//            }
 //            imageIcon.setFill(image);
 //            sampleIcon.setFill(sample);
             String imageStyle = (item == null || !item.hasImage()) ? "icon-inactive" : "icon-active-image";
