@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.mbari.m3.vars.annotation.util.LessCSSLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -33,11 +35,17 @@ public class Initializer {
             Services services = getInjector().getInstance(Services.class);
             ResourceBundle bundle = ResourceBundle.getBundle("i18n",
                     Locale.getDefault());
+
+            // We're using less!! Load it using our custom loader
+            LessCSSLoader lessLoader = new LessCSSLoader();
+            String stylesheet = lessLoader.loadLess(Initializer.class.getResource("/less/annotation.less"))
+                    .toExternalForm();
             toolBox = new UIToolBox(new Data(),
                     services,
                     new EventBus(),
                     bundle,
-                    CONFIG);
+                    CONFIG,
+                    Arrays.asList(stylesheet));
         }
         return toolBox;
     }

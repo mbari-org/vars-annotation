@@ -43,7 +43,8 @@ public class MBARIInjectorModule implements Module {
     private void configureAnnotationService(Binder binder) {
         String endpoint = config.getString("annotation.service.url");
         String clientSecret = config.getString("annotation.service.client.secret");
-        AnnoWebServiceFactory factory = new AnnoWebServiceFactory(endpoint);
+        Duration timeout = config.getDuration("annotation.service.timeout");
+        AnnoWebServiceFactory factory = new AnnoWebServiceFactory(endpoint, timeout);
         AuthService authService = new BasicJWTAuthService(factory,
                 new Authorization("APIKEY", clientSecret));
         binder.bind(String.class)

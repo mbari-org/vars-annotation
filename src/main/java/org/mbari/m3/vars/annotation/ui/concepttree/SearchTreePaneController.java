@@ -4,14 +4,14 @@ import com.jfoenix.controls.JFXTextField;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.commands.ShowConceptInTreeViewMsg;
+import org.mbari.m3.vars.annotation.messages.ClearCacheMsg;
+import org.mbari.m3.vars.annotation.messages.ShowConceptInTreeViewMsg;
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 
@@ -58,6 +58,13 @@ public class SearchTreePaneController {
 //                                });
 //
 //                            })
+                });
+
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(ClearCacheMsg.class)
+                .subscribe(msg -> {
+                   // TODO implement refresh
                 });
     }
 

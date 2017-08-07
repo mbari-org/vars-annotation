@@ -6,7 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import org.mbari.m3.vars.annotation.EventBus;
-import org.mbari.m3.vars.annotation.commands.ShowNonfatalErrorAlert;
+import org.mbari.m3.vars.annotation.messages.ShowNonfatalErrorAlert;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

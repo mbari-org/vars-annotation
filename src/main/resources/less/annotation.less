@@ -6,7 +6,7 @@
 @selected-text: #000000;
 @hover-color: #454545;
 @default-text: #B3A9A3;
-@cbpanel-with-media: #5D3D3D;
+@emphasis-color: #5D3D3D;
 
 .root {
   /*-fx-font-size: 16pt;
@@ -111,7 +111,7 @@
 
 
 .concepttree-treecell-media {
-  -fx-background-color: @cbpanel-with-media;
+  -fx-background-color: @emphasis-color;
 }
 
 .concepttree-treecell-media:selected {
@@ -219,6 +219,13 @@
   -fx-text-fill: @default-text;
 }
 
+
+.popover > .border {
+  -fx-stroke-width: 0;
+  -fx-fill: @emphasis-color !important;
+  -fx-effect: dropshadow(gaussian, @selected-color, 6, 0.0, 100, 100);
+}
+
 .scroll-bar {
   -fx-background-color: @default-color;
   -fx-color: @default-color;
@@ -230,7 +237,7 @@
 }
 
 .scroll-bar:hover .slider {
-  -fx-background-color: @cbpanel-with-media;
+  -fx-background-color: @emphasis-color;
 }
 
 .spinner, .increment-arrow-button, .decrement-arrow-button {

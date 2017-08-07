@@ -3,6 +3,9 @@ package org.mbari.m3.vars.annotation.commands;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.messages.ClearCommandManagerMsg;
+import org.mbari.m3.vars.annotation.messages.RedoMsg;
+import org.mbari.m3.vars.annotation.messages.UndoMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

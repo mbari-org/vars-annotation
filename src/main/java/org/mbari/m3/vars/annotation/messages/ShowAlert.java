@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.commands;
+package org.mbari.m3.vars.annotation.messages;
 
 import javafx.scene.Node;
 
