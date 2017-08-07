@@ -172,7 +172,14 @@ public class AppPaneController {
             Text tapeIcon = gf.createIcon(MaterialIcon.PERM_MEDIA, "30px");
             Button tapeButton = new JFXButton(null, tapeIcon);
             tapeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.tape")));
-            VBox vbox = new VBox(remoteButton, localButton, tapeButton);
+
+            Text realtimeIcon = gf.createIcon(MaterialIcon.TIMER, "30px");
+            Button realtimeButton = new JFXButton(null, realtimeIcon);
+            realtimeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.realtime")));
+
+            VBox vbox = new VBox(remoteButton, localButton, tapeButton, realtimeButton);
+
+
 
             openPopOver = new PopOver(vbox);
 
