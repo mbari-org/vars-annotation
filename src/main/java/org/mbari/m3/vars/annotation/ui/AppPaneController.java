@@ -20,10 +20,12 @@ import org.controlsfx.control.PopOver;
 import org.controlsfx.control.StatusBar;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.messages.*;
 import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
 import org.mbari.m3.vars.annotation.events.UserAddedEvent;
 import org.mbari.m3.vars.annotation.events.UserChangedEvent;
+import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
 import org.mbari.m3.vars.annotation.services.UserService;
@@ -32,10 +34,7 @@ import org.mbari.m3.vars.annotation.ui.cbpanel.ConceptButtonPanesController;
 import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -46,13 +45,15 @@ public class AppPaneController {
 
     private BorderPane root;
     private DockStation dockStation;
-    private AnnotationTableController annotationTableController;
+    private final AnnotationTableController annotationTableController;
     private ToolBar toolBar;
     private final UIToolBox toolBox;
     private ComboBox<String> usersComboBox;
     private PopOver openPopOver;
     private StatusBar utilityPane;
+    private final ImageViewController imageViewController;
     private final SelectMediaDialog selectMediaDialog;
+
 
 
     public AppPaneController(UIToolBox toolBox) {
@@ -61,6 +62,7 @@ public class AppPaneController {
                 toolBox.getI18nBundle());
         selectMediaDialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
         annotationTableController = new AnnotationTableController(toolBox);
+        imageViewController = new ImageViewController();
     }
 
     public BorderPane getRoot() {
@@ -89,6 +91,22 @@ public class AppPaneController {
             treeNode.closeableProperty().set(false);
             treeNode.setPrefSize(400, 400);
             treeNode.dock(dockStation, DockNode.DockPosition.RIGHT);
+
+            DockNode imageViewNode = AnchorageSystem.createDock("Images", imageViewController.getRoot());
+            imageViewNode.closeableProperty().set(false);
+            imageViewNode.dock(treeNode, DockNode.DockPosition.CENTER);
+            toolBox.getEventBus()
+                    .toObserverable()
+                    .ofType(AnnotationsSelectedEvent.class)
+                    .subscribe(evt -> {
+                        Collection<Annotation> annotations = evt.get();
+                        if (annotations == null || annotations.size() != 1) {
+                            imageViewController.setAnnotation(null);
+                        }
+                        else {
+                            imageViewController.setAnnotation(annotations.iterator().next());
+                        }
+                    });
 
             ConceptButtonPanesController panesController = new ConceptButtonPanesController(toolBox);
             Pane pane = panesController.getRoot();
@@ -256,4 +274,5 @@ public class AppPaneController {
         }
         return utilityPane;
     }
+
 }
