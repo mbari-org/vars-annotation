@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.prefs.Preferences;
 
 /**
  * Hello world!
@@ -27,6 +28,9 @@ public class App extends Application {
     private static ActiveAppBeacon activeAppBeacon;
     private static Logger log;
     private AppController appController;
+
+    private static final String WIDTH_KEY = "stage-width";
+    private static final String HEIGHT_KEY = "stage-height";
 
     public static void main(String[] args) {
         System.getProperties().setProperty("user.timezone", "UTC");
@@ -73,14 +77,22 @@ public class App extends Application {
             activeAppBeacon = new ActiveAppBeacon(BEACON_PORTS, BEACON_MESSAGE);
         }
 
+        // Load size from local prefs
+        Preferences prefs = Preferences.userNodeForPackage(getClass());
+        double width = prefs.getDouble(WIDTH_KEY, 1000D);
+        double height = prefs.getDouble(HEIGHT_KEY, 800D);
+
         primaryStage.setScene(appController.getScene());
+        primaryStage.setWidth(width);
+        primaryStage.setHeight(height);
         primaryStage.setOnCloseRequest(e -> {
+            // Save size on exit
+            prefs.putDouble(WIDTH_KEY, primaryStage.getWidth());
+            prefs.putDouble(HEIGHT_KEY, primaryStage.getHeight());
             Platform.exit();
             System.exit(0);
         });
         primaryStage.show();
     }
-
-
 
 }

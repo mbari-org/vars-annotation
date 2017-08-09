@@ -177,6 +177,9 @@ public class ConceptButtonPanesController {
                 removeDialog.setTitle(i18n.getString("cppanel.tabpane.remove.title"));
                 removeDialog.setHeaderText(i18n.getString("cppanel.tabpane.remove.header"));
                 removeDialog.setContentText(i18n.getString("cppanel.tabpane.remove.content"));
+                removeDialog.getDialogPane()
+                        .getStylesheets()
+                        .addAll(toolBox.getStylesheets());
             }
             Optional<ButtonType> buttonType = removeDialog.showAndWait();
             if (buttonType.get() == ButtonType.OK) {
@@ -220,6 +223,9 @@ public class ConceptButtonPanesController {
             addDialog.setTitle(i18n.getString("cppanel.tabpane.add.title"));
             addDialog.setHeaderText(i18n.getString("cppanel.tabpane.add.header"));
             addDialog.setContentText(i18n.getString("cppanel.tabpane.add.content"));
+            addDialog.getDialogPane()
+                    .getStylesheets()
+                    .addAll(toolBox.getStylesheets());
         }
         Optional<String> tabNameOpt = addDialog.showAndWait();
 

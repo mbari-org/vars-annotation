@@ -2,7 +2,6 @@ package org.mbari.m3.vars.annotation.util;
 
 import javafx.fxml.FXMLLoader;
 import org.mbari.m3.vars.annotation.Initializer;
-import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.SharktopodaPaneController;
 
 import java.util.ResourceBundle;
 
@@ -12,6 +11,13 @@ import java.util.ResourceBundle;
  */
 public class FXMLUtil {
 
+    /**
+     *
+     * @param clazz The controller class
+     * @param fxmlPath The path to use to look up the fxml file for the controller
+     * @param <T> The type of the controller class
+     * @return A controller loaded from the FXML file. The i18n bundle will be injected into it.
+     */
     public static <T> T newInstance(Class<T> clazz, String fxmlPath) {
         final ResourceBundle bundle = Initializer.getToolBox().getI18nBundle();
         FXMLLoader loader = new FXMLLoader(clazz.getResource(fxmlPath), bundle);

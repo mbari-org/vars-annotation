@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.prefs.Preferences;
 
 /**
  * @author Brian Schlining
@@ -37,13 +38,9 @@ public class AppController {
     public Scene getScene() {
         if (scene == null) {
             AppPaneController paneController = new AppPaneController(toolBox);
-
             scene = new Scene(paneController.getRoot());
-
-            // We're using less!! Load it using our custom loader
-            LessCSSLoader lessLoader = new LessCSSLoader();
             scene.getStylesheets()
-                    .add(lessLoader.loadLess(getClass().getResource("/less/annotation.less")).toExternalForm());
+                    .addAll(toolBox.getStylesheets());
         }
         return scene;
 

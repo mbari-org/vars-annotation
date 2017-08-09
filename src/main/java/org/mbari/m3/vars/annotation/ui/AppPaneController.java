@@ -11,11 +11,13 @@ import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.Observable;
 import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.collections.FXCollections;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.StatusBar;
 import org.mbari.m3.vars.annotation.EventBus;
@@ -33,6 +35,7 @@ import org.mbari.m3.vars.annotation.ui.annotable.AnnotationTableController;
 import org.mbari.m3.vars.annotation.ui.cbpanel.ConceptButtonPanesController;
 import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
+import org.mbari.m3.vars.annotation.ui.prefs.PreferencesDialogController;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,6 +55,7 @@ public class AppPaneController {
     private PopOver openPopOver;
     private StatusBar utilityPane;
     private final ImageViewController imageViewController;
+    private final PreferencesDialogController preferencesDialogController;
     //private final FramegrabPaneController framegrabPaneController;
     private final SelectMediaDialog selectMediaDialog;
 
@@ -63,7 +67,9 @@ public class AppPaneController {
                 toolBox.getI18nBundle());
         selectMediaDialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
         annotationTableController = new AnnotationTableController(toolBox);
+        preferencesDialogController = new PreferencesDialogController(toolBox);
         imageViewController = new ImageViewController();
+
         //framegrabPaneController = FramegrabPaneController.newInstance();
     }
 
@@ -131,21 +137,31 @@ public class AppPaneController {
             Button openButton = new JFXButton();
             openButton.setGraphic(openIcon);
             openButton.setOnAction(e -> getOpenPopOver().show(openButton));
+            openButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.open")));
 
             Text undoIcon = gf.createIcon(MaterialIcon.UNDO, "30px");
             Button undoButton = new JFXButton();
             undoButton.setGraphic(undoIcon);
             undoButton.setOnAction(e -> toolBox.getEventBus().send(new UndoMsg()));
+            undoButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.undo")));
 
             Text redoIcon = gf.createIcon(MaterialIcon.REDO, "30px");
             Button redoButton = new JFXButton();
             redoButton.setGraphic(redoIcon);
             redoButton.setOnAction(e -> toolBox.getEventBus().send(new RedoMsg()));
+            redoButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.redo")));
 
             Text refreshIcon = gf.createIcon(MaterialIcon.CACHED, "30px");
             Button refreshButton = new JFXButton();
             refreshButton.setGraphic(refreshIcon);
             refreshButton.setOnAction(e -> toolBox.getEventBus().send(new ClearCacheMsg()));
+            refreshButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.refresh")));
+
+            Text prefsIcon = gf.createIcon(MaterialIcon.SETTINGS, "30px");
+            Button prefsButton = new JFXButton();
+            prefsButton.setGraphic(prefsIcon);
+            prefsButton.setOnAction(e -> preferencesDialogController.show());
+            prefsButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.prefs")));
 
             Label videoLabel = new Label(toolBox.getI18nBundle().getString("apppane.label.media"));
             Label mediaLabel = new Label();
@@ -170,6 +186,7 @@ public class AppPaneController {
                     undoButton,
                     redoButton,
                     refreshButton,
+                    prefsButton,
                     new Label(bundle.getString("apppane.label.user")),
                     getUsersComboBox(),
                     videoLabel,
@@ -205,8 +222,6 @@ public class AppPaneController {
             realtimeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.realtime")));
 
             VBox vbox = new VBox(remoteButton, localButton, tapeButton, realtimeButton);
-
-
 
             openPopOver = new PopOver(vbox);
 
@@ -276,5 +291,6 @@ public class AppPaneController {
         }
         return utilityPane;
     }
+
 
 }
