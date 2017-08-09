@@ -13,6 +13,7 @@ import javafx.scene.layout.*;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.m3.vars.annotation.ui.shared.DateTimePickerController;
+import org.mbari.m3.vars.annotation.util.FXMLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -222,17 +223,7 @@ public class VideoBrowserPaneController {
 
     public MediaPaneController getMediaPaneController() {
         if (mediaPaneController == null) {
-            FXMLLoader loader = new FXMLLoader(getClass()
-                    .getResource("/fxml/MediaPane.fxml"), uiBundle);
-            try {
-                // The controller has a reference to this.
-                Pane mediaPane = (Pane) loader.load();
-            }
-            catch (IOException e) {
-                log.warn("Failed to load media pane from FXML", e);
-            }
-            mediaPaneController = loader.getController();
-
+            mediaPaneController = FXMLUtil.newInstance(MediaPaneController.class, "/fxml/MediaPane.fxml");
         }
         return mediaPaneController;
     }

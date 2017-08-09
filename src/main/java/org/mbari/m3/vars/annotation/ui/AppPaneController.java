@@ -52,6 +52,7 @@ public class AppPaneController {
     private PopOver openPopOver;
     private StatusBar utilityPane;
     private final ImageViewController imageViewController;
+    //private final FramegrabPaneController framegrabPaneController;
     private final SelectMediaDialog selectMediaDialog;
 
 
@@ -63,6 +64,7 @@ public class AppPaneController {
         selectMediaDialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
         annotationTableController = new AnnotationTableController(toolBox);
         imageViewController = new ImageViewController();
+        //framegrabPaneController = FramegrabPaneController.newInstance();
     }
 
     public BorderPane getRoot() {

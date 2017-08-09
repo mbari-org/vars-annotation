@@ -1,8 +1,6 @@
 package org.mbari.m3.vars.annotation.ui;
 
 import com.jfoenix.controls.JFXComboBox;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.ComboBox;
@@ -55,8 +53,9 @@ public class ImageViewController {
         if (root == null) {
             root = new BorderPane();
             root.setTop(getComboBox());
+
+            // TODO resizing is not working correctly in dock node
             ImageView iv = getImageView();
-            // TODO this isn't working quite r
             iv.fitWidthProperty().bind(root.widthProperty());
             iv.fitHeightProperty().bind(root.heightProperty());
             root.setCenter(iv);
@@ -100,7 +99,7 @@ public class ImageViewController {
                         getImageView().setImage(image);
                     });
             comboBox.setMaxWidth(Double.MAX_VALUE);
-            comboBox.setEditable(false);
+            //comboBox.setEditable(false);
         }
         return comboBox;
     }

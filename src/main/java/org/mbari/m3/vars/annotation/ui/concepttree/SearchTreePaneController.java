@@ -47,22 +47,6 @@ public class SearchTreePaneController {
 
         toolBox.getEventBus()
                 .toObserverable()
-                .ofType(ShowConceptInTreeViewMsg.class)
-                .subscribe(msg -> {
-//                    toolBox.getServices()
-//                            .getConceptService()
-//                            .findConcept(msg.getName())
-//                            .thenAccept(opt -> {
-//                                opt.ifPresent(concept -> {
-//                                    TreeView<Concept> t = getTreeView();
-//                                    t.getSelectionModel().s
-//                                });
-//
-//                            })
-                });
-
-        toolBox.getEventBus()
-                .toObserverable()
                 .ofType(ClearCacheMsg.class)
                 .subscribe(msg -> {
                    // TODO implement refresh
