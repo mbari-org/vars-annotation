@@ -20,7 +20,7 @@ import java.util.List;
  * @author Brian Schlining
  * @since 2017-05-11T13:07:00
  */
-public class Data {
+public class  Data {
 
     private final ObjectProperty<Media> media = new SimpleObjectProperty<>();
 
