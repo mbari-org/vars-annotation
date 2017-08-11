@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import org.mbari.m3.vars.annotation.mediaplayers.ships.MacImageCaptureService;
 import org.mbari.m3.vars.annotation.services.ImageCaptureService;
 
 import java.util.ResourceBundle;
@@ -36,7 +35,7 @@ public class AVFPaneController {
                 devices.addAll(avf.listDevices());
             }
             ComboBox<String> comboBox = new ComboBox<>(devices);
-            root = new VBox(label, comboBox)
+            root = new VBox(label, comboBox);
         }
         return root;
     }

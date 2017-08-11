@@ -18,6 +18,8 @@ import org.mbari.vcr4j.sharktopoda.SharktopodaState;
 import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
 import org.mbari.vcr4j.sharktopoda.commands.OpenCmd;
 import org.mbari.vcr4j.sharktopoda.decorators.FauxTimecodeDecorator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.SocketException;
 import java.net.URI;
@@ -35,6 +37,7 @@ import java.util.concurrent.Executors;
 public class MediaPlayers {
 
     private final UIToolBox toolBox;
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private Sharktopoda sharktopoda = new Sharktopoda();
 
     public MediaPlayers(UIToolBox toolBox) {
@@ -43,13 +46,15 @@ public class MediaPlayers {
                 .toObserverable()
                 .ofType(MediaChangedEvent.class)
                 .subscribe(e -> open(e.get()));
+
+        Runtime.getRuntime()
+                .addShutdownHook(new Thread(this::close));
     }
 
     private void open(Media media) {
 
         // Close the old one
-        Optional.ofNullable(toolBox.getMediaPlayer())
-                .ifPresent(MediaPlayer::close);
+        close();
 
         String u = media.getUri().toString();
         if (u.startsWith("urn:tid")) {
@@ -61,9 +66,8 @@ public class MediaPlayers {
             try {
                 openSharktopoda(media);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.warn("Failed to open " + media.getUri(), e);
             }
-
         }
 
     }
@@ -74,5 +78,12 @@ public class MediaPlayers {
                 .thenAccept(mediaPlayer ->  toolBox.getEventBus()
                             .send(new MediaPlayerChangedEvent(MediaPlayers.this, mediaPlayer))
                 );
+    }
+
+    private void close() {
+        // Close the old MediaPlayer
+        log.debug("Closing MediaPlayer: " + toolBox.getMediaPlayer());
+        Optional.ofNullable(toolBox.getMediaPlayer())
+                .ifPresent(MediaPlayer::close);
     }
 }

@@ -14,6 +14,7 @@ import org.mbari.vcr4j.sharktopoda.commands.SharkCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -26,7 +27,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Sharktopoda {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final AtomicReference<MediaPlayer<SharktopodaState, SharktopodaError>> currentVideoController = new AtomicReference<>();
 
     public boolean canOpen(Media media) {
         return false;
@@ -43,14 +43,9 @@ public class Sharktopoda {
             //new FauxTimecodeDecorator(videoIO); // Convert elapsed-time to timecode
             VideoIO<SharktopodaState, SharktopodaError> io =
                     new SchedulerVideoIO<>(videoIO, Executors.newCachedThreadPool());
-            MediaPlayer<SharktopodaState, SharktopodaError> oldVc = currentVideoController.get();
-            if (oldVc != null) {
-                oldVc.getVideoIO().send(SharkCommands.CLOSE);
-                oldVc.getImageCaptureService().dispose();
-            }
             MediaPlayer<SharktopodaState, SharktopodaError> newVc =
-                    new MediaPlayer<>(new SharktopodaImageCaptureService(videoIO, framecapturePort), io);
-            currentVideoController.set(newVc);
+                    new MediaPlayer<>(new SharktopodaImageCaptureService(videoIO, framecapturePort),
+                            io, () -> videoIO.send(SharkCommands.CLOSE));
             cf.complete(newVc);
             io.send(SharkCommands.SHOW);
         }

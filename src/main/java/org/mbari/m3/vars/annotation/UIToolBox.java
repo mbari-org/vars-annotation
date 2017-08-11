@@ -5,7 +5,6 @@ import com.typesafe.config.Config;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
-import org.mbari.m3.vars.annotation.services.VideoControlService;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 

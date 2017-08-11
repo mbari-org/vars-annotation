@@ -12,16 +12,14 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: io.reactivex:rxjava:1.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.mbari.vars:vars-avfoundation:2.0" level="project" />
-    <orderEntry type="library" name="Maven: org.mbari:mbarix4j:1.10.0" level="project" />
+    <orderEntry type="library" name="Maven: io.reactivex:rxjava:1.2.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" name="Maven: de.jensd:fontawesomefx-commons:8.15" level="project" />
     <orderEntry type="library" name="Maven: de.jensd:fontawesomefx-materialicons:2.2.0-5" level="project" />
     <orderEntry type="library" name="Maven: org.mbari.vcr4j:vcr4j-core:3.0.1" level="project" />
-    <orderEntry type="library" name="Maven: io.reactivex:rxjava:1.2.1" level="project" />
-    <orderEntry type="library" name="Maven: org.mbari.vcr4j:vcr4j-sharktopoda:3.0.1" level="project" />
+    <orderEntry type="library" name="Maven: io.reactivex:rxjava:1.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.mbari.vcr4j:vcr4j-sharktopoda:3.0.2-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.retrofit2:retrofit:2.3.0" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.okhttp3:okhttp:3.8.0" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.okio:okio:1.13.0" level="project" />

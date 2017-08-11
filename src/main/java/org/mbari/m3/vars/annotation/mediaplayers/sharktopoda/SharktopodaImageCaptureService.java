@@ -48,10 +48,7 @@ public class SharktopodaImageCaptureService implements ImageCaptureService {
                     try {
                         image = ImageIO.read(r.getImageLocation());
                     } catch (Exception e) {
-                        // TODO implmennt error message
-//                        Initializer.getToolBox()
-//                                .getEventBus()
-//                                .send();
+                        log.warn("Image capture failed. Unable to read image back off disk", e);
                     }
                     future.complete(Optional.ofNullable(image));
                 });
@@ -71,7 +68,12 @@ public class SharktopodaImageCaptureService implements ImageCaptureService {
 
     @Override
     public void dispose() {
-        decorator.unsubscribe();
+        try {
+            decorator.unsubscribe();
+        }
+        catch (Exception e) {
+            // Do nothing.
+        }
     }
 
     @Override

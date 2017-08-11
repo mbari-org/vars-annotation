@@ -9,6 +9,7 @@ import org.mbari.vcr4j.commands.VideoCommands;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.function.Supplier;
 
 /**
  * @author Brian Schlining
@@ -17,16 +18,21 @@ import java.util.concurrent.Future;
 public class MediaPlayer<S extends VideoState, E extends VideoError> extends org.mbari.vcr4j.VideoController<S, E> {
 
     private final ImageCaptureService imageCaptureService;
+    private final Runnable shutdownHook;
 
     public MediaPlayer(ImageCaptureService imageCaptureService, VideoIO<S, E> videoIO) {
-        super(videoIO);
+        this(imageCaptureService, videoIO, () -> {});
+    }
+
+    public MediaPlayer(ImageCaptureService imageCaptureService, VideoIO<S, E> io, Runnable shutdownHook) {
+        super(io);
         this.imageCaptureService = imageCaptureService;
+        this.shutdownHook = shutdownHook;
     }
 
     public ImageCaptureService getImageCaptureService() {
         return imageCaptureService;
     }
-
 
     /**
      * This may need to be overridden in some cases
@@ -59,6 +65,7 @@ public class MediaPlayer<S extends VideoState, E extends VideoError> extends org
     }
 
     public void close() {
+        shutdownHook.run();
         imageCaptureService.dispose();
         getVideoIO().close();
     }
