@@ -3,6 +3,7 @@ package org.mbari.m3.vars.annotation.mediaplayers;
 import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
+import org.mbari.m3.vars.annotation.events.MediaPlayerChangedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.Sharktopoda;
 import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.SharktopodaPaneController;
 import org.mbari.m3.vars.annotation.model.Media;
@@ -43,21 +44,23 @@ public class MediaPlayers {
                 .subscribe(e -> open(e.get()));
     }
 
-    private CompletableFuture<MediaPlayer<VideoState, VideoError>> open(Media media) {
+    private void open(Media media) {
+
+        // Close all media player
+        MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
+        if (mediaPlayer != null) {
+            mediaPlayer.close();
+        }
+
         String u = media.getUri().toString();
         if (u.startsWith("urn:tid")) {
             // handle tape
         }
         else if (u.startsWith("http")) {
-            // handle file via sharktopoda
-
             // TODO handlers should be register so that user can select his/her preferred
             // handler in preferences
             try {
-                Pair<Integer, Integer> portNumbers = SharktopodaPaneController.getPortNumbers();
-
-
-                // TODO finish videoIO wiring See vars Sharktopoda
+                openSharktopoda(media);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -69,8 +72,8 @@ public class MediaPlayers {
     private void openSharktopoda(Media media) {
         Pair<Integer, Integer> portNumbers = SharktopodaPaneController.getPortNumbers();
         sharktopoda.open(media, portNumbers.getKey(), portNumbers.getValue())
-                .thenAccept(mediaPlayer -> {
-
-                });
+                .thenAccept(mediaPlayer ->  toolBox.getEventBus()
+                            .send(new MediaPlayerChangedEvent(MediaPlayers.this, mediaPlayer))
+                );
     }
 }

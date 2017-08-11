@@ -3,6 +3,8 @@ package org.mbari.m3.vars.annotation;
 import io.reactivex.Observable;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
+import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
+import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayers;
 import org.mbari.m3.vars.annotation.messages.ClearCommandManagerMsg;
 import org.mbari.m3.vars.annotation.messages.ClearCacheMsg;
 import org.mbari.m3.vars.annotation.events.*;
@@ -19,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.prefs.Preferences;
 
 /**
@@ -28,10 +31,14 @@ import java.util.prefs.Preferences;
 public class AppController {
     private Scene scene;
     private final UIToolBox toolBox;
+
+    // Should automatically open the correct player. Listens for MediaChangedEvents
+    private final MediaPlayers mediaPlayers;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     public AppController(UIToolBox toolBox) {
         this.toolBox = toolBox;
+        mediaPlayers = new MediaPlayers(toolBox);
         initialize();
     }
 
@@ -92,6 +99,15 @@ public class AppController {
                         ((CachedConceptService) conceptService).clear();
                     }
                 });
+
+        eventObservable.ofType(MediaPlayerChangedEvent.class)
+                .subscribe(e -> {
+                    // Close old one
+                    Optional.ofNullable(toolBox.mediaPlayerProperty().get())
+                            .ifPresent(MediaPlayer::close);
+                    toolBox.mediaPlayerProperty().set(e.get());
+                });
+
     }
 
     private void changeMedia(Media newMedia) {

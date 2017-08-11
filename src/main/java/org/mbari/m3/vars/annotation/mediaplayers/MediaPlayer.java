@@ -36,21 +36,21 @@ public class MediaPlayer<S extends VideoState, E extends VideoError> extends org
         return getVideoIO().getConnectionID();
     }
 
-    public CompletableFuture<Boolean> isStopped() {
+    public CompletableFuture<Boolean> requestIsStopped() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         getVideoIO().getStateObservable().take(1).forEach(s -> future.complete(s.isStopped()));
         getVideoIO().send(VideoCommands.REQUEST_STATUS);
         return future;
     }
 
-    public CompletableFuture<Boolean> isPlaying() {
+    public CompletableFuture<Boolean> requestIsPlaying() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         getVideoIO().getStateObservable().take(1).forEach(s -> future.complete(s.isPlaying()));
         getVideoIO().send(VideoCommands.REQUEST_STATUS);
         return future;
     }
 
-    public CompletableFuture<VideoIndex> getVideoIndex() {
+    public CompletableFuture<VideoIndex> requestVideoIndex() {
         CompletableFuture<VideoIndex> future = new CompletableFuture<>();
         getVideoIO().getIndexObservable()
                 .take(1).forEach(future::complete);

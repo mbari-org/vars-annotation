@@ -27,7 +27,7 @@ public class CreateAnnotationFromConceptCmd implements Command {
 
     @Override
     public void apply(UIToolBox toolBox) {
-        toolBox.getVideoControlService()
+        toolBox.getMediaPlayer()
                 .requestVideoIndex()
                 .thenAccept(videoIndex -> {
                     // TODO get group and activity setting

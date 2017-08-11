@@ -4,12 +4,12 @@ package org.mbari.m3.vars.annotation;
 import com.typesafe.config.Config;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.services.VideoControlService;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 
 import javax.inject.Inject;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.ResourceBundle;
@@ -25,7 +25,7 @@ public class UIToolBox {
     private final Config config;
     private final Data data;
     private final Services services;
-    private final ObjectProperty<VideoControlService<? extends VideoState, ? extends VideoError>> videoControlService = new SimpleObjectProperty<>();
+    private final ObjectProperty<MediaPlayer<? extends VideoState, ? extends VideoError>> mediaPlayer = new SimpleObjectProperty<>();
 
     /** URL to the stylesheet used for the apps */
     private final Collection<String> stylesheets;
@@ -69,11 +69,11 @@ public class UIToolBox {
         return services;
     }
 
-    public VideoControlService<? extends VideoState, ? extends VideoError> getVideoControlService() {
-        return videoControlService.get();
+    public MediaPlayer<? extends VideoState, ? extends VideoError> getMediaPlayer() {
+        return mediaPlayer.get();
     }
 
-    public ObjectProperty<VideoControlService<? extends VideoState, ? extends VideoError>> videoControlServiceProperty() {
-        return videoControlService;
+    public ObjectProperty<MediaPlayer<? extends VideoState, ? extends VideoError>> mediaPlayerProperty() {
+        return mediaPlayer;
     }
 }
