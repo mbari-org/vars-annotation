@@ -59,8 +59,8 @@ public class MediaPlayer<S extends VideoState, E extends VideoError> extends org
     }
 
     public void close() {
-        getVideoIO().close();
         imageCaptureService.dispose();
+        getVideoIO().close();
     }
 
 
