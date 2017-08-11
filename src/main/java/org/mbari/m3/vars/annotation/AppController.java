@@ -101,12 +101,7 @@ public class AppController {
                 });
 
         eventObservable.ofType(MediaPlayerChangedEvent.class)
-                .subscribe(e -> {
-                    // Close old one
-                    Optional.ofNullable(toolBox.mediaPlayerProperty().get())
-                            .ifPresent(MediaPlayer::close);
-                    toolBox.mediaPlayerProperty().set(e.get());
-                });
+                .subscribe(e -> toolBox.mediaPlayerProperty().set(e.get()));
 
     }
 

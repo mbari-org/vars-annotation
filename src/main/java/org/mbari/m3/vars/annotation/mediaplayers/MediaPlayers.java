@@ -23,6 +23,7 @@ import java.net.SocketException;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -46,11 +47,9 @@ public class MediaPlayers {
 
     private void open(Media media) {
 
-        // Close all media player
-        MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
-        if (mediaPlayer != null) {
-            mediaPlayer.close();
-        }
+        // Close the old one
+        Optional.ofNullable(toolBox.getMediaPlayer())
+                .ifPresent(MediaPlayer::close);
 
         String u = media.getUri().toString();
         if (u.startsWith("urn:tid")) {
