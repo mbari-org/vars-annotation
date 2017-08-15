@@ -14,11 +14,9 @@ import org.mbari.vcr4j.sharktopoda.commands.SharkCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Brian Schlining
@@ -44,7 +42,7 @@ public class Sharktopoda {
             VideoIO<SharktopodaState, SharktopodaError> io =
                     new SchedulerVideoIO<>(videoIO, Executors.newCachedThreadPool());
             MediaPlayer<SharktopodaState, SharktopodaError> newVc =
-                    new MediaPlayer<>(new SharktopodaImageCaptureService(videoIO, framecapturePort),
+                    new MediaPlayer<>(media, new SharktopodaImageCaptureService(videoIO, framecapturePort),
                             io, () -> videoIO.send(SharkCommands.CLOSE));
             cf.complete(newVc);
             io.send(SharkCommands.SHOW);

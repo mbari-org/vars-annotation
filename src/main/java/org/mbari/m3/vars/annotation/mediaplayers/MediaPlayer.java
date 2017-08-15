@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.mediaplayers;
 
+import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.ImageCaptureService;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIO;
@@ -19,13 +20,15 @@ public class MediaPlayer<S extends VideoState, E extends VideoError> extends org
 
     private final ImageCaptureService imageCaptureService;
     private final Runnable shutdownHook;
+    private final Media media;
 
-    public MediaPlayer(ImageCaptureService imageCaptureService, VideoIO<S, E> videoIO) {
-        this(imageCaptureService, videoIO, () -> {});
+    public MediaPlayer(Media media, ImageCaptureService imageCaptureService, VideoIO<S, E> videoIO) {
+        this(media, imageCaptureService, videoIO, () -> {});
     }
 
-    public MediaPlayer(ImageCaptureService imageCaptureService, VideoIO<S, E> io, Runnable shutdownHook) {
+    public MediaPlayer(Media media, ImageCaptureService imageCaptureService, VideoIO<S, E> io, Runnable shutdownHook) {
         super(io);
+        this.media = media;
         this.imageCaptureService = imageCaptureService;
         this.shutdownHook = shutdownHook;
     }
@@ -62,6 +65,10 @@ public class MediaPlayer<S extends VideoState, E extends VideoError> extends org
                 .take(1).forEach(future::complete);
         getVideoIO().send(VideoCommands.REQUEST_INDEX);
         return future;
+    }
+
+    public Media getMedia() {
+        return media;
     }
 
     public void close() {
