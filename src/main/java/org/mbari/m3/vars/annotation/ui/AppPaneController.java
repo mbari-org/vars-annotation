@@ -302,5 +302,7 @@ public class AppPaneController {
         return utilityPane;
     }
 
-
+    public AnnotationTableController getAnnotationTableController() {
+        return annotationTableController;
+    }
 }

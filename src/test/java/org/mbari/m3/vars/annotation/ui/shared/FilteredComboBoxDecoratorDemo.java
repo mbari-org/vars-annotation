@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.mbari.m3.vars.annotation.Initializer;
 
 /**
  * @author Brian Schlining
@@ -47,7 +48,8 @@ public class FilteredComboBoxDecoratorDemo extends Application {
         cmb.setItems(FXCollections.observableArrayList(LISTA));
         cmb.getStylesheets().add("/css/roweditor.css");
         Scene scene = new Scene(new StackPane(cmb));
-        scene.getStylesheets().addAll("/css/roweditor.css");
+        scene.getStylesheets().addAll(Initializer.getToolBox().getStylesheets());
+        //scene.getStylesheets().addAll("/css/roweditor.css");
         stage.setScene(scene);
         stage.show();
         stage.setTitle("Filtrando um ComboBox");
