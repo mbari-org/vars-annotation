@@ -3,6 +3,7 @@ package org.mbari.m3.vars.annotation;
 import io.reactivex.Observable;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayers;
 import org.mbari.m3.vars.annotation.messages.ClearCommandManagerMsg;
@@ -15,6 +16,7 @@ import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
 import org.mbari.m3.vars.annotation.ui.AppPaneController;
+import org.mbari.m3.vars.annotation.ui.AppPaneController2;
 import org.mbari.m3.vars.annotation.util.LessCSSLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,9 +47,21 @@ public class AppController {
     public Scene getScene() {
         if (scene == null) {
             AppPaneController paneController = new AppPaneController(toolBox);
+            //AppPaneController2 paneController = new AppPaneController2(toolBox);
             scene = new Scene(paneController.getRoot());
             scene.getStylesheets()
                     .addAll(toolBox.getStylesheets());
+            scene.setOnKeyPressed(e -> {
+                if (e.isMetaDown()) {
+                    KeyCode code = e.getCode();
+                    if (code == KeyCode.DOWN) {
+                        // TODO implement up and down arrows to move corsor in annotaiton table
+                    }
+                    else if (code == KeyCode.UP) {
+
+                    }
+                }
+            });
         }
         return scene;
 

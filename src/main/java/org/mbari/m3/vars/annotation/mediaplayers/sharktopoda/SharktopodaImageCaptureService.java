@@ -41,8 +41,8 @@ public class SharktopodaImageCaptureService implements ImageCaptureService {
 
         // Sharktopoda will send a response once the image is written
         decorator.getFramecaptureObservable()
-                .first()
-                .forEach(r -> {
+                .firstElement()
+                .subscribe(r -> {
                     // -- Read file as image
                     BufferedImage image = null;
                     try {

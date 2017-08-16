@@ -69,12 +69,12 @@
     <dependency>
       <groupId>org.mbari.vcr4j</groupId>
       <artifactId>vcr4j-core</artifactId>
-      <version>4.0.0</version>
+      <version>4.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.mbari.vcr4j</groupId>
       <artifactId>vcr4j-sharktopoda</artifactId>
-      <version>3.0.2-SNAPSHOT</version>
+      <version>4.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.squareup.retrofit2</groupId>

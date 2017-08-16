@@ -7,6 +7,7 @@ import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.control.Button;
@@ -246,7 +247,7 @@ public class SharktoptodaControlPane extends Pane {
     private void updateState(VideoState videoState) {
         this.videoState = videoState;
         Text icon = videoState.isStopped() ? playIcon : pauseIcon;
-        getPlayButton().setGraphic(icon);
+        Platform.runLater(() -> getPlayButton().setGraphic(icon));
     }
 
 

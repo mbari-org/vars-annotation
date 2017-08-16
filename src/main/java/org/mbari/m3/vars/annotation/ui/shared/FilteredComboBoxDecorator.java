@@ -118,6 +118,7 @@ public class FilteredComboBoxDecorator<T>  {
         this.originalItems = FXCollections.observableArrayList(comboBox.getItems());
         Tooltip tooltip = new Tooltip();
         tooltip.getStyleClass().add("tooltip-combobox");
+        tooltip.setOpacity(0.3);
         comboBox.setTooltip(tooltip);
         filter.addListener((observable, oldValue, newValue) -> handleFilterChanged(newValue));
         comboBox.setOnKeyPressed(this::handleOnKeyPressed);
