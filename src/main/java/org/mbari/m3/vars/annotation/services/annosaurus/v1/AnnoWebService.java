@@ -57,6 +57,7 @@ public interface AnnoWebService {
                             @Field("observer") String observer,
                             @Field("observation_timestamp") Instant observationTimestamp,
                             @Field("timecode") Timecode timecode,
+                            @Field("elapsed_time_millis") Long elapsedTimeMillis,
                             @Field("recorded_timestamp") Instant recordedTimestamp,
                             @Field("duration_millis") Long durationMillis,
                             @Field("group") String group,

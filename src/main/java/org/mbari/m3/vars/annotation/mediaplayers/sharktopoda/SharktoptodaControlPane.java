@@ -199,8 +199,10 @@ public class SharktoptodaControlPane extends Pane {
                             public void onNext(VideoIndex videoIndex) {
                                 videoIndex.getElapsedTime()
                                         .ifPresent(d -> {
-                                            getScrubber().setValue(d.toMillis());
-                                            elapsedTimeLabel.setText(formatSeconds(d.getSeconds()));
+                                            Platform.runLater(() -> {
+                                                getScrubber().setValue(d.toMillis());
+                                                elapsedTimeLabel.setText(formatSeconds(d.getSeconds()));
+                                            });
                                         });
 
                             }

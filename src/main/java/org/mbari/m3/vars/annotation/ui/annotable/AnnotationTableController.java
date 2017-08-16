@@ -99,6 +99,10 @@ public class AnnotationTableController {
             tableView = new TableView<>();
             tableView.setTableMenuButtonVisible(true);
 
+            tableView.getSelectionModel()
+                    .selectedItemProperty()
+                    .addListener((obs, oldv, newv) -> tableView.scrollTo(newv));
+
             // --- Add all columns
             TableColumn<Annotation, Instant> timestampCol = new TableColumn<>(uiBundle.getString("annotable.col.timestamp"));
             timestampCol.setCellValueFactory(new PropertyValueFactory<>("recordedTimestamp"));
@@ -153,6 +157,7 @@ public class AnnotationTableController {
             // TODO get column order from preferences
             tableView.getColumns().addAll(timecodeCol, elapsedTimeCol, timestampCol,
                     obsCol, assCol, fgsCol, obvCol, actCol, grpCol);
+
 
             TableView.TableViewSelectionModel<Annotation> selectionModel = tableView.getSelectionModel();
 
