@@ -94,8 +94,7 @@ public class FilteredComboBoxDecorator<T>  {
         KeyCode code = keyEvent.getCode();
         if (!keyEvent.isMetaDown()) {
             String filterValue = filter.get();
-            log.debug("Handling KeyCode = " + code);
-            //System.out.println("CODE = " + code);
+            //log.debug("Handling KeyCode = " + code);
             if (code.isLetterKey()) {
                 filterValue += keyEvent.getText();
             } else if ((code == KeyCode.BACK_SPACE) && (filterValue.length() > 0)) {

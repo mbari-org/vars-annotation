@@ -4,7 +4,9 @@ import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
 
+import java.time.Instant;
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * @author Brian Schlining
@@ -22,6 +24,9 @@ public class UpdateAnnotationCmd implements Command {
 
     @Override
     public void apply(UIToolBox toolBox) {
+        newAnnotation.setObservationTimestamp(Instant.now());
+        Optional.ofNullable(toolBox.getData().getUser())
+                .ifPresent(user -> newAnnotation.setObserver(user.getUsername()));
         doAction(toolBox, newAnnotation);
     }
 
@@ -38,7 +43,7 @@ public class UpdateAnnotationCmd implements Command {
                     if (opt.isPresent()) {
                         // Update to primary concept name
                         newAnnotation.setConcept(opt.get().getName());
-                        toolBox.getServices()
+                         toolBox.getServices()
                                 .getAnnotationService()
                                 .updateAnnotation(annotation)
                                 .thenAccept(a -> {

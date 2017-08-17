@@ -45,14 +45,19 @@ public class FilteredComboBoxDecoratorDemo extends Application {
     public void start(Stage stage) throws Exception {
         ComboBox<String> cmb = new JFXComboBox<>();
         new FilteredComboBoxDecorator<>(cmb, FilteredComboBoxDecorator.CONTAINS_CHARS_IN_ORDER);
-        cmb.setItems(FXCollections.observableArrayList(LISTA));
-        cmb.getStylesheets().add("/css/roweditor.css");
+        //cmb.setItems(FXCollections.observableArrayList(LISTA));
+        Initializer.getToolBox()
+                .getServices()
+                .getConceptService()
+                .findAllNames()
+                .thenAccept(names -> {
+                   cmb.setItems(FXCollections.observableArrayList(names));
+                });
         Scene scene = new Scene(new StackPane(cmb));
         scene.getStylesheets().addAll(Initializer.getToolBox().getStylesheets());
-        //scene.getStylesheets().addAll("/css/roweditor.css");
         stage.setScene(scene);
         stage.show();
-        stage.setTitle("Filtrando um ComboBox");
+        stage.setTitle("Filtered ComboBox");
         stage.setWidth(300);
         stage.setHeight(300);
     }
