@@ -56,7 +56,7 @@ public class SharktopodaPaneController implements IPrefs {
 
     /**
      *
-     * @return Pair with Sharkopoda control port and Framecapture port
+     * @return Pair with Sharkopoda control port (key) and Framecapture port (value)
      */
     public static Pair<Integer, Integer> getPortNumbers() {
         Preferences prefs = Preferences.userNodeForPackage(SharktopodaPaneController.class);
