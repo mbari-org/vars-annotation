@@ -161,8 +161,10 @@ public class RowEditorPaneController {
                                     Annotation oldA = this.annotation.get();
                                     Annotation newA = new Annotation(oldA);
                                     newA.setConcept(primaryName);
-                                    conceptComboBox.getSelectionModel().select(primaryName);
-                                    eventBus.send(new UpdateAnnotationCmd(oldA, newA));
+                                    Platform.runLater(() -> {
+                                        conceptComboBox.getSelectionModel().select(primaryName);
+                                        eventBus.send(new UpdateAnnotationCmd(oldA, newA));
+                                    });
                                 });
                             });
 
@@ -215,14 +217,13 @@ public class RowEditorPaneController {
         }
         else {
             Platform.runLater(() -> {
-                if (!conceptComboBox.getItems().contains(annotation.getConcept())) {
-                    conceptComboBox.getItems().add(annotation.getConcept());
-                }
-                else {
-                    conceptComboBox.getSelectionModel().select(annotation.getConcept());
-                }
+//                if (!conceptComboBox.getItems().contains(annotation.getConcept())) {
+//                    conceptComboBox.getItems().add(annotation.getConcept());
+//                }
 
-                conceptComboBox.getEditor().requestFocus();
+                conceptComboBox.getSelectionModel().select(annotation.getConcept());
+                conceptComboBox.requestFocus();
+                //conceptComboBox.getEditor().requestFocus();
                 ObservableList<Association> ass = FXCollections.observableArrayList(annotation.getAssociations());
                 associationListView.setItems(ass);
             });

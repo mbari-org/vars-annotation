@@ -71,11 +71,14 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     public CompletableFuture<Annotation> createAnnotation(Annotation annotation) {
         Long durationMillis = (annotation.getDuration() == null) ? null :
                 annotation.getDuration().toMillis();
+        Long elapsedTimeMilliis = (annotation.getElapsedTime() == null) ? null :
+                annotation.getElapsedTime().toMillis();
         Call<Annotation> call = annoService.create(annotation.getVideoReferenceUuid(),
                 annotation.getConcept(),
                 annotation.getObserver(),
                 annotation.getObservationTimestamp(),
                 annotation.getTimecode(),
+                elapsedTimeMilliis,
                 annotation.getRecordedTimestamp(),
                 durationMillis,
                 annotation.getGroup(),

@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
 import javafx.stage.Stage;
+import org.mbari.m3.vars.annotation.commands.CommandManager;
 import org.mbari.m3.vars.annotation.util.ActiveAppBeacon;
 import org.mbari.m3.vars.annotation.util.ActiveAppPinger;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ public class App extends Application {
     private static ActiveAppBeacon activeAppBeacon;
     private static Logger log;
     private AppController appController;
+    private CommandManager commandManager;
 
     private static final String WIDTH_KEY = "stage-width";
     private static final String HEIGHT_KEY = "stage-height";
@@ -49,7 +51,7 @@ public class App extends Application {
         super.init();
         toolBox = Initializer.getToolBox();
         appController = new AppController(toolBox);
-
+        commandManager = new CommandManager();
     }
 
     @Override

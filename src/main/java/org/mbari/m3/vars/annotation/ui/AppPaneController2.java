@@ -11,22 +11,21 @@ import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.Observable;
 import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.collections.FXCollections;
-import javafx.scene.Scene;
+import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.StatusBar;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
-import org.mbari.m3.vars.annotation.messages.*;
 import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
 import org.mbari.m3.vars.annotation.events.UserAddedEvent;
 import org.mbari.m3.vars.annotation.events.UserChangedEvent;
+import org.mbari.m3.vars.annotation.messages.*;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
@@ -42,12 +41,13 @@ import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
- * @since 2017-07-26T14:37:00
+ * @since 2017-08-15T16:22:00
  */
-public class AppPaneController {
+public class AppPaneController2 {
 
     private BorderPane root;
     private DockStation dockStation;
+    private SplitPane mainPane;
     private final AnnotationTableController annotationTableController;
     private ToolBar toolBar;
     private final UIToolBox toolBox;
@@ -56,13 +56,12 @@ public class AppPaneController {
     private StatusBar utilityPane;
     private final ImageViewController imageViewController;
     private final PreferencesDialogController preferencesDialogController;
-    //private final FramegrabPaneController framegrabPaneController;
     private final SelectMediaDialog selectMediaDialog;
     private ControlsPaneController controlsPaneController;
 
 
 
-    public AppPaneController(UIToolBox toolBox) {
+    public AppPaneController2(UIToolBox toolBox) {
         this.toolBox = toolBox;
         selectMediaDialog = new SelectMediaDialog(toolBox.getServices().getMediaService(),
                 toolBox.getI18nBundle());
@@ -71,40 +70,25 @@ public class AppPaneController {
         preferencesDialogController = new PreferencesDialogController(toolBox);
         imageViewController = new ImageViewController();
         controlsPaneController = new ControlsPaneController(toolBox);
-
-        //framegrabPaneController = FramegrabPaneController.newInstance();
     }
 
     public BorderPane getRoot() {
         if (root == null) {
-            root = new BorderPane(getDockStation());
+            root = new BorderPane(getMainPane());
             root.setTop(getToolBar());
             root.setBottom(getUtilityPane());
         }
         return root;
     }
 
-    public DockStation getDockStation() {
-        if (dockStation == null) {
-            dockStation = AnchorageSystem.createStation();
-            DockNode annotationNode = AnchorageSystem.createDock("Annotations", annotationTableController.getTableView());
-            annotationNode.closeableProperty().set(false);
-            annotationNode.dock(dockStation, DockNode.DockPosition.CENTER);
+    public SplitPane getMainPane() {
+        if (mainPane == null) {
+            mainPane = new SplitPane();
+            mainPane.setOrientation(Orientation.VERTICAL);
 
-            SearchTreePaneController treeController = new SearchTreePaneController(toolBox.getServices().getConceptService(),
-                    toolBox.getI18nBundle());
-            toolBox.getEventBus()
-                    .toObserverable()
-                    .ofType(ShowConceptInTreeViewMsg.class)
-                    .subscribe(msg -> treeController.setSearchText(msg.getName()));
-            DockNode treeNode = AnchorageSystem.createDock("Knowledgebase", treeController.getRoot());
-            treeNode.closeableProperty().set(false);
-            treeNode.setPrefSize(400, 400);
-            treeNode.dock(dockStation, DockNode.DockPosition.RIGHT);
-
-            DockNode imageViewNode = AnchorageSystem.createDock("Images", imageViewController.getRoot());
-            imageViewNode.closeableProperty().set(false);
-            imageViewNode.dock(treeNode, DockNode.DockPosition.CENTER);
+            // -- Top
+            // Build tab panes
+            Tab fgTab = new Tab("Frame-grab", imageViewController.getRoot());
             toolBox.getEventBus()
                     .toObserverable()
                     .ofType(AnnotationsSelectedEvent.class)
@@ -118,25 +102,33 @@ public class AppPaneController {
                         }
                     });
 
-            Pane cpane = controlsPaneController.getRoot();
-            cpane.setPrefSize(800, 200);
-            DockNode cnode = AnchorageSystem.createDock("Annotation Controls", cpane);
-            cnode.closeableProperty().set(false);
-            cnode.maximizableProperty().set(false);
-            cnode.dock(dockStation, DockNode.DockPosition.BOTTOM);
+            SearchTreePaneController treeController = new SearchTreePaneController(toolBox.getServices().getConceptService(),
+                    toolBox.getI18nBundle());
+            toolBox.getEventBus()
+                    .toObserverable()
+                    .ofType(ShowConceptInTreeViewMsg.class)
+                    .subscribe(msg -> treeController.setSearchText(msg.getName()));
+            Tab kbTab = new Tab("Knowledgebase", treeController.getRoot());
+            TabPane tabPane = new TabPane(fgTab, kbTab);
 
+            SplitPane topPane = new SplitPane(annotationTableController.getTableView(),
+                    tabPane);
 
+            // -- Bottom
             ConceptButtonPanesController panesController = new ConceptButtonPanesController(toolBox);
             Pane pane = panesController.getRoot();
             pane.setPrefSize(800, 250);
-            DockNode cbNode = AnchorageSystem.createDock("Quick Buttons", pane);
-            cbNode.closeableProperty().set(false);
-            cbNode.maximizableProperty().set(false);
-            cbNode.dock(dockStation, DockNode.DockPosition.BOTTOM);
+
+            SplitPane bottomPane = new SplitPane(controlsPaneController.getRoot(),
+                    panesController.getRoot());
+            bottomPane.setOrientation(Orientation.VERTICAL);
+            mainPane.getItems().addAll(topPane, bottomPane);
 
         }
-        return dockStation;
+        return mainPane;
     }
+
+
 
     public ToolBar getToolBar() {
         if (toolBar == null) {
@@ -302,7 +294,6 @@ public class AppPaneController {
         return utilityPane;
     }
 
-    public AnnotationTableController getAnnotationTableController() {
-        return annotationTableController;
-    }
+
 }
+

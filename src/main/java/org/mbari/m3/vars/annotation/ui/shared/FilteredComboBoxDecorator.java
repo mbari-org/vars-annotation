@@ -92,23 +92,21 @@ public class FilteredComboBoxDecorator<T>  {
 
     private void handleOnKeyPressed(KeyEvent keyEvent) {
         KeyCode code = keyEvent.getCode();
-        String filterValue = filter.get();
-        log.debug("Handling KeyCode = " + code);
-        //System.out.println("CODE = " + code);
-        if (code.isLetterKey()) {
-            filterValue += keyEvent.getText();
+        if (!keyEvent.isMetaDown()) {
+            String filterValue = filter.get();
+            //log.debug("Handling KeyCode = " + code);
+            if (code.isLetterKey()) {
+                filterValue += keyEvent.getText();
+            } else if ((code == KeyCode.BACK_SPACE) && (filterValue.length() > 0)) {
+                filterValue = filterValue.substring(0, filterValue.length() - 1);
+            } else if (code == KeyCode.ESCAPE) {
+                filterValue = EMPTY;
+            } else if ((code == KeyCode.DOWN) || (code == KeyCode.UP)) {
+                comboBox.show();
+            }
+            filter.set(filterValue);
+            comboBox.getTooltip().textProperty().set(filterValue);
         }
-        else if ((code == KeyCode.BACK_SPACE) && (filterValue.length() > 0)) {
-            filterValue = filterValue.substring(0, filterValue.length() - 1);
-        }
-        else if (code == KeyCode.ESCAPE) {
-            filterValue = EMPTY;
-        }
-        else if ((code == KeyCode.DOWN) || (code == KeyCode.UP)) {
-            comboBox.show();
-        }
-        filter.set(filterValue);
-        comboBox.getTooltip().textProperty().set(filterValue);
 
     }
 
