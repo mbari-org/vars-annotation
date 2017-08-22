@@ -1,6 +1,5 @@
 package org.mbari.m3.vars.annotation.mediaplayers.sharktopoda;
 
-import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.services.ImageCaptureService;
 import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
 import org.mbari.vcr4j.sharktopoda.commands.FramecaptureCmd;
