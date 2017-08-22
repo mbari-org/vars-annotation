@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.model.Annotation;
+import org.mbari.m3.vars.annotation.model.Media;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class FGSTableCell extends TableCell<Annotation, FGSValue> {
     private GlyphsFactory glyphsFactory = MaterialIconFactory.get();
     private Text imageIcon = glyphsFactory.createIcon(MaterialIcon.IMAGE, "20px");
     private Text sampleIcon = glyphsFactory.createIcon(MaterialIcon.NATURE_PEOPLE, "20px");
+    private Text concurrentIcon = glyphsFactory.createIcon(MaterialIcon.TIMELINE, "20px");
     private final HBox graphic = new HBox();
 
 
@@ -34,24 +36,21 @@ public class FGSTableCell extends TableCell<Annotation, FGSValue> {
         setText(null);
         graphic.getChildren().remove(imageIcon);
         graphic.getChildren().remove(sampleIcon);
+        graphic.getChildren().remove(concurrentIcon);
         if (empty) {
             // Do nothing
         }
         else {
-            graphic.getChildren().addAll(imageIcon, sampleIcon);
-//            Color image = (item == null || !item.hasImage()) ? Color.LIGHTGRAY : Color.GREEN;
-//            Color sample = (item == null || !item.hasSample()) ? Color.LIGHTGRAY : Color.BLUE;
-//            if (item != null) {
-//                System.out.println("---- " + image + ", " + sample);
-//            }
-//            imageIcon.setFill(image);
-//            sampleIcon.setFill(sample);
+            graphic.getChildren().addAll(imageIcon, sampleIcon, concurrentIcon);
             String imageStyle = (item == null || !item.hasImage()) ? "icon-inactive" : "icon-active-image";
             String sampleStyle = (item == null || !item.hasSample()) ? "icon-inactive" : "icon-active-sample";
+            String concurrentStyle = (item == null || !item.isConcurrent()) ? "icon-inactive" : "icon-active-concurrent";
             sampleIcon.getStyleClass().remove(0);
             sampleIcon.getStyleClass().add(sampleStyle);
             imageIcon.getStyleClass().remove(0);
             imageIcon.getStyleClass().add(imageStyle);
+            concurrentIcon.getStyleClass().remove(0);
+            concurrentIcon.getStyleClass().add(concurrentStyle);
         }
     }
 }
@@ -81,5 +80,12 @@ class FGSValue {
                         .anyMatch(a ->  a.getLinkName() != null &&
                                 sampleKeys.contains(a.getLinkName())
                         );
+    }
+
+    boolean isConcurrent() {
+        Media media = Initializer.getToolBox().getData().getMedia();
+        return media != null &&
+                annotation != null &&
+                !annotation.getVideoReferenceUuid().equals(media.getVideoReferenceUuid());
     }
 }

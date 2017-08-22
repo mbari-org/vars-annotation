@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.commands;
 
+import org.mbari.m3.vars.annotation.Data;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
@@ -31,9 +32,17 @@ public class CreateAnnotationFromConceptCmd implements Command {
                 .requestVideoIndex()
                 .thenAccept(videoIndex -> {
                     // TODO get group and activity setting
-                    UUID videoReferenceUuid = toolBox.getData().getMedia().getVideoReferenceUuid();
-                    String observer = toolBox.getData().getUser().getUsername();
-                    Annotation a0 = new Annotation(concept, observer, videoIndex, videoReferenceUuid);
+                    Data data = toolBox.getData();
+                    UUID videoReferenceUuid = data.getMedia().getVideoReferenceUuid();
+                    String observer = data.getUser().getUsername();
+                    String group = data.getGroup();
+                    String actvity = data.getActivity();
+                    Annotation a0 = new Annotation(concept,
+                            observer,
+                            videoIndex,
+                            videoReferenceUuid);
+                    a0.setGroup(group);
+                    a0.setActivity(actvity);
                     toolBox.getServices()
                             .getAnnotationService()
                             .createAnnotation(a0)

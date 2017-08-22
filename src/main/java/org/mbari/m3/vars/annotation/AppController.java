@@ -11,22 +11,24 @@ import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayers;
 import org.mbari.m3.vars.annotation.messages.ClearCommandManagerMsg;
 import org.mbari.m3.vars.annotation.messages.ClearCacheMsg;
 import org.mbari.m3.vars.annotation.events.*;
+import org.mbari.m3.vars.annotation.messages.SeekMsg;
+import org.mbari.m3.vars.annotation.messages.ShowConcurrentAnnotationsMsg;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
-import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
 import org.mbari.m3.vars.annotation.ui.AppPaneController;
-import org.mbari.m3.vars.annotation.ui.AppPaneController2;
-import org.mbari.m3.vars.annotation.util.LessCSSLoader;
+import org.mbari.vcr4j.VideoError;
+import org.mbari.vcr4j.VideoState;
+import org.mbari.vcr4j.time.Timecode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.prefs.Preferences;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
@@ -134,6 +136,23 @@ public class AppController {
         eventObservable.ofType(MediaPlayerChangedEvent.class)
                 .subscribe(e -> toolBox.mediaPlayerProperty().set(e.get()));
 
+        eventObservable.ofType(ShowConcurrentAnnotationsMsg.class)
+                .subscribe(e -> showConcurrentMedia(e.getShow()));
+
+        eventObservable.ofType(SeekMsg.class)
+                .subscribe(this::seek);
+
+    }
+
+    private void seek(SeekMsg msg) {
+        Object idx = msg.getIndex();
+        MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
+        if (idx instanceof Timecode) {
+            mediaPlayer.seek((Timecode) idx);
+        }
+        else if (idx instanceof Duration) {
+            mediaPlayer.seek((Duration) idx);
+        }
     }
 
     private void changeMedia(Media newMedia) {
@@ -150,5 +169,36 @@ public class AppController {
         AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
         decorator.findAnnotations(newMedia.getVideoReferenceUuid());
 
+    }
+
+    private void showConcurrentMedia(Boolean show) {
+        AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
+        Media media = toolBox.getData().getMedia();
+        if (show) {
+            if (media != null) {
+                UUID uuid = media.getVideoReferenceUuid();
+
+                toolBox.getServices()
+                        .getMediaService()
+                        .findConcurrentByVideoReferenceUuid(uuid)
+                        .thenApply(ms -> ms.stream()
+                                    .filter(m -> !m.getVideoReferenceUuid().equals(uuid))
+                                    .map(Media::getVideoReferenceUuid)
+                                    .collect(Collectors.toList()))
+                        .thenAccept(decorator::findConcurrentAnnotations);
+            }
+        }
+        else {
+            if (media != null) {
+                decorator.removeAnnotationsExceptFor(media.getVideoReferenceUuid());
+            }
+            else {
+                ObservableList<Annotation> annotations = toolBox.getData().getAnnotations();
+                EventBus eventBus = toolBox.getEventBus();
+                eventBus.send(new AnnotationsSelectedEvent(new ArrayList<>()));
+                eventBus.send(new AnnotationsRemovedEvent(annotations));
+            }
+
+        }
     }
 }

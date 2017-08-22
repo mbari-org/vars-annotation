@@ -4,13 +4,10 @@ import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import io.reactivex.Observable;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.mbari.m3.vars.annotation.Data;
 import org.mbari.m3.vars.annotation.EventBus;
@@ -18,6 +15,8 @@ import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
+import org.mbari.m3.vars.annotation.messages.SeekMsg;
+import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.util.FormatUtils;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Annotation;
@@ -36,19 +35,19 @@ import java.util.prefs.Preferences;
  * @author Brian Schlining
  * @since 2017-05-10T10:04:00
  *
- * TODO all strings need to be put in uiBundle
+ * TODO all strings need to be put in i18n
  */
 public class AnnotationTableController {
 
     private TableView<Annotation> tableView;
-    private final ResourceBundle uiBundle;
+    private final ResourceBundle i18n;
     private final EventBus eventBus;
     private final Data data;
 
 
     @Inject
     public AnnotationTableController(UIToolBox toolBox) {
-        this.uiBundle = toolBox.getI18nBundle();
+        this.i18n = toolBox.getI18nBundle();
         this.eventBus = toolBox.getEventBus();
         this.data = toolBox.getData();
 
@@ -160,15 +159,15 @@ public class AnnotationTableController {
                     });
 
             // --- Add all columns
-            TableColumn<Annotation, Instant> timestampCol = new TableColumn<>(uiBundle.getString("annotable.col.timestamp"));
+            TableColumn<Annotation, Instant> timestampCol = new TableColumn<>(i18n.getString("annotable.col.timestamp"));
             timestampCol.setCellValueFactory(new PropertyValueFactory<>("recordedTimestamp"));
             timestampCol.setId("recordedTimestamp");
 
-            TableColumn<Annotation, Timecode> timecodeCol= new TableColumn<>(uiBundle.getString("annotable.col.timecode"));
+            TableColumn<Annotation, Timecode> timecodeCol= new TableColumn<>(i18n.getString("annotable.col.timecode"));
             timecodeCol.setCellValueFactory(new PropertyValueFactory<>("timecode"));
             timecodeCol.setId("timecode");
 
-            TableColumn<Annotation, Duration> elapsedTimeCol = new TableColumn<>(uiBundle.getString("annotable.col.elapsedtime"));
+            TableColumn<Annotation, Duration> elapsedTimeCol = new TableColumn<>(i18n.getString("annotable.col.elapsedtime"));
             elapsedTimeCol.setCellValueFactory(new PropertyValueFactory<>("elapsedTime"));
             elapsedTimeCol.setCellFactory( c -> new TableCell<Annotation, Duration>() {
                 @Override
@@ -185,19 +184,19 @@ public class AnnotationTableController {
             elapsedTimeCol.setId("elapsedTime");
 
             TableColumn<Annotation, String> obsCol =
-                    new TableColumn<>(uiBundle.getString("annotable.col.concept"));
+                    new TableColumn<>(i18n.getString("annotable.col.concept"));
             obsCol.setCellValueFactory(new PropertyValueFactory<>("concept"));
             obsCol.setId("concept");
 
             TableColumn<Annotation, List<Association>> assCol =
-                    new TableColumn<>(uiBundle.getString("annotable.col.association"));
+                    new TableColumn<>(i18n.getString("annotable.col.association"));
             assCol.setCellValueFactory(new PropertyValueFactory<>("associations"));
             assCol.setSortable(false);
             assCol.setCellFactory(c -> new AssociationsTableCell());
             assCol.setId("associations");
 
             TableColumn<Annotation, FGSValue> fgsCol =
-                    new TableColumn<>(uiBundle.getString("annotable.col.framegrab"));
+                    new TableColumn<>(i18n.getString("annotable.col.framegrab"));
             fgsCol.setCellValueFactory(param ->
                     new SimpleObjectProperty<>(new FGSValue(param.getValue())));
             fgsCol.setSortable(false);
@@ -205,17 +204,17 @@ public class AnnotationTableController {
             fgsCol.setId("fgs");
 
             TableColumn<Annotation, String> obvCol
-                    = new TableColumn<>(uiBundle.getString("annotable.col.observer"));
+                    = new TableColumn<>(i18n.getString("annotable.col.observer"));
             obvCol.setCellValueFactory(new PropertyValueFactory<>("observer"));
             obvCol.setId("observer");
 
             TableColumn<Annotation, String> actCol
-                    = new TableColumn<>(uiBundle.getString("annotable.col.activity"));
+                    = new TableColumn<>(i18n.getString("annotable.col.activity"));
             actCol.setCellValueFactory(new PropertyValueFactory<>("activity"));
             actCol.setId("activity");
 
             TableColumn<Annotation, String> grpCol
-                    = new TableColumn<>(uiBundle.getString("annotable.col.group"));
+                    = new TableColumn<>(i18n.getString("annotable.col.group"));
             grpCol.setCellValueFactory(new PropertyValueFactory<>("group"));
             grpCol.setId("group");
 
@@ -234,11 +233,35 @@ public class AnnotationTableController {
                                 selectionModel.getSelectedItems()));
                     });
 
+            tableView.setRowFactory(param -> {
+                TableRow<Annotation> row = new TableRow<>();
+                ContextMenu menu = new ContextMenu();
+                MenuItem seekItem = new MenuItem(i18n.getString("annotable.ctxmenu.seek"));
+                seekItem.setOnAction(evt -> {
+                    Annotation a = row.getItem();
+                    if (a.getTimecode() != null) {
+                        eventBus.send(new SeekMsg<>(a.getTimecode()));
+                    }
+                    else if (a.getElapsedTime() != null) {
+                        eventBus.send(new SeekMsg<>(a.getElapsedTime()));
+                    }
+                });
+                menu.getItems().add(seekItem);
+
+                // Set context menu on row, but use a binding to make it only show for non-empty rows:
+                row.contextMenuProperty()
+                        .bind(Bindings.when(row.emptyProperty())
+                            .then((ContextMenu) null)
+                            .otherwise(menu));
+                return row;
+            });
+
 
 
         }
         return tableView;
     }
+
 
     /**
      * THis is a total hack. We need it as scrollTo jumps the selected row to the top

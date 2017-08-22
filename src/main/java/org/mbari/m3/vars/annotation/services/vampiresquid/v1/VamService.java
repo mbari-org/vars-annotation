@@ -68,7 +68,11 @@ public class VamService implements MediaService, RetrofitWebService {
     @Override
     public CompletableFuture<List<Media>> findByVideoSequenceNameAndTimestamp(String videoSequenceName, Instant timestamp) {
         return CompletableFuture.completedFuture(new ArrayList<>());
-        // TODO implement this
+    }
+
+    @Override
+    public CompletableFuture<List<Media>> findConcurrentByVideoReferenceUuid(UUID uuid) {
+        return sendRequest(vamWebService.findConcurrent(uuid));
     }
 
     @Override

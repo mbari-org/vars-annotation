@@ -34,9 +34,10 @@ public class DeleteAnnotationsCmd implements Command {
         Collection<UUID> uuids = annotations.stream()
                 .map(Annotation::getObservationUuid)
                 .collect(Collectors.toList());
-        service.deleteAnnotations(uuids);
-        toolBox.getEventBus()
-                .send(new AnnotationsRemovedEvent(null, annotations));
+        service.deleteAnnotations(uuids)
+                .thenAccept(v -> toolBox.getEventBus()
+                        .send(new AnnotationsRemovedEvent(null, annotations)));
+
     }
 
     @Override

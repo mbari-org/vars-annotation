@@ -36,6 +36,9 @@ public interface VamWebService {
     Call<List<Media>> findByCameraIdAndTimestamp(@Path("camera_id") String cameraId,
                                                  @Path("timestamp") Instant timestamp);
 
+    @GET("media/concurrent/{uuid}")
+    Call<List<Media>> findConcurrent(@Path("uuid") UUID uuid);
+
     @FormUrlEncoded
     @POST("media")
     Call<Media> create(@Field("video_sequence_name") String videoSequenceName,

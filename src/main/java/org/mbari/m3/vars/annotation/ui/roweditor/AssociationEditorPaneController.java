@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,6 +30,7 @@ import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
+import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator2;
 import org.mbari.m3.vars.annotation.ui.shared.HierarchicalConceptComboBoxDecorator;
 
 public class AssociationEditorPaneController {
@@ -104,6 +106,9 @@ public class AssociationEditorPaneController {
 
     @FXML
     void initialize() {
+        JavaFxObservable.valuesOf(root.widthProperty())
+                .subscribe(n -> associationComboBox.setPrefWidth(n.doubleValue()));
+
         GlyphsFactory gf = MaterialIconFactory.get();
         Text addIcon = gf.createIcon(MaterialIcon.ADD, "30px");
         addButton.setText(null);
@@ -116,7 +121,7 @@ public class AssociationEditorPaneController {
         linkNameTextField.setDisable(true);
 
         // Add filtering of toConcepts
-        new FilteredComboBoxDecorator<>(toConceptComboBox, FilteredComboBoxDecorator.CONTAINS_CHARS_IN_ORDER);
+        new FilteredComboBoxDecorator2<>(toConceptComboBox, FilteredComboBoxDecorator2.CONTAINS_CHARS_IN_ORDER);
 
         // Add decorator to populate combobox with all children of given concept
         toConceptComboBoxDecorator = new HierarchicalConceptComboBoxDecorator(toConceptComboBox,
@@ -244,6 +249,12 @@ public class AssociationEditorPaneController {
         }
         else {
             // TODO look up the link templates. Find a match linkvalue and set it's toconcept, then select the cat's toConcept
+//            toolBox.getServices()
+//                    .getConceptService()
+//                    .findTemplates(name, cat.getLinkName())
+//                    .thenAccept(cats -> {
+//
+//                    });
             toConceptComboBoxDecorator.setConcept(concept);
             toConceptComboBox.getSelectionModel().select(cat.getToConcept());
         }

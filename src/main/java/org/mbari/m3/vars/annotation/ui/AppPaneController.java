@@ -4,13 +4,16 @@ import com.anchorage.docks.node.DockNode;
 import com.anchorage.docks.stations.DockStation;
 import com.anchorage.system.AnchorageSystem;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.Observable;
 import io.reactivex.rxjavafx.observables.JavaFxObservable;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -34,6 +37,7 @@ import org.mbari.m3.vars.annotation.services.UserService;
 import org.mbari.m3.vars.annotation.ui.annotable.AnnotationTableController;
 import org.mbari.m3.vars.annotation.ui.cbpanel.ConceptButtonPanesController;
 import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
+import org.mbari.m3.vars.annotation.ui.mediadialog.MediaPaneController;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.prefs.PreferencesDialogController;
 
@@ -59,6 +63,7 @@ public class AppPaneController {
     //private final FramegrabPaneController framegrabPaneController;
     private final SelectMediaDialog selectMediaDialog;
     private ControlsPaneController controlsPaneController;
+    private MediaPaneController mediaPaneController;
 
 
 
@@ -71,6 +76,7 @@ public class AppPaneController {
         preferencesDialogController = new PreferencesDialogController(toolBox);
         imageViewController = new ImageViewController();
         controlsPaneController = new ControlsPaneController(toolBox);
+        mediaPaneController = MediaPaneController.newInstance();
 
         //framegrabPaneController = FramegrabPaneController.newInstance();
     }
@@ -86,6 +92,9 @@ public class AppPaneController {
 
     public DockStation getDockStation() {
         if (dockStation == null) {
+
+            Observable<Object> observable = toolBox.getEventBus().toObserverable();
+
             dockStation = AnchorageSystem.createStation();
             DockNode annotationNode = AnchorageSystem.createDock("Annotations", annotationTableController.getTableView());
             annotationNode.closeableProperty().set(false);
@@ -93,9 +102,7 @@ public class AppPaneController {
 
             SearchTreePaneController treeController = new SearchTreePaneController(toolBox.getServices().getConceptService(),
                     toolBox.getI18nBundle());
-            toolBox.getEventBus()
-                    .toObserverable()
-                    .ofType(ShowConceptInTreeViewMsg.class)
+            observable.ofType(ShowConceptInTreeViewMsg.class)
                     .subscribe(msg -> treeController.setSearchText(msg.getName()));
             DockNode treeNode = AnchorageSystem.createDock("Knowledgebase", treeController.getRoot());
             treeNode.closeableProperty().set(false);
@@ -105,9 +112,7 @@ public class AppPaneController {
             DockNode imageViewNode = AnchorageSystem.createDock("Images", imageViewController.getRoot());
             imageViewNode.closeableProperty().set(false);
             imageViewNode.dock(treeNode, DockNode.DockPosition.CENTER);
-            toolBox.getEventBus()
-                    .toObserverable()
-                    .ofType(AnnotationsSelectedEvent.class)
+            observable.ofType(AnnotationsSelectedEvent.class)
                     .subscribe(evt -> {
                         Collection<Annotation> annotations = evt.get();
                         if (annotations == null || annotations.size() != 1) {
@@ -117,6 +122,13 @@ public class AppPaneController {
                             imageViewController.setAnnotation(annotations.iterator().next());
                         }
                     });
+
+            ScrollPane mediaScrollPane = new ScrollPane(mediaPaneController.getRoot());
+            DockNode mediaNode = AnchorageSystem.createDock("Media", mediaScrollPane);
+            mediaNode.closeableProperty().set(false);
+            mediaNode.dock(treeNode, DockNode.DockPosition.CENTER);
+            observable.ofType(MediaChangedEvent.class)
+                    .subscribe(m -> mediaPaneController.setMedia(m.get()));
 
             Pane cpane = controlsPaneController.getRoot();
             cpane.setPrefSize(800, 200);
@@ -288,6 +300,7 @@ public class AppPaneController {
     public StatusBar getUtilityPane() {
         if (utilityPane == null) {
             utilityPane = new StatusBar();
+            utilityPane.setText(null);
 
             // Listen for progress bar notifications
             Observable<Object> observable = toolBox.getEventBus().toObserverable();
@@ -297,6 +310,70 @@ public class AppPaneController {
                     .subscribe(s -> utilityPane.setProgress(s.getProgress()));
             observable.ofType(HideProgress.class)
                     .subscribe(s -> utilityPane.setProgress(0.0));
+            observable.ofType(SetStatusBarMsg.class)
+                    .subscribe(s -> utilityPane.setText(s.getMsg()));
+
+            Label groupLabel = new Label(toolBox.getI18nBundle()
+                    .getString("apppane.statusbar.label.group"));
+            ComboBox<String> groupCombobox = new JFXComboBox<>();
+            groupCombobox.setEditable(true);
+            toolBox.getServices()
+                    .getAnnotationService()
+                    .findGroups()
+                    .thenAccept(groups -> {
+                        Platform.runLater(() -> {
+                            groupCombobox.getItems().addAll(groups);
+                        });
+                    });
+            groupCombobox.getSelectionModel()
+                    .selectedItemProperty()
+                    .addListener((obs, oldv, newv) -> toolBox.getData().setGroup(newv));
+            groupCombobox.valueProperty().addListener((obs, oldv, newv) ->
+                    toolBox.getData().setGroup(newv));
+
+            Pane spacer0 = new Pane();
+            spacer0.setPrefSize(20, 5);
+
+            Label activityLabel = new Label(toolBox.getI18nBundle()
+                    .getString("apppane.statusbar.label.activity"));
+            ComboBox<String> activityCombobox = new JFXComboBox<>();
+            activityCombobox.setEditable(true);
+            toolBox.getServices()
+                    .getAnnotationService()
+                    .findActivities()
+                    .thenAccept(activities -> {
+                        Platform.runLater(() -> {
+                            activityCombobox.getItems().addAll(activities);
+                        });
+                    });
+            activityCombobox.getSelectionModel()
+                    .selectedItemProperty()
+                    .addListener((obs, oldv, newv) -> toolBox.getData().setActivity(newv));
+            activityCombobox.valueProperty().addListener((obs, oldv, newv) ->
+                    toolBox.getData().setActivity(newv));
+
+            Pane spacer1 = new Pane();
+            spacer1.setPrefSize(20, 5);
+
+            CheckBox checkBox = new JFXCheckBox(toolBox.getI18nBundle()
+                    .getString("apppane.statusbar.label.concurrent"));
+            checkBox.selectedProperty()
+                    .addListener((obs, oldv, newv) ->
+                            toolBox.getEventBus().send(new ShowConcurrentAnnotationsMsg(newv)));
+            // When the media is changed unselect the check box
+            toolBox.getData()
+                    .mediaProperty()
+                    .addListener((obs, oldv, newv) -> checkBox.setSelected(false));
+
+            utilityPane.getLeftItems()
+                    .addAll(groupLabel,
+                            groupCombobox,
+                            spacer0,
+                            activityLabel,
+                            activityCombobox,
+                            spacer1,
+                            checkBox);
+
 
         }
         return utilityPane;

@@ -36,6 +36,7 @@ import org.mbari.m3.vars.annotation.commands.UpdateAnnotationCmd;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
+import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator2;
 
 public class RowEditorPaneController {
 
@@ -109,6 +110,8 @@ public class RowEditorPaneController {
     @FXML
     void initialize() {
 
+
+
         // -- Make buttons pretty
         GlyphsFactory gf = MaterialIconFactory.get();
         Text deleteIcon = gf.createIcon(MaterialIcon.DELETE, "30px");
@@ -142,7 +145,7 @@ public class RowEditorPaneController {
                 });
 
         // -- Configure combobox autocomplete
-        new FilteredComboBoxDecorator<>(conceptComboBox, FilteredComboBoxDecorator.CONTAINS_CHARS_IN_ORDER);
+        new FilteredComboBoxDecorator2<>(conceptComboBox, FilteredComboBoxDecorator2.CONTAINS_CHARS_IN_ORDER);
         conceptComboBox.setEditable(false);
         conceptComboBox.setOnKeyReleased(v -> {
             if (v.getCode() == KeyCode.ENTER) {

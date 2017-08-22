@@ -1,9 +1,13 @@
 package org.mbari.m3.vars.annotation.ui.shared;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.Event;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.SingleSelectionModel;
@@ -15,46 +19,49 @@ import org.mbari.m3.vars.annotation.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
 /**
  * @author Brian Schlining
  * @since 2017-06-28T15:55:00
  */
-public class FilteredComboBoxDecorator<T>  {
+public class FilteredComboBoxDecorator2<T>  {
 
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private static final String EMPTY = "";
     private StringProperty filter = new SimpleStringProperty(EMPTY);
     private AutoCompleteComparator<T> comparator = (typedText, objectToCompare) -> false;
-    private ObservableList<T> originalItems = FXCollections.emptyObservableList();
+    private volatile FilteredList<T> filteredItems;
     private final ComboBox<T> comboBox;
 
-    // TODO rewrite this class to use filteredlist instead of creating a new list each time
-    public FilteredComboBoxDecorator(final ComboBox<T> comboBox,
+    private InvalidationListener filterListener = (obs) -> {
+        if (filteredItems != null) {
+            Predicate<T> p = filter.get().isEmpty() ? null :
+                    s -> comparator.matches(filter.get(), s);
+            filteredItems.setPredicate(p);
+        }
+    };
+
+    public FilteredComboBoxDecorator2(final ComboBox<T> comboBox,
                                      AutoCompleteComparator<T> comparator) {
         this.comboBox = comboBox;
+        filteredItems = new FilteredList<T>(comboBox.getItems());
+        filter.addListener(filterListener);
 
         initialize(comparator);
 
         comboBox.itemsProperty().addListener((obs, oldV, newV) -> {
-            originalItems = FXCollections.observableArrayList(newV);
+            if (!(newV instanceof FilteredList)) {
+                filteredItems = new FilteredList<>(newV);
+                comboBox.setItems(filteredItems);
+            }
+            else {
+                filteredItems = (FilteredList<T>) newV;
+            }
         });
     }
 
-    public ObservableList<T> getOriginalItems() {
-        return originalItems;
-    }
-
-    private ObservableList<T> filterItems() {
-        List<T> filteredList = originalItems.stream()
-                .filter(el -> comparator.matches(filter.get(), el))
-                .collect(Collectors.toList());
-
-        return FXCollections.observableArrayList(filteredList);
-    }
 
     private void handleFilterChanged(String newValue) {
         if (!StringUtils.isBlank(newValue)) {
@@ -64,10 +71,9 @@ public class FilteredComboBoxDecorator<T>  {
             }
             else {
                 showTooltip();
-                comboBox.getItems().setAll(filterItems());
                 SingleSelectionModel<T> selectionModel = comboBox.getSelectionModel();
-                if (filterItems().isEmpty()) {
-                   selectionModel.clearSelection();
+                if (filteredItems.isEmpty()) {
+                    selectionModel.clearSelection();
                 }
                 else {
                     selectionModel.select(0);
@@ -109,7 +115,6 @@ public class FilteredComboBoxDecorator<T>  {
 
     public void initialize(AutoCompleteComparator<T> comparator) {
         this.comparator = comparator;
-        this.originalItems = FXCollections.observableArrayList(comboBox.getItems());
         Tooltip tooltip = new Tooltip();
         tooltip.getStyleClass().add("tooltip-combobox");
         comboBox.setTooltip(tooltip);
@@ -120,7 +125,6 @@ public class FilteredComboBoxDecorator<T>  {
 
     private void restoreOriginalItems() {
         T s = comboBox.getSelectionModel().getSelectedItem();
-        comboBox.getItems().setAll(originalItems);
         comboBox.getSelectionModel().select(s);
     }
 

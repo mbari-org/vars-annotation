@@ -65,7 +65,8 @@ public interface AnnoWebService {
                             @HeaderMap Map<String, String> headers);
 
     @POST("annotations/bulk")
-    Call<Collection<Annotation>> create(@Body Collection<Annotation> annotations );
+    Call<Collection<Annotation>> create(@Body Collection<Annotation> annotations,
+                                        @HeaderMap Map<String, String> headers);
 
     @FormUrlEncoded
     @PUT("annotations/{uuid}")
@@ -74,16 +75,24 @@ public interface AnnoWebService {
                             @HeaderMap Map<String, String> headers);
 
     @PUT("annotations/bulk")
-    Call<Collection<Annotation>> update(@Body Collection<Annotation> annotations );
+    Call<Collection<Annotation>> update(@Body Collection<Annotation> annotations,
+                                        @HeaderMap Map<String, String> headers);
 
     @DELETE("observations/{uuid}")
     Call<Boolean> delete(@Path("uuid") UUID observationUuid,
                          @HeaderMap Map<String, String> headers);
 
     @POST("observations/delete")
-    Call<Void> delete(@Body Collection<UUID> observationUuids);
+    Call<Void> delete(@Body Collection<UUID> observationUuids,
+                      @HeaderMap Map<String, String> headers);
 
     @GET("observations/videoreference/count/{uuid}")
     Call<AnnotationCount> countByVideoReferenceUuid(@Path("uuid") UUID videoReferenceUuid);
+
+    @GET("observations/groups")
+    Call<List<String>> findGroups();
+
+    @GET("observations/activities")
+    Call<List<String>> findActivities();
 
 }

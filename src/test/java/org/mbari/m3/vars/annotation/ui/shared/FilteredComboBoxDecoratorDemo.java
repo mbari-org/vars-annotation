@@ -44,7 +44,7 @@ public class FilteredComboBoxDecoratorDemo extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         ComboBox<String> cmb = new JFXComboBox<>();
-        new FilteredComboBoxDecorator<>(cmb, FilteredComboBoxDecorator.CONTAINS_CHARS_IN_ORDER);
+        new FilteredComboBoxDecorator2<>(cmb, FilteredComboBoxDecorator2.CONTAINS_CHARS_IN_ORDER);
         //cmb.setItems(FXCollections.observableArrayList(LISTA));
         Initializer.getToolBox()
                 .getServices()

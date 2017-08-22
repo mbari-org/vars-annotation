@@ -25,6 +25,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     private final ImageWebService imageService;
 
     private final Map<String, String> defaultHeaders;
+    private final Map<String, String> bulkHeaders;
 
     @Inject
     public AnnoService(AnnoWebServiceFactory serviceFactory, @Named("ANNO_AUTH") AuthService authService) {
@@ -34,6 +35,8 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         defaultHeaders = new HashMap<>();
         defaultHeaders.put("Accept", "application/json");
         defaultHeaders.put("Accept-Charset", "utf-8");
+        bulkHeaders = new HashMap<>(defaultHeaders);
+        bulkHeaders.put("Content-Type", "application/json");
     }
 
     public CompletableFuture<Annotation> findByUuid(UUID observationUuid) {
@@ -68,6 +71,16 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     }
 
     @Override
+    public CompletableFuture<List<String>> findGroups() {
+        return sendRequest(annoService.findGroups());
+    }
+
+    @Override
+    public CompletableFuture<List<String>> findActivities() {
+        return sendRequest(annoService.findActivities());
+    }
+
+    @Override
     public CompletableFuture<Annotation> createAnnotation(Annotation annotation) {
         Long durationMillis = (annotation.getDuration() == null) ? null :
                 annotation.getDuration().toMillis();
@@ -88,7 +101,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     }
 
     public CompletableFuture<Collection<Annotation>> createAnnotations(Collection<Annotation> annotations) {
-        return sendRequest(annoService.create(annotations));
+        return sendRequest(annoService.create(annotations, bulkHeaders));
     }
 
     @Override
@@ -139,7 +152,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     }
 
     public CompletableFuture<Collection<Annotation>> updateAnnotations(Collection<Annotation> annotations) {
-        return sendRequest(annoService.update(annotations));
+        return sendRequest(annoService.update(annotations, bulkHeaders));
     }
 
     @Override
@@ -179,7 +192,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     }
 
     public CompletableFuture<Void> deleteAnnotations(Collection<UUID> observationUuids) {
-        return sendRequest(annoService.delete(observationUuids));
+        return sendRequest(annoService.delete(observationUuids, bulkHeaders));
     }
 
     @Override

@@ -17,7 +17,9 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
+import org.mbari.m3.vars.annotation.util.FXMLUtil;
 import org.mbari.m3.vars.annotation.util.FormatUtils;
 import org.mbari.m3.vars.annotation.model.Media;
 
@@ -75,6 +77,7 @@ public class MediaPaneController {
         startTimestampTextField.setText(st);
         String uri = (media.getUri() == null) ? null : media.getUri().toString();
         uriTextField.setText(uri);
+        uriTextField.setTooltip(new Tooltip(uri));
         containerTextField.setText(media.getContainer());
         String size = (media.getSizeBytes() == null) ? null : FormatUtils.formatSizeBytes(media.getSizeBytes());
         videoSizeTextField.setText(size);
@@ -122,5 +125,9 @@ public class MediaPaneController {
 
     public void setMedia(Media media) {
         this.media.set(media);
+    }
+
+    public static MediaPaneController newInstance() {
+        return FXMLUtil.newInstance(MediaPaneController.class, "/fxml/MediaPane.fxml");
     }
 }

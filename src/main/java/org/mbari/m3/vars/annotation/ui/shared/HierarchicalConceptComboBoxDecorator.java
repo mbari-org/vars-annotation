@@ -24,23 +24,25 @@ public class HierarchicalConceptComboBoxDecorator {
     }
 
     public void setConcept(String concept) {
-        ObservableList<String> items = comboBox.getItems();
-        items.clear();
-        if (concept != null) {
-            conceptService.findConcept(concept)
-                    .handle((opt, ex) -> {
-                        Platform.runLater(() -> {
-                            if (ex != null) {
-                                comboBox.setItems(FXCollections.observableArrayList(concept));
-                            } else {
-                                List<String> names = opt.isPresent() ? opt.get().flatten() : Arrays.asList(concept);
-                                //items.setAll(names);
-                                comboBox.setItems(FXCollections.observableArrayList(names));
-                                comboBox.getSelectionModel().select(concept);
-                            }
+        Platform.runLater(() -> {
+            ObservableList<String> items = comboBox.getItems();
+            items.clear();
+            if (concept != null) {
+                conceptService.findConcept(concept)
+                        .handle((opt, ex) -> {
+                            Platform.runLater(() -> {
+                                if (ex != null) {
+                                    items.add(concept);
+                                } else {
+                                    List<String> names = opt.isPresent() ? opt.get().flatten() : Arrays.asList(concept);
+                                    items.setAll(names);
+                                    //comboBox.setItems(FXCollections.observableArrayList(names));
+                                    comboBox.getSelectionModel().select(concept);
+                                }
+                            });
+                            return null;
                         });
-                        return null;
-                    });
-        }
+            }
+        });
     }
 }

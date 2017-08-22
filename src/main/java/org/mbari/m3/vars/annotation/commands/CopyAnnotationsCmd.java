@@ -46,7 +46,6 @@ public class CopyAnnotationsCmd implements Command {
         List<Annotation> rawCopies = originalAnnotations.stream()
                 .map(Annotation::new) // Create copy
                 .peek(a -> {           // Update fields
-                    // TODO set group and activity?
                     a.setVideoReferenceUuid(videoReferenceUuid);
                     a.setObservationUuid(null);
                     a.setImagedMomentUuid(null);

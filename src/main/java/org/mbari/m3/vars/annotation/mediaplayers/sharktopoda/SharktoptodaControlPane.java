@@ -239,7 +239,6 @@ public class SharktoptodaControlPane extends Pane {
                         });
             }
         }
-
     }
 
     private String formatSeconds(long seconds) {
@@ -251,6 +250,5 @@ public class SharktoptodaControlPane extends Pane {
         Text icon = videoState.isStopped() ? playIcon : pauseIcon;
         Platform.runLater(() -> getPlayButton().setGraphic(icon));
     }
-
 
 }

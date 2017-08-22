@@ -2,6 +2,7 @@ package org.mbari.m3.vars.annotation.ui.roweditor;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -36,7 +37,18 @@ public class RowEditorController {
 
     public void setAnnotation(Annotation annotation) {
         this.annotation = annotation;
-        Platform.runLater(() -> rowController.setAnnotation(annotation));
+        Platform.runLater(() -> {
+            rowController.setAnnotation(annotation);
+            BorderPane rowPane = rowController.getRoot();
+            GridPane associationPane = associationController.getRoot();
+            ObservableList<Node> children = this.root.getChildren();
+            if (children.contains(associationPane)) {
+                children.remove(associationPane);
+            }
+            if (!children.contains(rowPane)) {
+                children.add(rowPane);
+            }
+        });
     }
 
     private void initialize() {

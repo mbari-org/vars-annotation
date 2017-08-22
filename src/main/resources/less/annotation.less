@@ -9,8 +9,9 @@
 @hover-color: #454545;
 @default-text: #B3A9A3;
 @emphasis-color: #5D3D3D;
-@image-color: #3D8D3D;
-@sample-color: #3D3DAD;
+@image-color: #1E88E5;
+@sample-color: #7CB342;
+@concurrent-color: #FDD835;
 
 .root {
   /*-fx-font-size: 16pt;
@@ -43,6 +44,13 @@
 .annotable-association-cell .scroll-bar:horizontal .increment-button,
 .annotable-association-cell .scroll-bar:horizontal .decrement-button {
   -fx-padding:0;
+}
+
+
+#association-editor-grid {
+  -fx-padding: 10;
+  -fx-hgap: 10;
+  -fx-vgap: 10;
 }
 
 .button {
@@ -98,11 +106,15 @@
   -fx-background-radius: 0;
 }
 
+.combo-box .list-cell {
+  -fx-background-color: @default-color;
+}
+
 //.combo-box .combo-box-popup .list-view, .combo-box .combo-box-popup .list-cell {
 //  -fx-background-color: @default-color;
 //  -fx-text-fill: @default-text ;
 //}
-//
+
 .combo-box .combo-box-popup .list-cell:hover {
   -fx-text-fill: @selected-text ;
   -fx-background-color: @selected-color ;
@@ -167,6 +179,10 @@
 
 .headers-region, .tab-header-background {
   -fx-background-color: @default-color;
+}
+.jfx-check-box {
+  -jfx-checked-color: @selected-color;
+  -fx-text-fill: @default-text;
 }
 
 .jfx-combo-box {
@@ -297,6 +313,10 @@
   -fx-padding: 0 0 0 0;
 }
 
+.table-concurrent-row {
+  -fx-text-fill: @default-compliment-color-dark;
+}
+
 
 .table-view {
   -fx-background-color: @default-color;
@@ -395,6 +415,11 @@
 .icon-active-sample {
   -fx-text-fill: @sample-color;
   -fx-fill: @sample-color;
+}
+
+.icon-active-concurrent {
+  -fx-text-fill: @concurrent-color;
+  -fx-fill: @concurrent-color;
 }
 
 

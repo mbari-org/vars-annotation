@@ -31,6 +31,10 @@ public interface AnnotationService {
 
     CompletableFuture<AnnotationCount> countAnnotations(UUID videoReferenceUuid);
 
+    CompletableFuture<List<String>> findGroups();
+
+    CompletableFuture<List<String>> findActivities();
+
     CompletableFuture<Annotation> createAnnotation(Annotation annotation);
 
     CompletableFuture<Collection<Annotation>> createAnnotations(Collection<Annotation> annotations);

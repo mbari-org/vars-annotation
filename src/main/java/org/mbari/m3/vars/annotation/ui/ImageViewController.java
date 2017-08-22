@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation.ui;
 
 import com.jfoenix.controls.JFXComboBox;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.ComboBox;
@@ -27,15 +28,18 @@ public class ImageViewController {
 
 
     public void setAnnotation(Annotation annotation) {
-        this.annotation.set(annotation);
-        getComboBox().getItems().clear();
-        if (annotation != null) {
-            List<ImageReference> images = annotation.getImages();
-            if (!images.isEmpty()) {
-                getComboBox().getItems().addAll(images);
-                getComboBox().getSelectionModel().select(1);
+        Platform.runLater(() -> {
+            this.annotation.set(annotation);
+            getComboBox().getItems().clear();
+            if (annotation != null) {
+                List<ImageReference> images = annotation.getImages();
+                if (!images.isEmpty()) {
+                    getComboBox().getItems().addAll(images);
+                    getComboBox().getSelectionModel().select(1);
+                }
             }
-        }
+        });
+
     }
 
     private ImageView getImageView() {

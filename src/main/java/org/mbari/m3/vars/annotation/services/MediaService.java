@@ -31,6 +31,8 @@ public interface MediaService {
 
     CompletableFuture<List<String>> findAllCameraIds();
 
+    CompletableFuture<List<Media>> findConcurrentByVideoReferenceUuid(UUID uuid);
+
     /**
      *
      * @return A list of VideoSequence names available for the camera id
