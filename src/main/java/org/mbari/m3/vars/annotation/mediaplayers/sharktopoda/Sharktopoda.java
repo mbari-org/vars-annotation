@@ -6,6 +6,7 @@ import org.mbari.vcr4j.VideoIO;
 import org.mbari.vcr4j.decorators.SchedulerVideoIO;
 import org.mbari.vcr4j.decorators.StatusDecorator;
 import org.mbari.vcr4j.decorators.VCRSyncDecorator;
+import org.mbari.vcr4j.decorators.VideoSyncDecorator;
 import org.mbari.vcr4j.sharktopoda.SharktopodaError;
 import org.mbari.vcr4j.sharktopoda.SharktopodaState;
 import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
@@ -36,11 +37,10 @@ public class Sharktopoda {
         try {
             SharktopodaVideoIO videoIO = new SharktopodaVideoIO(UUID.randomUUID(), "localhost", sharktopodaPort);
             videoIO.send(new OpenCmd(media.getUri().toURL()));
-            new StatusDecorator<>(videoIO);
-            new VCRSyncDecorator<>(videoIO, 1000, 100, 3000000);
-            //new FauxTimecodeDecorator(videoIO); // Convert elapsed-time to timecode
             VideoIO<SharktopodaState, SharktopodaError> io =
                     new SchedulerVideoIO<>(videoIO, Executors.newCachedThreadPool());
+            new StatusDecorator<>(io);
+            new VideoSyncDecorator<>(io);
             MediaPlayer<SharktopodaState, SharktopodaError> newVc =
                     new MediaPlayer<>(media, new SharktopodaImageCaptureService(videoIO, framecapturePort),
                             io, () -> videoIO.send(SharkCommands.CLOSE));

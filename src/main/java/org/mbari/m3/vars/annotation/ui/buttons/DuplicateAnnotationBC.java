@@ -43,10 +43,10 @@ public class DuplicateAnnotationBC {
     }
 
     private void apply() {
-        toolBox.getMediaPlayer()
-
-        toolBox.getEventBus()
-                .send(new CopyAnnotationsCmd());
+//        toolBox.getMediaPlayer()
+//
+//        toolBox.getEventBus()
+//                .send(new CopyAnnotationsCmd());
     }
 
 }

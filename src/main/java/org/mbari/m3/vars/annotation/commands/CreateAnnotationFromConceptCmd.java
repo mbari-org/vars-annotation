@@ -7,8 +7,11 @@ import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
+import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.vcr4j.VideoIndex;
 
+import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -31,18 +34,26 @@ public class CreateAnnotationFromConceptCmd implements Command {
         toolBox.getMediaPlayer()
                 .requestVideoIndex()
                 .thenAccept(videoIndex -> {
-                    // TODO get group and activity setting
                     Data data = toolBox.getData();
-                    UUID videoReferenceUuid = data.getMedia().getVideoReferenceUuid();
+                    Media media = data.getMedia();
+                    UUID videoReferenceUuid = media.getVideoReferenceUuid();
                     String observer = data.getUser().getUsername();
                     String group = data.getGroup();
-                    String actvity = data.getActivity();
+                    String activity = data.getActivity();
                     Annotation a0 = new Annotation(concept,
                             observer,
                             videoIndex,
                             videoReferenceUuid);
                     a0.setGroup(group);
-                    a0.setActivity(actvity);
+                    a0.setActivity(activity);
+                    if (media.getStartTimestamp() != null ) {
+                        // Calculate timestamp from media start time and annotation elapsed time
+                        videoIndex.getElapsedTime()
+                                .ifPresent(elapsedTime -> {
+                                    Instant recordedDate = media.getStartTimestamp().plus(elapsedTime);
+                                    a0.setRecordedTimestamp(recordedDate);
+                                });
+                    }
                     toolBox.getServices()
                             .getAnnotationService()
                             .createAnnotation(a0)
