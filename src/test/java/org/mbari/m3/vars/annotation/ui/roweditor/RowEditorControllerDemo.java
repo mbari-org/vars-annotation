@@ -5,8 +5,10 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
@@ -20,6 +22,8 @@ import java.util.UUID;
  * @since 2017-07-20T08:58:00
  */
 public class RowEditorControllerDemo extends Application {
+
+    Annotation a = new Annotation("Grimpoteuthis", "brian");
 
     public static void main(String[] args) {
         launch(args);
@@ -48,7 +52,6 @@ public class RowEditorControllerDemo extends Application {
 
         // TODO create new annotation and fire off to servie
 
-        Annotation a = new Annotation("Grimpoteuthis", "brian");
         a.setRecordedTimestamp(Instant.now());
         a.setObservationUuid(UUID.randomUUID());
         Association ass = new Association("eating", "Nanomia bijuga", "self");
@@ -69,14 +72,18 @@ public class RowEditorControllerDemo extends Application {
     }
 
     private void initializeEventHandling() {
-        Observable<Object> obs = Initializer.getToolBox().getEventBus().toObserverable();
+        EventBus eventBus = Initializer.getToolBox().getEventBus();
+        Observable<Object> obs = eventBus.toObserverable();
         obs.ofType(AnnotationsSelectedEvent.class)
                 .subscribe(annos -> {
 
                 });
 
-//        obs.ofType(CreateAssociation.class)
-//                .subscribe(ca -> {
-//                });
+        obs.ofType(CreateAssociationsCmd.class)
+                .subscribe(ca -> {
+                    Association at = ca.getAssociationTemplate();
+                    a.getAssociations().add(at);
+                    eventBus.send(new AnnotationsSelectedEvent(Arrays.asList(a)));
+                });
     }
 }

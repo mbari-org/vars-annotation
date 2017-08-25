@@ -1,9 +1,6 @@
 package org.mbari.m3.vars.annotation.services;
 
-import org.mbari.m3.vars.annotation.model.Annotation;
-import org.mbari.m3.vars.annotation.model.AnnotationCount;
-import org.mbari.m3.vars.annotation.model.Association;
-import org.mbari.m3.vars.annotation.model.Image;
+import org.mbari.m3.vars.annotation.model.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +15,8 @@ import java.util.concurrent.CompletableFuture;
 public interface AnnotationService {
 
     CompletableFuture<Annotation> findByUuid(UUID observationUuid);
+
+    CompletableFuture<AncillaryData> findAncillaryData(UUID observationUuid);
 
     CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid);
 

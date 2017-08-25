@@ -57,8 +57,26 @@ public class AppController {
                     .addAll(toolBox.getStylesheets());
 
             scene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+                KeyCode code = e.getCode();
+                if (e.isControlDown()) {
+                    if (code == KeyCode.SPACE) {
+                        MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
+                        if (mediaPlayer != null) {
+                            mediaPlayer.requestIsPlaying()
+                                    .thenAccept(playing -> {
+                                        if (playing) {
+                                            mediaPlayer.stop();
+                                        }
+                                        else {
+                                            mediaPlayer.play();
+                                        }
+                                    });
+                        }
+                    }
+                }
+
                 if (e.isMetaDown()) {
-                    KeyCode code = e.getCode();
+
                     if (code == KeyCode.DOWN) {
                         TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
                                 .getTableView()
@@ -68,7 +86,6 @@ public class AppController {
                         selectionModel.clearSelection();
                         selectionModel.select(idx + 1);
 
-                        // TODO implement up and down arrows to move corsor in annotaiton table
                     }
                     else if (code == KeyCode.UP) {
                         TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()

@@ -14,10 +14,12 @@ import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -42,6 +44,7 @@ import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.prefs.PreferencesDialogController;
 
 import java.util.*;
+import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
 /**
@@ -60,10 +63,11 @@ public class AppPaneController {
     private StatusBar utilityPane;
     private final ImageViewController imageViewController;
     private final PreferencesDialogController preferencesDialogController;
-    //private final FramegrabPaneController framegrabPaneController;
     private final SelectMediaDialog selectMediaDialog;
     private ControlsPaneController controlsPaneController;
     private MediaPaneController mediaPaneController;
+    private BulkEditorPaneController bulkEditorPaneController;
+    private AncillaryDataPaneController ancillaryDataPaneController;
 
 
 
@@ -77,8 +81,8 @@ public class AppPaneController {
         imageViewController = new ImageViewController();
         controlsPaneController = new ControlsPaneController(toolBox);
         mediaPaneController = MediaPaneController.newInstance();
-
-        //framegrabPaneController = FramegrabPaneController.newInstance();
+        bulkEditorPaneController = BulkEditorPaneController.newInstance(toolBox);
+        ancillaryDataPaneController = new AncillaryDataPaneController(toolBox);
     }
 
     public BorderPane getRoot() {
@@ -90,6 +94,29 @@ public class AppPaneController {
         return root;
     }
 
+    private void manageSizePrefs(final String nodeName, final Node node) {
+
+        Preferences prefs0 = Preferences.userNodeForPackage(getClass());
+        Preferences prefs1 = prefs0.node("dock-nodes");
+        Preferences prefs2 = prefs1.node(nodeName);
+        //final Node node = dockNode.getContent().getNodeContent();
+
+        if (node instanceof Region) {
+            Region region = (Region) node;
+            double width = prefs2.getDouble("preferred-width", region.getWidth());
+            double height = prefs2.getDouble("preferred-height", region.getHeight());
+            region.setPrefSize(width, height);
+        }
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (node instanceof Region) {
+                Region region = (Region) node;
+                prefs2.putDouble("preferred-width", region.getWidth());
+                prefs2.putDouble("preferred-height", region.getHeight());
+            }
+        }));
+    }
+
     public DockStation getDockStation() {
         if (dockStation == null) {
 
@@ -98,7 +125,8 @@ public class AppPaneController {
             dockStation = AnchorageSystem.createStation();
             DockNode annotationNode = AnchorageSystem.createDock("Annotations", annotationTableController.getTableView());
             annotationNode.closeableProperty().set(false);
-            annotationNode.dock(dockStation, DockNode.DockPosition.CENTER);
+
+
 
             SearchTreePaneController treeController = new SearchTreePaneController(toolBox.getServices().getConceptService(),
                     toolBox.getI18nBundle());
@@ -106,12 +134,10 @@ public class AppPaneController {
                     .subscribe(msg -> treeController.setSearchText(msg.getName()));
             DockNode treeNode = AnchorageSystem.createDock("Knowledgebase", treeController.getRoot());
             treeNode.closeableProperty().set(false);
-            treeNode.setPrefSize(400, 400);
-            treeNode.dock(dockStation, DockNode.DockPosition.RIGHT);
+
 
             DockNode imageViewNode = AnchorageSystem.createDock("Images", imageViewController.getRoot());
             imageViewNode.closeableProperty().set(false);
-            imageViewNode.dock(treeNode, DockNode.DockPosition.CENTER);
             observable.ofType(AnnotationsSelectedEvent.class)
                     .subscribe(evt -> {
                         Collection<Annotation> annotations = evt.get();
@@ -123,28 +149,50 @@ public class AppPaneController {
                         }
                     });
 
+            DockNode bulkEditNode = AnchorageSystem.createDock("Bulk Editor",
+                    bulkEditorPaneController.getRoot());
+            bulkEditNode.closeableProperty().set(false);
+
             ScrollPane mediaScrollPane = new ScrollPane(mediaPaneController.getRoot());
             DockNode mediaNode = AnchorageSystem.createDock("Media", mediaScrollPane);
             mediaNode.closeableProperty().set(false);
-            mediaNode.dock(treeNode, DockNode.DockPosition.CENTER);
-            observable.ofType(MediaChangedEvent.class)
-                    .subscribe(m -> mediaPaneController.setMedia(m.get()));
+            observable.ofType(AnnotationsSelectedEvent.class)
+                    .subscribe(e -> showMediaOfSelectedRow(e.get()));
+
+            BorderPane dataPane = ancillaryDataPaneController.getRoot();
+            DockNode dataNode = AnchorageSystem.createDock("Ancillary Data", dataPane);
+            dataNode.closeableProperty().set(false);
+            observable.ofType(AnnotationsSelectedEvent.class)
+                    .subscribe(e -> showAncillaryData(e.get()));
 
             Pane cpane = controlsPaneController.getRoot();
-            cpane.setPrefSize(800, 200);
             DockNode cnode = AnchorageSystem.createDock("Annotation Controls", cpane);
             cnode.closeableProperty().set(false);
             cnode.maximizableProperty().set(false);
-            cnode.dock(dockStation, DockNode.DockPosition.BOTTOM);
-
 
             ConceptButtonPanesController panesController = new ConceptButtonPanesController(toolBox);
             Pane pane = panesController.getRoot();
-            pane.setPrefSize(800, 250);
             DockNode cbNode = AnchorageSystem.createDock("Quick Buttons", pane);
             cbNode.closeableProperty().set(false);
             cbNode.maximizableProperty().set(false);
+
+            annotationNode.dock(dockStation, DockNode.DockPosition.CENTER);
+            treeNode.dock(dockStation, DockNode.DockPosition.RIGHT);
+            imageViewNode.dock(treeNode, DockNode.DockPosition.CENTER);
+            mediaNode.dock(treeNode, DockNode.DockPosition.CENTER);
+            bulkEditNode.dock(treeNode, DockNode.DockPosition.CENTER);
+            dataNode.dock(treeNode, DockNode.DockPosition.CENTER);
+            cnode.dock(dockStation, DockNode.DockPosition.BOTTOM);
             cbNode.dock(dockStation, DockNode.DockPosition.BOTTOM);
+
+            manageSizePrefs("annotation-node", annotationNode);
+            manageSizePrefs("tree-node", treeNode);
+            manageSizePrefs("image-view-node", imageViewNode);
+            manageSizePrefs("media-node", mediaNode);
+            manageSizePrefs("controls-node", cnode);
+            manageSizePrefs("concept-button-node", pane);
+            manageSizePrefs("data-node", dataNode);
+
 
         }
         return dockStation;
@@ -381,5 +429,35 @@ public class AppPaneController {
 
     public AnnotationTableController getAnnotationTableController() {
         return annotationTableController;
+    }
+
+    private void showMediaOfSelectedRow(Collection<Annotation> annotations) {
+        if (annotations == null || annotations.size() != 1) {
+            mediaPaneController.setMedia(null);
+        }
+        else {
+            Annotation annotation = annotations.iterator().next();
+            Media media = toolBox.getData().getMedia();
+            if (media != null &&
+                    annotation.getVideoReferenceUuid().equals(media.getVideoReferenceUuid())) {
+                mediaPaneController.setMedia(media);
+            }
+            else {
+                toolBox.getServices()
+                        .getMediaService()
+                        .findByUuid(annotation.getVideoReferenceUuid())
+                        .thenAccept(m -> mediaPaneController.setMedia(m));
+            }
+        }
+    }
+
+    private void showAncillaryData(Collection<Annotation> annotations) {
+        if (annotations == null || annotations.size() != 1) {
+            ancillaryDataPaneController.setAncillaryData(null);
+        }
+        else {
+            Annotation first = annotations.iterator().next();
+            ancillaryDataPaneController.setAncillaryData(first.getObservationUuid());
+        }
     }
 }

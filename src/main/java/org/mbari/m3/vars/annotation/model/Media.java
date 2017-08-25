@@ -206,6 +206,7 @@ public class Media {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (videoReferenceUuid == null) return false;
 
         Media media = (Media) o;
 

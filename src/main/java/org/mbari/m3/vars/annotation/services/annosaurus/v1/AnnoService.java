@@ -1,9 +1,6 @@
 package org.mbari.m3.vars.annotation.services.annosaurus.v1;
 
-import org.mbari.m3.vars.annotation.model.Annotation;
-import org.mbari.m3.vars.annotation.model.AnnotationCount;
-import org.mbari.m3.vars.annotation.model.Association;
-import org.mbari.m3.vars.annotation.model.Image;
+import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.AuthService;
 import org.mbari.m3.vars.annotation.services.RetrofitWebService;
@@ -39,8 +36,14 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         bulkHeaders.put("Content-Type", "application/json");
     }
 
+    @Override
     public CompletableFuture<Annotation> findByUuid(UUID observationUuid) {
         return sendRequest(annoService.findByUuid(observationUuid));
+    }
+
+    @Override
+    public CompletableFuture<AncillaryData> findAncillaryData(UUID observationUuid) {
+        return sendRequest(annoService.findAncillaryData(observationUuid));
     }
 
     @Override

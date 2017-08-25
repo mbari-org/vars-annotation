@@ -17,7 +17,7 @@ import java.util.UUID;
  */
 public interface VamWebService {
 
-    @GET("videoreferences/{uuid}")
+    @GET("media/videoreference/{uuid}")
     Call<Media> findByUuid(@Path("uuid") UUID uuid);
 
     @GET("media/sha512/{sha512}")

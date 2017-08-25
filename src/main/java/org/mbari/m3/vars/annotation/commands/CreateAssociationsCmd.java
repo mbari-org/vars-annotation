@@ -21,6 +21,10 @@ public class CreateAssociationsCmd implements Command {
         this.originalAnnotations = ImmutableList.copyOf(originalAnnotations);
     }
 
+    public Association getAssociationTemplate() {
+        return associationTemplate;
+    }
+
     @Override
     public void apply(UIToolBox toolBox) {
 

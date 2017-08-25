@@ -13,6 +13,7 @@
 
 package org.mbari.m3.vars.annotation.ui.mediadialog;
 
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
@@ -70,27 +71,43 @@ public class MediaPaneController {
     }
 
     private void updateView(Media media) {
-        camerIdTextField.setText(media.getCameraId());
-        videoSequenceNameTextField.setText(media.getVideoSequenceName());
-        videoNameTextField.setText(media.getVideoName());
-        String st = (media.getStartTimestamp() == null) ? null : media.getStartTimestamp().toString();
-        startTimestampTextField.setText(st);
-        String uri = (media.getUri() == null) ? null : media.getUri().toString();
-        uriTextField.setText(uri);
-        uriTextField.setTooltip(new Tooltip(uri));
-        containerTextField.setText(media.getContainer());
-        String size = (media.getSizeBytes() == null) ? null : FormatUtils.formatSizeBytes(media.getSizeBytes());
-        videoSizeTextField.setText(size);
-        String dims = (media.getWidth() == null || media.getHeight() == null) ? null :
-                media.getWidth() + " x " + media.getHeight();
-        videoDimensionTextField.setText(dims);
-        String fr = (media.getFrameRate() == null) ? null : media.getFrameRate().toString();
-        frameRateTextField.setText(fr);
-        String et = (media.getStartTimestamp() == null || media.getDuration() == null) ? null :
-                media.getStartTimestamp().plus(media.getDuration()).toString();
-        endTimestampTextField.setText(et);
-        String duration = (media.getDuration() == null) ? null : FormatUtils.formatDuration(media.getDuration());
-        durationTextField.setText(duration);
+        if (media == null) {
+            camerIdTextField.setText(null);
+            videoSequenceNameTextField.setText(null);
+            videoNameTextField.setText(null);
+            startTimestampTextField.setText(null);
+            uriTextField.setText(null);
+            uriTextField.setTooltip(null);
+            containerTextField.setText(null);
+            videoSizeTextField.setText(null);
+            videoDimensionTextField.setText(null);
+            frameRateTextField.setText(null);
+            endTimestampTextField.setText(null);
+            durationTextField.setText(null);
+        }
+        else {
+            camerIdTextField.setText(media.getCameraId());
+            videoSequenceNameTextField.setText(media.getVideoSequenceName());
+            videoNameTextField.setText(media.getVideoName());
+            String st = (media.getStartTimestamp() == null) ? null : media.getStartTimestamp().toString();
+            startTimestampTextField.setText(st);
+            String uri = (media.getUri() == null) ? null : media.getUri().toString();
+            uriTextField.setText(uri);
+            uriTextField.setTooltip(new Tooltip(uri));
+            containerTextField.setText(media.getContainer());
+            String size = (media.getSizeBytes() == null) ? null : FormatUtils.formatSizeBytes(media.getSizeBytes());
+            videoSizeTextField.setText(size);
+            String dims = (media.getWidth() == null || media.getHeight() == null) ? null :
+                    media.getWidth() + " x " + media.getHeight();
+            videoDimensionTextField.setText(dims);
+            String fr = (media.getFrameRate() == null) ? null : media.getFrameRate().toString();
+            frameRateTextField.setText(fr);
+            String et = (media.getStartTimestamp() == null || media.getDuration() == null) ? null :
+                    media.getStartTimestamp().plus(media.getDuration()).toString();
+            endTimestampTextField.setText(et);
+            String duration = (media.getDuration() == null) ? null : FormatUtils.formatDuration(media.getDuration());
+            durationTextField.setText(duration);
+        }
     }
 
     private void resetView() {
@@ -124,7 +141,9 @@ public class MediaPaneController {
     }
 
     public void setMedia(Media media) {
-        this.media.set(media);
+        Platform.runLater(() -> {
+            this.media.set(media);
+        });
     }
 
     public static MediaPaneController newInstance() {
