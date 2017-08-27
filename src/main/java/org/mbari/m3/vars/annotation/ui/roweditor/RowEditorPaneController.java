@@ -145,7 +145,7 @@ public class RowEditorPaneController {
                 });
 
         // -- Configure combobox autocomplete
-        new FilteredComboBoxDecorator2<>(conceptComboBox, FilteredComboBoxDecorator2.CONTAINS_CHARS_IN_ORDER);
+        new FilteredComboBoxDecorator2<>(conceptComboBox, FilteredComboBoxDecorator2.STARTSWITH);
         conceptComboBox.setEditable(false);
         conceptComboBox.setOnKeyReleased(v -> {
             if (v.getCode() == KeyCode.ENTER) {

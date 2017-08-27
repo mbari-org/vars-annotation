@@ -22,11 +22,11 @@
     <orderEntry type="library" name="Maven: com.squareup.okhttp3:okhttp:3.8.0" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.okio:okio:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.okhttp3:logging-interceptor:3.8.0" level="project" />
-    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.1" level="project" />
     <orderEntry type="library" name="Maven: com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.retrofit2:converter-gson:2.3.0" level="project" />
-    <orderEntry type="library" name="Maven: org.controlsfx:controlsfx:8.40.12" level="project" />
-    <orderEntry type="library" name="Maven: no.tornado:fxlauncher:1.0.16" level="project" />
+    <orderEntry type="library" name="Maven: org.controlsfx:controlsfx:8.40.13" level="project" />
+    <orderEntry type="library" name="Maven: no.tornado:fxlauncher:1.0.17" level="project" />
     <orderEntry type="library" name="Maven: io.reactivex.rxjava2:rxjava:2.1.3" level="project" />
     <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: io.reactivex.rxjava2:rxjavafx:2.1.1" level="project" />
@@ -34,17 +34,21 @@
     <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
     <orderEntry type="library" name="Maven: com.typesafe:config:1.3.1" level="project" />
-    <orderEntry type="library" name="Maven: com.jfoenix:jfoenix:1.4.0" level="project" />
+    <orderEntry type="library" name="Maven: com.jfoenix:jfoenix:1.7.0" level="project" />
     <orderEntry type="library" name="Maven: com.auth0:java-jwt:3.2.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.8.4" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.8.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.8.4" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.10" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.55" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.22" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.2.3" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.2.3" level="project" />
-    <orderEntry type="library" name="Maven: com.google.guava:guava:20.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:23.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:1.3.9" level="project" />
+    <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.0.18" level="project" />
+    <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.mojo:animal-sniffer-annotations:1.14" level="project" />
     <orderEntry type="library" name="Maven: com.anchorfx:anchorfx:0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.jersey.core:jersey-client:2.25.1" level="project" />
     <orderEntry type="library" name="Maven: javax.ws.rs:javax.ws.rs-api:2.0.1" level="project" />

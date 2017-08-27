@@ -353,13 +353,13 @@ public class AppPaneController {
             // Listen for progress bar notifications
             Observable<Object> observable = toolBox.getEventBus().toObserverable();
             observable.ofType(ShowProgress.class)
-                    .subscribe(s -> utilityPane.setProgress(0.00001));
+                    .subscribe(s -> Platform.runLater(() -> utilityPane.setProgress(0.00001)));
             observable.ofType(SetProgress.class)
-                    .subscribe(s -> utilityPane.setProgress(s.getProgress()));
+                    .subscribe(s -> Platform.runLater(() -> utilityPane.setProgress(s.getProgress())));
             observable.ofType(HideProgress.class)
-                    .subscribe(s -> utilityPane.setProgress(0.0));
+                    .subscribe(s -> Platform.runLater(() -> utilityPane.setProgress(0.0)));
             observable.ofType(SetStatusBarMsg.class)
-                    .subscribe(s -> utilityPane.setText(s.getMsg()));
+                    .subscribe(s -> Platform.runLater(() -> utilityPane.setText(s.getMsg())));
 
             Label groupLabel = new Label(toolBox.getI18nBundle()
                     .getString("apppane.statusbar.label.group"));
