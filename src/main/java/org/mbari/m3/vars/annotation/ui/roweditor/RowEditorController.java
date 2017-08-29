@@ -24,13 +24,13 @@ import java.util.Optional;
  */
 public class RowEditorController {
     private AssociationEditorPaneController associationController;
-    private RowEditorPaneController rowController;
+    private AnnotationEditorPaneController rowController;
     private Pane root;
     private volatile Annotation annotation;
     private final UIToolBox toolBox = Initializer.getToolBox();
 
     public RowEditorController() {
-        rowController = RowEditorPaneController.newInstance();
+        rowController = AnnotationEditorPaneController.newInstance();
         associationController = AssociationEditorPaneController.newInstance();
         initialize();
     }
@@ -65,6 +65,7 @@ public class RowEditorController {
             associationController.setTarget(annotation, null);
             this.root.getChildren().remove(rowPane);
             this.root.getChildren().add(associationPane);
+            associationController.requestFocus();
         });
 
         rowController.getEditButton().setOnAction(v -> {
@@ -75,6 +76,7 @@ public class RowEditorController {
                         associationController.setTarget(annotation, ass);
                         this.root.getChildren().remove(rowPane);
                         this.root.getChildren().add(associationPane);
+                        associationController.requestFocus();
                     });
         });
 

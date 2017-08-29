@@ -30,7 +30,6 @@ import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
-import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator2;
 import org.mbari.m3.vars.annotation.ui.shared.HierarchicalConceptComboBoxDecorator;
 
 public class AssociationEditorPaneController {
@@ -121,7 +120,7 @@ public class AssociationEditorPaneController {
         linkNameTextField.setDisable(true);
 
         // Add filtering of toConcepts
-        new FilteredComboBoxDecorator2<>(toConceptComboBox, FilteredComboBoxDecorator2.CONTAINS_CHARS_IN_ORDER);
+        new FilteredComboBoxDecorator<>(toConceptComboBox, FilteredComboBoxDecorator.STARTSWITH);
 
         // Add decorator to populate combobox with all children of given concept
         toConceptComboBoxDecorator = new HierarchicalConceptComboBoxDecorator(toConceptComboBox,

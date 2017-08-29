@@ -2,6 +2,7 @@ package org.mbari.m3.vars.annotation.ui.buttons;
 
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -25,20 +26,23 @@ public class DeleteSelectedAnnotationsBC {
 
     private final Button button;
     private final UIToolBox toolBox;
-    private final Alert alert;
+    private Alert alert;
 
     // TODO register keyhandling using http://docs.oracle.com/javafx/2/api/javafx/scene/input/Mnemonic.html
     public DeleteSelectedAnnotationsBC(Button button, UIToolBox toolBox) {
         this.button = button;
         this.toolBox = toolBox;
         ResourceBundle i18n = toolBox.getI18nBundle();
-        alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(i18n.getString("buttons.delete.dialog.title"));
-        alert.setHeaderText(i18n.getString("buttons.delete.dialog.header"));
-        alert.getDialogPane()
-                .getStylesheets()
-                .addAll(toolBox.getStylesheets());
-        init();
+        Platform.runLater(() -> {
+            alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle(i18n.getString("buttons.delete.dialog.title"));
+            alert.setHeaderText(i18n.getString("buttons.delete.dialog.header"));
+            alert.getDialogPane()
+                    .getStylesheets()
+                    .addAll(toolBox.getStylesheets());
+            init();
+        });
+
     }
 
     public void init() {

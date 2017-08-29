@@ -36,9 +36,8 @@ import org.mbari.m3.vars.annotation.commands.UpdateAnnotationCmd;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
-import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator2;
 
-public class RowEditorPaneController {
+public class AnnotationEditorPaneController {
 
     @FXML
     private BorderPane root;
@@ -110,8 +109,6 @@ public class RowEditorPaneController {
     @FXML
     void initialize() {
 
-
-
         // -- Make buttons pretty
         GlyphsFactory gf = MaterialIconFactory.get();
         Text deleteIcon = gf.createIcon(MaterialIcon.DELETE, "30px");
@@ -145,7 +142,7 @@ public class RowEditorPaneController {
                 });
 
         // -- Configure combobox autocomplete
-        new FilteredComboBoxDecorator2<>(conceptComboBox, FilteredComboBoxDecorator2.STARTSWITH);
+        new FilteredComboBoxDecorator<>(conceptComboBox, FilteredComboBoxDecorator.STARTSWITH);
         conceptComboBox.setEditable(false);
         conceptComboBox.setOnKeyReleased(v -> {
             if (v.getCode() == KeyCode.ENTER) {
@@ -248,10 +245,10 @@ public class RowEditorPaneController {
                 });
     }
 
-    public static RowEditorPaneController newInstance() {
+    public static AnnotationEditorPaneController newInstance() {
         final ResourceBundle bundle = Initializer.getToolBox().getI18nBundle();
-        FXMLLoader loader = new FXMLLoader(RowEditorPaneController.class
-                .getResource("/fxml/RowEditorPane.fxml"), bundle);
+        FXMLLoader loader = new FXMLLoader(AnnotationEditorPaneController.class
+                .getResource("/fxml/AnnotationEditorPane.fxml"), bundle);
 
         try {
             loader.load();

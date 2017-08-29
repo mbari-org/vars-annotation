@@ -4,6 +4,7 @@ import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
+import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.vcr4j.VideoIndex;
@@ -23,61 +24,61 @@ import java.util.stream.Collectors;
  */
 public class CopyAnnotationsCmd implements Command {
 
-    private final UUID videoReferenceUuid;
-    private final VideoIndex videoIndex;
-    private final String observer;
-    private final List<Annotation> originalAnnotations;
-    private volatile List<Annotation> copies;
+    private final Collection<Annotation> copiedAnnotations;
 
     public CopyAnnotationsCmd(UUID videoReferenceUuid,
                               VideoIndex videoIndex,
                               String observer,
-                              List<Annotation> originalAnnotations) {
-        this.videoReferenceUuid = videoReferenceUuid;
-        this.videoIndex = videoIndex;
-        this.observer = observer;
-        this.originalAnnotations = originalAnnotations;
+                              Collection<Annotation> originalAnnotations) {
+        this.copiedAnnotations = originalAnnotations.stream()
+                .map(a -> makeCopy(a, videoReferenceUuid, videoIndex, observer))
+                .collect(Collectors.toList());
+    }
+
+    private Annotation makeCopy(Annotation annotation,
+                                UUID videoReferenceUuid,
+                                VideoIndex videoIndex,
+                                String observer) {
+        Annotation copy = new Annotation(annotation);
+        copy.setVideoReferenceUuid(videoReferenceUuid);
+        copy.setObservationUuid(null);
+        copy.setImagedMomentUuid(null);
+        copy.setObserver(observer);
+
+        Duration elapsedTime = videoIndex.getElapsedTime().orElse(null);
+        copy.setElapsedTime(elapsedTime);
+
+        Timecode timecode = videoIndex.getTimecode().orElse(null);
+        copy.setTimecode(timecode);
+
+        Instant timestamp = videoIndex.getTimestamp().orElse(null);
+        copy.setRecordedTimestamp(timestamp);
+
+        copy.setObservationTimestamp(Instant.now());
+        return copy;
     }
 
 
 
     @Override
     public void apply(UIToolBox toolBox) {
-        List<Annotation> rawCopies = originalAnnotations.stream()
-                .map(Annotation::new) // Create copy
-                .peek(a -> {           // Update fields
-                    a.setVideoReferenceUuid(videoReferenceUuid);
-                    a.setObservationUuid(null);
-                    a.setImagedMomentUuid(null);
-                    a.setObserver(observer);
-
-                    Duration elapsedTime = videoIndex.getElapsedTime().orElse(null);
-                    a.setElapsedTime(elapsedTime);
-
-                    Timecode timecode = videoIndex.getTimecode().orElse(null);
-                    a.setTimecode(timecode);
-
-                    Instant timestamp = videoIndex.getTimestamp().orElse(null);
-                    a.setRecordedTimestamp(timestamp);
-
-                    a.setObservationTimestamp(Instant.now());
-                })
-                .collect(Collectors.toList());
-
         toolBox.getServices()
                 .getAnnotationService()
-                .createAnnotations(rawCopies)
-                .thenAccept(ans -> {
-                   copies = rawCopies;
-                   toolBox.getEventBus()
-                           .send(new AnnotationsAddedEvent(copies));
+                .createAnnotations(copiedAnnotations)
+                .thenAccept(annos -> {
+                    copiedAnnotations.clear();
+                    copiedAnnotations.addAll(annos);
+                    toolBox.getEventBus()
+                           .send(new AnnotationsAddedEvent(copiedAnnotations));
+                    toolBox.getEventBus()
+                           .send(new AnnotationsSelectedEvent(copiedAnnotations));
                 });
 
     }
 
     @Override
     public void unapply(UIToolBox toolBox) {
-        Collection<UUID> uuids = copies.stream()
+        Collection<UUID> uuids = copiedAnnotations.stream()
                 .map(Annotation::getObservationUuid)
                 .collect(Collectors.toList());
 
@@ -86,8 +87,8 @@ public class CopyAnnotationsCmd implements Command {
                 .deleteAnnotations(uuids)
                 .thenAccept(v -> {
                     toolBox.getEventBus()
-                            .send(new AnnotationsRemovedEvent(copies));
-                    copies = new ArrayList<>();
+                            .send(new AnnotationsRemovedEvent(copiedAnnotations));
+                    copiedAnnotations.forEach(a -> a.setImagedMomentUuid(null));
                 });
     }
 

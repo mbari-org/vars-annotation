@@ -8,7 +8,9 @@ import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.SharktoptodaControlPane;
 import org.mbari.m3.vars.annotation.model.Annotation;
+import org.mbari.m3.vars.annotation.ui.buttons.CopyAnnotationBC;
 import org.mbari.m3.vars.annotation.ui.buttons.DeleteSelectedAnnotationsBC;
+import org.mbari.m3.vars.annotation.ui.buttons.DuplicateAnnotationBC;
 import org.mbari.m3.vars.annotation.ui.buttons.NewAnnotationBC;
 import org.mbari.m3.vars.annotation.ui.roweditor.RowEditorController;
 
@@ -60,7 +62,13 @@ public class ControlsPaneController {
             Button newBtn = new JFXButton();
             new NewAnnotationBC(newBtn, toolBox);
 
-            buttonPane.getChildren().addAll(newBtn, deleteBtn);
+            Button dupBtn = new JFXButton();
+            new DuplicateAnnotationBC(dupBtn, toolBox);
+
+            Button copyBtn = new JFXButton();
+            new CopyAnnotationBC(copyBtn, toolBox);
+
+            buttonPane.getChildren().addAll(newBtn, dupBtn, copyBtn, deleteBtn);
 
         }
         return buttonPane;

@@ -7,29 +7,34 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.commands.DuplicateAnnotationsCmd;
+import org.mbari.m3.vars.annotation.commands.CopyAnnotationsCmd;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
+import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.model.Annotation;
+import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
+import org.mbari.vcr4j.VideoError;
+import org.mbari.vcr4j.VideoState;
 
 /**
  * @author Brian Schlining
- * @since 2017-08-22T15:58:00
+ * @since 2017-08-28T12:43:00
  */
-public class DuplicateAnnotationBC {
+public class CopyAnnotationBC {
+
     private final Button button;
     private final UIToolBox toolBox;
 
-    public DuplicateAnnotationBC(Button button, UIToolBox toolBox) {
+    public CopyAnnotationBC(Button button, UIToolBox toolBox) {
         this.button = button;
         this.toolBox = toolBox;
         init();
     }
 
-    private void init() {
-        button.setTooltip(new Tooltip(toolBox.getI18nBundle().getString("buttons.duplicate")));
+    public void init() {
+        button.setTooltip(new Tooltip(toolBox.getI18nBundle().getString("buttons.copy")));
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
-        Text icon = iconFactory.createIcon(MaterialIcon.FLIP_TO_BACK, "30px");
+        Text icon = iconFactory.createIcon(MaterialIcon.FLIP_TO_FRONT, "30px");
         button.setText(null);
         button.setGraphic(icon);
         button.setDisable(true);
@@ -39,19 +44,24 @@ public class DuplicateAnnotationBC {
                 .ofType(AnnotationsSelectedEvent.class)
                 .subscribe(e -> {
                     User user = toolBox.getData().getUser();
-                    boolean enabled = (user != null) && e.get().size() > 0;
+                    MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
+                    boolean enabled = (user != null) && (mediaPlayer != null) && e.get().size() > 0;
                     button.setDisable(!enabled);
                 });
 
         button.setOnAction(e -> apply());
-
     }
 
     private void apply() {
         ObservableList<Annotation> annotations = toolBox.getData().getSelectedAnnotations();
+        Media media = toolBox.getData().getMedia();
         User user = toolBox.getData().getUser();
-        toolBox.getEventBus()
-                .send(new DuplicateAnnotationsCmd(user.getUsername(), annotations, true));
+        MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
+        if (mediaPlayer != null) {
+            mediaPlayer.requestVideoIndex()
+                    .thenAccept(vi -> toolBox.getEventBus()
+                                .send(new CopyAnnotationsCmd(media.getVideoReferenceUuid(),
+                                        vi, user.getUsername(), annotations)));
+        }
     }
-
 }

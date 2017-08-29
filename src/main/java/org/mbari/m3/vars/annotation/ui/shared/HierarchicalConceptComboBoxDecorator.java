@@ -35,8 +35,7 @@ public class HierarchicalConceptComboBoxDecorator {
                                     items.add(concept);
                                 } else {
                                     List<String> names = opt.isPresent() ? opt.get().flatten() : Arrays.asList(concept);
-                                    items.setAll(names);
-                                    //comboBox.setItems(FXCollections.observableArrayList(names));
+                                    items.addAll(names);
                                     comboBox.getSelectionModel().select(concept);
                                 }
                             });

@@ -13,7 +13,7 @@ import org.mbari.m3.vars.annotation.model.Annotation;
  * @author Brian Schlining
  * @since 2017-06-29T17:14:00
  */
-public class RowEditorPaneControllerDemo extends Application {
+public class AnnotationEditorPaneControllerDemo extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -21,7 +21,7 @@ public class RowEditorPaneControllerDemo extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        RowEditorPaneController rowEditor = RowEditorPaneController.newInstance();
+        AnnotationEditorPaneController rowEditor = AnnotationEditorPaneController.newInstance();
         Scene scene = new Scene(rowEditor.getRoot());
         scene.getStylesheets().addAll("/css/roweditor.css");
         primaryStage.setScene(scene);
