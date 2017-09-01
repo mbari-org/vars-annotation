@@ -26,6 +26,7 @@ public class Initializer {
     public static final Config CONFIG = ConfigFactory.load();
 
     private static Path settingsDirectory;
+    private static Path imageDirectory;
     private static Injector injector;
 
     private static UIToolBox toolBox;
@@ -77,8 +78,31 @@ public class Initializer {
                     settingsDirectory = null;
                 }
             }
+
         }
         return settingsDirectory;
+    }
+
+    public static Path getImageDirectory() {
+        if (imageDirectory == null) {
+            Path settingsDir = getSettingsDirectory();
+            imageDirectory = Paths.get(settingsDir.toString(), "images");
+
+            if (!Files.exists(imageDirectory)) {
+                try {
+                    Files.createDirectory(imageDirectory);
+                    if (!Files.isWritable(imageDirectory)) {
+                        imageDirectory = null;
+                    }
+                }
+                catch (IOException e) {
+                    String msg = "Unable to create an image directory at " + imageDirectory + ".";
+                    LoggerFactory.getLogger(Initializer.class).error(msg, e);
+                    imageDirectory = null;
+                }
+            }
+        }
+        return imageDirectory;
     }
 
     public static Injector getInjector() {

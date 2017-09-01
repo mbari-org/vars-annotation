@@ -1,8 +1,8 @@
 package org.mbari.m3.vars.annotation.services;
 
-import java.awt.Image;
+import org.mbari.m3.vars.annotation.model.Framegrab;
+
 import java.io.File;
-import java.util.Optional;
 
 /**
  * Base interface for services that capture images.
@@ -18,7 +18,7 @@ public interface ImageCaptureService {
      * @param file
      * @return
      */
-    Optional<Image> capture(File file);
+    Framegrab capture(File file);
 
     /**
      * Cleanup resources

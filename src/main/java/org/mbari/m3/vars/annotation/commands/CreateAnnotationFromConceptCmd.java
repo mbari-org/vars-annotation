@@ -34,26 +34,7 @@ public class CreateAnnotationFromConceptCmd implements Command {
         toolBox.getMediaPlayer()
                 .requestVideoIndex()
                 .thenAccept(videoIndex -> {
-                    Data data = toolBox.getData();
-                    Media media = data.getMedia();
-                    UUID videoReferenceUuid = media.getVideoReferenceUuid();
-                    String observer = data.getUser().getUsername();
-                    String group = data.getGroup();
-                    String activity = data.getActivity();
-                    Annotation a0 = new Annotation(concept,
-                            observer,
-                            videoIndex,
-                            videoReferenceUuid);
-                    a0.setGroup(group);
-                    a0.setActivity(activity);
-                    if (media.getStartTimestamp() != null ) {
-                        // Calculate timestamp from media start time and annotation elapsed time
-                        videoIndex.getElapsedTime()
-                                .ifPresent(elapsedTime -> {
-                                    Instant recordedDate = media.getStartTimestamp().plus(elapsedTime);
-                                    a0.setRecordedTimestamp(recordedDate);
-                                });
-                    }
+                    Annotation a0 = CommandUtil.buildAnnotation(toolBox.getData(), concept, videoIndex);
                     toolBox.getServices()
                             .getAnnotationService()
                             .createAnnotation(a0)

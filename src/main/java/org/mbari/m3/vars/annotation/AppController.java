@@ -19,7 +19,6 @@ import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
 import org.mbari.m3.vars.annotation.ui.AppPaneController;
-import org.mbari.m3.vars.annotation.ui.AppPaneController2;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.time.Timecode;
@@ -52,7 +51,7 @@ public class AppController {
     public Scene getScene() {
         if (scene == null) {
             //AppPaneController paneController = new AppPaneController(toolBox);
-            AppPaneController2 paneController = new AppPaneController2(toolBox);
+            AppPaneController paneController = new AppPaneController(toolBox);
             scene = new Scene(paneController.getRoot());
             scene.getStylesheets()
                     .addAll(toolBox.getStylesheets());
@@ -77,7 +76,6 @@ public class AppController {
                 }
 
                 if (e.isMetaDown()) {
-
                     if (code == KeyCode.DOWN) {
                         TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
                                 .getTableView()

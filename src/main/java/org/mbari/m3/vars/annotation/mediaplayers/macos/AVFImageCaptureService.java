@@ -1,15 +1,14 @@
 package org.mbari.m3.vars.annotation.mediaplayers.macos;
 
+import org.mbari.m3.vars.annotation.model.Framegrab;
 import org.mbari.m3.vars.annotation.services.ImageCaptureService;
 import org.mbari.vars.avfoundation.AVFImageCapture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Image;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * This class prvides and ImageCaptureService facade to the AVFoundation code from the
@@ -36,8 +35,11 @@ public class AVFImageCaptureService implements ImageCaptureService {
     }
 
     @Override
-    public Optional<Image> capture(File file) {
-        return imageCapture.capture(file);
+    public Framegrab capture(File file) {
+        Framegrab framegrab = new Framegrab();
+        imageCapture.capture(file)
+                .ifPresent(framegrab::setImage);
+        return framegrab;
     }
 
     @Override

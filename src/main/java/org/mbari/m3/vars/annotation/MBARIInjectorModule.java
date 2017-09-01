@@ -9,6 +9,9 @@ import org.mbari.m3.vars.annotation.model.Authorization;
 import org.mbari.m3.vars.annotation.services.*;
 import org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoService;
 import org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoWebServiceFactory;
+import org.mbari.m3.vars.annotation.services.panoptes.v1.PanoptesService;
+import org.mbari.m3.vars.annotation.services.panoptes.v1.PanoptesWebService;
+import org.mbari.m3.vars.annotation.services.panoptes.v1.PanoptesWebServiceFactory;
 import org.mbari.m3.vars.annotation.services.vampiresquid.v1.VamService;
 import org.mbari.m3.vars.annotation.services.vampiresquid.v1.VamWebServiceFactory;
 import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBConceptService;
@@ -38,6 +41,7 @@ public class MBARIInjectorModule implements Module {
         configureConceptService(binder);
         configurePrefsServices(binder);
         configureUserServices(binder);
+        configurePanoptes(binder);
     }
 
     private void configureAnnotationService(Binder binder) {
@@ -117,6 +121,23 @@ public class MBARIInjectorModule implements Module {
                 .toInstance(timeout.toMillis());
         binder.bind(UserService.class).toInstance(userService);
         binder.bind(KBUserService.class).toInstance(userService);
+    }
+
+    private void configurePanoptes(Binder binder) {
+        String endpoint = config.getString("panoptes.service.url");
+        String clientSecret = config.getString("panoptes.service.client.secret");
+        Duration timeout = config.getDuration("panoptes.service.timeout");
+        PanoptesWebServiceFactory factory = new PanoptesWebServiceFactory(endpoint, timeout);
+        RetrofitServiceFactory authFactory = new BasicJWTAuthServiceFactorySC(endpoint, timeout);
+        AuthService authService = new BasicJWTAuthService(authFactory,
+                new Authorization("APIKEY", clientSecret));
+        PanoptesService service = new PanoptesService(factory, authService);
+        binder.bind(Long.class)
+                .annotatedWith(Names.named("PANOPTES_TIMEOUT"))
+                .toInstance(timeout.toMillis());
+        binder.bind(PanoptesWebServiceFactory.class).toInstance(factory);
+        binder.bind(ImageArchiveService.class).toInstance(service);
+
     }
 
 }

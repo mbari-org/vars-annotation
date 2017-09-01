@@ -1,6 +1,10 @@
 package org.mbari.m3.vars.annotation.mediaplayers.sharktopoda;
 
+import javafx.util.Pair;
+import org.mbari.m3.vars.annotation.model.Framegrab;
+import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.ImageCaptureService;
+import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
 import org.mbari.vcr4j.sharktopoda.commands.FramecaptureCmd;
 import org.mbari.vcr4j.sharktopoda.decorators.FramecaptureDecorator;
@@ -11,6 +15,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -34,14 +39,18 @@ public class SharktopodaImageCaptureService implements ImageCaptureService {
     }
 
     @Override
-    public Optional<Image> capture(File file) {
+    public Framegrab capture(File file) {
 
-        CompletableFuture<Optional<Image>> future = new CompletableFuture<>();
+        CompletableFuture<Framegrab> future = new CompletableFuture<>();
 
         // Sharktopoda will send a response once the image is written
         decorator.getFramecaptureObservable()
                 .firstElement()
                 .subscribe(r -> {
+
+                    Duration elapsedTime = Duration.ofMillis(r.getElapsedTimeMillis());
+                    VideoIndex videoIndex = new VideoIndex(elapsedTime);
+
                     // -- Read file as image
                     BufferedImage image = null;
                     try {
@@ -49,20 +58,18 @@ public class SharktopodaImageCaptureService implements ImageCaptureService {
                     } catch (Exception e) {
                         log.warn("Image capture failed. Unable to read image back off disk", e);
                     }
-                    future.complete(Optional.ofNullable(image));
+                    Framegrab framegrab = new Framegrab(image, videoIndex);
+                    future.complete(framegrab);
                 });
 
         io.send(new FramecaptureCmd(UUID.randomUUID(), file));
 
-        Optional<Image> image;
         try {
-            image = future.get(5, TimeUnit.SECONDS);
+            return future.get(5, TimeUnit.SECONDS);
         }
         catch (InterruptedException | TimeoutException | ExecutionException e) {
-            image = Optional.empty();
+            return new Framegrab();
         }
-
-        return image;
     }
 
     @Override

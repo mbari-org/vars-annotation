@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.mediaplayers;
 
+import org.mbari.m3.vars.annotation.model.Framegrab;
 import org.mbari.m3.vars.annotation.services.ImageCaptureService;
 
 import java.awt.*;
@@ -13,8 +14,8 @@ import java.util.Optional;
 public class NoopImageCaptureService implements ImageCaptureService {
 
     @Override
-    public Optional<Image> capture(File file) {
-        return null;
+    public Framegrab capture(File file) {
+        return new Framegrab();
     }
 
     @Override

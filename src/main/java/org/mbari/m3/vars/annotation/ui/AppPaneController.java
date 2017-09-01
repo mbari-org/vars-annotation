@@ -13,25 +13,24 @@ import io.reactivex.Observable;
 import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Orientation;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.StatusBar;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
-import org.mbari.m3.vars.annotation.messages.*;
 import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
 import org.mbari.m3.vars.annotation.events.UserAddedEvent;
 import org.mbari.m3.vars.annotation.events.UserChangedEvent;
+import org.mbari.m3.vars.annotation.messages.*;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
@@ -44,17 +43,22 @@ import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.prefs.PreferencesDialogController;
 
 import java.util.*;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
- * @since 2017-07-26T14:37:00
+ * @since 2017-08-28T16:04:00
  */
 public class AppPaneController {
 
     private BorderPane root;
     private DockStation dockStation;
+    private SplitPane masterPane;
+    private SplitPane topPane;
+    private SplitPane bottomPane;
+    private TabPane tabPane;
     private final AnnotationTableController annotationTableController;
     private ToolBar toolBar;
     private final UIToolBox toolBox;
@@ -68,6 +72,9 @@ public class AppPaneController {
     private MediaPaneController mediaPaneController;
     private BulkEditorPaneController bulkEditorPaneController;
     private AncillaryDataPaneController ancillaryDataPaneController;
+    private static final String masterPaneKey =  "master-split-pane";
+    private static final String topPaneKey = "top-split-pane";
+    private static final String bottomPaneKey = "bottom-split-pane";
 
 
 
@@ -83,61 +90,89 @@ public class AppPaneController {
         mediaPaneController = MediaPaneController.newInstance();
         bulkEditorPaneController = BulkEditorPaneController.newInstance(toolBox);
         ancillaryDataPaneController = new AncillaryDataPaneController(toolBox);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            saveDividerPositions(masterPaneKey, getMasterPane());
+            saveDividerPositions(bottomPaneKey, getBottomPane());
+            saveDividerPositions(topPaneKey, getTopPane());
+        }));
+
+
     }
 
     public BorderPane getRoot() {
         if (root == null) {
-            root = new BorderPane(getDockStation());
+            root = new BorderPane(getMasterPane());
             root.setTop(getToolBar());
             root.setBottom(getUtilityPane());
         }
         return root;
     }
 
-    private void manageSizePrefs(final String nodeName, final Node node) {
-
-        Preferences prefs0 = Preferences.userNodeForPackage(getClass());
-        Preferences prefs1 = prefs0.node("dock-nodes");
-        Preferences prefs2 = prefs1.node(nodeName);
-        //final Node node = dockNode.getContent().getNodeContent();
-
-        if (node instanceof Region) {
-            Region region = (Region) node;
-            double width = prefs2.getDouble("preferred-width", region.getWidth());
-            double height = prefs2.getDouble("preferred-height", region.getHeight());
-            region.setPrefSize(width, height);
+    private void saveDividerPositions(String name, SplitPane pane) {
+        // Pref path is UserNode/Class/name/0 (or 1 or 2)
+        Preferences p0 = Preferences.userNodeForPackage(getClass());
+        Preferences p1 = p0.node(name);
+        double[] pos = pane.getDividerPositions();
+        for (int i = 0; i < pos.length; i++) {
+            p1.putDouble(i+ "", pos[i]);
         }
-
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if (node instanceof Region) {
-                Region region = (Region) node;
-                prefs2.putDouble("preferred-width", region.getWidth());
-                prefs2.putDouble("preferred-height", region.getHeight());
-            }
-        }));
     }
 
-    public DockStation getDockStation() {
-        if (dockStation == null) {
+    private void loadDividerPositions(String name, SplitPane pane) {
+        Preferences p0 = Preferences.userNodeForPackage(getClass());
+        Preferences p1 = p0.node(name);
+        double[] positions = pane.getDividerPositions();
+        for (int i = 0; i < positions.length; i++) {
+            try {
+                double v = p1.getDouble(i + "", positions[i]);
+                pane.setDividerPosition(i, v);
+            }
+            catch (Exception e) {
+                // TODO log it
+            }
+        }
+    }
+
+
+    public SplitPane getMasterPane() {
+        if (masterPane == null) {
+            masterPane = new SplitPane(getTopPane(), getBottomPane());
+            masterPane.setOrientation(Orientation.VERTICAL);
+            loadDividerPositions(masterPaneKey, masterPane);
+        }
+        return masterPane;
+
+    }
+
+    public SplitPane getTopPane() {
+        if (topPane == null) {
+            topPane = new SplitPane(annotationTableController.getTableView(),
+                   getTabPane());
+            loadDividerPositions(topPaneKey, topPane);
+        }
+        return topPane;
+    }
+
+    public SplitPane getBottomPane() {
+        if (bottomPane == null) {
+            ConceptButtonPanesController panesController = new ConceptButtonPanesController(toolBox);
+            bottomPane = new SplitPane(controlsPaneController.getRoot(),
+                    panesController.getRoot());
+            bottomPane.setOrientation(Orientation.VERTICAL);
+            loadDividerPositions(bottomPaneKey, bottomPane);
+        }
+        return bottomPane;
+    }
+
+    public TabPane getTabPane() {
+        if (tabPane == null) {
+            tabPane = new TabPane();
 
             Observable<Object> observable = toolBox.getEventBus().toObserverable();
 
-            dockStation = AnchorageSystem.createStation();
-            DockNode annotationNode = AnchorageSystem.createDock("Annotations", annotationTableController.getTableView());
-            annotationNode.closeableProperty().set(false);
-
-
-
-            SearchTreePaneController treeController = new SearchTreePaneController(toolBox.getServices().getConceptService(),
-                    toolBox.getI18nBundle());
-            observable.ofType(ShowConceptInTreeViewMsg.class)
-                    .subscribe(msg -> treeController.setSearchText(msg.getName()));
-            DockNode treeNode = AnchorageSystem.createDock("Knowledgebase", treeController.getRoot());
-            treeNode.closeableProperty().set(false);
-
-
-            DockNode imageViewNode = AnchorageSystem.createDock("Images", imageViewController.getRoot());
-            imageViewNode.closeableProperty().set(false);
+            Tab imageTab = new Tab("Images", imageViewController.getRoot());
+            imageTab.setClosable(false);
             observable.ofType(AnnotationsSelectedEvent.class)
                     .subscribe(evt -> {
                         Collection<Annotation> annotations = evt.get();
@@ -149,54 +184,32 @@ public class AppPaneController {
                         }
                     });
 
-            DockNode bulkEditNode = AnchorageSystem.createDock("Bulk Editor",
-                    bulkEditorPaneController.getRoot());
-            bulkEditNode.closeableProperty().set(false);
+            Tab bulkEditTab = new Tab("Bulk Editor", bulkEditorPaneController.getRoot());
+            bulkEditTab.setClosable(false);
 
-            ScrollPane mediaScrollPane = new ScrollPane(mediaPaneController.getRoot());
-            DockNode mediaNode = AnchorageSystem.createDock("Media", mediaScrollPane);
-            mediaNode.closeableProperty().set(false);
+            Tab mediaTab = new Tab("Media", mediaPaneController.getRoot());
+            mediaTab.setClosable(false);
             observable.ofType(AnnotationsSelectedEvent.class)
                     .subscribe(e -> showMediaOfSelectedRow(e.get()));
 
-            BorderPane dataPane = ancillaryDataPaneController.getRoot();
-            DockNode dataNode = AnchorageSystem.createDock("Ancillary Data", dataPane);
-            dataNode.closeableProperty().set(false);
+            Tab dataTab = new Tab("Data", ancillaryDataPaneController.getRoot());
+            dataTab.setClosable(false);
             observable.ofType(AnnotationsSelectedEvent.class)
                     .subscribe(e -> showAncillaryData(e.get()));
 
-            Pane cpane = controlsPaneController.getRoot();
-            DockNode cnode = AnchorageSystem.createDock("Annotation Controls", cpane);
-            cnode.closeableProperty().set(false);
-            cnode.maximizableProperty().set(false);
+            SearchTreePaneController treeController = new SearchTreePaneController(toolBox.getServices().getConceptService(),
+                    toolBox.getI18nBundle());
+            observable.ofType(ShowConceptInTreeViewMsg.class)
+                    .subscribe(msg -> treeController.setSearchText(msg.getName()));
+            Tab treeTab = new Tab("Knowledgebase", treeController.getRoot());
+            treeTab.setClosable(false);
 
-            ConceptButtonPanesController panesController = new ConceptButtonPanesController(toolBox);
-            Pane pane = panesController.getRoot();
-            DockNode cbNode = AnchorageSystem.createDock("Quick Buttons", pane);
-            cbNode.closeableProperty().set(false);
-            cbNode.maximizableProperty().set(false);
-
-            annotationNode.dock(dockStation, DockNode.DockPosition.CENTER);
-            treeNode.dock(dockStation, DockNode.DockPosition.RIGHT);
-            imageViewNode.dock(treeNode, DockNode.DockPosition.CENTER);
-            mediaNode.dock(treeNode, DockNode.DockPosition.CENTER);
-            bulkEditNode.dock(treeNode, DockNode.DockPosition.CENTER);
-            dataNode.dock(treeNode, DockNode.DockPosition.CENTER);
-            cnode.dock(dockStation, DockNode.DockPosition.BOTTOM);
-            cbNode.dock(dockStation, DockNode.DockPosition.BOTTOM);
-
-            manageSizePrefs("annotation-node", annotationNode);
-            manageSizePrefs("tree-node", treeNode);
-            manageSizePrefs("image-view-node", imageViewNode);
-            manageSizePrefs("media-node", mediaNode);
-            manageSizePrefs("controls-node", cnode);
-            manageSizePrefs("concept-button-node", pane);
-            manageSizePrefs("data-node", dataNode);
-
+            tabPane.getTabs().addAll(imageTab, bulkEditTab, treeTab, dataTab, mediaTab);
 
         }
-        return dockStation;
+        return tabPane;
     }
+
 
     public ToolBar getToolBar() {
         if (toolBar == null) {
