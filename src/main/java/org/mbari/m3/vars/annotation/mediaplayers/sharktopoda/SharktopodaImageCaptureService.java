@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation.mediaplayers.sharktopoda;
 
 import javafx.util.Pair;
+import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.model.Framegrab;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.ImageCaptureService;
@@ -42,6 +43,7 @@ public class SharktopodaImageCaptureService implements ImageCaptureService {
     public Framegrab capture(File file) {
 
         CompletableFuture<Framegrab> future = new CompletableFuture<>();
+
 
         // Sharktopoda will send a response once the image is written
         decorator.getFramecaptureObservable()

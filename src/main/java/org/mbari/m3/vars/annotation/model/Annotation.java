@@ -6,10 +6,7 @@ import org.mbari.vcr4j.time.Timecode;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -239,5 +236,11 @@ public class Annotation implements ImagedMoment {
     @Override
     public int hashCode() {
         return observationUuid.hashCode();
+    }
+
+    public VideoIndex getVideoIndex() {
+        return new VideoIndex(Optional.ofNullable(recordedTimestamp),
+                Optional.ofNullable(elapsedTime),
+                Optional.ofNullable(timecode));
     }
 }

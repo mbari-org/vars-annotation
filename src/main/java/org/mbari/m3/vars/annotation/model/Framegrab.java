@@ -9,6 +9,7 @@ import java.util.Optional;
  * @since 2017-08-31T15:03:00
  */
 public class Framegrab {
+
     private Optional<java.awt.Image> image = Optional.empty();
     private Optional<VideoIndex> videoIndex = Optional.empty();
 

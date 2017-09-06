@@ -13,17 +13,23 @@ public class Services {
 
     private final AnnotationService annotationService;
     private final ConceptService conceptService;
+    private final ImageArchiveService imageArchiveService;
     private final MediaService mediaService;
     private final UserService userService;
     private final PreferencesService preferencesService;
     private final PreferencesFactory preferencesFactory;
 
     @Inject
-    public Services(AnnotationService annotationService, ConceptService conceptService,
-                    MediaService mediaService, UserService userService,
-                    PreferencesService preferencesService, PreferencesFactory preferencesFactory) {
+    public Services(AnnotationService annotationService,
+                    ConceptService conceptService,
+                    ImageArchiveService imageArchiveService,
+                    MediaService mediaService,
+                    UserService userService,
+                    PreferencesService preferencesService,
+                    PreferencesFactory preferencesFactory) {
         this.annotationService = annotationService;
         this.conceptService = conceptService;
+        this.imageArchiveService = imageArchiveService;
         this.mediaService = mediaService;
         this.userService = userService;
         this.preferencesService = preferencesService;
@@ -36,6 +42,10 @@ public class Services {
 
     public ConceptService getConceptService() {
         return conceptService;
+    }
+
+    public ImageArchiveService getImageArchiveService() {
+        return imageArchiveService;
     }
 
     public MediaService getMediaService() {

@@ -1,6 +1,8 @@
 package org.mbari.m3.vars.annotation.mediaplayers.macos;
 
+import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.model.Framegrab;
+import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.ImageCaptureService;
 import org.mbari.vars.avfoundation.AVFImageCapture;
 import org.slf4j.Logger;

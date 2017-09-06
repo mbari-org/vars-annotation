@@ -1,10 +1,12 @@
 package org.mbari.m3.vars.annotation.model;
 
+import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
 
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -110,6 +112,12 @@ public class Image implements ImagedMoment, Cloneable {
 
     public void setRecordedTimestamp(Instant recordedTimestamp) {
         this.recordedTimestamp = recordedTimestamp;
+    }
+
+    public VideoIndex getVideoIndex() {
+        return new VideoIndex(Optional.ofNullable(recordedTimestamp),
+                Optional.ofNullable(elapsedTime),
+                Optional.ofNullable(timecode));
     }
 
 
