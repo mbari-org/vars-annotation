@@ -15,15 +15,15 @@ import java.util.Map;
 public interface PanoptesWebService {
 
     @Multipart
-    @POST("{camera_id}/{deployment_id}/{filename}")
+    @POST("images/{camera_id}/{deployment_id}/{filename}")
     Call<ImageUploadResults> uploadImage(@Path("camera_id") String cameraId,
                                          @Path("deployment_id") String deploymentId,
-                                         @Path("name") String filename,
+                                         @Path("filename") String filename,
                                          @Part MultipartBody.Part image,
                                          @Part("name") RequestBody name,
                                          @HeaderMap Map<String, String> headers);
 
-    @GET("{camera_id}/{deployment_id}/{filename}")
+    @GET("images/{camera_id}/{deployment_id}/{filename}")
     Call<ImageUploadResults> findImage(@Path("camera_id") String cameraId,
                                        @Path("deployment_id") String deploymentId,
                                        @Path("name") String filename);

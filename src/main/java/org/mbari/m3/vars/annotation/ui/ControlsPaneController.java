@@ -8,10 +8,7 @@ import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.SharktoptodaControlPane;
 import org.mbari.m3.vars.annotation.model.Annotation;
-import org.mbari.m3.vars.annotation.ui.buttons.CopyAnnotationBC;
-import org.mbari.m3.vars.annotation.ui.buttons.DeleteSelectedAnnotationsBC;
-import org.mbari.m3.vars.annotation.ui.buttons.DuplicateAnnotationBC;
-import org.mbari.m3.vars.annotation.ui.buttons.NewAnnotationBC;
+import org.mbari.m3.vars.annotation.ui.buttons.*;
 import org.mbari.m3.vars.annotation.ui.roweditor.RowEditorController;
 
 import java.util.Collection;
@@ -68,7 +65,10 @@ public class ControlsPaneController {
             Button copyBtn = new JFXButton();
             new CopyAnnotationBC(copyBtn, toolBox);
 
-            buttonPane.getChildren().addAll(newBtn, dupBtn, copyBtn, deleteBtn);
+            Button framegrabBtn = new JFXButton();
+            new FramecaptureBC(framegrabBtn, toolBox);
+
+            buttonPane.getChildren().addAll(newBtn, dupBtn, copyBtn, framegrabBtn, deleteBtn);
 
         }
         return buttonPane;

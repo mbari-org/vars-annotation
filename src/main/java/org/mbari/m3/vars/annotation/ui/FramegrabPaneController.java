@@ -1,7 +1,9 @@
 package org.mbari.m3.vars.annotation.ui;
 
 import com.jfoenix.controls.JFXComboBox;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -38,6 +40,9 @@ public class FramegrabPaneController {
         imageView.setCache(true);
         imageView.fitWidthProperty().bind(root.widthProperty());
         imageView.fitHeightProperty().bind(root.heightProperty());
+//        imageView.parentProperty().addListener((obs, oldv, newv) -> {
+//            newv.addEventHandler();
+//        });
 
         comboBox.setCellFactory(param ->  new ListCell<ImageReference>() {
             @Override

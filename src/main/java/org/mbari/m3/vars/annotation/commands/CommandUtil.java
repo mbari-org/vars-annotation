@@ -26,6 +26,9 @@ public class CommandUtil {
                 videoReferenceUuid);
         a0.setGroup(group);
         a0.setActivity(activity);
+        videoIndex.getTimestamp().ifPresent(a0::setRecordedTimestamp);
+        videoIndex.getElapsedTime().ifPresent(a0::setElapsedTime);
+        videoIndex.getTimecode().ifPresent(a0::setTimecode);
         if (media.getStartTimestamp() != null ) {
             // Calculate timestamp from media start time and annotation elapsed time
             videoIndex.getElapsedTime()

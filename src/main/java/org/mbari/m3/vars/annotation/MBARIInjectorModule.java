@@ -131,6 +131,12 @@ public class MBARIInjectorModule implements Module {
         RetrofitServiceFactory authFactory = new BasicJWTAuthServiceFactorySC(endpoint, timeout);
         AuthService authService = new BasicJWTAuthService(authFactory,
                 new Authorization("APIKEY", clientSecret));
+        binder.bind(String.class)
+                .annotatedWith(Names.named("PANOPTES_ENDPOINT"))
+                .toInstance(endpoint);
+        binder.bind(AuthService.class)
+                .annotatedWith(Names.named("PANOPTES_AUTH"))
+                .toInstance(authService);
         PanoptesService service = new PanoptesService(factory, authService);
         binder.bind(Long.class)
                 .annotatedWith(Names.named("PANOPTES_TIMEOUT"))

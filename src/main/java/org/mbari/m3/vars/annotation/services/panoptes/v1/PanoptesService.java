@@ -8,6 +8,7 @@ import org.mbari.m3.vars.annotation.services.ImageArchiveService;
 import org.mbari.m3.vars.annotation.services.RetrofitWebService;
 import retrofit2.http.Path;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.net.URI;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ public class PanoptesService implements ImageArchiveService, RetrofitWebService 
     private final PanoptesWebService webService;
     private final Map<String, String> defaultHeaders;
 
+    @Inject
     public PanoptesService(PanoptesWebServiceFactory serviceFactory,
                            @Named("PANOPTES_AUTH") AuthService authService) {
         webService = serviceFactory.create(PanoptesWebService.class, authService);
