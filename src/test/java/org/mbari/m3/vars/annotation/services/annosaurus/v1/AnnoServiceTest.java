@@ -199,6 +199,23 @@ public class AnnoServiceTest {
 
     }
 
+    @Test
+    public void testFindImageByUrl() {
+
+        try {
+            Optional<Image> opt = await(annoService.findImageByUrl(
+                    new URL("http://not.a.valid.url/to/image.png")), timeout);
+
+//            Optional<Image> opt = await(annoService.findImageByUrl(
+//                    new URL("http://search.mbari.org/ARCHIVE/frameGrabs/Doc%20Ricketts/images/0896/00_26_43_18.png")), timeout);
+
+
+            assertFalse(opt.isPresent());
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 

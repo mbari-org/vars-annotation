@@ -53,7 +53,7 @@ public class NewAnnotationBC {
 
     private void init() {
 
-        button.setTooltip(new Tooltip(toolBox.getI18nBundle().getString("buttons.new")));
+        button.setTooltip(new Tooltip(toolBox.getI18nBundle().getString("buttons.newnumber")));
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
         Text icon = iconFactory.createIcon(MaterialIcon.FIBER_NEW, "30px");
         button.setText(null);

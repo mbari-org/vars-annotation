@@ -8,6 +8,8 @@ import retrofit2.Call;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -39,6 +41,11 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     @Override
     public CompletableFuture<Annotation> findByUuid(UUID observationUuid) {
         return sendRequest(annoService.findByUuid(observationUuid));
+    }
+
+    public CompletableFuture<List<Association>> findByVideoReferenceAndLinkName(UUID videoReferenceUuid,
+                                                                          String linkName) {
+        return sendRequest(assService.findByVideoReferenceAndLinkName(videoReferenceUuid, linkName));
     }
 
     @Override
@@ -210,6 +217,10 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     @Override
     public CompletableFuture<Boolean> deleteImage(UUID imageReferenceUuid) {
         return sendRequest(imageService.delete(imageReferenceUuid));
+    }
+
+    public CompletableFuture<Image> findImageByUrl(URL url) {
+        return sendRequest(imageService.findByUrl(url.toExternalForm()));
     }
 
     private void addField(Map<String, String> map, String key, Object value) {

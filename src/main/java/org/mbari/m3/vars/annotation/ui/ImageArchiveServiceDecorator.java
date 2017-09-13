@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.services;
+package org.mbari.m3.vars.annotation.ui;
 
 import javafx.collections.ObservableList;
 import org.mbari.awt.image.ImageUtilities;
@@ -13,6 +13,8 @@ import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Framegrab;
 import org.mbari.m3.vars.annotation.model.ImageUploadResults;
 import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.services.AnnotationService;
+import org.mbari.m3.vars.annotation.services.ImageArchiveService;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
 import org.slf4j.Logger;

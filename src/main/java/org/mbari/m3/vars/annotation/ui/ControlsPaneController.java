@@ -68,7 +68,20 @@ public class ControlsPaneController {
             Button framegrabBtn = new JFXButton();
             new FramecaptureBC(framegrabBtn, toolBox);
 
-            buttonPane.getChildren().addAll(newBtn, dupBtn, copyBtn, framegrabBtn, deleteBtn);
+            Button sampleBtn = new JFXButton();
+            new SampleBC(sampleBtn, toolBox);
+
+            Button commentBtn = new JFXButton();
+            new CommentBC(commentBtn, toolBox);
+
+            Button newRefBtn = new JFXButton();
+            new NewReferenceNumberBC(newRefBtn, toolBox);
+
+            Button oldRefBtn = new JFXButton();
+            new OldReferenceNumberBC(oldRefBtn, toolBox);
+
+            buttonPane.getChildren().addAll(newBtn, dupBtn, copyBtn, framegrabBtn,
+                    deleteBtn,sampleBtn, commentBtn, newRefBtn, oldRefBtn);
 
         }
         return buttonPane;

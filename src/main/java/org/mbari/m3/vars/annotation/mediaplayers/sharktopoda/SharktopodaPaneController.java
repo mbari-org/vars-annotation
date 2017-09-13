@@ -14,7 +14,7 @@ import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.messages.ShowNonfatalErrorAlert;
 import org.mbari.m3.vars.annotation.ui.prefs.IPrefs;
-import org.mbari.m3.vars.annotation.util.FXMLUtil;
+import org.mbari.m3.vars.annotation.util.FXMLUtils;
 
 /**
  * @author Brian Schlining
@@ -74,7 +74,7 @@ public class SharktopodaPaneController implements IPrefs {
     }
 
     public static SharktopodaPaneController newInstance() {
-        return FXMLUtil.newInstance(SharktopodaPaneController.class,
+        return FXMLUtils.newInstance(SharktopodaPaneController.class,
                 "/fxml/SharktopodaPane.fxml");
     }
 

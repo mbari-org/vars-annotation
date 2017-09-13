@@ -20,7 +20,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
-import org.mbari.m3.vars.annotation.util.FXMLUtil;
+import org.mbari.m3.vars.annotation.util.FXMLUtils;
 import org.mbari.m3.vars.annotation.util.FormatUtils;
 import org.mbari.m3.vars.annotation.model.Media;
 
@@ -147,6 +147,6 @@ public class MediaPaneController {
     }
 
     public static MediaPaneController newInstance() {
-        return FXMLUtil.newInstance(MediaPaneController.class, "/fxml/MediaPane.fxml");
+        return FXMLUtils.newInstance(MediaPaneController.class, "/fxml/MediaPane.fxml");
     }
 }

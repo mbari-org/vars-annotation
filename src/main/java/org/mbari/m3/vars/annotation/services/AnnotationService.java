@@ -2,6 +2,7 @@ package org.mbari.m3.vars.annotation.services;
 
 import org.mbari.m3.vars.annotation.model.*;
 
+import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +16,9 @@ import java.util.concurrent.CompletableFuture;
 public interface AnnotationService {
 
     CompletableFuture<Annotation> findByUuid(UUID observationUuid);
+
+    CompletableFuture<List<Association>> findByVideoReferenceAndLinkName(UUID videoReferenceUuid,
+                                                                         String linkName);
 
     CompletableFuture<AncillaryData> findAncillaryData(UUID observationUuid);
 
@@ -60,6 +64,8 @@ public interface AnnotationService {
 
     CompletableFuture<Void> deleteAssociations(Collection<UUID> associationUuids);
 
-    CompletableFuture<Boolean> deleteImage(UUID imageUuid);
+    CompletableFuture<Boolean> deleteImage(UUID imageReferenceUuid);
+
+    CompletableFuture<Image> findImageByUrl(URL url);
 
 }

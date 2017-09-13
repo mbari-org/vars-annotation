@@ -3,13 +3,13 @@ package org.mbari.m3.vars.annotation.commands;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
-import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.messages.ShowWarningAlert;
 import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
-import org.mbari.m3.vars.annotation.services.ImageArchiveServiceDecorator;
+import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
+import org.mbari.m3.vars.annotation.ui.ImageArchiveServiceDecorator;
 import org.mbari.m3.vars.annotation.services.ImageCaptureService;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
@@ -24,6 +24,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
@@ -81,44 +82,63 @@ public class FramegrabCmd implements Command {
             return;
         }
 
+        AnnotationService annotationService = toolBox.getServices()
+                .getAnnotationService();
+        AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
         EventBus eventBus = toolBox.getEventBus();
         Framegrab framegrab = framegrabOpt.get();
         ImageArchiveServiceDecorator.createImageInDatastore(toolBox, media, framegrab, url).thenAccept(image ->
-           createAnnotationInDatastore(toolBox, image)
-                   .thenApply(a1 -> {
-                       // notify UI
-                       eventBus.send(new AnnotationsAddedEvent(a1));
-                       eventBus.send(new AnnotationsSelectedEvent(a1));
-                       return a1;
-                   })
-                  .thenApply(a1 -> {
-                    // upload image
-                    archiveImage(toolBox, media, image, imageFile.toPath()).thenAccept(iur -> {
-                        // update URL used by images in annotations
-                        updateAnnotationWithArchivedImage(toolBox, image, iur)
-                                .thenAccept(annos -> {
-                                    // Notify UI
-                                    List<Annotation> selectedAnnotations =
-                                            new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-                                    eventBus.send(new AnnotationsRemovedEvent(annos));
-                                    eventBus.send(new AnnotationsAddedEvent(annos));
-                                    eventBus.send(new AnnotationsSelectedEvent(selectedAnnotations));
-                                })
-                               .thenAccept(v -> imageFile.delete())
-                                .thenAccept(v -> {
-                                    ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
-                                    decorator.compressFramegrab(media, framegrab, iur);
-                                });
-                    });
-                    return  null;
-                }));
+                createAnnotationInDatastore(toolBox, image)
+                        .thenApply(a1 -> {
+                            // notify UI
+                            eventBus.send(new AnnotationsAddedEvent(a1));
+                            eventBus.send(new AnnotationsSelectedEvent(a1));
+                            return a1;
+                        })
+                        .thenApply(a1 -> {
+                            // upload image
+                            archiveImage(toolBox, media, image, imageFile.toPath()).handle((iur, ex) -> {
+                                if (ex != null) {
+                                    annotationService.deleteImage(image.getImageReferenceUuid());
+                                    asd.refreshAnnotationsView(a1.getObservationUuid());
+                                    imageFile.delete();
+                                } else {
+                                    // update URL used by images in annotations
+                                    updateAnnotationWithArchivedImage(toolBox, image, iur)
+                                            .handle((annos, ex1) -> {
+                                                if (ex1 != null) {
+                                                    annotationService.deleteImage(image.getImageReferenceUuid());
+                                                    asd.refreshAnnotationsView(a1.getObservationUuid());
+                                                    imageFile.delete();
+                                                }
+                                                else {
+                                                    // Notify UI
+                                                    Set<UUID> uuids = toolBox.getData()
+                                                            .getSelectedAnnotations()
+                                                            .stream()
+                                                            .map(Annotation::getObservationUuid)
+                                                            .collect(Collectors.toSet());
+                                                    asd.refreshAnnotationsView(uuids);
+                                                }
+                                                return null;
+                                            })
+                                            .thenAccept(v -> imageFile.delete())
+                                            .thenAccept(v -> {
+                                                ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
+                                                decorator.compressFramegrab(media, framegrab, iur);
+                                            });
+                                }
+                                return null;
+                            });
+                            return null;
+                        }));
+
 
     }
 
     @Override
     public void unapply(UIToolBox toolBox) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        EventBus eventBus = toolBox.getEventBus();
         if (annotationRef != null && imageRef != null) {
             // Delete annotations
             // Find ones that share the same image ref
@@ -126,7 +146,6 @@ public class FramegrabCmd implements Command {
             // Republish other annotations so UI updates
             annotationService.deleteAnnotation(annotationRef.getObservationUuid())
                     .thenAccept(v -> ImageArchiveServiceDecorator.refreshRelatedAnnotations(toolBox, imageRef.getImageReferenceUuid(), true));
-
         }
     }
 
@@ -189,22 +208,33 @@ public class FramegrabCmd implements Command {
                                                                                   Image image,
                                                                                   ImageUploadResults imageUploadResults) {
         CompletableFuture<List<Annotation>> cf = new CompletableFuture<>();
+        URL url;
         try {
-            AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-            image.setUrl(imageUploadResults.getUri().toURL());
-            annotationService.updateImage(image)
-                    .thenAccept(img -> {
-                        imageRef = img;
-                        annotationService.findByImageReference(image.getImageReferenceUuid())
-                            .thenAccept(cf::complete);
-                    });
-        }
-        catch (MalformedURLException e) {
+            url = imageUploadResults.getUri().toURL();
+        } catch (MalformedURLException e) {
             cf.completeExceptionally(e);
+            return cf;
         }
+
+        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        annotationService.findImageByUrl(url)
+                .thenAccept(img0 -> {
+                    if (img0 == null) {
+                        image.setUrl(url);
+                        annotationService.updateImage(image)
+                                .thenAccept(img1 -> {
+                                    imageRef = img1;
+                                    annotationService.findByImageReference(image.getImageReferenceUuid())
+                                            .thenAccept(cf::complete);
+                                });
+                    }
+                    else {
+                        cf.completeExceptionally(new RuntimeException("The image at " +
+                                url.toExternalForm() + " already exists"));
+                    }
+                });
 
         return cf;
-
     }
 
 

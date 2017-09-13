@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
  * @author Brian Schlining
  * @since 2017-08-08T16:03:00
  */
-public class FXMLUtil {
+public class FXMLUtils {
 
     /**
      *

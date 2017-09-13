@@ -1,24 +1,19 @@
 package org.mbari.m3.vars.annotation.ui.mediadialog;
 
-import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXSlider;
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.m3.vars.annotation.ui.shared.DateTimePickerController;
-import org.mbari.m3.vars.annotation.util.FXMLUtil;
+import org.mbari.m3.vars.annotation.util.FXMLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.io.IOException;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -223,7 +218,7 @@ public class VideoBrowserPaneController {
 
     public MediaPaneController getMediaPaneController() {
         if (mediaPaneController == null) {
-            mediaPaneController = FXMLUtil.newInstance(MediaPaneController.class, "/fxml/MediaPane.fxml");
+            mediaPaneController = FXMLUtils.newInstance(MediaPaneController.class, "/fxml/MediaPane.fxml");
         }
         return mediaPaneController;
     }

@@ -19,6 +19,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentNavigableMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -50,31 +51,6 @@ public class AnnotationServiceDecorator {
                             ac,
                             true,
                             Optional.empty()));
-//                .thenAccept(ac -> {
-//                    eventBus.send(new ShowProgress());
-//                    int n = (int) Math.ceil(ac.getCount() / (double) chunkSize);
-//                    for (int i = 0; i < n; i++) {
-//                        long offset = i * chunkSize;
-//                        long limit = chunkSize;
-//                        service.findAnnotations(videoReferenceUuid, limit, offset)
-//                                .thenAccept(annotations -> {
-//                                    if (annotations.size() == 0) {
-//                                        eventBus.send(new HideProgress());
-//                                    }
-//                                    else {
-//                                        eventBus.send(new AnnotationsAddedEvent(annotations));
-//                                        int c = loadedAnnotationCount.addAndGet(annotations.size());
-//                                        double progress = c / ac.getCount().doubleValue();
-//                                        if (progress >= 1.0) {
-//                                            eventBus.send(new HideProgress());
-//                                        }
-//                                        else {
-//                                            eventBus.send(new SetProgress(progress));
-//                                        }
-//                                    }
-//                                });
-//                    }
-//                });
     }
 
     private CompletableFuture<Void> loadAnnotationPages(AtomicInteger loadedAnnotationCount,
@@ -192,12 +168,7 @@ public class AnnotationServiceDecorator {
                                 media);
                     }
                 });
-
-
     }
-
-
-
 
     /**
      * Removes all annotations form the UI except for ones associated with the given
@@ -214,6 +185,34 @@ public class AnnotationServiceDecorator {
         EventBus eventBus = toolBox.getEventBus();
         eventBus.send(new AnnotationsSelectedEvent(new ArrayList<>()));
         eventBus.send(new AnnotationsRemovedEvent(removeMe));
+    }
+
+
+    /**
+     * Refreshes the view for Annotations that already exist but are modified.
+     * @param observationUuid
+     */
+    public void refreshAnnotationsView(Set<UUID> observationUuid) {
+        CopyOnWriteArrayList<Annotation> annotations = new CopyOnWriteArrayList<>();
+        final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        CompletableFuture[] futures = observationUuid.stream()
+                .map(uuid -> annotationService.findByUuid(uuid)
+                        .thenAccept(annotations::add))
+                .toArray(i -> new CompletableFuture[i]);
+        CompletableFuture<Void> all = CompletableFuture.allOf(futures);
+        final EventBus eventBus = toolBox.getEventBus();
+        all.thenAccept(v -> {
+            List<Annotation> selectedAnnotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
+            eventBus.send(new AnnotationsRemovedEvent(annotations));
+            eventBus.send(new AnnotationsAddedEvent(annotations));
+            eventBus.send(new AnnotationsSelectedEvent(selectedAnnotations));
+        });
+    }
+
+    public void refreshAnnotationsView(UUID observationUuid) {
+        Set<UUID> uuids = new HashSet<>();
+        uuids.add(observationUuid);
+        refreshAnnotationsView(uuids);
     }
 
 }

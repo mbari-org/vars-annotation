@@ -22,14 +22,15 @@
       <RowConstraints vgrow="NEVER" />
       <RowConstraints vgrow="NEVER" />
     <RowConstraints vgrow="NEVER" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
     <RowConstraints vgrow="NEVER" />
   </rowConstraints>
    <children>
       <Label fx:id="searchLabel" text="%roweditor.asseditor.search.label" GridPane.hgrow="NEVER" />
       <Label fx:id="linkValueLabel" text="%roweditor.asseditor.link.label" GridPane.hgrow="NEVER" GridPane.rowIndex="2" />
-      <Label fx:id="linkValueLabel" text="%roweditor.asseditor.value.label" GridPane.hgrow="NEVER" GridPane.rowIndex="3" />
-      <Label fx:id="toConceptLabel" text="%roweditor.asseditor.to.label" GridPane.columnIndex="3" GridPane.hgrow="NEVER" GridPane.rowIndex="2" />
-      <HBox GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+      <Label fx:id="linkValueLabel" text="%roweditor.asseditor.value.label" GridPane.hgrow="NEVER" GridPane.rowIndex="4" />
+      <Label fx:id="toConceptLabel" text="%roweditor.asseditor.to.label" GridPane.hgrow="NEVER" GridPane.rowIndex="3" />
+      <HBox GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4">
          <children>
             <JFXButton fx:id="addButton" onAction="#onAdd" />
             <JFXButton fx:id="cancelButton" onAction="#onCancel" />
@@ -37,8 +38,8 @@
       </HBox>
       <JFXTextField fx:id="searchTextField" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" />
       <JFXComboBox fx:id="associationComboBox" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
-      <JFXTextField fx:id="linkNameTextField" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-      <JFXComboBox fx:id="toConceptComboBox" GridPane.columnIndex="4" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
-      <JFXTextField fx:id="linkValueTextField" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="3" />
+      <JFXTextField fx:id="linkNameTextField" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+      <JFXComboBox fx:id="toConceptComboBox" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+      <JFXTextField fx:id="linkValueTextField" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="4" />
    </children>
 </GridPane>

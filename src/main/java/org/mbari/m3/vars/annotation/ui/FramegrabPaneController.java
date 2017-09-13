@@ -1,9 +1,7 @@
 package org.mbari.m3.vars.annotation.ui;
 
 import com.jfoenix.controls.JFXComboBox;
-import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -11,7 +9,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.ImageReference;
-import org.mbari.m3.vars.annotation.util.FXMLUtil;
+import org.mbari.m3.vars.annotation.util.FXMLUtils;
 
 import java.util.List;
 
@@ -85,7 +83,7 @@ public class FramegrabPaneController {
     }
 
     public static FramegrabPaneController newInstance() {
-        return FXMLUtil.newInstance(FramegrabPaneController.class, "/fxml/FramegrabPane.fxml");
+        return FXMLUtils.newInstance(FramegrabPaneController.class, "/fxml/FramegrabPane.fxml");
     }
 
     public void setAnnotation(Annotation annotation) {

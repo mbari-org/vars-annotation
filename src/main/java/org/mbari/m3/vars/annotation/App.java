@@ -41,7 +41,6 @@ public class App extends Application {
         Thread.setDefaultUncaughtExceptionHandler((thread, ex) -> {
             log.error("Exception in thread [" + thread.getName() + "]", ex);
         });
-
         launch(args);
     }
 
@@ -62,6 +61,7 @@ public class App extends Application {
             alert.setTitle("VARS Information");
             alert.setHeaderText("VARS is already running");
             alert.setContentText("An instance of VARS is already running. Exiting ...");
+            alert.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
             alert.showAndWait();
             Platform.exit();
             System.exit(0);
@@ -71,6 +71,7 @@ public class App extends Application {
             alert.setTitle("VARS Error");
             alert.setHeaderText("Unable to create a settings directory ");
             alert.setContentText("VARS failed to create a directory for writing temporary information.");
+            alert.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
             alert.showAndWait();
             Platform.exit();
             System.exit(-1);
