@@ -5,7 +5,6 @@ import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.Tooltip;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
@@ -21,36 +20,31 @@ import java.util.ResourceBundle;
  * @author Brian Schlining
  * @since 2017-09-11T16:59:00
  */
-public class CommentBC {
+public class CommentBC extends AbstractBC {
 
-    private final Button button;
-    private final UIToolBox toolBox;
-    private final TextInputDialog dialog = new TextInputDialog();
+    private TextInputDialog dialog;
     private final String commentLinkName;
 
     public CommentBC(Button button, UIToolBox toolBox) {
-        this.button = button;
-        this.toolBox = toolBox;
+        super(button, toolBox);
         this.commentLinkName = toolBox.getConfig().getString("app.annotation.sample.association.comment");
-        init();
     }
 
     protected void init() {
 
-        MaterialIconFactory iconFactory = MaterialIconFactory.get();
-        Text icon = iconFactory.createIcon(MaterialIcon.INSERT_COMMENT, "30px");
+         dialog = new TextInputDialog();
 
         ResourceBundle i18n = toolBox.getI18nBundle();
+        String tooltip = i18n.getString("buttons.comment");
+        MaterialIconFactory iconFactory = MaterialIconFactory.get();
+        Text icon = iconFactory.createIcon(MaterialIcon.INSERT_COMMENT, "30px");
+        initializeButton(tooltip, icon);
+
         dialog.setTitle(i18n.getString("buttons.comment.dialog.title"));
         dialog.setHeaderText(i18n.getString("buttons.comment.dialog.header"));
         dialog.setContentText(i18n.getString("buttons.comment.dialog.content"));
         dialog.setGraphic(icon);
         dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
-
-        button.setTooltip(new Tooltip(i18n.getString("buttons.comment")));
-        button.setText(null);
-        button.setGraphic(icon);
-        button.setDisable(true);
 
         toolBox.getEventBus()
                 .toObserverable()
@@ -60,11 +54,9 @@ public class CommentBC {
                     boolean enabled = (user != null) && e.get().size() > 0;
                     button.setDisable(!enabled);
                 });
-
-        button.setOnAction(e -> apply());
     }
 
-    private void apply() {
+    protected void apply() {
         ObservableList<Annotation> annotations = toolBox.getData().getSelectedAnnotations();
         Optional<String> s = dialog.showAndWait();
         s.ifPresent(comment -> {

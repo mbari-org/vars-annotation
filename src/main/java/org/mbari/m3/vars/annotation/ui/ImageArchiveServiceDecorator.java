@@ -7,6 +7,7 @@ import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.CommandUtil;
 import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
+import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
@@ -118,12 +119,13 @@ public class ImageArchiveServiceDecorator {
                                 .toArray(CompletableFuture[]::new);
                         CompletableFuture.allOf(completableFutures)
                                 .thenAccept(w -> {
+                                    eventBus.send(new AnnotationsChangedEvent(annotations1));
                                     // Update any annotations that may have been effected by image deletion
-                                    List<Annotation> selectedAnnotations =
-                                            new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-                                    eventBus.send(new AnnotationsRemovedEvent(annotations1));
-                                    eventBus.send(new AnnotationsAddedEvent(annotations1));
-                                    eventBus.send(new AnnotationsSelectedEvent(selectedAnnotations));
+//                                    List<Annotation> selectedAnnotations =
+//                                            new ArrayList<>(toolBox.getData().getSelectedAnnotations());
+//                                    eventBus.send(new AnnotationsRemovedEvent(annotations1));
+//                                    eventBus.send(new AnnotationsAddedEvent(annotations1));
+//                                    eventBus.send(new AnnotationsSelectedEvent(selectedAnnotations));
                                 });
                     }
                 });

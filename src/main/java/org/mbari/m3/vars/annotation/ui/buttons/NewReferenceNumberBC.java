@@ -28,36 +28,22 @@ import java.util.UUID;
  * @author Brian Schlining
  * @since 2017-09-12T15:30:00
  */
-public class NewReferenceNumberBC {
+public class NewReferenceNumberBC extends AbstractBC {
 
     private final String associationKey;
-    private final UIToolBox toolBox;
-    private final Button button;
 
 
     public NewReferenceNumberBC(Button button, UIToolBox toolBox) {
-        this.toolBox = toolBox;
-        this.button = button;
+        super(button, toolBox);
         this.associationKey = toolBox.getConfig()
                 .getString("app.annotation.identity.reference");
-        init();
     }
 
     protected void init() {
-
+        String tooltip = toolBox.getI18nBundle().getString("buttons.newnumber");
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
         Text icon = iconFactory.createIcon(MaterialIcon.EXPOSURE_PLUS_1, "30px");
-        button.setText(null);
-        button.setGraphic(icon);
-        button.setDisable(true);
-        button.setOnAction(e -> apply());
-
-        Observable<Object> observable = toolBox.getEventBus().toObserverable();
-        observable.ofType(MediaChangedEvent.class)
-                .subscribe(m -> checkEnable());
-        observable.ofType(UserChangedEvent.class)
-                .subscribe(m -> checkEnable());
-
+        initializeButton(tooltip, icon);
     }
 
     public void apply() {
@@ -87,18 +73,5 @@ public class NewReferenceNumberBC {
                 .max()
                 .orElse(0);
     }
-
-    private void checkEnable() {
-        Media media = toolBox.getData().getMedia();
-        User user = toolBox.getData().getUser();
-        boolean enable =  media != null && user != null;
-        button.setDisable(!enable);
-    }
-
-
-
-
-
-
 
 }

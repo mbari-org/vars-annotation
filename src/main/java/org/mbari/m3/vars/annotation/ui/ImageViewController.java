@@ -6,6 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -42,10 +43,10 @@ public class ImageViewController {
 
     }
 
-    private ImageView getImageView() {
+    public ImageView getImageView() {
         if (imageView == null) {
             imageView = new ImageView();
-            //imageView.setFitWidth(100);
+            imageView.setFitWidth(100);
             imageView.setPreserveRatio(true);
             imageView.setSmooth(true);
             imageView.setCache(true);
@@ -60,6 +61,7 @@ public class ImageViewController {
 
             // TODO resizing is not working correctly in dock node
             ImageView iv = getImageView();
+
             iv.fitWidthProperty().bind(root.widthProperty());
             iv.fitHeightProperty().bind(root.heightProperty());
             root.setCenter(iv);

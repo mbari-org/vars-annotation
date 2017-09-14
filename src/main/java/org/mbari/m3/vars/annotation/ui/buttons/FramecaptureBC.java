@@ -21,40 +21,34 @@ import org.mbari.vcr4j.VideoState;
  * @author Brian Schlining
  * @since 2017-09-05T17:06:00
  */
-public class FramecaptureBC {
+public class FramecaptureBC extends AbstractBC {
 
-    private final Button button;
-    private final UIToolBox toolBox;
 
     public FramecaptureBC(Button button, UIToolBox toolBox) {
-        this.button = button;
-        this.toolBox = toolBox;
-        init();
+        super(button, toolBox);
     }
 
-    private void init() {
-        button.setTooltip(new Tooltip(toolBox.getI18nBundle().getString("buttons.framegrab")));
+    protected void init() {
+        String tooltip = toolBox.getI18nBundle().getString("buttons.framegrab");
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
         Text icon = iconFactory.createIcon(MaterialIcon.ADD_A_PHOTO, "30px");
-        button.setText(null);
-        button.setGraphic(icon);
-        button.setDisable(true);
-        button.setOnAction(e -> toolBox.getEventBus().send(new FramegrabCmd()));
-
+        initializeButton(tooltip, icon);
         Observable<Object> observable = toolBox.getEventBus().toObserverable();
-        observable.ofType(MediaChangedEvent.class)
-                .subscribe(m -> checkEnable());
         observable.ofType((MediaPlayerChangedEvent.class))
-                .subscribe(m -> checkEnable());
-        observable.ofType(UserChangedEvent.class)
                 .subscribe(m -> checkEnable());
     }
 
-    private void checkEnable() {
+    @Override
+    protected void checkEnable() {
         MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
         Media media = toolBox.getData().getMedia();
         User user = toolBox.getData().getUser();
         boolean enable =  mediaPlayer != null && media != null && user != null;
         button.setDisable(!enable);
+    }
+
+    @Override
+    protected void apply() {
+        toolBox.getEventBus().send(new FramegrabCmd());
     }
 }

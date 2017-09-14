@@ -12,6 +12,7 @@ import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.Observable;
 import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
@@ -149,6 +150,10 @@ public class AppPaneController {
         if (topPane == null) {
             topPane = new SplitPane(annotationTableController.getTableView(),
                    getTabPane());
+            imageViewController.getImageView()
+                    .fitWidthProperty()
+                    .bind(Bindings.subtract(1, topPane.getDividers().
+                            get(0).positionProperty()).multiply(topPane.widthProperty()));
             loadDividerPositions(topPaneKey, topPane);
         }
         return topPane;

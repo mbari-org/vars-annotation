@@ -4,6 +4,7 @@ import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
+import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.messages.HideProgress;
@@ -202,10 +203,11 @@ public class AnnotationServiceDecorator {
         CompletableFuture<Void> all = CompletableFuture.allOf(futures);
         final EventBus eventBus = toolBox.getEventBus();
         all.thenAccept(v -> {
-            List<Annotation> selectedAnnotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-            eventBus.send(new AnnotationsRemovedEvent(annotations));
-            eventBus.send(new AnnotationsAddedEvent(annotations));
-            eventBus.send(new AnnotationsSelectedEvent(selectedAnnotations));
+            eventBus.send(new AnnotationsChangedEvent(annotations));
+//            List<Annotation> selectedAnnotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
+//            eventBus.send(new AnnotationsRemovedEvent(annotations));
+//            eventBus.send(new AnnotationsAddedEvent(annotations));
+//            eventBus.send(new AnnotationsSelectedEvent(selectedAnnotations));
         });
     }
 

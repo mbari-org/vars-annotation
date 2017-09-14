@@ -4,6 +4,8 @@ import com.jfoenix.controls.JFXComboBox;
 import com.typesafe.config.Config;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -21,53 +23,38 @@ import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 /**
  * @author Brian Schlining
  * @since 2017-09-11T08:57:00
  */
-public class SampleBC {
+public class SampleBC extends AbstractBC {
 
-    private final Button button;
-    private final UIToolBox toolBox;
-    private final Dialog<Pair<String, String>> dialog;
+    private Dialog<Pair<String, String>> dialog;
     private GridPane dialogPane;
     private ComboBox<String> comboBox;
     private TextField textField;
 
     public SampleBC(Button button, UIToolBox toolBox) {
-        this.button = button;
-        this.toolBox = toolBox;
-        dialog = new Dialog<>();
-        init();
+        super(button, toolBox);
     }
 
     public void init() {
-        button.setTooltip(new Tooltip(toolBox.getI18nBundle().getString("buttons.sample")));
+        dialog = new Dialog<>();
+        ResourceBundle i18n = toolBox.getI18nBundle();
+        String tooltip = i18n.getString("buttons.sample");
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
         Text icon = iconFactory.createIcon(MaterialIcon.NATURE_PEOPLE, "30px");
-        button.setText(null);
-        button.setGraphic(icon);
-        button.setDisable(true);
+        initializeButton(tooltip, icon);
 
-        dialog.setTitle(null);
-        dialog.setHeaderText(null);
+        dialog.setTitle(i18n.getString("buttons.sample.dialog.title"));
+        dialog.setHeaderText(i18n.getString("buttons.sample.dialog.header"));
+        dialog.setContentText(i18n.getString("buttons.sample.dialog.content"));
         dialog.setGraphic(icon);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         dialog.getDialogPane().setContent(getDialogPane());
         dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
-
-        button.setOnAction(e -> {
-            Optional<Pair<String, String>> v = dialog.showAndWait();
-            if (v.isPresent()) {
-                Pair<String, String> pair = v.get();
-                createAssociation(pair.getKey(), pair.getValue());
-            }
-            textField.setText(null);
-            String defaultSampleConcept = toolBox.getConfig()
-                    .getString("app.annotation.sample.default.concept");
-            comboBox.getSelectionModel().select(defaultSampleConcept);
-        });
 
         toolBox.getEventBus()
                 .toObserverable()
@@ -77,6 +64,20 @@ public class SampleBC {
                    boolean enabled = (user != null) && e.get().size() > 0;
                    button.setDisable(!enabled);
                 });
+    }
+
+    @Override
+    protected void apply() {
+        Platform.runLater(() -> comboBox.requestFocus());
+        Optional<Pair<String, String>> v = dialog.showAndWait();
+        if (v.isPresent()) {
+            Pair<String, String> pair = v.get();
+            createAssociation(pair.getKey(), pair.getValue());
+        }
+        textField.setText(null);
+        String defaultSampleConcept = toolBox.getConfig()
+                .getString("app.annotation.sample.default.concept");
+        comboBox.getSelectionModel().select(defaultSampleConcept);
     }
 
     private void createAssociation(String sampleBy, String sampleId) {
@@ -119,9 +120,9 @@ public class SampleBC {
                     .thenAccept(opt -> {
                         if (opt.isPresent()) {
                             List<String> samplers = opt.get().flatten();
-                            comboBox.getItems().addAll(samplers);
-                            comboBox.getSelectionModel().select(defaultSampleConcept);
                             new FilteredComboBoxDecorator<>(comboBox, FilteredComboBoxDecorator.STARTSWITH);
+                            comboBox.setItems(FXCollections.observableArrayList(samplers));
+                            comboBox.getSelectionModel().select(defaultSampleConcept);
 
                             dialog.setResultConverter(dialogButton -> {
                                 if (dialogButton == ButtonType.OK) {

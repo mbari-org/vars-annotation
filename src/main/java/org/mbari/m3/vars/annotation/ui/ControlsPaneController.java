@@ -80,8 +80,11 @@ public class ControlsPaneController {
             Button oldRefBtn = new JFXButton();
             new OldReferenceNumberBC(oldRefBtn, toolBox);
 
+            Button uponBtn = new JFXButton();
+            new UponBC(uponBtn, toolBox);
+
             buttonPane.getChildren().addAll(newBtn, dupBtn, copyBtn, framegrabBtn,
-                    deleteBtn,sampleBtn, commentBtn, newRefBtn, oldRefBtn);
+                    deleteBtn,sampleBtn, commentBtn, newRefBtn, oldRefBtn, uponBtn);
 
         }
         return buttonPane;

@@ -1,5 +1,7 @@
 package org.mbari.m3.vars.annotation.util;
 
+import com.sun.xml.internal.ws.util.CompletedFuture;
+import io.reactivex.Observable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,4 +29,27 @@ public class AsyncUtils {
         }
         return r;
     }
+
+    /**
+     * Convert a CompletableFuture to an rx Observable. This observable will
+     * emit exactly one item.
+     *
+     * @param future The future to convert
+     * @param <T> The return type of the future
+     * @return An rx java Observable
+     */
+    public static <T> Observable<T> observe(CompletableFuture<T> future) {
+        return Observable.create(subscriber -> {
+            future.whenComplete((value, exception) -> {
+                if (exception != null) {
+                    subscriber.onError(exception);
+                }
+                else {
+                    subscriber.onNext(value);
+                    subscriber.onComplete();
+                }
+            });
+        });
+    }
+
 }

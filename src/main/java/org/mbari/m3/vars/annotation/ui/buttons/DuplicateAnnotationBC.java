@@ -16,23 +16,18 @@ import org.mbari.m3.vars.annotation.model.User;
  * @author Brian Schlining
  * @since 2017-08-22T15:58:00
  */
-public class DuplicateAnnotationBC {
-    private final Button button;
-    private final UIToolBox toolBox;
+public class DuplicateAnnotationBC extends AbstractBC {
+
 
     public DuplicateAnnotationBC(Button button, UIToolBox toolBox) {
-        this.button = button;
-        this.toolBox = toolBox;
-        init();
+        super(button, toolBox);
     }
 
-    private void init() {
-        button.setTooltip(new Tooltip(toolBox.getI18nBundle().getString("buttons.duplicate")));
+    protected void init() {
+        String tooltip = toolBox.getI18nBundle().getString("buttons.duplicate");
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
         Text icon = iconFactory.createIcon(MaterialIcon.FLIP_TO_BACK, "30px");
-        button.setText(null);
-        button.setGraphic(icon);
-        button.setDisable(true);
+        initializeButton(tooltip, icon);
 
         toolBox.getEventBus()
                 .toObserverable()
@@ -47,7 +42,7 @@ public class DuplicateAnnotationBC {
 
     }
 
-    private void apply() {
+    protected void apply() {
         ObservableList<Annotation> annotations = toolBox.getData().getSelectedAnnotations();
         User user = toolBox.getData().getUser();
         toolBox.getEventBus()

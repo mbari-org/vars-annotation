@@ -46,7 +46,7 @@ public class FilteredComboBoxDecorator<T>  {
     public FilteredComboBoxDecorator(final ComboBox<T> comboBox,
                                      AutoCompleteComparator<T> comparator) {
         this.comboBox = comboBox;
-        filteredItems = new FilteredList<T>(comboBox.getItems());
+        filteredItems = new FilteredList<>(comboBox.getItems());
         filter.addListener(filterListener);
 
         initialize(comparator);

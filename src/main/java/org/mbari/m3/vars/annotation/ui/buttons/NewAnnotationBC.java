@@ -22,21 +22,16 @@ import org.mbari.vcr4j.VideoState;
  * @author Brian Schlining
  * @since 2017-08-22T15:25:00
  */
-public class NewAnnotationBC {
-    private final Button button;
-    private final UIToolBox toolBox;
+public class NewAnnotationBC extends AbstractBC {
     private String defaultConceptName;
 
     public NewAnnotationBC(Button button, UIToolBox toolBox) {
-        this.button = button;
-        this.toolBox = toolBox;
+        super(button, toolBox);
         loadDefaultConcept();
-
         toolBox.getEventBus()
                 .toObserverable()
                 .ofType(ClearCacheMsg.class)
                 .subscribe(m -> loadDefaultConcept());
-        init();
     }
 
     private void loadDefaultConcept() {
@@ -51,27 +46,26 @@ public class NewAnnotationBC {
                 });
     }
 
-    private void init() {
+    protected void init() {
 
-        button.setTooltip(new Tooltip(toolBox.getI18nBundle().getString("buttons.newnumber")));
+        String tooltip = toolBox.getI18nBundle().getString("buttons.newnumber");
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
         Text icon = iconFactory.createIcon(MaterialIcon.FIBER_NEW, "30px");
-        button.setText(null);
-        button.setGraphic(icon);
-        button.setDisable(true);
-        button.setOnAction(e -> toolBox.getEventBus()
-                .send(new CreateAnnotationFromConceptCmd(defaultConceptName)));
+        initializeButton(tooltip, icon);
 
         Observable<Object> observable = toolBox.getEventBus().toObserverable();
-        observable.ofType(MediaChangedEvent.class)
-                .subscribe(m -> checkEnable());
         observable.ofType((MediaPlayerChangedEvent.class))
-                .subscribe(m -> checkEnable());
-        observable.ofType(UserChangedEvent.class)
                 .subscribe(m -> checkEnable());
     }
 
-    private void checkEnable() {
+    @Override
+    protected void apply() {
+        toolBox.getEventBus()
+                .send(new CreateAnnotationFromConceptCmd(defaultConceptName));
+    }
+
+    @Override
+    protected void checkEnable() {
         MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
         Media media = toolBox.getData().getMedia();
         User user = toolBox.getData().getUser();

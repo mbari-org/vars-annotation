@@ -4,7 +4,6 @@ import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.CopyAnnotationsCmd;
@@ -13,6 +12,7 @@ import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
+import org.mbari.m3.vars.annotation.util.AsyncUtils;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 
@@ -20,24 +20,18 @@ import org.mbari.vcr4j.VideoState;
  * @author Brian Schlining
  * @since 2017-08-28T12:43:00
  */
-public class CopyAnnotationBC {
+public class CopyAnnotationBC extends AbstractBC {
 
-    private final Button button;
-    private final UIToolBox toolBox;
 
     public CopyAnnotationBC(Button button, UIToolBox toolBox) {
-        this.button = button;
-        this.toolBox = toolBox;
-        init();
+        super(button, toolBox);
     }
 
     public void init() {
-        button.setTooltip(new Tooltip(toolBox.getI18nBundle().getString("buttons.copy")));
+        String tooltip = toolBox.getI18nBundle().getString("buttons.copy");
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
         Text icon = iconFactory.createIcon(MaterialIcon.FLIP_TO_FRONT, "30px");
-        button.setText(null);
-        button.setGraphic(icon);
-        button.setDisable(true);
+        initializeButton(tooltip, icon);
 
         toolBox.getEventBus()
                 .toObserverable()
@@ -49,19 +43,25 @@ public class CopyAnnotationBC {
                     button.setDisable(!enabled);
                 });
 
-        button.setOnAction(e -> apply());
     }
 
-    private void apply() {
+    protected void apply() {
         ObservableList<Annotation> annotations = toolBox.getData().getSelectedAnnotations();
         Media media = toolBox.getData().getMedia();
         User user = toolBox.getData().getUser();
         MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
         if (mediaPlayer != null) {
-            mediaPlayer.requestVideoIndex()
-                    .thenAccept(vi -> toolBox.getEventBus()
-                                .send(new CopyAnnotationsCmd(media.getVideoReferenceUuid(),
-                                        vi, user.getUsername(), annotations)));
+
+            AsyncUtils.observe(mediaPlayer.requestVideoIndex())
+                    .subscribe(vi -> toolBox.getEventBus()
+                            .send(new CopyAnnotationsCmd(media.getVideoReferenceUuid(),
+                                    vi, user.getUsername(), annotations)));
+
         }
+    }
+
+    @Override
+    protected void checkEnable() {
+        // Do nothing
     }
 }
