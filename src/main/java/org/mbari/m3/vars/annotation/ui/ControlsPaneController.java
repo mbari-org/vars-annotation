@@ -1,9 +1,13 @@
 package org.mbari.m3.vars.annotation.ui;
 
 import com.jfoenix.controls.JFXButton;
+import de.jensd.fx.glyphs.materialicons.MaterialIcon;
+import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.SharktoptodaControlPane;
@@ -12,29 +16,34 @@ import org.mbari.m3.vars.annotation.ui.buttons.*;
 import org.mbari.m3.vars.annotation.ui.roweditor.RowEditorController;
 
 import java.util.Collection;
+import java.util.prefs.Preferences;
 
 /**
  * @author Brian Schlining
- * @since 2017-08-15T15:31:00
+ * @since 2017-09-14T11:28:00
  */
 public class ControlsPaneController {
 
-    private BorderPane root;
+    private SplitPane root;
     private SharktoptodaControlPane sharkPane;
     private RowEditorController rowEditorController;
     private final UIToolBox toolBox;
     private FlowPane buttonPane;
+    private VBox rightPane;
+    private static final String splitPaneKey = "split-pane";
 
     public ControlsPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            saveDividerPositions(splitPaneKey, getRoot());
+        }));
     }
 
-    public BorderPane getRoot() {
+    public SplitPane getRoot() {
         if (root == null) {
-            root = new BorderPane();
-            root.setRight(getSharkPane());
-            root.setCenter(getButtonPane());
-            root.setLeft(getRowEditorController().getRoot());
+            root = new SplitPane(getRowEditorController().getRoot(), getRightPane());
+            loadDividerPositions(splitPaneKey, root);
         }
         return root;
     }
@@ -47,7 +56,6 @@ public class ControlsPaneController {
         }
         return sharkPane;
     }
-
 
     public FlowPane getButtonPane() {
         if (buttonPane == null) {
@@ -109,4 +117,62 @@ public class ControlsPaneController {
         }
         return rowEditorController;
     }
+
+    private VBox getRightPane() {
+        if (rightPane == null) {
+            rightPane = new VBox(getSharkPane(), getButtonPane());
+        }
+        return rightPane;
+    }
+
+    private void saveDividerPositions(String name, SplitPane pane) {
+        // Pref path is UserNode/Class/name/0 (or 1 or 2)
+        Preferences p0 = Preferences.userNodeForPackage(getClass());
+        Preferences p1 = p0.node(name);
+        double[] pos = pane.getDividerPositions();
+        for (int i = 0; i < pos.length; i++) {
+            p1.putDouble(i+ "", pos[i]);
+        }
+    }
+
+    private void loadDividerPositions(String name, SplitPane pane) {
+        Preferences p0 = Preferences.userNodeForPackage(getClass());
+        Preferences p1 = p0.node(name);
+        double[] positions = pane.getDividerPositions();
+        for (int i = 0; i < positions.length; i++) {
+            try {
+                double v = p1.getDouble(i + "", positions[i]);
+                pane.setDividerPosition(i, v);
+            }
+            catch (Exception e) {
+                // TODO log it
+            }
+        }
+    }
+
+    class AddAssociationBC extends AbstractBC {
+
+        public AddAssociationBC(Button button, UIToolBox toolBox) {
+            super(button, toolBox);
+        }
+
+        @Override
+        protected void apply() {
+
+        }
+
+        @Override
+        protected void init() {
+            String tooltip = toolBox.getI18nBundle().getString("buttons.association");
+            MaterialIconFactory iconFactory = MaterialIconFactory.get();
+            Text icon = iconFactory.createIcon(MaterialIcon.CREATE, "30px");
+            initializeButton(tooltip, icon);
+
+            // TODO show dialog for adding and annotation to the pane
+        }
+    }
+
+
+
+
 }

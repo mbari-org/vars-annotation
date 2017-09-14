@@ -39,6 +39,9 @@ public class RowEditorControllerDemo extends Application {
                 .subscribe(obj -> System.out.println(obj));
 
         RowEditorController rowEditor = new RowEditorController();
+        rowEditor.getRoot()
+                .getStylesheets()
+                .addAll(toolBox.getStylesheets());
         Scene scene = new Scene(rowEditor.getRoot());
         scene.getStylesheets().addAll("/css/roweditor.css");
         primaryStage.setScene(scene);

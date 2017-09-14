@@ -3,6 +3,7 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXListView?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
@@ -18,7 +19,10 @@
       </HBox>
    </bottom>
    <top>
-      <JFXComboBox fx:id="conceptComboBox" maxWidth="1.7976931348623157E308" BorderPane.alignment="TOP_LEFT" />
+      <JFXComboBox fx:id="conceptComboBox" maxWidth="1.7976931348623157E308" BorderPane.alignment="TOP_CENTER">
+         <padding>
+            <Insets bottom="4.0" />
+         </padding></JFXComboBox>
    </top>
    <center>
       <JFXListView fx:id="associationListView" onMouseClicked="#onAssociationSelected" prefHeight="200.0" prefWidth="500.0" BorderPane.alignment="CENTER" />

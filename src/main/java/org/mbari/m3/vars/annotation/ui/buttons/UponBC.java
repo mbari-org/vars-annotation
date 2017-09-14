@@ -67,7 +67,6 @@ public class UponBC extends AbstractBC{
 
     protected void apply() {
         Optional<String> opt = dialog.showAndWait();
-
         opt.ifPresent(selectedItem -> {
             Association association = new Association(associationKey,
                     Association.VALUE_SELF,
@@ -76,7 +75,6 @@ public class UponBC extends AbstractBC{
             toolBox.getEventBus()
                     .send(new CreateAssociationsCmd(association, selectedAnnotations));
         });
-
     }
 
 
