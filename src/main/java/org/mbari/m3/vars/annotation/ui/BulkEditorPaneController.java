@@ -161,7 +161,7 @@ public class BulkEditorPaneController {
                 .collect(Collectors.toList());
 
         // TODO set values in comboboxs
-
+hr
 
 
     }
