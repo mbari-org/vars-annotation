@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation.ui.buttons;
 
 import io.reactivex.Observable;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
@@ -23,7 +24,7 @@ public abstract class AbstractBC {
     public AbstractBC(Button button, UIToolBox toolBox) {
         this.button = button;
         this.toolBox = toolBox;
-        init();
+        Platform.runLater(() -> init());
     }
 
     protected void initializeButton(String tooltip, Node icon) {

@@ -32,7 +32,6 @@ public class UponBC extends AbstractBC{
         this.associationKey = toolBox.getConfig()
                 .getString("app.annotation.upon.linkname");
         this.uponRoot  = toolBox.getConfig().getString("app.annotation.upon.root");
-        init();
     }
 
     protected void init() {

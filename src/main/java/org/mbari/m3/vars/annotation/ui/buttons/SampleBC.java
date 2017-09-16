@@ -41,6 +41,7 @@ public class SampleBC extends AbstractBC {
     }
 
     public void init() {
+
         dialog = new Dialog<>();
         ResourceBundle i18n = toolBox.getI18nBundle();
         String tooltip = i18n.getString("buttons.sample");

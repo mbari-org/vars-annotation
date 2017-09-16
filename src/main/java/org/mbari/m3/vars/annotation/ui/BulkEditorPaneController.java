@@ -65,10 +65,10 @@ public class BulkEditorPaneController {
     private JFXButton searchButton;
 
     @FXML
-    private JFXComboBox<?> groupComboBox;
+    private JFXComboBox<String> groupComboBox;
 
     @FXML
-    private JFXComboBox<?> activityComboBox;
+    private JFXComboBox<String> activityComboBox;
 
     @FXML
     private Label groupLabel;
@@ -141,7 +141,7 @@ public class BulkEditorPaneController {
             return controller;
         }
         catch (Exception e) {
-            throw  new RuntimeException("Failed to load BulkEditorPane fro FXML", e);
+            throw  new RuntimeException("Failed to load BulkEditorPane from FXML", e);
         }
     }
 
@@ -161,6 +161,7 @@ public class BulkEditorPaneController {
                 .collect(Collectors.toList());
 
         // TODO set values in comboboxs
+
 
 
     }

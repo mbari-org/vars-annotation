@@ -32,7 +32,9 @@ public class CommentBC extends AbstractBC {
 
     protected void init() {
 
-         dialog = new TextInputDialog();
+
+
+        dialog = new TextInputDialog();
 
         ResourceBundle i18n = toolBox.getI18nBundle();
         String tooltip = i18n.getString("buttons.comment");
