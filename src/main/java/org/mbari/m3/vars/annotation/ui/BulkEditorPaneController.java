@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+import io.reactivex.Observable;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,8 +24,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
+import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
+import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
+import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
+import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.services.AnnotationService;
 
 /**
  *
@@ -39,6 +48,12 @@ public class BulkEditorPaneController {
 
     @FXML
     private VBox root;
+
+    @FXML
+    private JFXComboBox<String> conceptCombobox;
+
+    @FXML
+    private JFXComboBox<Association> associationCombobox;
 
     @FXML
     private JFXButton refreshButton;
@@ -79,6 +94,17 @@ public class BulkEditorPaneController {
     @FXML
     void initialize() {
 
+        toolBox = Initializer.getToolBox();
+
+        final Observable<Object> obs = toolBox.getEventBus().toObserverable();
+        obs.ofType(AnnotationsChangedEvent.class)
+                .subscribe(e -> needsRefresh());
+        obs.ofType(AnnotationsAddedEvent.class)
+                .subscribe(e -> needsRefresh());
+        obs.ofType(AnnotationsRemovedEvent.class)
+                .subscribe(e -> needsRefresh());
+        obs.ofType(MediaChangedEvent.class)
+                .subscribe(e -> needsRefresh());
 
         // --- Configure buttons
         GlyphsFactory gf = MaterialIconFactory.get();
@@ -88,6 +114,7 @@ public class BulkEditorPaneController {
         refreshButton.setGraphic(refreshIcon);
         refreshButton.setDisable(true);
         refreshButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.refresh.tooltip")));
+        refreshButton.setOnAction(e -> refresh());
 
         Image moveAnnoImg = new Image(getClass()
                 .getResource("/images/buttons/row_replace.png").toExternalForm());
@@ -160,9 +187,24 @@ public class BulkEditorPaneController {
                 .distinct()
                 .collect(Collectors.toList());
 
-        // TODO set values in comboboxs
-hr
+        conceptCombobox.setItems(FXCollections.observableArrayList(concepts));
+        associationCombobox.setItems(FXCollections.observableArrayList(associations));
 
+        final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        annotationService
+                .findGroups()
+                .thenAccept(groups -> {
+                    Platform.runLater(() -> {
+                        groupComboBox.setItems(FXCollections.observableArrayList(groups));
+                    });
+                });
+        annotationService
+                .findActivities()
+                .thenAccept(activities -> {
+                    Platform.runLater(() -> {
+                        activityComboBox.setItems(FXCollections.observableArrayList(activities));
+                    });
+                });
 
     }
 
