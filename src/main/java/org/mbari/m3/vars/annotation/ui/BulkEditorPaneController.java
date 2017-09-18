@@ -25,6 +25,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.commands.ChangeActivityCmd;
+import org.mbari.m3.vars.annotation.commands.ChangeConceptCmd;
+import org.mbari.m3.vars.annotation.commands.ChangeGroupCmd;
+import org.mbari.m3.vars.annotation.commands.DeleteAnnotationsCmd;
 import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
@@ -126,11 +130,13 @@ public class BulkEditorPaneController {
                 .getResource("/images/buttons/row_edit.png").toExternalForm());
         renameObservationsButton.setGraphic(new ImageView(editAnnoImg));
         renameObservationsButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.annotation.rename.tooltip")));
+        renameObservationsButton.setOnAction(e -> renameAnnotations());
 
         Image deleteAnnoImg = new Image(getClass()
                 .getResource("/images/buttons/row_delete.png").toExternalForm());
         deleteObservationsButton.setGraphic(new ImageView(deleteAnnoImg));
         deleteObservationsButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.annotation.delete.tooltip")));
+        deleteObservationsButton.setOnAction(e -> deleteAnnotations());
 
         Image addAssImg = new Image(getClass()
                 .getResource("/images/buttons/branch_add.png").toExternalForm());
@@ -218,13 +224,34 @@ public class BulkEditorPaneController {
     private void changeGroups() {
         final String group = groupComboBox.getSelectionModel().getSelectedItem();
         final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-
-
+        toolBox.getEventBus()
+                .send(new ChangeGroupCmd(annotations, group));
     }
-    private void changeActivity() {}
-    private void moveAnnotations() {}
-    private void renameAnnotations() {}
-    private void deleteAnnotations() {}
+
+    private void changeActivity() {
+        final String activity = activityComboBox.getSelectionModel().getSelectedItem();
+        final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
+        toolBox.getEventBus()
+                .send(new ChangeActivityCmd(annotations, activity));
+    }
+
+    private void moveAnnotations() {
+        // TODO show selection dialog
+    }
+
+    private void renameAnnotations() {
+        String concept = conceptCombobox.getSelectionModel().getSelectedItem();
+        final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
+        toolBox.getEventBus()
+                .send(new ChangeConceptCmd(annotations, concept));
+    }
+
+    private void deleteAnnotations() {
+        final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
+        toolBox.getEventBus()
+                .send(new DeleteAnnotationsCmd(annotations));
+    }
+
     private void addAssociations() {}
     private void changeAssociations() {}
     private void deleteAssociations() {}

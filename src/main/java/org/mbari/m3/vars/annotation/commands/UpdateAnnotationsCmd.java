@@ -4,9 +4,13 @@ import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.User;
+import org.mbari.m3.vars.annotation.services.ConceptService;
+import org.mbari.vcr4j.util.Preconditions;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 /**
  * @author Brian Schlining
@@ -16,12 +20,33 @@ public abstract class UpdateAnnotationsCmd implements Command {
 
     protected List<Annotation> originalAnnotations;
     protected List<Annotation> changedAnnotations;
+    private volatile boolean checkConceptName;
 
-    public UpdateAnnotationsCmd(List<Annotation> originalAnnotations, List<Annotation> changedAnnotations) {
+    public UpdateAnnotationsCmd(List<Annotation> originalAnnotations,
+                                List<Annotation> changedAnnotations) {
+        this(originalAnnotations, changedAnnotations, false);
+    }
+
+    /**
+     *
+     * @param originalAnnotations The uncahgned annotations
+     * @param changedAnnotations
+     * @param checkConceptName
+     */
+    public UpdateAnnotationsCmd(List<Annotation> originalAnnotations,
+                                List<Annotation> changedAnnotations,
+                                boolean checkConceptName) {
+        Preconditions.checkArgument(originalAnnotations != null,
+                "Original annotations can not be null");
+        Preconditions.checkArgument(changedAnnotations != null,
+                "Changed annotations can not be null");
+        Preconditions.checkArgument(originalAnnotations.size() == changedAnnotations.size(),
+                "The Original annotations and the changed annotations are not the same size");
         this.originalAnnotations = originalAnnotations;
         this.changedAnnotations = changedAnnotations;
         final Instant now = Instant.now();
         changedAnnotations.forEach(a -> a.setObservationTimestamp(now));
+        this.checkConceptName = checkConceptName;
     }
 
     @Override
@@ -30,7 +55,24 @@ public abstract class UpdateAnnotationsCmd implements Command {
         if (user != null) {
             changedAnnotations.forEach(a -> a.setObserver(user.getUsername()));
         }
-        doUpdate(toolBox, changedAnnotations);
+        if (checkConceptName) {
+            ConceptService conceptService = toolBox.getServices().getConceptService();
+            CompletableFuture[] futures = changedAnnotations.stream()
+                    .map(a -> conceptService.findConcept(a.getConcept())
+                                .thenAccept(opt ->
+                                        opt.ifPresent(c -> a.setConcept(c.getName()))))
+                    .toArray(i -> new CompletableFuture[i]);
+            CompletableFuture.allOf(futures)
+                    .thenAccept(v -> {
+                        doUpdate(toolBox, changedAnnotations);
+                        checkConceptName = false;
+                    });
+        }
+        else {
+            doUpdate(toolBox, changedAnnotations);
+        }
+
+
     }
 
     @Override
@@ -42,10 +84,8 @@ public abstract class UpdateAnnotationsCmd implements Command {
         toolBox.getServices()
                 .getAnnotationService()
                 .updateAnnotations(annotations)
-                .thenAccept(as -> {
-                    toolBox.getEventBus()
-                            .send(new AnnotationsChangedEvent(as));
-                });
+                .thenAccept(as -> toolBox.getEventBus()
+                            .send(new AnnotationsChangedEvent(as)));
     }
 
 
