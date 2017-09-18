@@ -3,6 +3,7 @@ package org.mbari.m3.vars.annotation.ui;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -187,8 +188,10 @@ public class BulkEditorPaneController {
                 .distinct()
                 .collect(Collectors.toList());
 
-        conceptCombobox.setItems(FXCollections.observableArrayList(concepts));
-        associationCombobox.setItems(FXCollections.observableArrayList(associations));
+        Platform.runLater(() -> {
+            conceptCombobox.setItems(FXCollections.observableArrayList(concepts));
+            associationCombobox.setItems(FXCollections.observableArrayList(associations));
+        });
 
         final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         annotationService
@@ -211,4 +214,18 @@ public class BulkEditorPaneController {
     private void needsRefresh() {
         refreshButton.setDisable(false);
     }
+
+    private void changeGroups() {
+        final String group = groupComboBox.getSelectionModel().getSelectedItem();
+        final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
+
+
+    }
+    private void changeActivity() {}
+    private void moveAnnotations() {}
+    private void renameAnnotations() {}
+    private void deleteAnnotations() {}
+    private void addAssociations() {}
+    private void changeAssociations() {}
+    private void deleteAssociations() {}
 }

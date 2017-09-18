@@ -30,7 +30,7 @@ public class AppDemo extends App {
         annotations.addListener(new InvalidationListener() {
                     @Override
                     public void invalidated(Observable observable) {
-                        System.out.println("Annotation count: " + annotations.size());
+                        log.debug("Annotation count: " + annotations.size());
                     }
                 });
     }

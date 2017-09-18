@@ -77,7 +77,7 @@
             </JFXButton>
             <JFXComboBox fx:id="groupComboBox" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
             <JFXComboBox fx:id="activityComboBox" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
-            <Label fx:id="groupLabel" text="%bulkeditor.group.label" GridPane.rowIndex="3" />
+            <Label fx:id="groupLabel" text="%bulkeditor.activity.label" GridPane.rowIndex="3" />
             <Label fx:id="activityLabel" text="%bulkeditor.activity.label" GridPane.rowIndex="4" />
          </children>
       </GridPane>
