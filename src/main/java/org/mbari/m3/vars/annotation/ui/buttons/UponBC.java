@@ -2,16 +2,13 @@ package org.mbari.m3.vars.annotation.ui.buttons;
 
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
-import io.reactivex.Observable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
-import org.mbari.m3.vars.annotation.messages.ClearCacheMsg;
 import org.mbari.m3.vars.annotation.model.*;
-import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
+import org.mbari.m3.vars.annotation.ui.shared.ConceptSelectionDialogController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,28 +19,22 @@ import java.util.ResourceBundle;
  * @author Brian Schlining
  * @since 2017-09-13T09:21:00
  */
-public class UponBC extends AbstractBC{
-    private ChoiceDialog<String> dialog;
+public class UponBC extends AbstractBC {
+
     private final String associationKey;
     private final String uponRoot;
+    private ConceptSelectionDialogController dialogController;
 
     public UponBC(Button button, UIToolBox toolBox) {
         super(button, toolBox);
         this.associationKey = toolBox.getConfig()
                 .getString("app.annotation.upon.linkname");
-        this.uponRoot  = toolBox.getConfig().getString("app.annotation.upon.root");
+        this.uponRoot = toolBox.getConfig().getString("app.annotation.upon.root");
+        dialogController = new ConceptSelectionDialogController(toolBox);
+        dialogController.setConcept(this.uponRoot);
     }
 
     protected void init() {
-
-        // TODO replace choice dialog with custom
-        dialog = new ChoiceDialog<>();
-        dialog.getDialogPane()
-                .getChildrenUnmodifiable()
-                .stream()
-                .filter(node -> node instanceof ComboBox)
-                .forEach(node -> new FilteredComboBoxDecorator<String>((ComboBox) node,
-                        FilteredComboBoxDecorator.STARTSWITH));
 
         String tooltip = toolBox.getI18nBundle().getString("buttons.upon");
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
@@ -51,20 +42,17 @@ public class UponBC extends AbstractBC{
         initializeButton(tooltip, icon);
 
         ResourceBundle i18n = toolBox.getI18nBundle();
+        Dialog<String> dialog = dialogController.getDialog();
         dialog.setTitle(i18n.getString("buttons.upon.dialog.title"));
         dialog.setHeaderText(i18n.getString("buttons.upon.dialog.header"));
         dialog.setContentText(i18n.getString("buttons.upon.dialog.content"));
         dialog.setGraphic(icon);
         dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
 
-        Observable<Object> observable = toolBox.getEventBus().toObserverable();
-        observable.ofType(ClearCacheMsg.class)
-                .subscribe(m -> refresh());
-
-        refresh();
     }
 
     protected void apply() {
+        Dialog<String> dialog = dialogController.getDialog();
         Optional<String> opt = dialog.showAndWait();
         opt.ifPresent(selectedItem -> {
             Association association = new Association(associationKey,
@@ -77,18 +65,4 @@ public class UponBC extends AbstractBC{
     }
 
 
-    private void refresh() {
-
-        toolBox.getServices()
-                .getConceptService()
-                .findRoot()
-                .thenAccept(c -> {
-                            List<String> concepts = c.flatten();
-                            dialog.getItems().clear();
-                            dialog.getItems().addAll(concepts);
-                            dialog.setSelectedItem(uponRoot);
-                        });
-
-
-    }
 }

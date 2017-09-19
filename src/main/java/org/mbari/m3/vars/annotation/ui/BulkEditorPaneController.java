@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXComboBox;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -224,15 +227,31 @@ public class BulkEditorPaneController {
     private void changeGroups() {
         final String group = groupComboBox.getSelectionModel().getSelectedItem();
         final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-        toolBox.getEventBus()
+
+        ResourceBundle i18n = toolBox.getI18nBundle();
+        String title = i18n.getString("bulkeditor.group.dialog.title");
+        String header = i18n.getString("bulkeditor.group.dialog.header") + " " + group;
+        String content = i18n.getString("bulkeditor.group.dialog.content1") + " " +
+                group + " " + i18n.getString("bulkeditor.group.dialog.content2") + " " +
+                annotations.size() + i18n.getString("bulkeditor.group.dialog.content3");
+        Runnable action = () -> toolBox.getEventBus()
                 .send(new ChangeGroupCmd(annotations, group));
+        doActionWithAlert(title, header, content, action);
     }
 
     private void changeActivity() {
         final String activity = activityComboBox.getSelectionModel().getSelectedItem();
         final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-        toolBox.getEventBus()
+
+        ResourceBundle i18n = toolBox.getI18nBundle();
+        String title = i18n.getString("bulkeditor.activity.dialog.title");
+        String header = i18n.getString("bulkeditor.activity.dialog.header") + " " + activity;
+        String content = i18n.getString("bulkeditor.activity.dialog.content1") + " " +
+                activity + " " + i18n.getString("bulkeditor.activity.dialog.content2") + " " +
+                annotations.size() + i18n.getString("bulkeditor.activity.dialog.content3");
+        Runnable action = () -> toolBox.getEventBus()
                 .send(new ChangeActivityCmd(annotations, activity));
+        doActionWithAlert(title, header, content, action);
     }
 
     private void moveAnnotations() {
@@ -240,16 +259,47 @@ public class BulkEditorPaneController {
     }
 
     private void renameAnnotations() {
+
         String concept = conceptCombobox.getSelectionModel().getSelectedItem();
         final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-        toolBox.getEventBus()
+
+        ResourceBundle i18n = toolBox.getI18nBundle();
+        String title = i18n.getString("bulkeditor.concept.dialog.title");
+        String header = i18n.getString("bulkeditor.concept.dialog.header") + " " + concept;
+        String content = i18n.getString("bulkeditor.concept.dialog.content1") + " " +
+                concept + " " + i18n.getString("bulkeditor.concept.dialog.content2") + " " +
+                annotations.size() + i18n.getString("bulkeditor.concept.dialog.content3");
+        Runnable action = () -> toolBox.getEventBus()
                 .send(new ChangeConceptCmd(annotations, concept));
+
+        doActionWithAlert(title, header, content, action);
     }
 
     private void deleteAnnotations() {
         final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-        toolBox.getEventBus()
+
+        ResourceBundle i18n = toolBox.getI18nBundle();
+        String title = i18n.getString("bulkeditor.delete.anno.dialog.title");
+        String header = i18n.getString("bulkeditor.delete.anno.dialog.header");
+        String content = i18n.getString("bulkeditor.delete.anno.dialog.content1") + " " +
+                annotations.size()  + " " + i18n.getString("bulkeditor.delete.anno.dialog.content2");
+        Runnable action = () -> toolBox.getEventBus()
                 .send(new DeleteAnnotationsCmd(annotations));
+
+        doActionWithAlert(title, header, content, action);
+    }
+
+    private void doActionWithAlert(String title, String header, String content, Runnable action) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            action.run();
+        }
     }
 
     private void addAssociations() {}
