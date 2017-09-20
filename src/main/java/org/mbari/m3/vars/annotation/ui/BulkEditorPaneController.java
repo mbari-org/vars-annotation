@@ -18,20 +18,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.commands.ChangeActivityCmd;
-import org.mbari.m3.vars.annotation.commands.ChangeConceptCmd;
-import org.mbari.m3.vars.annotation.commands.ChangeGroupCmd;
-import org.mbari.m3.vars.annotation.commands.DeleteAnnotationsCmd;
+import org.mbari.m3.vars.annotation.commands.*;
 import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
@@ -40,6 +34,8 @@ import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
+import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
+import org.mbari.m3.vars.annotation.ui.shared.ConceptSelectionDialogController;
 
 /**
  *
@@ -47,6 +43,10 @@ import org.mbari.m3.vars.annotation.services.AnnotationService;
 public class BulkEditorPaneController {
 
     private UIToolBox toolBox;
+
+    private ConceptSelectionDialogController conceptDialogController;
+
+    private SelectMediaDialog selectMediaDialog;
 
     @FXML
     private ResourceBundle resources;
@@ -103,6 +103,9 @@ public class BulkEditorPaneController {
     void initialize() {
 
         toolBox = Initializer.getToolBox();
+        conceptDialogController = new ConceptSelectionDialogController(toolBox);
+        selectMediaDialog = new SelectMediaDialog(toolBox.getServices().getMediaService(),
+                toolBox.getI18nBundle());
 
         final Observable<Object> obs = toolBox.getEventBus().toObserverable();
         obs.ofType(AnnotationsChangedEvent.class)
@@ -205,18 +208,12 @@ public class BulkEditorPaneController {
         final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         annotationService
                 .findGroups()
-                .thenAccept(groups -> {
-                    Platform.runLater(() -> {
-                        groupComboBox.setItems(FXCollections.observableArrayList(groups));
-                    });
-                });
+                .thenAccept(groups -> Platform.runLater(() ->
+                        groupComboBox.setItems(FXCollections.observableArrayList(groups))));
         annotationService
                 .findActivities()
-                .thenAccept(activities -> {
-                    Platform.runLater(() -> {
-                        activityComboBox.setItems(FXCollections.observableArrayList(activities));
-                    });
-                });
+                .thenAccept(activities -> Platform.runLater(() ->
+                        activityComboBox.setItems(FXCollections.observableArrayList(activities))));
 
     }
 
@@ -256,10 +253,13 @@ public class BulkEditorPaneController {
 
     private void moveAnnotations() {
         // TODO show selection dialog
+        Optional<Media> opt = selectMediaDialog.showAndWait();
+        opt.ifPresent(media -> toolBox.getEventBus()
+                .send(new MoveAnnotationsCmd()));
+
     }
 
     private void renameAnnotations() {
-
         String concept = conceptCombobox.getSelectionModel().getSelectedItem();
         final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
 
@@ -269,10 +269,15 @@ public class BulkEditorPaneController {
         String content = i18n.getString("bulkeditor.concept.dialog.content1") + " " +
                 concept + " " + i18n.getString("bulkeditor.concept.dialog.content2") + " " +
                 annotations.size() + i18n.getString("bulkeditor.concept.dialog.content3");
-        Runnable action = () -> toolBox.getEventBus()
-                .send(new ChangeConceptCmd(annotations, concept));
 
-        doActionWithAlert(title, header, content, action);
+        Dialog<String> dialog = conceptDialogController.getDialog();
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(content);
+
+        Optional<String> opt = dialog.showAndWait();
+        opt.ifPresent(c -> toolBox.getEventBus()
+                .send(new ChangeConceptCmd(annotations, c)));
     }
 
     private void deleteAnnotations() {
