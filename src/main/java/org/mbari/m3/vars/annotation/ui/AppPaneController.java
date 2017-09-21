@@ -255,10 +255,14 @@ public class AppPaneController {
                         Media media = e.get();
                         if (media != null) {
                             String uri = media.getUri().toString();
-                            if (uri.length() > 70) {
-                                int n = uri.length();
-                                uri = uri.substring(n - 70, n);
+                            int i = uri.lastIndexOf("/");
+                            if (i < 0) {
+                                i = 0;
                             }
+                            else {
+                                i = i + 1;
+                            }
+                            uri = uri.substring(i);
                             mediaLabel.setText(media.getVideoName() + " [" + uri + "]");
                         }
                     });

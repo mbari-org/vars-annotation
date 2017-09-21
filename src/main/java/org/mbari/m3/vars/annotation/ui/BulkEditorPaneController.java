@@ -131,6 +131,7 @@ public class BulkEditorPaneController {
                 .getResource("/images/buttons/row_replace.png").toExternalForm());
         moveFramesButton.setGraphic(new ImageView(moveAnnoImg));
         moveFramesButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.annotation.move.tooltip")));
+        moveFramesButton.setOnAction(e -> moveAnnotations());
 
         Image editAnnoImg = new Image(getClass()
                 .getResource("/images/buttons/row_edit.png").toExternalForm());
@@ -163,6 +164,12 @@ public class BulkEditorPaneController {
         searchButton.setText(null);
         searchButton.setGraphic(searchIcon);
         searchButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.search.button")));
+
+        activityLabel.setText(i18n.getString("bulkeditor.activity.label"));
+        activityComboBox.setOnAction(e -> changeActivity());
+
+        groupLabel.setText(i18n.getString("bulkeditor.group.label"));
+        groupComboBox.setOnAction(e -> changeGroups());
 
     }
 
@@ -253,27 +260,32 @@ public class BulkEditorPaneController {
 
     private void moveAnnotations() {
         // TODO show selection dialog
+        final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
         Optional<Media> opt = selectMediaDialog.showAndWait();
         opt.ifPresent(media -> toolBox.getEventBus()
-                .send(new MoveAnnotationsCmd()));
+                .send(new MoveAnnotationsCmd(annotations, media)));
 
     }
 
     private void renameAnnotations() {
-        String concept = conceptCombobox.getSelectionModel().getSelectedItem();
         final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
 
         ResourceBundle i18n = toolBox.getI18nBundle();
         String title = i18n.getString("bulkeditor.concept.dialog.title");
-        String header = i18n.getString("bulkeditor.concept.dialog.header") + " " + concept;
+        String header = i18n.getString("bulkeditor.concept.dialog.header");
         String content = i18n.getString("bulkeditor.concept.dialog.content1") + " " +
-                concept + " " + i18n.getString("bulkeditor.concept.dialog.content2") + " " +
-                annotations.size() + i18n.getString("bulkeditor.concept.dialog.content3");
+                annotations.size()  + " " + i18n.getString("bulkeditor.concept.dialog.content2");
 
         Dialog<String> dialog = conceptDialogController.getDialog();
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(content);
+        dialog.setResultConverter((buttonType) -> {
+            if (buttonType == ButtonType.OK) {
+                return conceptCombobox.getSelectionModel().getSelectedItem();
+            }
+            return null;
+        });
 
         Optional<String> opt = dialog.showAndWait();
         opt.ifPresent(c -> toolBox.getEventBus()

@@ -20,11 +20,15 @@ public class MoveAnnotationsCmd extends UpdateAnnotationsCmd {
         super(originalAnnotations, originalAnnotations.stream()
             .map(Annotation::new)
             .peek(a -> {
-                a.setVideoReferenceUuid(media.getVideoReferenceUuid());
-                // Update recordedTimestamp to match the new media.
-                if (a.getElapsedTime() != null && media.getStartTimestamp() != null) {
-                    Instant recordedTimestamp = media.getStartTimestamp().plus(a.getElapsedTime());
-                    a.setRecordedTimestamp(recordedTimestamp);
+                if (!a.getVideoReferenceUuid().equals(media.getVideoReferenceUuid())) {
+                    a.setVideoReferenceUuid(media.getVideoReferenceUuid());
+                    // Update recordedTimestamp to match the new media.
+                    if (a.getElapsedTime() != null && media.getStartTimestamp() != null) {
+                        Instant recordedTimestamp = media.getStartTimestamp().plus(a.getElapsedTime());
+                        a.setRecordedTimestamp(recordedTimestamp);
+                    } else {
+                        a.setRecordedTimestamp(null);
+                    }
                 }
             })
             .collect(Collectors.toList()));
