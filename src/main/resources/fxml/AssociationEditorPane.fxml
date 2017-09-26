@@ -26,14 +26,14 @@
     <RowConstraints vgrow="NEVER" />
   </rowConstraints>
    <children>
-      <Label fx:id="searchLabel" text="%roweditor.asseditor.search.label" GridPane.hgrow="NEVER" />
-      <Label fx:id="linkValueLabel" text="%roweditor.asseditor.link.label" GridPane.hgrow="NEVER" GridPane.rowIndex="2" />
-      <Label fx:id="linkValueLabel" text="%roweditor.asseditor.value.label" GridPane.hgrow="NEVER" GridPane.rowIndex="4" />
-      <Label fx:id="toConceptLabel" text="%roweditor.asseditor.to.label" GridPane.hgrow="NEVER" GridPane.rowIndex="3" />
+      <Label fx:id="searchLabel" focusTraversable="false" text="%roweditor.asseditor.search.label" GridPane.hgrow="NEVER" />
+      <Label fx:id="linkValueLabel" focusTraversable="false" text="%roweditor.asseditor.link.label" GridPane.hgrow="NEVER" GridPane.rowIndex="2" />
+      <Label fx:id="linkValueLabel" focusTraversable="false" text="%roweditor.asseditor.value.label" GridPane.hgrow="NEVER" GridPane.rowIndex="4" />
+      <Label fx:id="toConceptLabel" focusTraversable="false" text="%roweditor.asseditor.to.label" GridPane.hgrow="NEVER" GridPane.rowIndex="3" />
       <HBox GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4">
          <children>
-            <JFXButton fx:id="addButton" onAction="#onAdd" />
-            <JFXButton fx:id="cancelButton" onAction="#onCancel" />
+            <JFXButton fx:id="addButton" defaultButton="true" onAction="#onAdd" />
+            <JFXButton fx:id="cancelButton" cancelButton="true" onAction="#onCancel" text="Button" />
          </children>
       </HBox>
       <JFXTextField fx:id="searchTextField" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" />

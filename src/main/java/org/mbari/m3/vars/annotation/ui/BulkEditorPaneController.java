@@ -1,12 +1,11 @@
 package org.mbari.m3.vars.annotation.ui;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import de.jensd.fx.glyphs.GlyphsFactory;
@@ -26,16 +25,14 @@ import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.*;
-import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
-import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
-import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
-import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
+import org.mbari.m3.vars.annotation.events.*;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.shared.ConceptSelectionDialogController;
+import org.mbari.m3.vars.annotation.util.FnUtils;
 
 /**
  *
@@ -56,6 +53,12 @@ public class BulkEditorPaneController {
 
     @FXML
     private VBox root;
+
+    @FXML
+    private JFXCheckBox conceptCheckBox;
+
+    @FXML
+    private JFXCheckBox associationCheckBox;
 
     @FXML
     private JFXComboBox<String> conceptCombobox;
@@ -104,6 +107,11 @@ public class BulkEditorPaneController {
 
         toolBox = Initializer.getToolBox();
         conceptDialogController = new ConceptSelectionDialogController(toolBox);
+        toolBox.getServices()
+                .getConceptService()
+                .findRoot()
+                .thenAccept(c -> conceptDialogController.setConcept(c.getName()));
+
         selectMediaDialog = new SelectMediaDialog(toolBox.getServices().getMediaService(),
                 toolBox.getI18nBundle());
 
@@ -164,6 +172,7 @@ public class BulkEditorPaneController {
         searchButton.setText(null);
         searchButton.setGraphic(searchIcon);
         searchButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.search.button")));
+        searchButton.setOnAction(e -> search());
 
         activityLabel.setText(i18n.getString("bulkeditor.activity.label"));
         activityComboBox.setOnAction(e -> changeActivity());
@@ -199,12 +208,14 @@ public class BulkEditorPaneController {
         List<String> concepts = annotations.stream()
                 .map(Annotation::getConcept)
                 .distinct()
+                .sorted(String.CASE_INSENSITIVE_ORDER)
                 .collect(Collectors.toList());
 
         List<Association> associations = annotations.stream()
                 .map(Annotation::getAssociations)
                 .flatMap(List::stream)
-                .distinct()
+                .filter(FnUtils.distinctBy(Association::toString))
+                .sorted(Comparator.comparing(Association::toString))
                 .collect(Collectors.toList());
 
         Platform.runLater(() -> {
@@ -222,6 +233,40 @@ public class BulkEditorPaneController {
                 .thenAccept(activities -> Platform.runLater(() ->
                         activityComboBox.setItems(FXCollections.observableArrayList(activities))));
 
+    }
+
+    private void search() {
+        boolean searchConcepts = conceptCheckBox.isSelected();
+        boolean searchDetails = associationCheckBox.isSelected();
+        String concept = conceptCombobox.getSelectionModel().getSelectedItem();
+        Association association = associationCombobox.getSelectionModel().getSelectedItem();
+        List<Annotation> annotations = new ArrayList<>(toolBox.getData().getAnnotations());
+        Predicate<Annotation> nullPredicate = a -> false;
+        Predicate<Annotation> conceptPredicate = a -> a.getConcept().equals(concept);
+        Predicate<Annotation> associationPredicate = a -> a.getAssociations()
+                .stream()
+                .anyMatch(ass -> ass.getLinkName().equals(association.getLinkName()) &&
+                        ass.getToConcept().equals(association.getToConcept()) &&
+                        ass.getLinkValue().equals(association.getLinkValue()));
+
+        Predicate<Annotation> predicate = nullPredicate;
+
+        if (searchConcepts && searchDetails) {
+            predicate = conceptPredicate.and(associationPredicate);
+        }
+        else if (searchConcepts) {
+            predicate = conceptPredicate;
+        }
+        else if (searchDetails) {
+            predicate = associationPredicate;
+        }
+
+        List<Annotation> foundAnnotations = annotations.stream()
+                .filter(predicate)
+                .collect(Collectors.toList());
+
+        toolBox.getEventBus()
+                .send(new AnnotationsSelectedEvent(foundAnnotations));
     }
 
     private void needsRefresh() {
@@ -282,11 +327,12 @@ public class BulkEditorPaneController {
         dialog.setContentText(content);
         dialog.setResultConverter((buttonType) -> {
             if (buttonType == ButtonType.OK) {
-                return conceptCombobox.getSelectionModel().getSelectedItem();
+                return conceptDialogController.getComboBox().getSelectionModel().getSelectedItem();
             }
             return null;
         });
 
+        Platform.runLater(() -> conceptDialogController.getComboBox().requestFocus());
         Optional<String> opt = dialog.showAndWait();
         opt.ifPresent(c -> toolBox.getEventBus()
                 .send(new ChangeConceptCmd(annotations, c)));

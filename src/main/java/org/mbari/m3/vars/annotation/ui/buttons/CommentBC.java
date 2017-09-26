@@ -32,8 +32,6 @@ public class CommentBC extends AbstractBC {
 
     protected void init() {
 
-
-
         dialog = new TextInputDialog();
 
         ResourceBundle i18n = toolBox.getI18nBundle();

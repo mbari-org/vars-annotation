@@ -1,6 +1,5 @@
 package org.mbari.m3.vars.annotation.ui;
 
-import com.anchorage.docks.stations.DockStation;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
@@ -49,7 +48,6 @@ import java.util.stream.Collectors;
 public class AppPaneController {
 
     private BorderPane root;
-    private DockStation dockStation;
     private SplitPane masterPane;
     private SplitPane topPane;
     private SplitPane bottomPane;

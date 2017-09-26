@@ -66,8 +66,8 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <JFXCheckBox text="%bulkeditor.concept.checkbox" />
-            <JFXCheckBox text="%bulkeditor.association.checkbox" GridPane.rowIndex="1" />
+            <JFXCheckBox fx:id="conceptCheckBox" text="%bulkeditor.concept.checkbox" />
+            <JFXCheckBox fx:id="associationCheckBox" text="%bulkeditor.association.checkbox" GridPane.rowIndex="1" />
             <JFXComboBox fx:id="conceptCombobox" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" />
             <JFXComboBox fx:id="associationCombobox" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
             <JFXButton fx:id="searchButton" text="%bulkeditor.search.button" GridPane.columnIndex="2" GridPane.rowIndex="2">

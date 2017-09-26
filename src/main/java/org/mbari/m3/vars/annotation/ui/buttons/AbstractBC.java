@@ -24,7 +24,7 @@ public abstract class AbstractBC {
     public AbstractBC(Button button, UIToolBox toolBox) {
         this.button = button;
         this.toolBox = toolBox;
-        Platform.runLater(() -> init());
+        Platform.runLater(this::init);
     }
 
     protected void initializeButton(String tooltip, Node icon) {
