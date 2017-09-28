@@ -96,6 +96,7 @@ public class RowEditorController {
         associationController.getCancelButton().setOnAction(v -> {
             this.root.getChildren().remove(associationPane);
             this.root.getChildren().add(rowPane);
+            rowController.requestFocus();
         });
     }
 

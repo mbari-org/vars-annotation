@@ -177,11 +177,11 @@ public class CachedConceptService implements ConceptService {
             if (concept.getConceptDetails() == null) {
                 findDetails(concept.getName());
             }
-//            else {
-//                concept.getConceptDetails()
-//                        .getAlternateNames()
-//                        .forEach(s -> cache.putIfAbsent(s, concept));
-//            }
+            else {
+                concept.getConceptDetails()
+                        .getAlternateNames()
+                        .forEach(s -> cache.putIfAbsent(s, concept));
+            }
             concept.getChildren()
                     .forEach(this::addToCache);
         }

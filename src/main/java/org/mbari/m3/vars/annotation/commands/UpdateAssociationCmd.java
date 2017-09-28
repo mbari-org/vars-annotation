@@ -4,6 +4,7 @@ import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
+import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -37,9 +38,10 @@ public class UpdateAssociationCmd implements Command {
     private void doUpdate(UIToolBox toolBox, Association association) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         annotationService.updateAssociation(association)
-                .thenAccept(a -> annotationService.findByUuid(observationUuid)
-                        .thenAccept(annotation -> toolBox.getEventBus()
-                                .send(new AnnotationsChangedEvent(Arrays.asList(annotation)))));
+                .thenAccept(a -> {
+                    AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
+                    decorator.refreshAnnotationsView(observationUuid);
+                });
     }
 
     @Override

@@ -17,10 +17,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -219,20 +216,18 @@ public class AnnotationEditorPaneController {
         }
         else {
             Platform.runLater(() -> {
-//                if (!conceptComboBox.getItems().contains(annotation.getConcept())) {
-//                    conceptComboBox.getItems().add(annotation.getConcept());
-//                }
-
                 conceptComboBox.getSelectionModel().select(annotation.getConcept());
-                conceptComboBox.requestFocus();
-                //conceptComboBox.getEditor().requestFocus();
                 ObservableList<Association> ass = FXCollections.observableArrayList(annotation.getAssociations());
                 associationListView.setItems(ass);
+                requestFocus();
             });
         }
 
     }
 
+    public void requestFocus() {
+        conceptComboBox.requestFocus();
+    }
 
     private void loadComboBoxData() {
         toolBox.getServices()
