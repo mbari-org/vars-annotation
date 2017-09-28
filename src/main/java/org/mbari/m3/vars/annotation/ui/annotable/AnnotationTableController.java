@@ -271,6 +271,7 @@ public class AnnotationTableController {
      */
     private int[] getVisibleRows() {
         TableView<Annotation> tableView = getTableView();
+        // TODO this does not work in Java 9
         TableViewSkin<?> skin = (TableViewSkin<?>) tableView.getSkin();
         if (skin == null) return new int[] {0, 0};
         VirtualFlow<?> flow = (VirtualFlow<?>) skin.getChildren().get(1);

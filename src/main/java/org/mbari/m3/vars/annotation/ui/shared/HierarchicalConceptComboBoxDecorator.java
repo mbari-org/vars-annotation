@@ -21,6 +21,7 @@ public class HierarchicalConceptComboBoxDecorator {
     public HierarchicalConceptComboBoxDecorator(ComboBox<String> comboBox, ConceptService conceptService) {
         this.comboBox = comboBox;
         this.conceptService = conceptService;
+        comboBox.setItems(FXCollections.observableArrayList());
     }
 
     public void setConcept(String concept) {

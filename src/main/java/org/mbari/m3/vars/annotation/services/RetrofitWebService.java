@@ -6,6 +6,7 @@ import retrofit2.Response;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author Brian Schlining
@@ -45,4 +46,6 @@ public interface RetrofitWebService {
     default String asString(Object obj) {
         return (obj == null) ? null : obj.toString();
     }
+
+
 }

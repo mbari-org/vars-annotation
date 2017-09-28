@@ -6,9 +6,11 @@ import org.mbari.m3.vars.annotation.model.ConceptDetails;
 import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBConceptService;
 import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBWebServiceFactory;
 
+import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -21,7 +23,8 @@ public class CachedConceptServiceTest {
 
     String endpoint = "http://m3.shore.mbari.org/kb/v1/";
     ConceptService conceptService = new CachedConceptService(
-            new KBConceptService(new KBWebServiceFactory(endpoint)));
+            new KBConceptService(new KBWebServiceFactory(endpoint,
+                    Duration.ofSeconds(5), Executors.newFixedThreadPool(2))));
 
     @Test
     public void testFetchConceptTree() throws InterruptedException, ExecutionException {

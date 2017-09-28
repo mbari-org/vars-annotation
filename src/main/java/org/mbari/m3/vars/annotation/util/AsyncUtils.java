@@ -1,6 +1,5 @@
 package org.mbari.m3.vars.annotation.util;
 
-import com.sun.xml.internal.ws.util.CompletedFuture;
 import io.reactivex.Observable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -10,6 +10,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.time.Duration;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 
@@ -37,6 +38,16 @@ public abstract class RetrofitServiceFactory {
         retrofitBuilder  = new Retrofit.Builder()
                 .baseUrl(correctedEndpoint)
                 .addConverterFactory(GsonConverterFactory.create(getGson()));
+    }
+
+    public RetrofitServiceFactory(String endpoint, Duration timeout, Executor executor) {
+        this.timeout = timeout;
+        String correctedEndpoint = (endpoint.endsWith("/")) ? endpoint : endpoint + "/";
+
+        retrofitBuilder  = new Retrofit.Builder()
+                .baseUrl(correctedEndpoint)
+                .addConverterFactory(GsonConverterFactory.create(getGson()))
+                .callbackExecutor(executor);
     }
 
     public <S> S create(Class<S> clazz) {

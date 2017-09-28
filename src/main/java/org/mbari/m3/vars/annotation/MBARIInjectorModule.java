@@ -21,6 +21,9 @@ import org.mbari.m3.vars.annotation.util.PreferencesFactory;
 import org.mbari.m3.vars.annotation.util.WebPreferencesFactory;
 
 import java.time.Duration;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
 /**
  * @author Brian Schlining
@@ -29,6 +32,7 @@ import java.time.Duration;
 public class MBARIInjectorModule implements Module {
 
     private final Config config;
+    private final Executor defaultExecutor = new ForkJoinPool();
 
     public MBARIInjectorModule() {
         this.config = ConfigFactory.load();
@@ -79,7 +83,8 @@ public class MBARIInjectorModule implements Module {
 
     private void configureConceptService(Binder binder) {
         String endpoint = config.getString("concept.service.url");
-        KBWebServiceFactory factory = new KBWebServiceFactory(endpoint);
+        Duration timeout = config.getDuration("concept.service.timeout");
+        KBWebServiceFactory factory = new KBWebServiceFactory(endpoint, timeout, defaultExecutor);
         KBConceptService service = new KBConceptService(factory);
         // --- Using a local cache
         CachedConceptService cachedService = new CachedConceptService(service);

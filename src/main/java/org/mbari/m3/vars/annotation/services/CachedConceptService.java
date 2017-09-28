@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Caching implementation of a ConceptService. This one wraps another service. Initial calls
@@ -34,6 +36,8 @@ public class CachedConceptService implements ConceptService {
     private Map<String, Concept> cache = new ConcurrentHashMap<>();
     private volatile List<String> allNames = Collections.emptyList();
     private final ConceptService conceptService;
+
+    private final ExecutorService slowExecutor = Executors.newFixedThreadPool(2);
 
     /**
      *
@@ -95,13 +99,15 @@ public class CachedConceptService implements ConceptService {
 
         if (fetchDetails) {
             CompletableFuture<Optional<ConceptDetails>> g = conceptService.findDetails(name);
-            f = g.thenApply(cd -> {
-                if (cd.isPresent() && cache.containsKey(name)) {
+            f = g.thenApply(opt -> {
+                if (opt.isPresent() && cache.containsKey(name)) {
+                    ConceptDetails cd = opt.get();
                     Concept c = cache.get(name);
-                    c.setConceptDetails(cd.get());
-                    addToCache(c);
+                    c.setConceptDetails(cd);
+                    cd.getAlternateNames()
+                            .forEach(s -> cache.putIfAbsent(s, c));
                 }
-                return cd;
+                return opt;
             });
         }
 
@@ -171,11 +177,11 @@ public class CachedConceptService implements ConceptService {
             if (concept.getConceptDetails() == null) {
                 findDetails(concept.getName());
             }
-            else {
-                concept.getConceptDetails()
-                        .getAlternateNames()
-                        .forEach(s -> cache.putIfAbsent(s, concept));
-            }
+//            else {
+//                concept.getConceptDetails()
+//                        .getAlternateNames()
+//                        .forEach(s -> cache.putIfAbsent(s, concept));
+//            }
             concept.getChildren()
                     .forEach(this::addToCache);
         }

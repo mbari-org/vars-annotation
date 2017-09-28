@@ -16,6 +16,7 @@ import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -152,6 +153,7 @@ public class AssociationEditorPaneController {
         searchTextField.setText(null);
         linkNameTextField.setText(null);
         linkValueTextField.setText(null);
+        //toConceptComboBox.setItems(FXCollections.emptyObservableList());
         toConceptComboBox.getItems().clear();
     }
 
