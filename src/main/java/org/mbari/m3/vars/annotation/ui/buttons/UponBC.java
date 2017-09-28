@@ -39,6 +39,7 @@ public class UponBC extends AbstractBC {
         String tooltip = toolBox.getI18nBundle().getString("buttons.upon");
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
         Text icon = iconFactory.createIcon(MaterialIcon.VERTICAL_ALIGN_BOTTOM, "30px");
+        Text icon2 = iconFactory.createIcon(MaterialIcon.VERTICAL_ALIGN_BOTTOM, "30px");
         initializeButton(tooltip, icon);
 
         ResourceBundle i18n = toolBox.getI18nBundle();
@@ -46,7 +47,7 @@ public class UponBC extends AbstractBC {
         dialog.setTitle(i18n.getString("buttons.upon.dialog.title"));
         dialog.setHeaderText(i18n.getString("buttons.upon.dialog.header"));
         dialog.setContentText(i18n.getString("buttons.upon.dialog.content"));
-        dialog.setGraphic(icon);
+        dialog.setGraphic(icon2);
         dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
 
     }

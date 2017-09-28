@@ -15,8 +15,7 @@ import org.mbari.m3.vars.annotation.commands.UpdateAssociationCmd;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Brian Schlining
@@ -82,33 +81,17 @@ public class RowEditorController {
 
         rowController.getRemoveButton().setOnAction(v -> {
             ObservableList<Association> selectedAssociations = rowController.getSelectedAssociations();
+            Map<Association, UUID> map = new HashMap<>();
+            selectedAssociations.forEach(a -> map.put(a, annotation.getObservationUuid()));
             if (selectedAssociations.size() > 0) {
-                Command cmd = new DeleteAssociationsCmd(selectedAssociations);
+                Command cmd = new DeleteAssociationsCmd(map);
                 toolBox.getEventBus()
                         .send(cmd);
             }
         });
 
-        associationController.getAddButton().setOnAction(v -> {
-            Association selectedAssociation = associationController.getSelectedAssociation();
-            Optional<Association> opt = associationController.getCustomAssociation();
-            if (opt.isPresent() && annotation != null) {
-                Association customAssociation = opt.get();
-                Command cmd;
-                if (selectedAssociation == null) {
-                    // Create new association
-                    cmd = new CreateAssociationsCmd(customAssociation, Arrays.asList(annotation));
-                }
-                else {
-                    // Update existing association
-                    Association a = new Association(selectedAssociation.getUuid(), customAssociation);
-                    cmd = new UpdateAssociationCmd(annotation.getObservationUuid(), selectedAssociation, a);
-                }
-                toolBox.getEventBus().send(cmd);
-                this.root.getChildren().remove(associationPane);
-                this.root.getChildren().add(rowPane);
-            }
-        });
+        associationController.getAddButton().setOnAction(v -> doAction());
+        associationController.getLinkValueTextField().setOnAction(v -> doAction());
 
         associationController.getCancelButton().setOnAction(v -> {
             this.root.getChildren().remove(associationPane);
@@ -118,5 +101,28 @@ public class RowEditorController {
 
     public Pane getRoot() {
         return root;
+    }
+
+    protected void doAction() {
+        BorderPane rowPane = rowController.getRoot();
+        GridPane associationPane = associationController.getRoot();
+        Association selectedAssociation = associationController.getSelectedAssociation();
+        Optional<Association> opt = associationController.getCustomAssociation();
+        if (opt.isPresent() && annotation != null) {
+            Association customAssociation = opt.get();
+            Command cmd;
+            if (selectedAssociation == null) {
+                // Create new association
+                cmd = new CreateAssociationsCmd(customAssociation, Arrays.asList(annotation));
+            }
+            else {
+                // Update existing association
+                Association a = new Association(selectedAssociation.getUuid(), customAssociation);
+                cmd = new UpdateAssociationCmd(annotation.getObservationUuid(), selectedAssociation, a);
+            }
+            toolBox.getEventBus().send(cmd);
+            this.root.getChildren().remove(associationPane);
+            this.root.getChildren().add(rowPane);
+        }
     }
 }

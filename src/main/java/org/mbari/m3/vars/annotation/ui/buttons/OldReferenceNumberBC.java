@@ -31,21 +31,10 @@ public class OldReferenceNumberBC extends AbstractBC {
     }
 
     protected void init() {
-
-        dialog = new ChoiceDialog<>();
-
-        ResourceBundle i18n = toolBox.getI18nBundle();
-        String tooltip = i18n.getString("buttons.oldnumber");
+        String tooltip = toolBox.getI18nBundle().getString("buttons.oldnumber");
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
         Text icon = iconFactory.createIcon(MaterialIcon.EXPOSURE_NEG_1, "30px");
         initializeButton(tooltip, icon);
-
-        dialog.setTitle(i18n.getString("buttons.oldnumber.dialog.title"));
-        dialog.setHeaderText(i18n.getString("buttons.oldnumber.dialog.header"));
-        dialog.setContentText(i18n.getString("buttons.oldnumber.dialog.content"));
-        dialog.setGraphic(icon);
-        dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
-
     }
 
     protected void apply() {
@@ -59,11 +48,12 @@ public class OldReferenceNumberBC extends AbstractBC {
 
                     List<Integer> refNums = associationsToRefNumbers(as);
                     Platform.runLater(() -> {
-                        dialog.getItems().clear();
+                        ChoiceDialog<Integer> dlg = getDialog();
+                        dlg.getItems().clear();
                         if (!refNums.isEmpty()) {
-                            dialog.getItems().addAll(refNums);
-                            dialog.setSelectedItem(refNums.iterator().next());
-                            Optional<Integer> integer = dialog.showAndWait();
+                            dlg.getItems().addAll(refNums);
+                            dlg.setSelectedItem(refNums.iterator().next());
+                            Optional<Integer> integer = dlg.showAndWait();
                             integer.ifPresent(i -> {
                                 Association a = new Association(associationKey, Association.VALUE_SELF, i + "");
                                 toolBox.getEventBus()
@@ -73,6 +63,21 @@ public class OldReferenceNumberBC extends AbstractBC {
                     });
 
                 });
+    }
+
+    private ChoiceDialog<Integer> getDialog() {
+        if (dialog == null) {
+            ResourceBundle i18n = toolBox.getI18nBundle();
+            MaterialIconFactory iconFactory = MaterialIconFactory.get();
+            Text icon = iconFactory.createIcon(MaterialIcon.EXPOSURE_NEG_1, "30px");
+            dialog = new ChoiceDialog<>();
+            dialog.setTitle(i18n.getString("buttons.oldnumber.dialog.title"));
+            dialog.setHeaderText(i18n.getString("buttons.oldnumber.dialog.header"));
+            dialog.setContentText(i18n.getString("buttons.oldnumber.dialog.content"));
+            dialog.setGraphic(icon);
+            dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+        }
+        return dialog;
     }
 
     private List<Integer> associationsToRefNumbers(List<Association> as) {

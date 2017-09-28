@@ -16,7 +16,6 @@ import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.messages.SeekMsg;
-import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.util.FormatUtils;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Annotation;
@@ -272,6 +271,7 @@ public class AnnotationTableController {
     private int[] getVisibleRows() {
         TableView<Annotation> tableView = getTableView();
         // TODO this does not work in Java 9
+        // See https://stackoverflow.com/questions/46474385/how-to-find-the-indices-of-the-visible-rows-in-a-tableview-in-javafx-9/46474693#46474693
         TableViewSkin<?> skin = (TableViewSkin<?>) tableView.getSkin();
         if (skin == null) return new int[] {0, 0};
         VirtualFlow<?> flow = (VirtualFlow<?>) skin.getChildren().get(1);

@@ -204,10 +204,6 @@ public class AnnotationServiceDecorator {
         final EventBus eventBus = toolBox.getEventBus();
         all.thenAccept(v -> {
             eventBus.send(new AnnotationsChangedEvent(annotations));
-//            List<Annotation> selectedAnnotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-//            eventBus.send(new AnnotationsRemovedEvent(annotations));
-//            eventBus.send(new AnnotationsAddedEvent(annotations));
-//            eventBus.send(new AnnotationsSelectedEvent(selectedAnnotations));
         });
     }
 

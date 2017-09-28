@@ -36,8 +36,7 @@ public class UpdateAssociationCmd implements Command {
 
     private void doUpdate(UIToolBox toolBox, Association association) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        annotationService
-                .updateAssociation(association)
+        annotationService.updateAssociation(association)
                 .thenAccept(a -> annotationService.findByUuid(observationUuid)
                         .thenAccept(annotation -> toolBox.getEventBus()
                                 .send(new AnnotationsChangedEvent(Arrays.asList(annotation)))));

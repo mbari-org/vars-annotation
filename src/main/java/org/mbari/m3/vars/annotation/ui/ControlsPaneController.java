@@ -92,7 +92,7 @@ public class ControlsPaneController {
             new UponBC(uponBtn, toolBox);
 
             buttonPane.getChildren().addAll(newBtn, dupBtn, copyBtn, framegrabBtn,
-                    deleteBtn,sampleBtn, commentBtn, newRefBtn, oldRefBtn, uponBtn);
+                    sampleBtn, newRefBtn, oldRefBtn, uponBtn,  commentBtn, deleteBtn);
 
         }
         return buttonPane;

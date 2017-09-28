@@ -31,20 +31,10 @@ public class CommentBC extends AbstractBC {
     }
 
     protected void init() {
-
-        dialog = new TextInputDialog();
-
-        ResourceBundle i18n = toolBox.getI18nBundle();
-        String tooltip = i18n.getString("buttons.comment");
+        String tooltip = toolBox.getI18nBundle().getString("buttons.comment");
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
         Text icon = iconFactory.createIcon(MaterialIcon.INSERT_COMMENT, "30px");
         initializeButton(tooltip, icon);
-
-        dialog.setTitle(i18n.getString("buttons.comment.dialog.title"));
-        dialog.setHeaderText(i18n.getString("buttons.comment.dialog.header"));
-        dialog.setContentText(i18n.getString("buttons.comment.dialog.content"));
-        dialog.setGraphic(icon);
-        dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
 
         toolBox.getEventBus()
                 .toObserverable()
@@ -56,14 +46,29 @@ public class CommentBC extends AbstractBC {
                 });
     }
 
+    private TextInputDialog getDialog() {
+        if (dialog == null) {
+            ResourceBundle i18n = toolBox.getI18nBundle();
+            MaterialIconFactory iconFactory = MaterialIconFactory.get();
+            Text icon = iconFactory.createIcon(MaterialIcon.INSERT_COMMENT, "30px");
+            dialog = new TextInputDialog();
+            dialog.setTitle(i18n.getString("buttons.comment.dialog.title"));
+            dialog.setHeaderText(i18n.getString("buttons.comment.dialog.header"));
+            dialog.setContentText(i18n.getString("buttons.comment.dialog.content"));
+            dialog.setGraphic(icon);
+            dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+        }
+        return dialog;
+    }
+
     protected void apply() {
         ObservableList<Annotation> annotations = toolBox.getData().getSelectedAnnotations();
-        Optional<String> s = dialog.showAndWait();
+        Optional<String> s = getDialog().showAndWait();
         s.ifPresent(comment -> {
             Association a = new Association(commentLinkName, Association.VALUE_SELF, comment);
             toolBox.getEventBus()
                     .send(new CreateAssociationsCmd(a, annotations));
         });
-        dialog.getEditor().setText(null);
+        getDialog().getEditor().setText(null);
     }
 }

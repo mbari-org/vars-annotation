@@ -41,21 +41,11 @@ public class SampleBC extends AbstractBC {
     }
 
     public void init() {
-
-        dialog = new Dialog<>();
         ResourceBundle i18n = toolBox.getI18nBundle();
         String tooltip = i18n.getString("buttons.sample");
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
         Text icon = iconFactory.createIcon(MaterialIcon.NATURE_PEOPLE, "30px");
         initializeButton(tooltip, icon);
-
-        dialog.setTitle(i18n.getString("buttons.sample.dialog.title"));
-        dialog.setHeaderText(i18n.getString("buttons.sample.dialog.header"));
-        dialog.setContentText(i18n.getString("buttons.sample.dialog.content"));
-        dialog.setGraphic(icon);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        dialog.getDialogPane().setContent(getDialogPane());
-        dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
 
         toolBox.getEventBus()
                 .toObserverable()
@@ -70,7 +60,7 @@ public class SampleBC extends AbstractBC {
     @Override
     protected void apply() {
         Platform.runLater(() -> comboBox.requestFocus());
-        Optional<Pair<String, String>> v = dialog.showAndWait();
+        Optional<Pair<String, String>> v = getDialog().showAndWait();
         if (v.isPresent()) {
             Pair<String, String> pair = v.get();
             createAssociation(pair.getKey(), pair.getValue());
@@ -79,6 +69,24 @@ public class SampleBC extends AbstractBC {
         String defaultSampleConcept = toolBox.getConfig()
                 .getString("app.annotation.sample.default.concept");
         comboBox.getSelectionModel().select(defaultSampleConcept);
+    }
+
+
+    private Dialog<Pair<String, String>> getDialog() {
+        if (dialog == null) {
+            ResourceBundle i18n = toolBox.getI18nBundle();
+            MaterialIconFactory iconFactory = MaterialIconFactory.get();
+            Text icon = iconFactory.createIcon(MaterialIcon.NATURE_PEOPLE, "30px");
+            dialog = new Dialog<>();
+            dialog.setTitle(i18n.getString("buttons.sample.dialog.title"));
+            dialog.setHeaderText(i18n.getString("buttons.sample.dialog.header"));
+            dialog.setContentText(i18n.getString("buttons.sample.dialog.content"));
+            dialog.setGraphic(icon);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+            dialog.getDialogPane().setContent(getDialogPane());
+            dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+        }
+        return dialog;
     }
 
     private void createAssociation(String sampleBy, String sampleId) {
@@ -125,7 +133,7 @@ public class SampleBC extends AbstractBC {
                             comboBox.setItems(FXCollections.observableArrayList(samplers));
                             comboBox.getSelectionModel().select(defaultSampleConcept);
 
-                            dialog.setResultConverter(dialogButton -> {
+                            getDialog().setResultConverter(dialogButton -> {
                                 if (dialogButton == ButtonType.OK) {
                                     return new Pair<>(comboBox.getSelectionModel().getSelectedItem(),
                                             textField.getText());

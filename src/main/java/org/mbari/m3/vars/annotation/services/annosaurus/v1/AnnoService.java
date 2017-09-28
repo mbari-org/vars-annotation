@@ -211,7 +211,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     }
 
     public CompletableFuture<Void> deleteAssociations(Collection<UUID> associationUuids) {
-        return sendRequest(assService.delete(associationUuids));
+        return sendRequest(assService.delete(associationUuids, bulkHeaders));
     }
 
     @Override

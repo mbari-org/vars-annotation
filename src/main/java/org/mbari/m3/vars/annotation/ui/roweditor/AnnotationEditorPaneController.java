@@ -4,9 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
@@ -103,7 +101,11 @@ public class AnnotationEditorPaneController {
     @FXML
     void onRemove(ActionEvent event) {
         final List<Association> items = new ArrayList<>(associationListView.getSelectionModel().getSelectedItems());
-        eventBus.send(new DeleteAssociationsCmd(items));
+        if (!items.isEmpty() && annotation.get() != null) {
+            Map<Association, UUID> map = new HashMap<>();
+            map.put(items.get(0), annotation.get().getObservationUuid());
+            eventBus.send(new DeleteAssociationsCmd(map));
+        }
     }
 
     @FXML

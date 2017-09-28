@@ -27,6 +27,10 @@ public abstract class AbstractBC {
         Platform.runLater(this::init);
     }
 
+    public Button getButton() {
+        return button;
+    }
+
     protected void initializeButton(String tooltip, Node icon) {
         button.setTooltip(new Tooltip(tooltip));
         button.setText(null);

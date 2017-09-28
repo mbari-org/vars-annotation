@@ -44,6 +44,7 @@ public interface AssociationWebService {
     Call<Boolean> delete(@Path("uuid") UUID associationUuid);
 
     @POST("associations/delete")
-    Call<Void> delete(@Body Collection<UUID> associationUuids);
+    Call<Void> delete(@Body Collection<UUID> associationUuids,
+                      @HeaderMap Map<String, String> headers);
 
 }

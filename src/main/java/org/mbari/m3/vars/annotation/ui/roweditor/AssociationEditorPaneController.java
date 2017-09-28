@@ -20,7 +20,9 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
@@ -96,12 +98,16 @@ public class AssociationEditorPaneController {
         return root;
     }
 
-    public JFXButton getAddButton() {
+    public Button getAddButton() {
         return addButton;
     }
 
-    public JFXButton getCancelButton() {
+    public Button getCancelButton() {
         return cancelButton;
+    }
+
+    public TextField getLinkValueTextField() {
+        return linkValueTextField;
     }
 
     @FXML
@@ -113,11 +119,11 @@ public class AssociationEditorPaneController {
         Text addIcon = gf.createIcon(MaterialIcon.ADD, "30px");
         addButton.setText(null);
         addButton.setGraphic(addIcon);
-        addButton.defaultButtonProperty().bind(addButton.focusedProperty()); // Enter triggers button
+        //addButton.defaultButtonProperty().bind(addButton.focusedProperty()); // Enter triggers button
         Text cancelIcon = gf.createIcon(MaterialIcon.CANCEL, "30px");
         cancelButton.setText(null);
         cancelButton.setGraphic(cancelIcon);
-        cancelButton.defaultButtonProperty().bind(cancelButton.focusedProperty()); // Enter triggers button
+        //cancelButton.defaultButtonProperty().bind(cancelButton.focusedProperty()); // Enter triggers button
         linkNameTextField.setDisable(true);
 
         // Add filtering of toConcepts
@@ -153,7 +159,6 @@ public class AssociationEditorPaneController {
         searchTextField.setText(null);
         linkNameTextField.setText(null);
         linkValueTextField.setText(null);
-        //toConceptComboBox.setItems(FXCollections.emptyObservableList());
         toConceptComboBox.getItems().clear();
     }
 
