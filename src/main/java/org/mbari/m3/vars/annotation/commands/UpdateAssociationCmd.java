@@ -1,12 +1,11 @@
 package org.mbari.m3.vars.annotation.commands;
 
 import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
+import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
 
-import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -27,7 +26,17 @@ public class UpdateAssociationCmd implements Command {
 
     @Override
     public void apply(UIToolBox toolBox) {
-        doUpdate(toolBox, newAssociation);
+        ConceptService conceptService = toolBox.getServices().getConceptService();
+        // Make sure we're using a primary name in the toConcept
+        conceptService.findConcept(newAssociation.getToConcept())
+                .thenAccept(opt -> {
+                    Association a = opt.map(c -> new Association(newAssociation.getLinkName(),
+                            opt.get().getName(),
+                            newAssociation.getLinkValue(),
+                            newAssociation.getMimeType(),
+                            newAssociation.getUuid())).orElse(newAssociation);
+                    doUpdate(toolBox, a);
+                });
     }
 
     @Override

@@ -21,6 +21,7 @@ import org.mbari.m3.vars.annotation.util.PreferencesFactory;
 import org.mbari.m3.vars.annotation.util.WebPreferencesFactory;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
@@ -88,6 +89,8 @@ public class MBARIInjectorModule implements Module {
         KBConceptService service = new KBConceptService(factory);
         // --- Using a local cache
         CachedConceptService cachedService = new CachedConceptService(service);
+        List<String> cachedConceptTemplates = config.getStringList("app.annotation.details.cache");
+        cachedService.prefetch(cachedConceptTemplates);
         binder.bind(String.class)
                 .annotatedWith(Names.named("CONCEPT_ENDPOINT"))
                 .toInstance(endpoint);

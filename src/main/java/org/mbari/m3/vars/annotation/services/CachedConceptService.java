@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.services;
 
+import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.model.ConceptAssociationTemplate;
 import org.mbari.m3.vars.annotation.model.ConceptDetails;
@@ -8,10 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * Caching implementation of a ConceptService. This one wraps another service. Initial calls
@@ -36,8 +35,7 @@ public class CachedConceptService implements ConceptService {
     private Map<String, Concept> cache = new ConcurrentHashMap<>();
     private volatile List<String> allNames = Collections.emptyList();
     private final ConceptService conceptService;
-
-    private final ExecutorService slowExecutor = Executors.newFixedThreadPool(2);
+    private final Map<String, List<ConceptAssociationTemplate>> cachedTemplates = new ConcurrentHashMap<>();
 
     /**
      *
@@ -50,14 +48,29 @@ public class CachedConceptService implements ConceptService {
     /**
      * Convienence method to load the main tree and start loading of details.
      *
+     * @param  cachedConceptDetails Concept names in this list will have their templates pre-loaded
      * @return A future that completes when the conceptTree is loaded (but details
      * will continue to load in the background)
      */
-    public CompletableFuture<Void> prefetch() {
-        return findRoot().thenCompose(n -> {
+    public CompletableFuture<Void> prefetch(List<String> cachedConceptDetails) {
+
+        List<CompletableFuture<?>> futures = cachedConceptDetails.stream()
+                .map(s -> new Pair<>(s, findTemplates(s)))
+                .peek(p -> p.getValue()
+                        .thenAccept(cats -> cachedTemplates.put(p.getKey(), cats)))
+                .map(p -> p.getValue())
+                .collect(Collectors.toList());
+
+        CompletableFuture<Void> f0 = findRoot().thenCompose(n -> {
             findAllNames();
             return null;
         });
+
+        futures.add(f0);
+        CompletableFuture[] futureArray = futures.toArray(new CompletableFuture[futures.size()]);
+
+        return CompletableFuture.allOf(futureArray);
+
     }
 
     @Override
@@ -149,8 +162,12 @@ public class CachedConceptService implements ConceptService {
      */
     @Override
     public CompletableFuture<List<ConceptAssociationTemplate>> findTemplates(String name) {
-        return conceptService.findTemplates(name);
-        // We should cache these
+        if (cachedTemplates.containsKey(name)) {
+            return CompletableFuture.completedFuture(cachedTemplates.get(name));
+        }
+        else {
+            return conceptService.findTemplates(name);
+        }
     }
 
     @Override
@@ -189,6 +206,7 @@ public class CachedConceptService implements ConceptService {
 
     public synchronized void clear() {
         cache.clear();
+        cachedTemplates.clear();
         allNames = Collections.emptyList();
         root = null;
         rootDetails = null;

@@ -48,7 +48,7 @@ public class Association implements Cloneable {
     }
 
     public Association(UUID uuid, Association a) {
-        uuid = uuid;
+        this.uuid = uuid;
         linkName = a.linkName;
         toConcept = a.toConcept;
         linkValue = a.linkValue;

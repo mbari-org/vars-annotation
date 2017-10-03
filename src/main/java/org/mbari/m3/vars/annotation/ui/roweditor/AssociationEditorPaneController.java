@@ -17,6 +17,7 @@ import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -159,7 +160,7 @@ public class AssociationEditorPaneController {
         searchTextField.setText(null);
         linkNameTextField.setText(null);
         linkValueTextField.setText(null);
-        toConceptComboBox.getItems().clear();
+        toConceptComboBox.setItems(FXCollections.observableArrayList());
     }
 
     /**
@@ -250,8 +251,10 @@ public class AssociationEditorPaneController {
         linkValueTextField.setText(cat.getLinkValue());
         String concept = cat.getToConcept();
         if (concept.equals(Association.VALUE_NIL) || concept.equals(Association.VALUE_SELF)) {
-            toConceptComboBox.getItems().clear();
-            toConceptComboBox.getItems().add(concept);
+            ObservableList<String> items = FXCollections.observableArrayList();
+            items.add(concept);
+            toConceptComboBox.setItems(items);
+
         }
         else {
             // TODO look up the link templates. Find a match linkvalue and set it's toconcept, then select the cat's toConcept

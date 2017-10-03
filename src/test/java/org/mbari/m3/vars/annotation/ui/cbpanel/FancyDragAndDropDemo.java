@@ -29,9 +29,14 @@ import java.util.concurrent.TimeUnit;
 public class FancyDragAndDropDemo extends Application {
 
     public static void main(String[] args) throws Exception {
+
+        List<String> concepts = Initializer.getToolBox()
+                .getConfig()
+                .getStringList("app.annotation.details.cache");
+
         ((CachedConceptService) Initializer.getToolBox()
                 .getServices()
-                .getConceptService()).prefetch();
+                .getConceptService()).prefetch(concepts);
         Thread.sleep(2000);
         launch(args);
     }
