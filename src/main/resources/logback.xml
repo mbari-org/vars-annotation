@@ -17,7 +17,7 @@
     <logger name="org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoWebServiceFactory" level="DEBUG" />
     <logger name="org.mbari.m3.vars.annotation.util.ActiveAppPinger" level="WARN" />
 
-    <root level="DEBUG">
+    <root level="WARN">
         <appender-ref ref="CONSOLE"/>
     </root>
 

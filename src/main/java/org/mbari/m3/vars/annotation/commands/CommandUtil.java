@@ -45,7 +45,7 @@ public class CommandUtil {
         String deploymentId = media.getVideoSequenceName();
         int i = deploymentId.indexOf(cameraId);
         if (i >= 0) {
-            deploymentId = deploymentId.substring(i, cameraId.length() - i);
+            deploymentId = deploymentId.substring(i, deploymentId.length() - i);
         }
         return deploymentId;
     }

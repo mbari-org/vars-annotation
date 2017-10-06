@@ -13,6 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.util.StringConverter;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.ImageReference;
+import org.mbari.m3.vars.annotation.ui.shared.ImageStage;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class ImageViewController {
     private ImageView imageView;
     private BorderPane root;
     private ComboBox<ImageReference> comboBox;
+    private ImageStage imageStage = new ImageStage();
 
 
     public void setAnnotation(Annotation annotation) {
@@ -45,11 +47,18 @@ public class ImageViewController {
 
     public ImageView getImageView() {
         if (imageView == null) {
+            imageStage.setOnCloseRequest(evt -> imageStage.close());
             imageView = new ImageView();
             imageView.setFitWidth(100);
             imageView.setPreserveRatio(true);
             imageView.setSmooth(true);
             imageView.setCache(true);
+            imageView.setOnMouseClicked(evt -> {
+                ImageReference item = getComboBox().getSelectionModel().getSelectedItem();
+                Image image = new Image(item.getUrl().toExternalForm());
+                imageStage.setImage(image);
+                imageStage.show();
+            });
         }
         return imageView;
     }
