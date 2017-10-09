@@ -9,6 +9,8 @@ import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.DuplicateAnnotationsCmd;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
+import org.mbari.m3.vars.annotation.messages.CopyAnnotationMsg;
+import org.mbari.m3.vars.annotation.messages.DuplicateAnnotationMsg;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.User;
 
@@ -38,8 +40,10 @@ public class DuplicateAnnotationBC extends AbstractBC {
                     button.setDisable(!enabled);
                 });
 
-        button.setOnAction(e -> apply());
-
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(DuplicateAnnotationMsg.class)
+                .subscribe(m -> apply());
     }
 
     protected void apply() {

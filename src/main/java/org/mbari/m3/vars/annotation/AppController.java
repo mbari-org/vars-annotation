@@ -8,11 +8,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayers;
-import org.mbari.m3.vars.annotation.messages.ClearCommandManagerMsg;
-import org.mbari.m3.vars.annotation.messages.ClearCacheMsg;
+import org.mbari.m3.vars.annotation.messages.*;
 import org.mbari.m3.vars.annotation.events.*;
-import org.mbari.m3.vars.annotation.messages.SeekMsg;
-import org.mbari.m3.vars.annotation.messages.ShowConcurrentAnnotationsMsg;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.CachedConceptService;
@@ -25,6 +22,7 @@ import org.mbari.vcr4j.time.Timecode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.Key;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -56,6 +54,7 @@ public class AppController {
             scene.getStylesheets()
                     .addAll(toolBox.getStylesheets());
 
+            // --- Configure global shortcuts
             scene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
                 KeyCode code = e.getCode();
                 if (e.isControlDown()) {
@@ -84,7 +83,6 @@ public class AppController {
                         int idx = selectionModel.getSelectedIndex();
                         selectionModel.clearSelection();
                         selectionModel.select(idx + 1);
-
                     }
                     else if (code == KeyCode.UP) {
                         TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
@@ -94,6 +92,18 @@ public class AppController {
                         int idx = selectionModel.getSelectedIndex();
                         selectionModel.clearSelection();
                         selectionModel.select(idx - 1);
+                    }
+                    else if (code == KeyCode.N) {
+                        toolBox.getEventBus().send(new NewAnnotationMsg());
+                    }
+                    else if (code == KeyCode.C) {
+                        toolBox.getEventBus().send(new CopyAnnotationMsg());
+                    }
+                    else if (code == KeyCode.T) {
+                        toolBox.getEventBus().send(new DuplicateAnnotationMsg());
+                    }
+                    else if (code == KeyCode.F) {
+                        toolBox.getEventBus().send(new FramecaptureMsg());
                     }
                 }
             });

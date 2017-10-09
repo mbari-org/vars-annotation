@@ -4,14 +4,12 @@ import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.Observable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.FramegrabCmd;
-import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
 import org.mbari.m3.vars.annotation.events.MediaPlayerChangedEvent;
-import org.mbari.m3.vars.annotation.events.UserChangedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
+import org.mbari.m3.vars.annotation.messages.FramecaptureMsg;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
 import org.mbari.vcr4j.VideoError;
@@ -36,6 +34,12 @@ public class FramecaptureBC extends AbstractBC {
         Observable<Object> observable = toolBox.getEventBus().toObserverable();
         observable.ofType((MediaPlayerChangedEvent.class))
                 .subscribe(m -> checkEnable());
+
+        // Listen for things other than the button to trigger a new annotation
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(FramecaptureMsg.class)
+                .subscribe(m -> apply());
     }
 
     @Override

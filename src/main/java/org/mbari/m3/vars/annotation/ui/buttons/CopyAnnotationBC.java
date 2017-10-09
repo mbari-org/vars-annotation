@@ -9,6 +9,7 @@ import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.CopyAnnotationsCmd;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
+import org.mbari.m3.vars.annotation.messages.CopyAnnotationMsg;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
@@ -43,6 +44,10 @@ public class CopyAnnotationBC extends AbstractBC {
                     button.setDisable(!enabled);
                 });
 
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(CopyAnnotationMsg.class)
+                .subscribe(m -> apply());
     }
 
     protected void apply() {

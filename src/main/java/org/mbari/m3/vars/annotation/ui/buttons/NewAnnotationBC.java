@@ -13,6 +13,7 @@ import org.mbari.m3.vars.annotation.events.MediaPlayerChangedEvent;
 import org.mbari.m3.vars.annotation.events.UserChangedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.messages.ClearCacheMsg;
+import org.mbari.m3.vars.annotation.messages.NewAnnotationMsg;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
 import org.mbari.vcr4j.VideoError;
@@ -32,6 +33,12 @@ public class NewAnnotationBC extends AbstractBC {
                 .toObserverable()
                 .ofType(ClearCacheMsg.class)
                 .subscribe(m -> loadDefaultConcept());
+
+        // Listen for things other than the button to trigger a new annotation
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(NewAnnotationMsg.class)
+                .subscribe(m -> apply());
     }
 
     private void loadDefaultConcept() {
