@@ -55,6 +55,10 @@ public class Association implements Cloneable {
         mimeType = a.mimeType;
     }
 
+    public void resetUuid() {
+        uuid = null;
+    }
+
 
     public UUID getUuid() {
         return uuid;

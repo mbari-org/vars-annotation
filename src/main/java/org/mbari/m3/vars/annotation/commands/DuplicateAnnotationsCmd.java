@@ -5,6 +5,7 @@ import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
+import org.mbari.m3.vars.annotation.model.Association;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -33,6 +34,10 @@ public class DuplicateAnnotationsCmd implements Command {
         duplicate.setObservationUuid(null);
         duplicate.setObservationTimestamp(Instant.now());
         duplicate.setObserver(user);
+
+        // if we don't null the associations uuid, it will fail to insert due to
+        // a duplicate primary key clash.
+        duplicate.getAssociations().forEach(Association::resetUuid);
         return duplicate;
     }
 

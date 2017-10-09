@@ -6,6 +6,7 @@ import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
+import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
@@ -44,6 +45,10 @@ public class CopyAnnotationsCmd implements Command {
         copy.setObservationUuid(null);
         copy.setImagedMomentUuid(null);
         copy.setObserver(observer);
+
+        // if we don't null the associations uuid, it will fail to insert due to
+        // a duplicate primary key clash.
+        copy.getAssociations().forEach(Association::resetUuid);
 
         Duration elapsedTime = videoIndex.getElapsedTime().orElse(null);
         copy.setElapsedTime(elapsedTime);
