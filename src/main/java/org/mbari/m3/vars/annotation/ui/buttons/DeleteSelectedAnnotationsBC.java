@@ -12,6 +12,7 @@ import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.DeleteAnnotationsCmd;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
+import org.mbari.m3.vars.annotation.messages.DeleteAnnotationsMsg;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.User;
 
@@ -61,6 +62,11 @@ public class DeleteSelectedAnnotationsBC {
                     boolean enabled = (user != null) && e.get().size() > 0;
                     button.setDisable(!enabled);
                 });
+
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(DeleteAnnotationsMsg.class)
+                .subscribe(m -> apply());
 
         button.setOnAction(e -> apply());
     }

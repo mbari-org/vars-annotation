@@ -5,6 +5,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayers;
@@ -16,6 +18,7 @@ import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
 import org.mbari.m3.vars.annotation.ui.AppPaneController;
+import org.mbari.util.SystemUtilities;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.time.Timecode;
@@ -26,6 +29,7 @@ import java.security.Key;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -54,57 +58,66 @@ public class AppController {
             scene.getStylesheets()
                     .addAll(toolBox.getStylesheets());
 
+            KeyCombination.Modifier osModifier = SystemUtilities.isMacOS() ?
+                    KeyCombination.META_DOWN : KeyCombination.CONTROL_DOWN;
+
+            KeyCodeCombination spaceCombo = new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_DOWN);
+            KeyCodeCombination downCombo = new KeyCodeCombination(KeyCode.DOWN, osModifier);
+            KeyCodeCombination upCombo = new KeyCodeCombination(KeyCode.UP, osModifier);
+            KeyCodeCombination nCombo = new KeyCodeCombination(KeyCode.N, osModifier);
+            KeyCodeCombination cCombo = new KeyCodeCombination(KeyCode.C, osModifier);
+            KeyCodeCombination tCombo = new KeyCodeCombination(KeyCode.T, osModifier);
+            KeyCodeCombination fCombo = new KeyCodeCombination(KeyCode.F, osModifier);
+            KeyCodeCombination deleteCombo = new KeyCodeCombination(KeyCode.DELETE, osModifier);
+
             // --- Configure global shortcuts
             scene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-                KeyCode code = e.getCode();
-                if (e.isControlDown()) {
-                    if (code == KeyCode.SPACE) {
-                        MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
-                        if (mediaPlayer != null) {
-                            mediaPlayer.requestIsPlaying()
-                                    .thenAccept(playing -> {
-                                        if (playing) {
-                                            mediaPlayer.stop();
-                                        }
-                                        else {
-                                            mediaPlayer.play();
-                                        }
-                                    });
-                        }
+
+                if (spaceCombo.match(e)) {
+                    MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
+                    if (mediaPlayer != null) {
+                        mediaPlayer.requestIsPlaying()
+                                .thenAccept(playing -> {
+                                    if (playing) {
+                                        mediaPlayer.stop();
+                                    } else {
+                                        mediaPlayer.play();
+                                    }
+                                });
                     }
                 }
+                else if (downCombo.match(e)) {
+                    TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
+                            .getTableView()
+                            .getSelectionModel();
 
-                if (e.isMetaDown()) {
-                    if (code == KeyCode.DOWN) {
-                        TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
-                                .getTableView()
-                                .getSelectionModel();
+                    int idx = selectionModel.getSelectedIndex();
+                    selectionModel.clearSelection();
+                    selectionModel.select(idx + 1);
+                }
+                else if (upCombo.match(e)) {
+                    TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
+                            .getTableView()
+                            .getSelectionModel();
 
-                        int idx = selectionModel.getSelectedIndex();
-                        selectionModel.clearSelection();
-                        selectionModel.select(idx + 1);
-                    }
-                    else if (code == KeyCode.UP) {
-                        TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
-                                .getTableView()
-                                .getSelectionModel();
-
-                        int idx = selectionModel.getSelectedIndex();
-                        selectionModel.clearSelection();
-                        selectionModel.select(idx - 1);
-                    }
-                    else if (code == KeyCode.N) {
-                        toolBox.getEventBus().send(new NewAnnotationMsg());
-                    }
-                    else if (code == KeyCode.C) {
-                        toolBox.getEventBus().send(new CopyAnnotationMsg());
-                    }
-                    else if (code == KeyCode.T) {
-                        toolBox.getEventBus().send(new DuplicateAnnotationMsg());
-                    }
-                    else if (code == KeyCode.F) {
-                        toolBox.getEventBus().send(new FramecaptureMsg());
-                    }
+                    int idx = selectionModel.getSelectedIndex();
+                    selectionModel.clearSelection();
+                    selectionModel.select(idx - 1);
+                }
+                else if (nCombo.match(e)) {
+                    toolBox.getEventBus().send(new NewAnnotationMsg());
+                }
+                else if(cCombo.match(e)) {
+                    toolBox.getEventBus().send(new CopyAnnotationMsg());
+                }
+                else if (tCombo.match(e)) {
+                    toolBox.getEventBus().send(new DuplicateAnnotationMsg());
+                }
+                else if (fCombo.match(e)) {
+                    toolBox.getEventBus().send(new FramecaptureMsg());
+                }
+                else if (deleteCombo.match(e)) {
+                    toolBox.getEventBus().send(new DeleteAnnotationsMsg());
                 }
             });
         }
@@ -208,9 +221,9 @@ public class AppController {
                         .getMediaService()
                         .findConcurrentByVideoReferenceUuid(uuid)
                         .thenApply(ms -> ms.stream()
-                                    .filter(m -> !m.getVideoReferenceUuid().equals(uuid))
-                                    .map(Media::getVideoReferenceUuid)
-                                    .collect(Collectors.toList()))
+                                .filter(m -> !m.getVideoReferenceUuid().equals(uuid))
+                                .map(Media::getVideoReferenceUuid)
+                                .collect(Collectors.toList()))
                         .thenAccept(decorator::findConcurrentAnnotations);
             }
         }
