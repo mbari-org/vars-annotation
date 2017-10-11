@@ -85,6 +85,7 @@ public class AppController {
                                     }
                                 });
                     }
+                    e.consume();
                 }
                 else if (downCombo.match(e)) {
                     TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
@@ -94,6 +95,7 @@ public class AppController {
                     int idx = selectionModel.getSelectedIndex();
                     selectionModel.clearSelection();
                     selectionModel.select(idx + 1);
+                    e.consume();
                 }
                 else if (upCombo.match(e)) {
                     TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
@@ -103,21 +105,27 @@ public class AppController {
                     int idx = selectionModel.getSelectedIndex();
                     selectionModel.clearSelection();
                     selectionModel.select(idx - 1);
+                    e.consume();
                 }
                 else if (nCombo.match(e)) {
                     toolBox.getEventBus().send(new NewAnnotationMsg());
+                    e.consume();
                 }
                 else if(cCombo.match(e)) {
                     toolBox.getEventBus().send(new CopyAnnotationMsg());
+                    e.consume();
                 }
                 else if (tCombo.match(e)) {
                     toolBox.getEventBus().send(new DuplicateAnnotationMsg());
+                    e.consume();
                 }
                 else if (fCombo.match(e)) {
                     toolBox.getEventBus().send(new FramecaptureMsg());
+                    e.consume();
                 }
                 else if (deleteCombo.match(e)) {
                     toolBox.getEventBus().send(new DeleteAnnotationsMsg());
+                    e.consume();
                 }
             });
         }

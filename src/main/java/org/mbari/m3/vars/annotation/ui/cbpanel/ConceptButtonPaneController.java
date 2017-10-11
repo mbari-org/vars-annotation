@@ -97,9 +97,10 @@ public class ConceptButtonPaneController {
             getPane().getChildren().addAll(buttons);
         }
         catch (Exception e) {
+            // TODO convert to i18n
             eventBus.send(new ShowNonfatalErrorAlert("VARS Nonfatal Error",
                     "Failed to configure user interface",
-                    "An error occurred when loading buttons from preferences",
+                    "An error occurred when loading concept buttons from preferences",
                     e));
         }
 

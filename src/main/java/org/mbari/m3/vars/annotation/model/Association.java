@@ -1,6 +1,11 @@
 package org.mbari.m3.vars.annotation.model;
 
+import javax.swing.text.html.Option;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
@@ -83,5 +88,21 @@ public class Association implements Cloneable {
     @Override
     public String toString() {
         return linkName + " | "  + toConcept + " | " + linkValue;
+    }
+
+    public static Optional<Association> parse(String s) {
+        Optional<Association> a = Optional.empty();
+        try {
+            List<String> ss = Arrays.stream(s.split("[|]"))
+                    .map(String::trim)
+                    .collect(Collectors.toList());
+            if (ss.size() == 3) {
+                a = Optional.of(new Association(ss.get(0), ss.get(1), ss.get(2)));
+            }
+        }
+        catch (Exception e) {
+            // Do nothing
+        }
+        return a;
     }
 }

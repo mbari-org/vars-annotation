@@ -21,6 +21,7 @@ import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.User;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -96,7 +97,7 @@ public class SampleBC extends AbstractBC {
         Association a2 = new Association(config.getString("app.annotation.sample.association.reference"),
                 Association.VALUE_SELF, sampleId);
         EventBus eventBus = toolBox.getEventBus();
-        ObservableList<Annotation> selectedAnnotations = toolBox.getData().getSelectedAnnotations();
+        List<Annotation> selectedAnnotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
         CreateAssociationsCmd cmd1 = new CreateAssociationsCmd(a1, selectedAnnotations);
         CreateAssociationsCmd cmd2 = new CreateAssociationsCmd(a2, selectedAnnotations);
         eventBus.send(cmd1);
