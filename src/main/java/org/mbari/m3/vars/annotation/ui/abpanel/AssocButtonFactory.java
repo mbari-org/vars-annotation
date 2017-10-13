@@ -48,4 +48,9 @@ public class AssocButtonFactory {
         return button;
 
     }
+
+    Button build(NamedAssociation na) {
+        return build(na.getName(), na);
+    }
+
 }

@@ -34,6 +34,7 @@ public class CachedConceptService implements ConceptService {
     private ConceptDetails rootDetails;
     private Map<String, Concept> cache = new ConcurrentHashMap<>();
     private volatile List<String> allNames = Collections.emptyList();
+    private volatile List<ConceptAssociationTemplate> allTemplates = Collections.emptyList();
     private final ConceptService conceptService;
     private final Map<String, List<ConceptAssociationTemplate>> cachedTemplates = new ConcurrentHashMap<>();
 
@@ -201,6 +202,18 @@ public class CachedConceptService implements ConceptService {
             }
             concept.getChildren()
                     .forEach(this::addToCache);
+        }
+    }
+
+    @Override
+    public CompletableFuture<List<ConceptAssociationTemplate>> findAllTemplates() {
+        if (allTemplates.isEmpty()) {
+            CompletableFuture<List<ConceptAssociationTemplate>> future = conceptService.findAllTemplates();
+            future.thenAccept(cats -> this.allTemplates = cats);
+            return future;
+        }
+        else {
+            return CompletableFuture.completedFuture(allTemplates);
         }
     }
 

@@ -29,6 +29,9 @@ public interface KBWebService {
     @GET("concept/{name}")
     Call<ConceptDetails> findDetails(@Path("name") String name);
 
+    @GET("links/")
+    Call<List<ConceptAssociationTemplate>> findAllTemplates();
+
     @GET("links/{name}")
     Call<List<ConceptAssociationTemplate>> findTemplates(@Path("name") String name);
 

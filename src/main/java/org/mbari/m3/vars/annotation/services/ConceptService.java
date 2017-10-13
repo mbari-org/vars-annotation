@@ -35,6 +35,8 @@ public interface ConceptService {
      */
     CompletableFuture<List<String>> findAllNames();
 
+    CompletableFuture<List<ConceptAssociationTemplate>> findAllTemplates();
+
     CompletableFuture<List<ConceptAssociationTemplate>> findTemplates(String name);
 
     CompletableFuture<List<ConceptAssociationTemplate>> findTemplates(String name, String linkname);

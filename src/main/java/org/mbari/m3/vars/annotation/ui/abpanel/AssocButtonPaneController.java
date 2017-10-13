@@ -1,18 +1,25 @@
 package org.mbari.m3.vars.annotation.ui.abpanel;
 
+import com.jfoenix.controls.JFXButton;
+import de.jensd.fx.glyphs.materialicons.MaterialIcon;
+import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+import javafx.collections.ListChangeListener;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.messages.ShowNonfatalErrorAlert;
 import org.mbari.m3.vars.annotation.model.Association;
+import org.mbari.m3.vars.annotation.model.User;
+import org.mbari.m3.vars.annotation.ui.shared.animation.FlashTransition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.prefs.BackingStoreException;
+import java.util.*;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -26,10 +33,14 @@ public class AssocButtonPaneController {
     private Pane pane;
     private final Preferences panePreferences;
     private final UIToolBox toolBox;
+    private Button addButton;
+    private final AssocSelectionDialogController controller;
+    private final AssocButtonFactory buttonFactory;
 
     private static final String PREF_BUTTON_NAME = "name";
     private static final String PREF_BUTTON_ORDER = "order";
     private static final String PREF_BUTTON_ASSOCIATION = "association";
+    private static final String PREF_AP_NODE = "org.mbari.m3.vars.annotation.ui.abpanel.AssocButtonPaneController";
     private static final String BAD_KEY = "__unknown__";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -37,6 +48,20 @@ public class AssocButtonPaneController {
     public AssocButtonPaneController(Preferences panePreferences, UIToolBox toolBox) {
         this.panePreferences = panePreferences;
         this.toolBox = toolBox;
+        controller = AssocSelectionDialogController.newInstance(toolBox);
+        buttonFactory = new AssocButtonFactory(toolBox);
+    }
+
+    public static Optional<Preferences> findPreferences(UIToolBox toolBox) {
+        Preferences prefs = null;
+        User user = toolBox.getData().getUser();
+        if (user != null) {
+            Preferences userPreferences = toolBox.getServices()
+                    .getPreferencesFactory()
+                    .remoteUserRoot(user.getUsername());
+            prefs = userPreferences.node(PREF_AP_NODE);
+        }
+        return Optional.ofNullable(prefs);
     }
 
     public Pane getPane() {
@@ -44,13 +69,59 @@ public class AssocButtonPaneController {
             pane = new FlowPane();
             pane.setUserData(this);
             pane.setPrefSize(300, 200);
-
+            pane.getChildren().add(getAddButton());
+            loadButtonsFromPreferences();
+            // Save everything when a new button is added or removed
+            pane.getChildren()
+                    .addListener((ListChangeListener<Node>) c ->  saveButtonsToPreferences());
         }
         return pane;
     }
 
-    private void loadBUttonsFromPreferences() {
-        AssocButtonFactory factory = new AssocButtonFactory(toolBox);
+    private Button getAddButton() {
+        if (addButton == null) {
+            addButton = new JFXButton();
+            String tooltip = toolBox.getI18nBundle().getString("abpane.addbutton");
+            MaterialIconFactory iconFactory = MaterialIconFactory.get();
+            Text icon = iconFactory.createIcon(MaterialIcon.ADD, "30px");
+            addButton.setTooltip(new Tooltip(tooltip));
+            addButton.setGraphic(icon);
+            addButton.setOnAction(v -> {
+                Dialog<NamedAssociation> dialog = controller.getDialog();
+                Optional<NamedAssociation> opt = dialog.showAndWait();
+                opt.ifPresent(namedAssociation -> {
+                    Button button = buttonFactory.build(namedAssociation);
+                    if (!duplicateNameCheck(button)) {
+                        getPane().getChildren().add(button);
+                    }
+                });
+            });
+        }
+        return addButton;
+    }
+
+    private boolean duplicateNameCheck(Button button) {
+        Optional<Button> match = getPane().getChildren()
+                .stream()
+                .filter(n -> n instanceof Button)
+                .map(b -> (Button) b)
+                .filter(b -> {
+                    String text = b.getText();
+                    return text != null && !text.isEmpty() && text.equalsIgnoreCase(button.getText());
+                })
+                .findFirst();
+
+        // flash matching version
+        match.ifPresent(btn -> {
+            FlashTransition transition = new FlashTransition(btn);
+            transition.play();
+        });
+
+
+        return match.isPresent();
+    }
+
+    private void loadButtonsFromPreferences() {
         Association nil = Association.NIL;
         try {
             List<Button> buttons = Arrays.stream(panePreferences.childrenNames())
@@ -60,7 +131,7 @@ public class AssocButtonPaneController {
                         int order = buttonPreferences.getInt(PREF_BUTTON_ORDER, 0);
                         String a = buttonPreferences.get(PREF_BUTTON_ASSOCIATION, nil.toString());
                         Association ass = Association.parse(a).orElse(nil);
-                        Button button = factory.build(name, ass);
+                        Button button = buttonFactory.build(name, ass);
                         return new ButtonPref(button, order);
                     })
                     .filter(buttonPref -> !buttonPref.getButton().getText().equals(BAD_KEY))
@@ -85,11 +156,6 @@ public class AssocButtonPaneController {
                 .map(n -> (Button) n)
                 .collect(Collectors.toList());
 
-        try {
-            panePreferences.clear();
-        } catch (BackingStoreException e) {
-            log.warn("Failed to clear preference node for association button pane");
-        }
         // Store existing buttons
         IntStream.range(0, buttons.size())
                 .forEach(i -> {
@@ -101,6 +167,31 @@ public class AssocButtonPaneController {
                     prefs.put(PREF_BUTTON_NAME, name);
                     prefs.put(PREF_BUTTON_ASSOCIATION, userdata.toString());
                 });
+
+        // Remove non-longer used buttons
+        try {
+            // Arrays.asList returns unmodifiable list. Need to create ArrayList.
+            List<String> storedButtons = new ArrayList<>(Arrays.asList(panePreferences.childrenNames()));
+            List<String> existingButtons = buttons.stream()
+                    .map(Button::getText)
+                    .collect(Collectors.toList());
+            storedButtons.removeAll(existingButtons);
+            storedButtons.forEach(s -> {
+                try {
+                    panePreferences.node(s).removeNode();
+                }
+                catch (Exception e) {
+                    log.error("Failed to delete concept button named '" + s + "'.", e);
+                }
+            });
+        }
+        catch (Exception e) {
+            toolBox.getEventBus()
+                    .send(new ShowNonfatalErrorAlert("VARS Nonfatal Error",
+                    "Failed to configure user interface",
+                    "An error occurred when removing unused buttons from preferences",
+                    e));
+        }
     }
 
     class ButtonPref {

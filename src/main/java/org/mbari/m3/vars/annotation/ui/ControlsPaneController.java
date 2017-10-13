@@ -12,10 +12,12 @@ import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.SharktoptodaControlPane;
 import org.mbari.m3.vars.annotation.model.Annotation;
+import org.mbari.m3.vars.annotation.ui.abpanel.AssocButtonPaneController;
 import org.mbari.m3.vars.annotation.ui.buttons.*;
 import org.mbari.m3.vars.annotation.ui.roweditor.RowEditorController;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.prefs.Preferences;
 
 /**
@@ -27,6 +29,7 @@ public class ControlsPaneController {
     private SplitPane root;
     private SharktoptodaControlPane sharkPane;
     private RowEditorController rowEditorController;
+    private AssocButtonPaneController assocBtnPane;
     private final UIToolBox toolBox;
     private FlowPane buttonPane;
     private VBox rightPane;
@@ -42,7 +45,14 @@ public class ControlsPaneController {
 
     public SplitPane getRoot() {
         if (root == null) {
-            root = new SplitPane(getRowEditorController().getRoot(), getRightPane());
+            if (getAssocBtnPane() == null) {
+                root = new SplitPane(getRowEditorController().getRoot(), getRightPane());
+            }
+            else {
+                root = new SplitPane(getRowEditorController().getRoot(),
+                        getAssocBtnPane().getPane(),
+                        getRightPane());
+            }
             loadDividerPositions(splitPaneKey, root);
         }
         return root;
@@ -123,6 +133,21 @@ public class ControlsPaneController {
                     });
         }
         return rowEditorController;
+    }
+
+    private AssocButtonPaneController getAssocBtnPane() {
+        if (assocBtnPane == null) {
+            Optional<Preferences> prefs = AssocButtonPaneController.findPreferences(toolBox);
+            if (prefs.isPresent()) {
+                assocBtnPane = new AssocButtonPaneController(prefs.get(), toolBox);
+            }
+            else {
+
+                throw new RuntimeException("Failed to load association quick buttons from prefs");
+            }
+
+        }
+        return assocBtnPane;
     }
 
     private VBox getRightPane() {

@@ -187,13 +187,13 @@ public class BulkEditorPaneController {
     }
 
     public static BulkEditorPaneController newInstance(UIToolBox toolBox) {
-        final ResourceBundle bundle = Initializer.getToolBox().getI18nBundle();
+        final ResourceBundle bundle = toolBox.getI18nBundle();
         FXMLLoader loader = new FXMLLoader(BulkEditorPaneController.class
                 .getResource("/fxml/BulkEditorPane.fxml"), bundle);
         try {
             loader.load();
             BulkEditorPaneController controller = loader.getController();
-            controller.toolBox = toolBox;
+            //controller.toolBox = toolBox;
             return controller;
         }
         catch (Exception e) {

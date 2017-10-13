@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -174,6 +175,7 @@ public class WebPreferences extends AbstractPreferences {
         log.debug("childSpi({})", name);
         return new WebPreferences(service, timeout.toMillis(), this, name);
     }
+
 
     @Override
     protected void syncSpi() throws BackingStoreException {
