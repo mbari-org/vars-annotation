@@ -5,7 +5,7 @@ APP_CONF=$BUILD_HOME/src/main/resources/application.conf
 
 scp brian@m3.shore.mbari.org:/u/brian/deployspace/m3.shore.mbari.org/vars-annotation/conf/application.conf \
     $APP_CONF &&
-    mvn clean package -Dmaven.test.skip=true -X
+    mvnw clean package -Dmaven.test.skip=true -X
 #    mvn clean package exec:exec@deploy-app install -Dmaven.test.skip=true -X
 #    mvn clean package -Dmaven.test.skip=true -X &&
 #    mvn exec:exec@deploy-app -Dmaven.test.skip=true -X&&
