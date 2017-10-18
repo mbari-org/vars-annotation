@@ -50,6 +50,9 @@ public class AssocSelectionDialogController {
             dialog.setHeaderText(i18n.getString("abpane.dialog.header"));
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
             dialog.getDialogPane().setContent(root);
+            dialog.getDialogPane()
+                    .getStylesheets()
+                    .addAll(toolBox.getStylesheets());
             dialog.setResultConverter(btnType -> {
                 NamedAssociation na = null;
                 if (btnType == ButtonType.OK) {
@@ -82,16 +85,17 @@ public class AssocSelectionDialogController {
         return dialog;
     }
 
+    private void updateControls() {
+    }
 
 
     public static AssocSelectionDialogController newInstance(UIToolBox toolBox) {
         final ResourceBundle bundle = toolBox.getI18nBundle();
         FXMLLoader loader = new FXMLLoader(AssocSelectionDialogController.class
-                .getResource("/fxml/AssocSelectionPane.fxml"), bundle);
+                .getResource("/fxml/AssociationSelectionPane.fxml"), bundle);
         try {
             loader.load();
-            AssocSelectionDialogController controller = loader.getController();
-            return controller;
+            return loader.getController();
         }
         catch (Exception e) {
             throw new RuntimeException("Failed to load AssocSelectionPane from FXML", e);

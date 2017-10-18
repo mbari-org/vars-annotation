@@ -31,7 +31,6 @@ import java.util.stream.IntStream;
 public class AssocButtonPaneController {
 
     private Pane pane;
-    private final Preferences panePreferences;
     private final UIToolBox toolBox;
     private Button addButton;
     private final AssocSelectionDialogController controller;
@@ -45,14 +44,16 @@ public class AssocButtonPaneController {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public AssocButtonPaneController(Preferences panePreferences, UIToolBox toolBox) {
-        this.panePreferences = panePreferences;
+    public AssocButtonPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
         controller = AssocSelectionDialogController.newInstance(toolBox);
         buttonFactory = new AssocButtonFactory(toolBox);
+        toolBox.getData()
+                .userProperty()
+                .addListener(e -> loadButtonsFromPreferences());
     }
 
-    public static Optional<Preferences> findPreferences(UIToolBox toolBox) {
+    private Optional<Preferences> findPreferences() {
         Preferences prefs = null;
         User user = toolBox.getData().getUser();
         if (user != null) {
@@ -60,6 +61,7 @@ public class AssocButtonPaneController {
                     .getPreferencesFactory()
                     .remoteUserRoot(user.getUsername());
             prefs = userPreferences.node(PREF_AP_NODE);
+            log.debug("Using ");
         }
         return Optional.ofNullable(prefs);
     }
@@ -123,75 +125,84 @@ public class AssocButtonPaneController {
 
     private void loadButtonsFromPreferences() {
         Association nil = Association.NIL;
-        try {
-            List<Button> buttons = Arrays.stream(panePreferences.childrenNames())
-                    .map(nodeName -> {
-                        Preferences buttonPreferences = panePreferences.node(nodeName);
-                        String name = buttonPreferences.get(PREF_BUTTON_NAME, BAD_KEY);
-                        int order = buttonPreferences.getInt(PREF_BUTTON_ORDER, 0);
-                        String a = buttonPreferences.get(PREF_BUTTON_ASSOCIATION, nil.toString());
-                        Association ass = Association.parse(a).orElse(nil);
-                        Button button = buttonFactory.build(name, ass);
-                        return new ButtonPref(button, order);
-                    })
-                    .filter(buttonPref -> !buttonPref.getButton().getText().equals(BAD_KEY))
-                    .sorted(Comparator.comparingInt(ButtonPref::getOrder))
-                    .map(ButtonPref::getButton)
-                    .collect(Collectors.toList());
-            getPane().getChildren().addAll(buttons);
-        }
-        catch (Exception e) {
-            toolBox.getEventBus()
-                    .send(new ShowNonfatalErrorAlert("VARS Nonfatal Error",
-                            "Failed to configure user interface",
-                            "An error occurred when loading association buttons from preferences",
-                            e));
-        }
+        Optional<Preferences> opt = findPreferences();
+        opt.ifPresent(prefs -> {
+            try {
+                List<Button> buttons = Arrays.stream(prefs.childrenNames())
+                        .map(nodeName -> {
+                            Preferences buttonPreferences = prefs.node(nodeName);
+                            String name = buttonPreferences.get(PREF_BUTTON_NAME, BAD_KEY);
+                            int order = buttonPreferences.getInt(PREF_BUTTON_ORDER, 0);
+                            String a = buttonPreferences.get(PREF_BUTTON_ASSOCIATION, nil.toString());
+                            Association ass = Association.parse(a).orElse(nil);
+                            Button button = buttonFactory.build(name, ass);
+                            return new ButtonPref(button, order);
+                        })
+                        .filter(buttonPref -> !buttonPref.getButton().getText().equals(BAD_KEY))
+                        .sorted(Comparator.comparingInt(ButtonPref::getOrder))
+                        .map(ButtonPref::getButton)
+                        .collect(Collectors.toList());
+                getPane().getChildren().addAll(buttons);
+            }
+            catch (Exception e) {
+                toolBox.getEventBus()
+                        .send(new ShowNonfatalErrorAlert("VARS Nonfatal Error",
+                                "Failed to configure user interface",
+                                "An error occurred when loading association buttons from preferences",
+                                e));
+            }
+        });
     }
 
     private void saveButtonsToPreferences() {
-        List<Button> buttons = getPane().getChildren()
-                .stream()
-                .filter(n -> n.getUserData() instanceof Association)
-                .map(n -> (Button) n)
-                .collect(Collectors.toList());
 
-        // Store existing buttons
-        IntStream.range(0, buttons.size())
-                .forEach(i -> {
-                    Button button = buttons.get(i);
-                    String name = button.getText();
-                    Association userdata = (Association) button.getUserData();
-                    Preferences prefs = panePreferences.node(name);
-                    prefs.putInt(PREF_BUTTON_ORDER, i);
-                    prefs.put(PREF_BUTTON_NAME, name);
-                    prefs.put(PREF_BUTTON_ASSOCIATION, userdata.toString());
-                });
-
-        // Remove non-longer used buttons
-        try {
-            // Arrays.asList returns unmodifiable list. Need to create ArrayList.
-            List<String> storedButtons = new ArrayList<>(Arrays.asList(panePreferences.childrenNames()));
-            List<String> existingButtons = buttons.stream()
-                    .map(Button::getText)
+        Optional<Preferences> opt = findPreferences();
+        opt.ifPresent(prefs -> {
+            List<Button> buttons = getPane().getChildren()
+                    .stream()
+                    .filter(n -> n.getUserData() instanceof Association)
+                    .map(n -> (Button) n)
                     .collect(Collectors.toList());
-            storedButtons.removeAll(existingButtons);
-            storedButtons.forEach(s -> {
-                try {
-                    panePreferences.node(s).removeNode();
-                }
-                catch (Exception e) {
-                    log.error("Failed to delete concept button named '" + s + "'.", e);
-                }
-            });
-        }
-        catch (Exception e) {
-            toolBox.getEventBus()
-                    .send(new ShowNonfatalErrorAlert("VARS Nonfatal Error",
-                    "Failed to configure user interface",
-                    "An error occurred when removing unused buttons from preferences",
-                    e));
-        }
+
+            // Store existing buttons
+            IntStream.range(0, buttons.size())
+                    .forEach(i -> {
+                        Button button = buttons.get(i);
+                        String name = button.getText();
+                        Association userdata = (Association) button.getUserData();
+                        Preferences buttonPrefs = prefs.node(name);
+                        buttonPrefs.putInt(PREF_BUTTON_ORDER, i);
+                        buttonPrefs.put(PREF_BUTTON_NAME, name);
+                        buttonPrefs.put(PREF_BUTTON_ASSOCIATION, userdata.toString());
+                    });
+
+            // Remove non-longer used buttons
+            try {
+                // Arrays.asList returns unmodifiable list. Need to create ArrayList.
+                List<String> storedButtons = new ArrayList<>(Arrays.asList(prefs.childrenNames()));
+                List<String> existingButtons = buttons.stream()
+                        .map(Button::getText)
+                        .collect(Collectors.toList());
+                storedButtons.removeAll(existingButtons);
+                storedButtons.forEach(s -> {
+                    try {
+                        prefs.node(s).removeNode();
+                    }
+                    catch (Exception e) {
+                        log.error("Failed to delete concept button named '" + s + "'.", e);
+                    }
+                });
+            }
+            catch (Exception e) {
+                toolBox.getEventBus()
+                        .send(new ShowNonfatalErrorAlert("VARS Nonfatal Error",
+                                "Failed to configure user interface",
+                                "An error occurred when removing unused buttons from preferences",
+                                e));
+            }
+        });
+
+
     }
 
     class ButtonPref {

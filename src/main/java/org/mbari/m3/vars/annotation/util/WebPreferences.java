@@ -2,6 +2,7 @@ package org.mbari.m3.vars.annotation.util;
 
 import org.mbari.m3.vars.annotation.model.PreferenceNode;
 import org.mbari.m3.vars.annotation.services.PreferencesService;
+import static org.mbari.m3.vars.annotation.util.AsyncUtils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,11 +11,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.prefs.AbstractPreferences;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 
 /**
  * @author Brian Schlining
@@ -45,25 +48,39 @@ public class WebPreferences extends AbstractPreferences {
         this.timeout = Duration.ofMillis(timeoutMillis);
     }
 
+
     @Override
     protected void putSpi(String key, String value) {
         log.debug("putSpi({}, {})", key, value);
-        CompletableFuture<String> f = service.findByNameAndKey(absolutePath(), key)
-                .thenApply(opt -> {
+        // We have to sync all the async methods!! Use nodeFuture to sync
+        CompletableFuture<PreferenceNode> nodeFuture = new CompletableFuture<>();
+        service.findByNameAndKey(absolutePath(), key)
+                .thenAccept(opt -> {
                     if (opt.isPresent()) {
                         PreferenceNode node = opt.get();
                         if (!node.getValue().equals(value)) {
                             node.setValue(value);
-                            service.update(node);
+                            service.update(node)
+                                .thenAccept(opt1 -> {
+                                    if (opt1.isPresent()) {
+                                        nodeFuture.complete(opt1.get());
+                                    }
+                                    else {
+                                        throw new RuntimeException("Failed to update " + absolutePath() + "/" + key);
+                                    }
+                                });
+                        }
+                        else {
+                            nodeFuture.complete(node);
                         }
                     } else {
                         PreferenceNode node = new PreferenceNode(absolutePath(), key, value);
-                        service.create(node);
+                        service.create(node)
+                            .thenAccept(nodeFuture::complete);
                     }
-                    return "dummy";
                 });
         try {
-            f.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+            nodeFuture.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
         }
         catch (Exception e) {
             log.warn("Failed to call putSpi(" + key + ", " + value + ")", e);
@@ -86,16 +103,20 @@ public class WebPreferences extends AbstractPreferences {
     @Override
     protected void removeSpi(String key) {
         log.debug("removeSpi({})", key);
-        CompletableFuture<String> f = service.findByNameAndKey(absolutePath(), key)
-                .thenApply(opt -> {
+        CompletableFuture<Void> doneFuture = new CompletableFuture<>();
+        service.findByNameAndKey(absolutePath(), key)
+                .thenAccept(opt -> {
                     if (opt.isPresent()) {
                         PreferenceNode node = opt.get();
-                        service.delete(node);
+                        service.delete(node)
+                            .thenAccept(v -> doneFuture.complete(null)); // Async
                     }
-                    return "dummy";
+                    else {
+                        doneFuture.complete(null);
+                    }
                 });
         try {
-            f.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+            doneFuture.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
         }
         catch (Exception e) {
             log.warn("Failed to call removeSpi(" + key + ")", e);
@@ -105,18 +126,20 @@ public class WebPreferences extends AbstractPreferences {
     @Override
     protected void removeNodeSpi() throws BackingStoreException {
         log.debug("removeNodeSpi()");
-        CompletableFuture<String> f = service.findByNameLike(absolutePath())
-                .thenApply(nodes -> {
+        // We need to make this sync. Use doneFuture to sync
+        CompletableFuture<Void> doneFuture = new CompletableFuture<>();
+        service.findByNameLike(absolutePath())
+                .thenAccept(nodes -> {
                     List<CompletableFuture<Void>> fs = nodes.stream()
                             .map(service::delete)
                             .collect(Collectors.toList());
 
                     CompletableFuture[] fa = fs.toArray(new CompletableFuture[fs.size()]);
-                    CompletableFuture.allOf(fa);
-                    return "dummy";
+                    CompletableFuture.allOf(fa)
+                        .thenAccept(v -> doneFuture.complete(null)); // Async
                 });
         try {
-            f.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+            doneFuture.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
         }
         catch (Exception e) {
             log.warn("Failed to call removeNodeSpi()", e);

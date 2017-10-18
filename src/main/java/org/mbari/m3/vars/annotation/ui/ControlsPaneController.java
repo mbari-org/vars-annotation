@@ -137,15 +137,7 @@ public class ControlsPaneController {
 
     private AssocButtonPaneController getAssocBtnPane() {
         if (assocBtnPane == null) {
-            Optional<Preferences> prefs = AssocButtonPaneController.findPreferences(toolBox);
-            if (prefs.isPresent()) {
-                assocBtnPane = new AssocButtonPaneController(prefs.get(), toolBox);
-            }
-            else {
-
-                throw new RuntimeException("Failed to load association quick buttons from prefs");
-            }
-
+            assocBtnPane = new AssocButtonPaneController(toolBox);
         }
         return assocBtnPane;
     }
