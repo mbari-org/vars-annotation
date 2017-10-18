@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
@@ -37,6 +38,7 @@ public class AssocButtonFactory {
             ArrayList<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
             eventBus.send(new CreateAssociationsCmd(association, annotations));
         });
+        button.setTooltip(new Tooltip(association.toString()));
 
         ContextMenu contextMenu = new ContextMenu();
         MenuItem deleteButton = new MenuItem(toolBox.getI18nBundle().getString("cbpanel.conceptbutton.delete"));

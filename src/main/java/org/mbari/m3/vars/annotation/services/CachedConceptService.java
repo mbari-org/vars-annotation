@@ -5,10 +5,7 @@ import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.model.ConceptAssociationTemplate;
 import org.mbari.m3.vars.annotation.model.ConceptDetails;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -67,7 +64,10 @@ public class CachedConceptService implements ConceptService {
             return null;
         });
 
+        CompletableFuture<?> f1 = findAllTemplates();
+
         futures.add(f0);
+        futures.add(f1);
         CompletableFuture[] futureArray = futures.toArray(new CompletableFuture[futures.size()]);
 
         return CompletableFuture.allOf(futureArray);
@@ -209,7 +209,10 @@ public class CachedConceptService implements ConceptService {
     public CompletableFuture<List<ConceptAssociationTemplate>> findAllTemplates() {
         if (allTemplates.isEmpty()) {
             CompletableFuture<List<ConceptAssociationTemplate>> future = conceptService.findAllTemplates();
-            future.thenAccept(cats -> this.allTemplates = cats);
+            future.thenAccept(cats -> {
+                cats.sort(Comparator.comparing(ConceptAssociationTemplate::getLinkName));
+                this.allTemplates = cats;
+            });
             return future;
         }
         else {

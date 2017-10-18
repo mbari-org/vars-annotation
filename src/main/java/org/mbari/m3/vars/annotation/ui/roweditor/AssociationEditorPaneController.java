@@ -35,6 +35,7 @@ import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
 import org.mbari.m3.vars.annotation.ui.shared.HierarchicalConceptComboBoxDecorator;
+import org.mbari.m3.vars.annotation.util.ListUtils;
 
 public class AssociationEditorPaneController {
 
@@ -185,17 +186,7 @@ public class AssociationEditorPaneController {
     private void searchTemplates(String search) {
         List<ConceptAssociationTemplate> templates = associationComboBox.getItems();
         int startIdx = associationComboBox.getSelectionModel().getSelectedIndex() + 1;
-        if (startIdx >= templates.size()) {
-            startIdx = 0;
-        }
-        List<ConceptAssociationTemplate> searchTemplates = templates;
-        if (startIdx > 0) {
-            searchTemplates = new ArrayList<>(templates.subList(startIdx, templates.size()));
-            searchTemplates.addAll(templates.subList(0, startIdx));
-        }
-        searchTemplates.stream()
-                .filter(cat -> cat.toString().contains(search))
-                .findFirst()
+        ListUtils.search(search, templates, startIdx, ConceptAssociationTemplate::toString)
                 .ifPresent(cat -> associationComboBox.getSelectionModel().select(cat));
     }
 

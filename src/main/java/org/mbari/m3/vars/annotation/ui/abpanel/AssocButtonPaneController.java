@@ -3,6 +3,7 @@ package org.mbari.m3.vars.annotation.ui.abpanel;
 import com.jfoenix.controls.JFXButton;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -14,6 +15,7 @@ import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.messages.ShowNonfatalErrorAlert;
 import org.mbari.m3.vars.annotation.model.Association;
+import org.mbari.m3.vars.annotation.model.ConceptAssociationTemplate;
 import org.mbari.m3.vars.annotation.model.User;
 import org.mbari.m3.vars.annotation.ui.shared.animation.FlashTransition;
 import org.slf4j.Logger;
@@ -33,7 +35,7 @@ public class AssocButtonPaneController {
     private Pane pane;
     private final UIToolBox toolBox;
     private Button addButton;
-    private final AssocSelectionDialogController controller;
+    private AssocSelectionDialogController controller;
     private final AssocButtonFactory buttonFactory;
 
     private static final String PREF_BUTTON_NAME = "name";
@@ -46,11 +48,18 @@ public class AssocButtonPaneController {
 
     public AssocButtonPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
-        controller = AssocSelectionDialogController.newInstance(toolBox);
         buttonFactory = new AssocButtonFactory(toolBox);
         toolBox.getData()
                 .userProperty()
                 .addListener(e -> loadButtonsFromPreferences());
+    }
+
+    public AssocSelectionDialogController getController() {
+        if (controller == null) {
+            controller = AssocSelectionDialogController.newInstance(toolBox);
+
+        }
+        return controller;
     }
 
     private Optional<Preferences> findPreferences() {
@@ -89,7 +98,8 @@ public class AssocButtonPaneController {
             addButton.setTooltip(new Tooltip(tooltip));
             addButton.setGraphic(icon);
             addButton.setOnAction(v -> {
-                Dialog<NamedAssociation> dialog = controller.getDialog();
+                Dialog<NamedAssociation> dialog = getController().getDialog();
+                getController().requestFocus();
                 Optional<NamedAssociation> opt = dialog.showAndWait();
                 opt.ifPresent(namedAssociation -> {
                     Button button = buttonFactory.build(namedAssociation);
@@ -97,6 +107,8 @@ public class AssocButtonPaneController {
                         getPane().getChildren().add(button);
                     }
                 });
+                getController().reset();
+
             });
         }
         return addButton;
@@ -204,6 +216,7 @@ public class AssocButtonPaneController {
 
 
     }
+
 
     class ButtonPref {
 
