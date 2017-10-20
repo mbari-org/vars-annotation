@@ -28,6 +28,10 @@ public class ConceptSelectionDialogController {
                 .subscribe(m -> refresh());
     }
 
+    public void requestFocus() {
+        Platform.runLater(() -> getComboBox().requestFocus());
+    }
+
     public String getConcept() {
         return concept;
     }
@@ -57,6 +61,12 @@ public class ConceptSelectionDialogController {
                     .addAll(ButtonType.OK, ButtonType.CANCEL);
             pane.setContent(getComboBox());
             pane.getStylesheets().addAll(toolBox.getStylesheets());
+            dialog.setResultConverter(btn -> {
+                if (btn == ButtonType.OK) {
+                    return getComboBox().getValue();
+                }
+                return null;
+            });
         }
         return dialog;
     }

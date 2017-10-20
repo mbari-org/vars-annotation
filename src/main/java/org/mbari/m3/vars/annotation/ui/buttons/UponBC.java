@@ -9,6 +9,8 @@ import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
 import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.ui.shared.ConceptSelectionDialogController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class UponBC extends AbstractBC {
     private final String associationKey;
     private final String uponRoot;
     private ConceptSelectionDialogController dialogController;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public UponBC(Button button, UIToolBox toolBox) {
         super(button, toolBox);
@@ -54,8 +57,10 @@ public class UponBC extends AbstractBC {
 
     protected void apply() {
         Dialog<String> dialog = dialogController.getDialog();
+        dialogController.requestFocus();
         Optional<String> opt = dialog.showAndWait();
         opt.ifPresent(selectedItem -> {
+            log.debug("Select upon substrate of " + selectedItem);
             Association association = new Association(associationKey,
                     Association.VALUE_SELF,
                     selectedItem);

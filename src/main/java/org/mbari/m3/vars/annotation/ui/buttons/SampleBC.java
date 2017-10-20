@@ -47,15 +47,6 @@ public class SampleBC extends AbstractBC {
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
         Text icon = iconFactory.createIcon(MaterialIcon.NATURE_PEOPLE, "30px");
         initializeButton(tooltip, icon);
-
-        toolBox.getEventBus()
-                .toObserverable()
-                .ofType(AnnotationsSelectedEvent.class)
-                .subscribe(e -> {
-                   User user = toolBox.getData().getUser();
-                   boolean enabled = (user != null) && e.get().size() > 0;
-                   button.setDisable(!enabled);
-                });
     }
 
     @Override
