@@ -54,10 +54,12 @@ public class ImageViewController {
             imageView.setSmooth(true);
             imageView.setCache(true);
             imageView.setOnMouseClicked(evt -> {
-                ImageReference item = getComboBox().getSelectionModel().getSelectedItem();
-                Image image = new Image(item.getUrl().toExternalForm());
-                imageStage.setImage(image);
-                imageStage.show();
+                if (evt.getClickCount() == 2) { // Pop out on double-click
+                    ImageReference item = getComboBox().getSelectionModel().getSelectedItem();
+                    Image image = new Image(item.getUrl().toExternalForm());
+                    imageStage.setImage(image);
+                    imageStage.show();
+                }
             });
         }
         return imageView;
