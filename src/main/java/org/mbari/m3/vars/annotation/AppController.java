@@ -65,7 +65,7 @@ public class AppController {
             KeyCodeCombination downCombo = new KeyCodeCombination(KeyCode.DOWN, osModifier);
             KeyCodeCombination upCombo = new KeyCodeCombination(KeyCode.UP, osModifier);
             KeyCodeCombination nCombo = new KeyCodeCombination(KeyCode.N, osModifier);
-            KeyCodeCombination cCombo = new KeyCodeCombination(KeyCode.C, osModifier);
+            KeyCodeCombination cCombo = new KeyCodeCombination(KeyCode.G, osModifier);
             KeyCodeCombination tCombo = new KeyCodeCombination(KeyCode.T, osModifier);
             KeyCodeCombination fCombo = new KeyCodeCombination(KeyCode.F, osModifier);
             KeyCodeCombination deleteCombo = new KeyCodeCombination(KeyCode.DELETE, osModifier);
