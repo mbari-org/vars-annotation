@@ -166,8 +166,6 @@ public class AnnotationEditorPaneController {
                                     });
                                 });
                             });
-
-
                 }
             }
         });
