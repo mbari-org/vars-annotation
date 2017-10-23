@@ -19,23 +19,6 @@ public class StringUtils {
         return true;
     }
 
-    public static boolean isMostlyBlank(final CharSequence cs) {
-        int strLen;
-        if (cs == null || (strLen = cs.length()) == 0) {
-            return true;
-        }
-        for (int i = 0; i < strLen; i++) {
-            char c = cs.charAt(i);
-            if (c == ' ') {
-                // Do nothing
-            }
-            else if (!Character.isWhitespace(c)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public static boolean containsOrderedChars(final String chars, final String text) {
         if (chars == null || text == null ) {
             return false;

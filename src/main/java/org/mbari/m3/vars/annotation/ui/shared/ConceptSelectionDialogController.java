@@ -48,7 +48,7 @@ public class ConceptSelectionDialogController {
         if (comboBox == null) {
             comboBox = new JFXComboBox<>();
             new FilteredComboBoxDecorator<>(comboBox,
-                    FilteredComboBoxDecorator.STARTSWITH);
+                    FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
         }
         return comboBox;
     }

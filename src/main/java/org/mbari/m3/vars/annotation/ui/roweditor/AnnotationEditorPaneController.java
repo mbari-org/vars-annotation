@@ -141,7 +141,7 @@ public class AnnotationEditorPaneController {
                 });
 
         // -- Configure combobox autocomplete
-        new FilteredComboBoxDecorator<>(conceptComboBox, FilteredComboBoxDecorator.STARTSWITH);
+        new FilteredComboBoxDecorator<>(conceptComboBox, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
         conceptComboBox.setEditable(false);
         conceptComboBox.setOnKeyReleased(v -> {
             if (v.getCode() == KeyCode.ENTER) {

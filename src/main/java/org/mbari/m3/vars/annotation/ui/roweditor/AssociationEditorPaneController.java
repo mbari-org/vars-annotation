@@ -129,7 +129,7 @@ public class AssociationEditorPaneController {
         linkNameTextField.setDisable(true);
 
         // Add filtering of toConcepts
-        new FilteredComboBoxDecorator<>(toConceptComboBox, FilteredComboBoxDecorator.STARTSWITH);
+        new FilteredComboBoxDecorator<>(toConceptComboBox, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
 
         // Add decorator to populate combobox with all children of given concept
         toConceptComboBoxDecorator = new HierarchicalConceptComboBoxDecorator(toConceptComboBox,

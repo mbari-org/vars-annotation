@@ -44,15 +44,15 @@ public class FilteredComboBoxDecoratorDemo extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         ComboBox<String> cmb = new JFXComboBox<>();
-        new FilteredComboBoxDecorator<>(cmb, FilteredComboBoxDecorator.CONTAINS_CHARS_IN_ORDER);
-        //cmb.setItems(FXCollections.observableArrayList(LISTA));
-        Initializer.getToolBox()
-                .getServices()
-                .getConceptService()
-                .findAllNames()
-                .thenAccept(names -> {
-                   cmb.setItems(FXCollections.observableArrayList(names));
-                });
+        new FilteredComboBoxDecorator<>(cmb, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
+        cmb.setItems(FXCollections.observableArrayList(LISTA));
+//        Initializer.getToolBox()
+//                .getServices()
+//                .getConceptService()å
+//                .findAllNames()
+//                .thenAccept(names -> {
+//                   cmb.setItems(FXCollections.observableArrayList(names));
+//                });
         Scene scene = new Scene(new StackPane(cmb));
         scene.getStylesheets().addAll(Initializer.getToolBox().getStylesheets());
         stage.setScene(scene);

@@ -121,7 +121,7 @@ public class SampleBC extends AbstractBC {
                     .thenAccept(opt -> {
                         if (opt.isPresent()) {
                             List<String> samplers = opt.get().flatten();
-                            new FilteredComboBoxDecorator<>(comboBox, FilteredComboBoxDecorator.STARTSWITH);
+                            new FilteredComboBoxDecorator<>(comboBox, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
                             comboBox.setItems(FXCollections.observableArrayList(samplers));
                             comboBox.getSelectionModel().select(defaultSampleConcept);
 

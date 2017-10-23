@@ -19,6 +19,7 @@ import org.mbari.m3.vars.annotation.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.Key;
 import java.util.function.Predicate;
 
 /**
@@ -34,6 +35,7 @@ public class FilteredComboBoxDecorator<T>  {
     private AutoCompleteComparator<T> comparator = (typedText, objectToCompare) -> false;
     private volatile FilteredList<T> filteredItems;
     private final ComboBox<T> comboBox;
+    private volatile KeyCode lastKeyCode;
 
     private InvalidationListener filterListener = (obs) -> {
         if (filteredItems != null) {
@@ -94,10 +96,11 @@ public class FilteredComboBoxDecorator<T>  {
 
     private void handleOnKeyPressed(KeyEvent keyEvent) {
         KeyCode code = keyEvent.getCode();
+        lastKeyCode = keyEvent.getCode();
         if (!keyEvent.isMetaDown()) {
             String filterValue = filter.get();
             //log.debug("Handling KeyCode = " + code);
-            if (code.isLetterKey()) {
+            if (code.isLetterKey() || code.isDigitKey()) {
                 filterValue += keyEvent.getText();
             } else if ((code == KeyCode.BACK_SPACE) && (filterValue.length() > 0)) {
                 filterValue = filterValue.substring(0, filterValue.length() - 1);
@@ -106,6 +109,7 @@ public class FilteredComboBoxDecorator<T>  {
             } else if ((code == KeyCode.DOWN) || (code == KeyCode.UP)) {
                 comboBox.show();
             }
+            log.info("Filter value = "  +filterValue);
             filter.set(filterValue);
             comboBox.getTooltip().textProperty().set(filterValue);
         }
@@ -150,10 +154,21 @@ public class FilteredComboBoxDecorator<T>  {
     }
 
     public static AutoCompleteComparator<String> STARTSWITH =
-            (txt, obj) -> obj.toUpperCase().startsWith(txt.toUpperCase());
+            (txt, obj) -> obj.toUpperCase()
+                    .startsWith(txt.toUpperCase());
+
+    public static AutoCompleteComparator<String> STARTSWITH_IGNORE_SPACES =
+            (txt, obj) -> obj.replace(" ", "")
+                    .toUpperCase()
+                    .startsWith(txt.replace(" ", "").toUpperCase());
 
     public static AutoCompleteComparator<String> CONTAINS_CHARS_IN_ORDER =
             (txt, obj) -> StringUtils.containsOrderedChars(txt.toUpperCase(), obj.toUpperCase());
+
+    public static AutoCompleteComparator<String> STARTSWITH_FIRST_THEN_CONTAINS_CHARS_IN_ORDER =
+            (txt, obj) -> obj.substring(0, 1).equalsIgnoreCase(txt.substring(0, 1)) &&
+                    StringUtils.containsOrderedChars(txt.toUpperCase(), obj.toUpperCase());
+
 
 }
 
