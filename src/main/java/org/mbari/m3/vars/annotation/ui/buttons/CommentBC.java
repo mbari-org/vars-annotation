@@ -13,6 +13,8 @@ import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.User;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -36,14 +38,6 @@ public class CommentBC extends AbstractBC {
         Text icon = iconFactory.createIcon(MaterialIcon.INSERT_COMMENT, "30px");
         initializeButton(tooltip, icon);
 
-        toolBox.getEventBus()
-                .toObserverable()
-                .ofType(AnnotationsSelectedEvent.class)
-                .subscribe(e -> {
-                    User user = toolBox.getData().getUser();
-                    boolean enabled = (user != null) && e.get().size() > 0;
-                    button.setDisable(!enabled);
-                });
     }
 
     private TextInputDialog getDialog() {
@@ -62,7 +56,7 @@ public class CommentBC extends AbstractBC {
     }
 
     protected void apply() {
-        ObservableList<Annotation> annotations = toolBox.getData().getSelectedAnnotations();
+        List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
         Optional<String> s = getDialog().showAndWait();
         s.ifPresent(comment -> {
             Association a = new Association(commentLinkName, Association.VALUE_SELF, comment);
