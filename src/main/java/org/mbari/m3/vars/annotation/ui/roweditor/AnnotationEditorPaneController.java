@@ -14,6 +14,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -231,12 +232,10 @@ public class AnnotationEditorPaneController {
         toolBox.getServices()
                 .getConceptService()
                 .findAllNames()
-                .thenApply(names -> {
-                    ObservableList<String> cns = FXCollections.observableArrayList(names);
-                    Platform.runLater(() -> {
-                        conceptComboBox.setItems(cns);
-                    });
-                    return null;
+                .thenAccept(names -> {
+
+                    FilteredList<String> cns = new FilteredList<>(FXCollections.observableArrayList(names));
+                    Platform.runLater(() -> conceptComboBox.setItems(cns));
                 });
     }
 

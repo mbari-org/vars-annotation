@@ -2,6 +2,7 @@ package org.mbari.m3.vars.annotation.ui.shared;
 
 import com.jfoenix.controls.JFXComboBox;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
@@ -46,13 +47,13 @@ public class FilteredComboBoxDecoratorDemo extends Application {
         ComboBox<String> cmb = new JFXComboBox<>();
         new FilteredComboBoxDecorator<>(cmb, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
         cmb.setItems(FXCollections.observableArrayList(LISTA));
-//        Initializer.getToolBox()
-//                .getServices()
-//                .getConceptService()å
-//                .findAllNames()
-//                .thenAccept(names -> {
-//                   cmb.setItems(FXCollections.observableArrayList(names));
-//                });
+        Initializer.getToolBox()
+                .getServices()
+                .getConceptService()
+                .findAllNames()
+                .thenAccept(names -> {
+                   Platform.runLater(() -> cmb.setItems(FXCollections.observableArrayList(names)));
+                });
         Scene scene = new Scene(new StackPane(cmb));
         scene.getStylesheets().addAll(Initializer.getToolBox().getStylesheets());
         stage.setScene(scene);

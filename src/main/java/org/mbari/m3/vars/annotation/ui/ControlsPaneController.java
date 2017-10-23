@@ -50,8 +50,8 @@ public class ControlsPaneController {
             }
             else {
                 root = new SplitPane(getRowEditorController().getRoot(),
-                        getAssocBtnPane().getPane(),
-                        getRightPane());
+                        getRightPane(),
+                        getAssocBtnPane().getPane());
             }
             loadDividerPositions(splitPaneKey, root);
         }

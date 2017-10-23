@@ -35,7 +35,6 @@ public class FilteredComboBoxDecorator<T>  {
     private AutoCompleteComparator<T> comparator = (typedText, objectToCompare) -> false;
     private volatile FilteredList<T> filteredItems;
     private final ComboBox<T> comboBox;
-    private volatile KeyCode lastKeyCode;
 
     private InvalidationListener filterListener = (obs) -> {
         if (filteredItems != null) {
@@ -96,7 +95,6 @@ public class FilteredComboBoxDecorator<T>  {
 
     private void handleOnKeyPressed(KeyEvent keyEvent) {
         KeyCode code = keyEvent.getCode();
-        lastKeyCode = keyEvent.getCode();
         if (!keyEvent.isMetaDown()) {
             String filterValue = filter.get();
             //log.debug("Handling KeyCode = " + code);
