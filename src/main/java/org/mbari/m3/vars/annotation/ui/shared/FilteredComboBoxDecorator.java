@@ -48,6 +48,7 @@ public class FilteredComboBoxDecorator<T>  {
                                      AutoCompleteComparator<T> comparator) {
         this.comboBox = comboBox;
         filteredItems = new FilteredList<>(comboBox.getItems());
+        comboBox.setItems(filteredItems);
         filter.addListener(filterListener);
 
         initialize(comparator);
@@ -62,6 +63,8 @@ public class FilteredComboBoxDecorator<T>  {
             }
         });
     }
+
+
 
 
     private void handleFilterChanged(String newValue) {
@@ -107,11 +110,9 @@ public class FilteredComboBoxDecorator<T>  {
             } else if ((code == KeyCode.DOWN) || (code == KeyCode.UP)) {
                 comboBox.show();
             }
-            log.info("Filter value = "  +filterValue);
             filter.set(filterValue);
             comboBox.getTooltip().textProperty().set(filterValue);
         }
-
     }
 
 
