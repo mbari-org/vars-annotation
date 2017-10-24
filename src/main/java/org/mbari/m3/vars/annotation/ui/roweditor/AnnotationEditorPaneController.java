@@ -233,9 +233,12 @@ public class AnnotationEditorPaneController {
                 .getConceptService()
                 .findAllNames()
                 .thenAccept(names -> {
-
                     FilteredList<String> cns = new FilteredList<>(FXCollections.observableArrayList(names));
                     Platform.runLater(() -> conceptComboBox.setItems(cns));
+//                    Platform.runLater(() -> {
+//                        conceptComboBox.getItems().clear();
+//                        conceptComboBox.getItems().addAll(names);
+//                    });
                 });
     }
 
