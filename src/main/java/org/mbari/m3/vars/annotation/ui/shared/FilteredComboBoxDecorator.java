@@ -36,38 +36,43 @@ public class FilteredComboBoxDecorator<T>  {
     private volatile FilteredList<T> filteredItems;
     private final ComboBox<T> comboBox;
 
-    private InvalidationListener filterListener = (obs) -> {
-        if (filteredItems != null) {
-            Predicate<T> p = filter.get().isEmpty() ? null :
-                    s -> comparator.matches(filter.get(), s);
-            filteredItems.setPredicate(p);
-        }
-    };
-
     public FilteredComboBoxDecorator(final ComboBox<T> comboBox,
                                      AutoCompleteComparator<T> comparator) {
         this.comboBox = comboBox;
+        this.comparator = comparator;
+
         filteredItems = new FilteredList<>(comboBox.getItems());
         comboBox.setItems(filteredItems);
-        filter.addListener(filterListener);
 
-        initialize(comparator);
+        Tooltip tooltip = new Tooltip();
+        tooltip.getStyleClass().add("tooltip-combobox");
+        comboBox.setTooltip(tooltip);
+        filter.addListener((observable, oldValue, newValue) -> handleFilterChanged(newValue));
+        comboBox.setOnKeyPressed(this::handleOnKeyPressed);
+        comboBox.setOnHidden(this::handleOnHiding);
 
         comboBox.itemsProperty().addListener((obs, oldV, newV) -> {
-            if (!(newV instanceof FilteredList)) {
-                filteredItems = new FilteredList<>(newV);
+            if (newV != filteredItems) {
+                log.info("New list of size " + newV.size());
+                if (!(newV instanceof FilteredList)) {
+                    filteredItems = new FilteredList<>(newV);
+                }
+                else {
+                    filteredItems = (FilteredList<T>) newV;
+                }
                 comboBox.setItems(filteredItems);
-            }
-            else {
-                filteredItems = (FilteredList<T>) newV;
             }
         });
     }
 
 
-
-
     private void handleFilterChanged(String newValue) {
+        if (filteredItems != null) {
+            Predicate<T> p = filter.get().isEmpty() ? null :
+                    s -> comparator.matches(filter.get(), s);
+            filteredItems.setPredicate(p);
+        }
+
         if (!StringUtils.isBlank(newValue)) {
             comboBox.show();
             if (StringUtils.isBlank(filter.get())) {
@@ -115,15 +120,9 @@ public class FilteredComboBoxDecorator<T>  {
         }
     }
 
-
-    public void initialize(AutoCompleteComparator<T> comparator) {
+    public void setComparator(AutoCompleteComparator<T> comparator) {
         this.comparator = comparator;
-        Tooltip tooltip = new Tooltip();
-        tooltip.getStyleClass().add("tooltip-combobox");
-        comboBox.setTooltip(tooltip);
-        filter.addListener((observable, oldValue, newValue) -> handleFilterChanged(newValue));
-        comboBox.setOnKeyPressed(this::handleOnKeyPressed);
-        comboBox.setOnHidden(this::handleOnHiding);
+        handleFilterChanged(filter.get());
     }
 
     private void restoreOriginalItems() {

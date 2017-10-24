@@ -179,14 +179,6 @@ public class AnnotationEditorPaneController {
                 .ofType(ClearCacheMsg.class)
                 .subscribe(c -> loadComboBoxData());
 
-        // Listen for Annotation selections
-//        eventBus.toObserverable()
-//                .ofType(AnnotationsSelectedEvent.class)
-//                .subscribe(sa -> {
-//                    Annotation a0 = sa.getAnnotations().size() == 1 ? sa.getAnnotations().get(0) : null;
-//                    setAnnotation(a0);
-//                });
-
         setAnnotation(null);
     }
 
@@ -229,16 +221,13 @@ public class AnnotationEditorPaneController {
     }
 
     private void loadComboBoxData() {
+
         toolBox.getServices()
                 .getConceptService()
                 .findAllNames()
                 .thenAccept(names -> {
                     FilteredList<String> cns = new FilteredList<>(FXCollections.observableArrayList(names));
                     Platform.runLater(() -> conceptComboBox.setItems(cns));
-//                    Platform.runLater(() -> {
-//                        conceptComboBox.getItems().clear();
-//                        conceptComboBox.getItems().addAll(names);
-//                    });
                 });
     }
 
