@@ -33,5 +33,5 @@ public class SetDurationUsingElapsedTimeCmd implements Command {
     @Override
     public String getDescription() {
         return null;
-    }{
+    }
 }

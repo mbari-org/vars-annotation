@@ -207,6 +207,22 @@ public class AnnotationTableController {
             obvCol.setCellValueFactory(new PropertyValueFactory<>("observer"));
             obvCol.setId("observer");
 
+            TableColumn<Annotation, Duration> durationCol = new TableColumn<>(i18n.getString("annotable.col.duration"));
+            durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
+            durationCol.setCellFactory(c -> new TableCell<Annotation, Duration>() {
+                @Override
+                protected void updateItem(Duration item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setText(null);
+                    }
+                    else {
+                        setText(FormatUtils.formatDuration(item));
+                    }
+                }
+            });
+            durationCol.setId("duration");
+
             TableColumn<Annotation, String> actCol
                     = new TableColumn<>(i18n.getString("annotable.col.activity"));
             actCol.setCellValueFactory(new PropertyValueFactory<>("activity"));
@@ -219,7 +235,7 @@ public class AnnotationTableController {
 
             // TODO get column order from preferences
             tableView.getColumns().addAll(timecodeCol, elapsedTimeCol, timestampCol,
-                    obsCol, assCol, fgsCol, obvCol, actCol, grpCol);
+                    obsCol, assCol, fgsCol, obvCol, durationCol, actCol, grpCol);
 
 
             TableView.TableViewSelectionModel<Annotation> selectionModel = tableView.getSelectionModel();
