@@ -59,7 +59,7 @@ public class SetDurationCmd implements Command {
     }
 
     private void applyTimecode(Timecode timecode) {
-        
+
     }
 
 }
