@@ -53,7 +53,7 @@ public class FilteredComboBoxDecorator<T>  {
 
         comboBox.itemsProperty().addListener((obs, oldV, newV) -> {
             if (newV != filteredItems) {
-                log.info("New list of size " + newV.size());
+                //log.info("New list of size " + newV.size());
                 if (!(newV instanceof FilteredList)) {
                     filteredItems = new FilteredList<>(newV);
                 }

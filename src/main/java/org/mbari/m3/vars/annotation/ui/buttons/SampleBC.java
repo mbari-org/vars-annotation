@@ -20,6 +20,8 @@ import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.User;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,10 @@ public class SampleBC extends AbstractBC {
     private GridPane dialogPane;
     private ComboBox<String> comboBox;
     private TextField textField;
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    // HACK To track selected sampler after combox is hidden: misbehaving Filter
+    private volatile String lastSelectedSampler;
+
 
     public SampleBC(Button button, UIToolBox toolBox) {
         super(button, toolBox);
@@ -77,6 +83,15 @@ public class SampleBC extends AbstractBC {
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
             dialog.getDialogPane().setContent(getDialogPane());
             dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == ButtonType.OK) {
+                    return new Pair<>(lastSelectedSampler,
+                            textField.getText());
+                }
+                // HACK To track selected sampler after combox is hidden: misbehaving Filter
+                lastSelectedSampler = null;
+                return null;
+            });
         }
         return dialog;
     }
@@ -101,6 +116,16 @@ public class SampleBC extends AbstractBC {
             dialogPane.setPadding(new Insets(20, 10, 10, 10));
             comboBox = new JFXComboBox<>();
             comboBox.setEditable(false);
+            comboBox.getSelectionModel()
+                    .selectedItemProperty()
+                    .addListener((obs) -> {
+                        String item = comboBox.getSelectionModel().getSelectedItem();
+                        log.debug("Sampler: " + item);
+                        // HACK To track selected sampler after combox is hidden: misbehaving Filter
+                        if (item != null) {
+                            lastSelectedSampler = item;
+                        }
+                    });
             textField = new TextField();
             String by = toolBox.getI18nBundle().getString("buttons.sample.dialog.label.by");
             String id = toolBox.getI18nBundle().getString("buttons.sample.dialog.label.id");
@@ -124,14 +149,6 @@ public class SampleBC extends AbstractBC {
                             new FilteredComboBoxDecorator<>(comboBox, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
                             comboBox.setItems(FXCollections.observableArrayList(samplers));
                             comboBox.getSelectionModel().select(defaultSampleConcept);
-
-                            getDialog().setResultConverter(dialogButton -> {
-                                if (dialogButton == ButtonType.OK) {
-                                    return new Pair<>(comboBox.getSelectionModel().getSelectedItem(),
-                                            textField.getText());
-                                }
-                                return null;
-                            });
                         }
                         else {
                             // TODO show alert

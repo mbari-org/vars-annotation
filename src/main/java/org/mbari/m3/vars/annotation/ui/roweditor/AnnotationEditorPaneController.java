@@ -175,9 +175,10 @@ public class AnnotationEditorPaneController {
 
 
         // If the cache is cleared reload combobox data
-        eventBus.toObserverable()
-                .ofType(ClearCacheMsg.class)
-                .subscribe(c -> loadComboBoxData());
+        // TODO there's a bug in FilteredComboBoxDecorator that causes filtering to fail after refresh
+//        eventBus.toObserverable()
+//                .ofType(ClearCacheMsg.class)
+//                .subscribe(c -> loadComboBoxData());
 
         setAnnotation(null);
     }

@@ -10,6 +10,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.ImageReference;
@@ -23,6 +24,8 @@ import java.util.List;
  */
 public class ImageViewController {
 
+
+    // TODO add save button next to combobox that saves currently selected image
     private ObjectProperty<Annotation> annotation = new SimpleObjectProperty<>();
     private ImageView imageView;
     private BorderPane root;
