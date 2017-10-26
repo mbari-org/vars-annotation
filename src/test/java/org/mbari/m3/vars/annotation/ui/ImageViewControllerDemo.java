@@ -3,6 +3,7 @@ package org.mbari.m3.vars.annotation.ui;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.model.Annotation;
 
 /**
@@ -17,7 +18,7 @@ public class ImageViewControllerDemo  extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        ImageViewController controller = new ImageViewController();
+        ImageViewController controller = new ImageViewController(Initializer.getToolBox());
         Annotation annotation = DemoConstants.newTestAnnotation();
         controller.setAnnotation(annotation);
         Scene scene = new Scene(controller.getRoot());

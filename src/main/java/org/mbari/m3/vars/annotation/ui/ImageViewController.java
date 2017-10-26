@@ -1,17 +1,22 @@
 package org.mbari.m3.vars.annotation.ui;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import de.jensd.fx.glyphs.materialicons.MaterialIcon;
+import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import javafx.stage.Window;
 import javafx.util.StringConverter;
+import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.messages.SaveImageMsg;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.ImageReference;
 import org.mbari.m3.vars.annotation.ui.shared.ImageStage;
@@ -25,13 +30,31 @@ import java.util.List;
 public class ImageViewController {
 
 
-    // TODO add save button next to combobox that saves currently selected image
+    private final UIToolBox toolBox;
     private ObjectProperty<Annotation> annotation = new SimpleObjectProperty<>();
     private ImageView imageView;
     private BorderPane root;
     private ComboBox<ImageReference> comboBox;
+    // TODO pull image stage into separate controller and add image annotation functions
     private ImageStage imageStage = new ImageStage();
+    private ToolBar toolBar;
 
+    public ImageViewController(UIToolBox toolBox) {
+        this.toolBox = toolBox;
+
+        imageStage.getScene()
+                .getStylesheets()
+                .addAll(toolBox.getStylesheets());
+        imageStage.getScene()
+                .setOnKeyPressed(keyEvent -> {
+                    if (keyEvent.isMetaDown()) {
+                        switch (keyEvent.getCode()) {
+                            case S: saveImage(imageStage.getOwner()); break;
+                            case W: imageStage.hide();
+                        }
+                    }
+                });
+    }
 
     public void setAnnotation(Annotation annotation) {
         Platform.runLater(() -> {
@@ -73,15 +96,38 @@ public class ImageViewController {
             root = new BorderPane();
             root.setTop(getComboBox());
 
-            // TODO resizing is not working correctly in dock node
             ImageView iv = getImageView();
-
             iv.fitWidthProperty().bind(root.widthProperty());
             iv.fitHeightProperty().bind(root.heightProperty());
             root.setCenter(iv);
 
+            imageStage.getRoot().setTop(getToolBar());
+
         }
         return root;
+    }
+
+    private ToolBar getToolBar() {
+        if (toolBar == null) {
+            MaterialIconFactory iconFactory = MaterialIconFactory.get();
+            Text icon = iconFactory.createIcon(MaterialIcon.SAVE, "30px");
+            String tooltip = toolBox.getI18nBundle().getString("imageview.button.save");
+            Button saveBtn = new JFXButton();
+            saveBtn.setTooltip(new Tooltip(tooltip));
+            saveBtn.setGraphic(icon);
+            saveBtn.setOnAction(evt -> saveImage(imageStage.getOwner()));
+
+            toolBar = new ToolBar(saveBtn);
+        }
+        return toolBar;
+    }
+
+    private void saveImage(Window owner) {
+        ImageReference item = comboBox.getSelectionModel().getSelectedItem();
+        if (item.getUrl() != null) {
+            toolBox.getEventBus()
+                    .send(new SaveImageMsg(item.getUrl(), owner));
+        }
     }
 
     public ComboBox<ImageReference> getComboBox() {

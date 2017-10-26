@@ -78,7 +78,7 @@ public class AppPaneController {
         selectMediaDialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
         annotationTableController = new AnnotationTableController(toolBox);
         preferencesDialogController = new PreferencesDialogController(toolBox);
-        imageViewController = new ImageViewController();
+        imageViewController = new ImageViewController(toolBox);
         controlsPaneController = new ControlsPaneController(toolBox);
         mediaPaneController = MediaPaneController.newInstance();
         bulkEditorPaneController = BulkEditorPaneController.newInstance(toolBox);

@@ -8,6 +8,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.FileChooser;
+import org.mbari.io.IOUtilities;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayers;
 import org.mbari.m3.vars.annotation.messages.*;
@@ -18,6 +20,7 @@ import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
 import org.mbari.m3.vars.annotation.ui.AppPaneController;
+import org.mbari.net.URLUtilities;
 import org.mbari.util.SystemUtilities;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
@@ -25,6 +28,8 @@ import org.mbari.vcr4j.time.Timecode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
+import java.net.URL;
 import java.security.Key;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -43,6 +48,7 @@ public class AppController {
     // Should automatically open the correct player. Listens for MediaChangedEvents
     private final MediaPlayers mediaPlayers;
     private final Logger log = LoggerFactory.getLogger(getClass());
+    private final FileChooser fileChooser = new FileChooser();
 
     public AppController(UIToolBox toolBox) {
         this.toolBox = toolBox;
@@ -189,6 +195,29 @@ public class AppController {
         eventObservable.ofType(SeekMsg.class)
                 .subscribe(this::seek);
 
+        eventObservable.ofType(SaveImageMsg.class)
+                .subscribe(this::saveImage);
+
+    }
+
+    private void saveImage(SaveImageMsg msg) {
+        URL url = msg.getUrl();
+        if (url != null ) {
+            String filename = URLUtilities.toFilename(url);
+            fileChooser.setTitle(toolBox.getI18nBundle().getString("appcontroller.imagesave.title"));
+            fileChooser.setInitialFileName(filename);
+            File file = fileChooser.showSaveDialog(msg.getWindow());
+
+            if (file != null) {
+                try (BufferedInputStream in = new BufferedInputStream(url.openStream());
+                     BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file))) {
+                    IOUtilities.copy(in, out);
+                }
+                catch (IOException e) {
+                    log.error("Failed to copy " + url + " to " + file);
+                }
+            }
+        }
     }
 
     private void seek(SeekMsg msg) {
