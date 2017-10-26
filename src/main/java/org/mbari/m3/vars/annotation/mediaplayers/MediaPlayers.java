@@ -60,7 +60,7 @@ public class MediaPlayers {
         if (u.startsWith("urn:tid")) {
             // handle tape
         }
-        else if (u.startsWith("http")) {
+        else if (u.startsWith("http") || u.startsWith("file")) {
             // TODO handlers should be register so that user can select his/her preferred
             // handler in preferences
             try {

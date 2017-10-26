@@ -20,6 +20,9 @@ public interface VamWebService {
     @GET("media/videoreference/{uuid}")
     Call<Media> findByUuid(@Path("uuid") UUID uuid);
 
+    @GET("media/videoreference/filename/{filename}")
+    Call<List<Media>> findByFilename(@Path("filename") String filename);
+
     @GET("media/sha512/{sha512}")
     Call<Media> findBySha512(@Path("sha512") String hexSha512);
 

@@ -29,6 +29,7 @@ import org.mbari.m3.vars.annotation.messages.*;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
+import org.mbari.m3.vars.annotation.services.FileBrowsingDecorator;
 import org.mbari.m3.vars.annotation.services.UserService;
 import org.mbari.m3.vars.annotation.ui.annotable.AnnotationTableController;
 import org.mbari.m3.vars.annotation.ui.cbpanel.ConceptButtonPanesController;
@@ -249,20 +250,22 @@ public class AppPaneController {
                     .toObserverable()
                     .ofType(MediaChangedEvent.class)
                     .subscribe(e -> {
-                        mediaLabel.setText(null);
-                        Media media = e.get();
-                        if (media != null) {
-                            String uri = media.getUri().toString();
-                            int i = uri.lastIndexOf("/");
-                            if (i < 0) {
-                                i = 0;
+                        Platform.runLater(() -> {
+                            mediaLabel.setText(null);
+                            Media media = e.get();
+                            if (media != null) {
+                                String uri = media.getUri().toString();
+                                int i = uri.lastIndexOf("/");
+                                if (i < 0) {
+                                    i = 0;
+                                }
+                                else {
+                                    i = i + 1;
+                                }
+                                uri = uri.substring(i);
+                                mediaLabel.setText(media.getVideoName() + " [" + uri + "]");
                             }
-                            else {
-                                i = i + 1;
-                            }
-                            uri = uri.substring(i);
-                            mediaLabel.setText(media.getVideoName() + " [" + uri + "]");
-                        }
+                        });
                     });
 
 
@@ -296,6 +299,9 @@ public class AppPaneController {
             Text localIcon = gf.createIcon(MaterialIcon.QUEUE, "30px");
             Button localButton = new JFXButton(null, localIcon);
             localButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.local")));
+            FileBrowsingDecorator decorator = new FileBrowsingDecorator(toolBox);
+            localButton.setOnAction(e ->
+                decorator.apply(AppPaneController.this.getRoot().getScene().getWindow()));
 
             Text tapeIcon = gf.createIcon(MaterialIcon.PERM_MEDIA, "30px");
             Button tapeButton = new JFXButton(null, tapeIcon);

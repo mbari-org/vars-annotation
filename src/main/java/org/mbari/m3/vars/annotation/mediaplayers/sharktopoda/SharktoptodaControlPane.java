@@ -185,8 +185,10 @@ public class SharktoptodaControlPane extends Pane {
             Duration duration = mediaPlayer.getMedia().getDuration();
             if (duration != null) {
                 long durationMillis = duration.toMillis();
-                getScrubber().setMax(durationMillis);
-                durationLabel.setText(formatSeconds(duration.getSeconds()));
+                Platform.runLater(() -> {
+                    getScrubber().setMax(durationMillis);
+                    durationLabel.setText(formatSeconds(duration.getSeconds()));
+                });
                 mediaPlayer.getVideoIO()
                         .getIndexObservable()
                         .subscribe(new Observer<VideoIndex>() {

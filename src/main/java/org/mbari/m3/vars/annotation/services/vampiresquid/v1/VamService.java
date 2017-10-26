@@ -89,4 +89,8 @@ public class VamService implements MediaService, RetrofitWebService {
     public CompletableFuture<List<String>> findVideoNamesByVideoSequenceName(String videoSequenceName) {
         return sendRequest(vamWebService.findVideoNamesByVideoSequenceName(videoSequenceName));
     }
+
+    public CompletableFuture<List<Media>> findByFilename(String filename) {
+        return sendRequest(vamWebService.findByFilename(filename));
+    }
 }

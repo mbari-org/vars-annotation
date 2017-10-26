@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.util;
 
+import javax.xml.bind.DatatypeConverter;
 import java.time.Duration;
 
 /**
@@ -9,6 +10,12 @@ import java.time.Duration;
  */
 public class FormatUtils {
 
+    /**
+     * Make a human readable string (e.g. 10 GB or 100 MB) for a
+     * size of a file in bytes
+     * @param bytes The size of the file in bytes
+     * @return A formated string of GB or MB
+     */
     public static String formatSizeBytes(Long bytes) {
         Double gb = bytes * 1e-9;
         if (gb > 1) {
@@ -20,6 +27,11 @@ public class FormatUtils {
         }
     }
 
+    /**
+     * Make a duration look pretty
+     * @param duration The duration of interest.
+     * @return String formated as +HH:MM:ss.sss
+     */
     public static String formatDuration(Duration duration) {
         long seconds = duration.getSeconds();
         long absSeconds = Math.abs(seconds);
@@ -32,5 +44,13 @@ public class FormatUtils {
                 decimalSecs);
 
         return seconds < 0 ? "-" + positive : "+" + positive;
+    }
+
+    public static String toHexString(byte[] bytes) {
+        return DatatypeConverter.printHexBinary(bytes);
+    }
+
+    public static byte[] fromHexString(String hex) {
+        return DatatypeConverter.parseHexBinary(hex);
     }
 }
