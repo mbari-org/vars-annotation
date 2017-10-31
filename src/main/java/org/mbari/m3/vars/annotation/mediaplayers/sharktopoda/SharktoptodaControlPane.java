@@ -21,6 +21,7 @@ import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
+import org.mbari.vcr4j.sharktopoda.commands.SharkCommands;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class SharktoptodaControlPane extends Pane {
     Button rewindButton;
     Button fastForwardButton;
     Button playButton;
+    Button frameAdvanceButton;
     Label elapsedTimeLabel = new Label("00:00");
     Label durationLabel = new Label("00:00");
     private GlyphsFactory glyphsFactory = MaterialIconFactory.get();
@@ -65,6 +67,7 @@ public class SharktoptodaControlPane extends Pane {
                 getRewindButton(),
                 getPlayButton(),
                 getFastForwardButton(),
+                getFrameAdvanceButton(),
                 elapsedTimeLabel,
                 durationLabel,
                 getSpeedSlider(),
@@ -78,6 +81,7 @@ public class SharktoptodaControlPane extends Pane {
         getRewindButton().relocate(145, 8);
         getPlayButton().relocate(195, 0);
         getFastForwardButton().relocate(260, 8);
+        getFrameAdvanceButton().relocate(310, 8);
         elapsedTimeLabel.relocate(9, 47);
         getScrubber().relocate(55, 47);
         durationLabel.relocate(395, 47);
@@ -97,6 +101,22 @@ public class SharktoptodaControlPane extends Pane {
             speedSlider.setValueFactory(p -> binding);
         }
         return speedSlider;
+    }
+
+    protected Button getFrameAdvanceButton() {
+        if (frameAdvanceButton == null) {
+            Text icon = glyphsFactory.createIcon(MaterialIcon.KEYBOARD_ARROW_RIGHT, "30px");
+            icon.setFill(color);
+            frameAdvanceButton = new JFXButton();
+            frameAdvanceButton.setGraphic(icon);
+            frameAdvanceButton.setPrefSize(30, 30);
+            frameAdvanceButton.setOnAction(e -> {
+                mediaPlayer.stop();
+                mediaPlayer.getVideoIO()
+                        .send(SharkCommands.FRAMEADVANCE);
+            });
+        }
+        return frameAdvanceButton;
     }
 
     protected Button getFastForwardButton() {
