@@ -106,7 +106,7 @@ public class FilteredComboBoxDecorator<T>  {
         if (!keyEvent.isMetaDown()) {
             String filterValue = filter.get();
             //log.debug("Handling KeyCode = " + code);
-            if (code.isLetterKey() || code.isDigitKey()) {
+            if (code.isLetterKey() || code.isDigitKey() || code == KeyCode.MINUS) {
                 filterValue += keyEvent.getText();
             } else if ((code == KeyCode.BACK_SPACE) && (filterValue.length() > 0)) {
                 filterValue = filterValue.substring(0, filterValue.length() - 1);

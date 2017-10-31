@@ -1,11 +1,21 @@
+/*
+ * @(#)AppDemo.java   2017.10.30 at 05:27:03 PDT
+ *
+ * Copyright 2011 MBARI
+ *
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.mbari.m3.vars.annotation;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +25,10 @@ import org.slf4j.LoggerFactory;
  */
 public class AppDemo extends App {
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         Logger log = LoggerFactory.getLogger(AppDemo.class);
         Initializer.getToolBox()
@@ -28,10 +42,12 @@ public class AppDemo extends App {
                 .getAnnotations();
 
         annotations.addListener(new InvalidationListener() {
+
                     @Override
                     public void invalidated(Observable observable) {
                         log.debug("Annotation count: " + annotations.size());
                     }
+
                 });
     }
 }
