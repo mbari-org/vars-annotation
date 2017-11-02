@@ -1,26 +1,16 @@
 package org.mbari.m3.vars.annotation.services.varskbserver.v1;
 
-import com.fatboyindustrial.gsonjavatime.Converters;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.mbari.m3.vars.annotation.gson.ByteArrayConverter;
-import org.mbari.m3.vars.annotation.gson.DurationConverter;
-import org.mbari.m3.vars.annotation.gson.TimecodeConverter;
+
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.model.ConceptAssociationTemplate;
 import org.mbari.m3.vars.annotation.model.ConceptDetails;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.services.RetrofitWebService;
-import org.mbari.vcr4j.time.Timecode;
-import retrofit2.*;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import javax.inject.Inject;
-import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Service that calls the REST API for vampire-squid. This version does NO caching,
