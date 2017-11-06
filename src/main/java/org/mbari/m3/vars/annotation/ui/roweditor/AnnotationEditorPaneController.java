@@ -31,6 +31,7 @@ import org.mbari.m3.vars.annotation.commands.DeleteAssociationsCmd;
 import org.mbari.m3.vars.annotation.commands.UpdateAnnotationCmd;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
+import org.mbari.m3.vars.annotation.ui.shared.AutoCompleteComboBoxListener;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
 
 public class AnnotationEditorPaneController {
@@ -142,6 +143,7 @@ public class AnnotationEditorPaneController {
                 });
 
         // -- Configure combobox autocomplete
+        //new AutoCompleteComboBoxListener<>(conceptComboBox);
         new FilteredComboBoxDecorator<>(conceptComboBox, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
         conceptComboBox.setEditable(false);
         conceptComboBox.setOnKeyReleased(v -> {

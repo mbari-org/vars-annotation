@@ -16,6 +16,7 @@ import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.messages.SeekMsg;
+import org.mbari.m3.vars.annotation.ui.shared.TableViewExt;
 import org.mbari.m3.vars.annotation.util.FormatUtils;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Annotation;
@@ -39,6 +40,7 @@ import java.util.prefs.Preferences;
 public class AnnotationTableController {
 
     private TableView<Annotation> tableView;
+    private TableViewExt<Annotation> tableViewExt;
     private final ResourceBundle i18n;
     private final EventBus eventBus;
     private final Data data;
@@ -156,6 +158,8 @@ public class AnnotationTableController {
                             tableView.scrollTo(newv);
                         }
                     });
+
+            tableViewExt = new TableViewExt<>(tableView);
 
             // --- Add all columns
             TableColumn<Annotation, Instant> timestampCol = new TableColumn<>(i18n.getString("annotable.col.timestamp"));
@@ -285,31 +289,34 @@ public class AnnotationTableController {
      * @return A 2 element ray with the start and end index of visible rows
      */
     private int[] getVisibleRows() {
-        TableView<Annotation> tableView = getTableView();
-        // TODO this does not work in Java 9
-        // See https://stackoverflow.com/questions/46474385/how-to-find-the-indices-of-the-visible-rows-in-a-tableview-in-javafx-9/46474693#46474693
-        TableViewSkin<?> skin = (TableViewSkin<?>) tableView.getSkin();
-        if (skin == null) return new int[] {0, 0};
-        VirtualFlow<?> flow = (VirtualFlow<?>) skin.getChildren().get(1);
-        int idxFirst;
-        int idxLast;
-        if (flow != null &&
-                flow.getFirstVisibleCellWithinViewPort() != null &&
-                flow.getLastVisibleCellWithinViewPort() != null) {
-            idxFirst = flow.getFirstVisibleCellWithinViewPort().getIndex();
-            if (idxFirst > tableView.getItems().size()) {
-                idxFirst = tableView.getItems().size() - 1;
-            }
-            idxLast = flow.getLastVisibleCellWithinViewPort().getIndex();
-            if (idxLast > tableView.getItems().size()) {
-                idxLast = tableView.getItems().size() - 1;
-            }
-        }
-        else {
-            idxFirst = 0;
-            idxLast = 0;
-        }
-        return new int[]{idxFirst, idxLast};
+//        TableView<Annotation> tableView = getTableView();
+//        // TODO this does not work in Java 9
+//        // See https://stackoverflow.com/questions/46474385/how-to-find-the-indices-of-the-visible-rows-in-a-tableview-in-javafx-9/46474693#46474693
+//        TableViewSkin<?> skin = (TableViewSkin<?>) tableView.getSkin();
+//        if (skin == null) return new int[] {0, 0};
+//        VirtualFlow<?> flow = (VirtualFlow<?>) skin.getChildren().get(1);
+//        int idxFirst;
+//        int idxLast;
+//        if (flow != null &&
+//                flow.getFirstVisibleCellWithinViewPort() != null &&
+//                flow.getLastVisibleCellWithinViewPort() != null) {
+//            idxFirst = flow.getFirstVisibleCellWithinViewPort().getIndex();
+//            if (idxFirst > tableView.getItems().size()) {
+//                idxFirst = tableView.getItems().size() - 1;
+//            }
+//            idxLast = flow.getLastVisibleCellWithinViewPort().getIndex();
+//            if (idxLast > tableView.getItems().size()) {
+//                idxLast = tableView.getItems().size() - 1;
+//            }
+//        }
+//        else {
+//            idxFirst = 0;
+//            idxLast = 0;
+//        }
+//        return new int[]{idxFirst, idxLast};
+
+        return new int[]{tableViewExt.getFirstVisibleIndex(), tableViewExt.getLastVisibleIndex()};
+
     }
 
 }
