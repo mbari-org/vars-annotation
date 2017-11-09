@@ -7,6 +7,7 @@ import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
+import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
@@ -67,6 +68,18 @@ public class CopyAnnotationsCmd implements Command {
 
     @Override
     public void apply(UIToolBox toolBox) {
+        Media media = toolBox.getData().getMedia();
+        if (media.getStartTimestamp() != null ) {
+            copiedAnnotations.forEach(annotation -> {
+                Duration elapsedTime = annotation.getElapsedTime();
+                // Calculate timestamp from media start time and annotation elapsed time
+                if (elapsedTime != null) {
+                    Instant recordedDate = media.getStartTimestamp().plus(elapsedTime);
+                    annotation.setRecordedTimestamp(recordedDate);
+                }
+            });
+        }
+
         toolBox.getServices()
                 .getAnnotationService()
                 .createAnnotations(copiedAnnotations)

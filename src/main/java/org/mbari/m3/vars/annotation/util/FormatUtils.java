@@ -38,12 +38,12 @@ public class FormatUtils {
         long remainingMillis = Math.abs(duration.toMillis()) - absSeconds * 1000;
         double decimalSecs = (absSeconds % 60) + remainingMillis / 1000D;
         String positive = String.format(
-                "%02d:%02d:%05.3f",
+                "%02d:%02d:%06.3f",
                 absSeconds / 3600,
                 (absSeconds % 3600) / 60,
                 decimalSecs);
 
-        return seconds < 0 ? "-" + positive : "+" + positive;
+        return seconds < 0 ? "-" + positive : " " + positive;
     }
 
     public static String toHexString(byte[] bytes) {
