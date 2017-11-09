@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class OldReferenceNumberBC extends AbstractBC {
 
-    private ChoiceDialog<Integer> dialog;
+    private ChoiceDialog<String> dialog;
     private final String associationKey;
 
     public OldReferenceNumberBC(Button button, UIToolBox toolBox) {
@@ -46,16 +46,16 @@ public class OldReferenceNumberBC extends AbstractBC {
                 .findByVideoReferenceAndLinkName(videoReferenceUuid, associationKey)
                 .thenAccept(as -> {
 
-                    List<Integer> refNums = associationsToRefNumbers(as);
+                    List<String> refNums = associationToIdentityRefs(as);
                     Platform.runLater(() -> {
-                        ChoiceDialog<Integer> dlg = getDialog();
+                        ChoiceDialog<String> dlg = getDialog();
                         dlg.getItems().clear();
                         if (!refNums.isEmpty()) {
                             dlg.getItems().addAll(refNums);
                             dlg.setSelectedItem(refNums.iterator().next());
-                            Optional<Integer> integer = dlg.showAndWait();
+                            Optional<String> integer = dlg.showAndWait();
                             integer.ifPresent(i -> {
-                                Association a = new Association(associationKey, Association.VALUE_SELF, i + "");
+                                Association a = new Association(associationKey, Association.VALUE_SELF, i);
                                 toolBox.getEventBus()
                                         .send(new CreateAssociationsCmd(a, selected));
                             });
@@ -65,7 +65,7 @@ public class OldReferenceNumberBC extends AbstractBC {
                 });
     }
 
-    private ChoiceDialog<Integer> getDialog() {
+    private ChoiceDialog<String> getDialog() {
         if (dialog == null) {
             ResourceBundle i18n = toolBox.getI18nBundle();
             MaterialIconFactory iconFactory = MaterialIconFactory.get();
@@ -80,15 +80,9 @@ public class OldReferenceNumberBC extends AbstractBC {
         return dialog;
     }
 
-    private List<Integer> associationsToRefNumbers(List<Association> as) {
+    private List<String> associationToIdentityRefs(List<Association> as) {
         return as.stream()
-                .map(ass -> {
-                   try {
-                        return Integer.parseInt(ass.getLinkValue());
-                    } catch (Exception e) {
-                        return 0;
-                    }
-                })
+                .map(Association::getLinkValue)
                 .distinct()
                 .sorted(Comparator.reverseOrder()) //reverse sort
                 .collect(Collectors.toList());
