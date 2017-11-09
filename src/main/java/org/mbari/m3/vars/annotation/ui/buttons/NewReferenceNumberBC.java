@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
@@ -47,18 +50,16 @@ public class NewReferenceNumberBC extends AbstractBC {
     }
 
     public void apply() {
+        // TODO this does by video-ref need to get all links by videosequence
         Media media = toolBox.getData().getMedia();
-        UUID videoReferenceUuid = media.getVideoReferenceUuid();
         List<Annotation> selected = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-        toolBox.getServices()
-                .getAnnotationService()
-                .findByVideoReferenceAndLinkName(videoReferenceUuid, associationKey)
+        findReferenceNumberAssociations(media)
                 .thenAccept(as -> {
-                    int i = associationsToMaxNumber(as) + 1;
-                    Association a = new Association(associationKey, Association.VALUE_SELF, i + "");
-                    toolBox.getEventBus()
-                            .send(new CreateAssociationsCmd(a, selected));
-                });
+                            int i = associationsToMaxNumber(as) + 1;
+                            Association a = new Association(associationKey, Association.VALUE_SELF, i + "");
+                            toolBox.getEventBus()
+                                    .send(new CreateAssociationsCmd(a, selected));
+                        });
     }
 
     private int associationsToMaxNumber(List<Association> as) {
@@ -72,6 +73,30 @@ public class NewReferenceNumberBC extends AbstractBC {
                 })
                 .max()
                 .orElse(0);
+    }
+
+    /**
+     * Finds all the reference numbers used in a video sequence
+     * @param media
+     * @return
+     */
+    private CompletableFuture<List<Association>> findReferenceNumberAssociations(Media media) {
+        CompletableFuture<List<Association>> f = new CompletableFuture<>();
+        toolBox.getServices()
+                .getMediaService()
+                .findByVideoSequenceName(media.getVideoSequenceName())
+                .thenAccept(medias -> {
+                    List<Association> associations = new CopyOnWriteArrayList<>();
+                    CompletableFuture[] futures = medias.stream()
+                            .map(m -> toolBox.getServices()
+                                    .getAnnotationService()
+                                    .findByVideoReferenceAndLinkName(m.getVideoReferenceUuid(), associationKey)
+                                    .thenAccept(associations::addAll))
+                            .toArray(i -> new CompletableFuture[i]);
+                    CompletableFuture.allOf(futures)
+                            .thenAccept(v -> f.complete(associations));
+                });
+        return f;
     }
 
 }

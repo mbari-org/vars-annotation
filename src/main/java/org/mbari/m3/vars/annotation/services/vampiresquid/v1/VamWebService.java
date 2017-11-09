@@ -70,5 +70,4 @@ public interface VamWebService {
     @GET("videos/names/videosequence/{name}")
     Call<List<String>> findVideoNamesByVideoSequenceName(@Path("name") String name);
 
-
 }
