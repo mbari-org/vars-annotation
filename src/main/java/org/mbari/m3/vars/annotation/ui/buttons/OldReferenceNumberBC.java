@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.ui.buttons;
 
+import com.sun.deploy.association.AssociationService;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Platform;
@@ -11,6 +12,7 @@ import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,11 +25,13 @@ public class OldReferenceNumberBC extends AbstractBC {
 
     private ChoiceDialog<String> dialog;
     private final String associationKey;
+    private final AnnotationServiceDecorator decorator;
 
     public OldReferenceNumberBC(Button button, UIToolBox toolBox) {
         super(button, toolBox);
         this.associationKey = toolBox.getConfig()
                 .getString("app.annotation.identity.reference");
+        this.decorator = new AnnotationServiceDecorator(toolBox);
     }
 
     protected void init() {
@@ -39,13 +43,10 @@ public class OldReferenceNumberBC extends AbstractBC {
 
     protected void apply() {
         Media media = toolBox.getData().getMedia();
-        UUID videoReferenceUuid = media.getVideoReferenceUuid();
         List<Annotation> selected = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-        toolBox.getServices()
-                .getAnnotationService()
-                .findByVideoReferenceAndLinkName(videoReferenceUuid, associationKey)
-                .thenAccept(as -> {
 
+        decorator.findReferenceNumberAssociations(media, associationKey)
+                .thenAccept(as -> {
                     List<String> refNums = associationToIdentityRefs(as);
                     Platform.runLater(() -> {
                         ChoiceDialog<String> dlg = getDialog();

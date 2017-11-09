@@ -12,6 +12,7 @@ import org.mbari.m3.vars.annotation.messages.SetProgress;
 import org.mbari.m3.vars.annotation.messages.ShowProgress;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.AnnotationCount;
+import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 
@@ -211,6 +212,30 @@ public class AnnotationServiceDecorator {
         Set<UUID> uuids = new HashSet<>();
         uuids.add(observationUuid);
         refreshAnnotationsView(uuids);
+    }
+
+    /**
+     * Finds all the reference numbers used in a video sequence
+     * @param media
+     * @return
+     */
+    public CompletableFuture<List<Association>> findReferenceNumberAssociations(Media media, String associationKey) {
+        CompletableFuture<List<Association>> f = new CompletableFuture<>();
+        toolBox.getServices()
+                .getMediaService()
+                .findByVideoSequenceName(media.getVideoSequenceName())
+                .thenAccept(medias -> {
+                    List<Association> associations = new CopyOnWriteArrayList<>();
+                    CompletableFuture[] futures = medias.stream()
+                            .map(m -> toolBox.getServices()
+                                    .getAnnotationService()
+                                    .findByVideoReferenceAndLinkName(m.getVideoReferenceUuid(), associationKey)
+                                    .thenAccept(associations::addAll))
+                            .toArray(i -> new CompletableFuture[i]);
+                    CompletableFuture.allOf(futures)
+                            .thenAccept(v -> f.complete(associations));
+                });
+        return f;
     }
 
 }

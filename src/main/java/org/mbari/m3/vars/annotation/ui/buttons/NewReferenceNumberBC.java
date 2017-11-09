@@ -16,6 +16,7 @@ import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
+import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 
@@ -34,12 +35,14 @@ import java.util.stream.Collectors;
 public class NewReferenceNumberBC extends AbstractBC {
 
     private final String associationKey;
+    private final AnnotationServiceDecorator decorator;
 
 
     public NewReferenceNumberBC(Button button, UIToolBox toolBox) {
         super(button, toolBox);
         this.associationKey = toolBox.getConfig()
                 .getString("app.annotation.identity.reference");
+        this.decorator = new AnnotationServiceDecorator(toolBox);
     }
 
     protected void init() {
@@ -50,10 +53,9 @@ public class NewReferenceNumberBC extends AbstractBC {
     }
 
     public void apply() {
-        // TODO this does by video-ref need to get all links by videosequence
         Media media = toolBox.getData().getMedia();
         List<Annotation> selected = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-        findReferenceNumberAssociations(media)
+        decorator.findReferenceNumberAssociations(media, associationKey)
                 .thenAccept(as -> {
                             int i = associationsToMaxNumber(as) + 1;
                             Association a = new Association(associationKey, Association.VALUE_SELF, i + "");
@@ -73,30 +75,6 @@ public class NewReferenceNumberBC extends AbstractBC {
                 })
                 .max()
                 .orElse(0);
-    }
-
-    /**
-     * Finds all the reference numbers used in a video sequence
-     * @param media
-     * @return
-     */
-    private CompletableFuture<List<Association>> findReferenceNumberAssociations(Media media) {
-        CompletableFuture<List<Association>> f = new CompletableFuture<>();
-        toolBox.getServices()
-                .getMediaService()
-                .findByVideoSequenceName(media.getVideoSequenceName())
-                .thenAccept(medias -> {
-                    List<Association> associations = new CopyOnWriteArrayList<>();
-                    CompletableFuture[] futures = medias.stream()
-                            .map(m -> toolBox.getServices()
-                                    .getAnnotationService()
-                                    .findByVideoReferenceAndLinkName(m.getVideoReferenceUuid(), associationKey)
-                                    .thenAccept(associations::addAll))
-                            .toArray(i -> new CompletableFuture[i]);
-                    CompletableFuture.allOf(futures)
-                            .thenAccept(v -> f.complete(associations));
-                });
-        return f;
     }
 
 }
