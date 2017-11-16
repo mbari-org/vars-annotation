@@ -1,6 +1,5 @@
 package org.mbari.m3.vars.annotation.ui.buttons;
 
-import com.sun.deploy.association.AssociationService;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Platform;
