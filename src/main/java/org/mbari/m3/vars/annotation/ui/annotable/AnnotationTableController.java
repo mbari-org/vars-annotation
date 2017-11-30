@@ -292,31 +292,31 @@ public class AnnotationTableController {
 //        TableView<Annotation> tableView = getTableView();
 //        // TODO this does not work in Java 9
 //        // See https://stackoverflow.com/questions/46474385/how-to-find-the-indices-of-the-visible-rows-in-a-tableview-in-javafx-9/46474693#46474693
-//        TableViewSkin<?> skin = (TableViewSkin<?>) tableView.getSkin();
-//        if (skin == null) return new int[] {0, 0};
-//        VirtualFlow<?> flow = (VirtualFlow<?>) skin.getChildren().get(1);
-//        int idxFirst;
-//        int idxLast;
-//        if (flow != null &&
-//                flow.getFirstVisibleCellWithinViewPort() != null &&
-//                flow.getLastVisibleCellWithinViewPort() != null) {
-//            idxFirst = flow.getFirstVisibleCellWithinViewPort().getIndex();
-//            if (idxFirst > tableView.getItems().size()) {
-//                idxFirst = tableView.getItems().size() - 1;
-//            }
-//            idxLast = flow.getLastVisibleCellWithinViewPort().getIndex();
-//            if (idxLast > tableView.getItems().size()) {
-//                idxLast = tableView.getItems().size() - 1;
-//            }
-//        }
-//        else {
-//            idxFirst = 0;
-//            idxLast = 0;
-//        }
-//        return new int[]{idxFirst, idxLast};
+        TableViewSkin<?> skin = (TableViewSkin<?>) tableView.getSkin();
+        if (skin == null) return new int[] {0, 0};
+        VirtualFlow<?> flow = (VirtualFlow<?>) skin.getChildren().get(1);
+        int idxFirst;
+        int idxLast;
+        if (flow != null &&
+                flow.getFirstVisibleCellWithinViewPort() != null &&
+                flow.getLastVisibleCellWithinViewPort() != null) {
+            idxFirst = flow.getFirstVisibleCellWithinViewPort().getIndex();
+            if (idxFirst > tableView.getItems().size()) {
+                idxFirst = tableView.getItems().size() - 1;
+            }
+            idxLast = flow.getLastVisibleCellWithinViewPort().getIndex();
+            if (idxLast > tableView.getItems().size()) {
+                idxLast = tableView.getItems().size() - 1;
+            }
+        }
+        else {
+            idxFirst = 0;
+            idxLast = 0;
+        }
+        return new int[]{idxFirst, idxLast};
 
-        return new int[]{tableViewExt.getFirstVisibleIndex(), tableViewExt.getLastVisibleIndex()};
-
+        // This TableViewExt appears to be buggy
+        //return tableViewExt.getVisibleRows();
     }
 
 }

@@ -54,13 +54,15 @@ public class CopyAnnotationBC extends AbstractBC {
         ObservableList<Annotation> annotations = toolBox.getData().getSelectedAnnotations();
         Media media = toolBox.getData().getMedia();
         User user = toolBox.getData().getUser();
+        String activity = toolBox.getData().getActivity();
+
         MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
         if (mediaPlayer != null) {
 
             AsyncUtils.observe(mediaPlayer.requestVideoIndex())
                     .subscribe(vi -> toolBox.getEventBus()
                             .send(new CopyAnnotationsCmd(media.getVideoReferenceUuid(),
-                                    vi, user.getUsername(), annotations)));
+                                    vi, user.getUsername(), activity, annotations)));
 
         }
     }

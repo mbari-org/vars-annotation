@@ -4,12 +4,10 @@ import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.DuplicateAnnotationsCmd;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
-import org.mbari.m3.vars.annotation.messages.CopyAnnotationMsg;
 import org.mbari.m3.vars.annotation.messages.DuplicateAnnotationMsg;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.User;
@@ -49,8 +47,9 @@ public class DuplicateAnnotationBC extends AbstractBC {
     protected void apply() {
         ObservableList<Annotation> annotations = toolBox.getData().getSelectedAnnotations();
         User user = toolBox.getData().getUser();
+        String activity = toolBox.getData().getActivity();
         toolBox.getEventBus()
-                .send(new DuplicateAnnotationsCmd(user.getUsername(), annotations, true));
+                .send(new DuplicateAnnotationsCmd(user.getUsername(), activity, annotations, true));
     }
 
 }

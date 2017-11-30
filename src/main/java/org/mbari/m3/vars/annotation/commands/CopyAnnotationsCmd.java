@@ -31,21 +31,24 @@ public class CopyAnnotationsCmd implements Command {
     public CopyAnnotationsCmd(UUID videoReferenceUuid,
                               VideoIndex videoIndex,
                               String observer,
+                              String activity,
                               Collection<Annotation> originalAnnotations) {
         this.copiedAnnotations = originalAnnotations.stream()
-                .map(a -> makeCopy(a, videoReferenceUuid, videoIndex, observer))
+                .map(a -> makeCopy(a, videoReferenceUuid, videoIndex, observer, activity))
                 .collect(Collectors.toList());
     }
 
     private Annotation makeCopy(Annotation annotation,
                                 UUID videoReferenceUuid,
                                 VideoIndex videoIndex,
-                                String observer) {
+                                String observer,
+                                String activity) {
         Annotation copy = new Annotation(annotation);
         copy.setVideoReferenceUuid(videoReferenceUuid);
         copy.setObservationUuid(null);
         copy.setImagedMomentUuid(null);
         copy.setObserver(observer);
+        copy.setActivity(activity);
 
         // if we don't null the associations uuid, it will fail to insert due to
         // a duplicate primary key clash.
