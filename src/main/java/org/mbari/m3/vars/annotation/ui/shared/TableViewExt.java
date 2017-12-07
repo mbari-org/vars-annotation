@@ -140,6 +140,11 @@ public class TableViewExt<T> {// com.sun.javafx: implements ChangeListener<Skin<
         return lastIndex;
     }
 
+    public int[] getVisibleRows() {
+        recomputeVisibleIndexes();
+        return new int[]{firstIndex, lastIndex};
+    }
+
     /**
      * Ensure that some part of the current selection is visible in the display view
      */

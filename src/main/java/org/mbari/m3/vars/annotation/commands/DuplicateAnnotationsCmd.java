@@ -23,19 +23,20 @@ public class DuplicateAnnotationsCmd implements Command {
     private final Collection<Annotation> duplicateAnnotations;
     private final boolean selectAnnotations;
 
-    public DuplicateAnnotationsCmd(String user, Collection<Annotation> sourceAnnotations,
+    public DuplicateAnnotationsCmd(String user, String activity, Collection<Annotation> sourceAnnotations,
                                    boolean selectAnnotations) {
         this.duplicateAnnotations = sourceAnnotations.stream()
-                .map(a -> makeDuplicate(a, user))
+                .map(a -> makeDuplicate(a, user, activity))
                 .collect(Collectors.toList());
         this.selectAnnotations = selectAnnotations;
     }
 
-    public Annotation makeDuplicate(Annotation annotation, String user) {
+    public Annotation makeDuplicate(Annotation annotation, String user, String activity) {
         Annotation duplicate = new Annotation(annotation);
         duplicate.setObservationUuid(null);
         duplicate.setObservationTimestamp(Instant.now());
         duplicate.setObserver(user);
+        duplicate.setActivity(activity);
 
         // if we don't null the associations uuid, it will fail to insert due to
         // a duplicate primary key clash.
