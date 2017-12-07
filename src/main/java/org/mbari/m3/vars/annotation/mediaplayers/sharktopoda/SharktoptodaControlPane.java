@@ -183,12 +183,22 @@ public class SharktoptodaControlPane extends Pane {
                     formatSeconds(Math.round(scrubber.getValue() / 1000D)),
                     scrubber.valueProperty());
             scrubber.setValueFactory(p -> binding);
-            scrubber.setOnMouseReleased(v -> {
-                if (mediaPlayer != null) {
+            scrubber.valueProperty().addListener(observable -> {
+                if (scrubber.isValueChanging()) {
                     long millis = Math.round(scrubber.getValue());
                     mediaPlayer.seek(Duration.ofMillis(millis));
                 }
+//                else {
+//                    String s = formatSeconds(Math.round(scrubber.getValue() / 1000D));
+//                    scrubber.setValue();
+//                }
             });
+//            scrubber.setOnMouseReleased(v -> {
+//                if (mediaPlayer != null) {
+//                    long millis = Math.round(scrubber.getValue());
+//                    mediaPlayer.seek(Duration.ofMillis(millis));
+//                }
+//            });
         }
         return scrubber;
     }
