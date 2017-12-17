@@ -3,6 +3,8 @@ package org.mbari.m3.vars.annotation.ui.mediadialog;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.mbari.m3.vars.annotation.Initializer;
+import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.m3.vars.annotation.ui.DemoConstants;
 
@@ -22,11 +24,14 @@ public class VideoBrowserPaneDemo extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        AnnotationService annotationService = DemoConstants.newAnnotationService();
         MediaService mediaService = DemoConstants.newMediaService();
 
-        VideoBrowserPaneController controller = new VideoBrowserPaneController(mediaService, uiBundle);
+        VideoBrowserPaneController controller = new VideoBrowserPaneController(
+                annotationService, mediaService, uiBundle);
         Scene scene = new Scene(controller.getRoot());
-        scene.getStylesheets().add("/css/common.css");
+        scene.getStylesheets().addAll(Initializer.getToolBox().getStylesheets());
+        //scene.getStylesheets().add("/css/common.css");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

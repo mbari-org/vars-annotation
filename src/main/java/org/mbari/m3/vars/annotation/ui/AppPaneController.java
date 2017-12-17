@@ -74,7 +74,8 @@ public class AppPaneController {
 
     public AppPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
-        selectMediaDialog = new SelectMediaDialog(toolBox.getServices().getMediaService(),
+        selectMediaDialog = new SelectMediaDialog(toolBox.getServices().getAnnotationService(),
+                toolBox.getServices().getMediaService(),
                 toolBox.getI18nBundle());
         selectMediaDialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
         annotationTableController = new AnnotationTableController(toolBox);
@@ -460,13 +461,14 @@ public class AppPaneController {
             Media media = toolBox.getData().getMedia();
             if (media != null &&
                     annotation.getVideoReferenceUuid().equals(media.getVideoReferenceUuid())) {
-                mediaPaneController.setMedia(media);
+                mediaPaneController.setMedia(media,
+                        toolBox.getServices().getAnnotationService());
             }
             else {
                 toolBox.getServices()
                         .getMediaService()
                         .findByUuid(annotation.getVideoReferenceUuid())
-                        .thenAccept(m -> mediaPaneController.setMedia(m));
+                        .thenAccept(m -> mediaPaneController.setMedia(m, toolBox.getServices().getAnnotationService()));
             }
         }
     }

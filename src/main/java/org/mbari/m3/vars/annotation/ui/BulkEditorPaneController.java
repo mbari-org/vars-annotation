@@ -112,7 +112,9 @@ public class BulkEditorPaneController {
                 .findRoot()
                 .thenAccept(c -> conceptDialogController.setConcept(c.getName()));
 
-        selectMediaDialog = new SelectMediaDialog(toolBox.getServices().getMediaService(),
+        selectMediaDialog = new SelectMediaDialog(
+                toolBox.getServices().getAnnotationService(),
+                toolBox.getServices().getMediaService(),
                 toolBox.getI18nBundle());
 
         final Observable<Object> obs = toolBox.getEventBus().toObserverable();

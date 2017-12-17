@@ -20,6 +20,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
+import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.util.FXMLUtils;
 import org.mbari.m3.vars.annotation.util.FormatUtils;
 import org.mbari.m3.vars.annotation.model.Media;
@@ -57,6 +58,8 @@ public class MediaPaneController {
     @FXML
     private TextField durationTextField;
     @FXML
+    private TextField annotationCountTextField;
+    @FXML
     private Pane root;
 
     ObjectProperty<Media> media = new SimpleObjectProperty<>();
@@ -84,6 +87,7 @@ public class MediaPaneController {
             frameRateTextField.setText(null);
             endTimestampTextField.setText(null);
             durationTextField.setText(null);
+            annotationCountTextField.setText(null);
         }
         else {
             camerIdTextField.setText(media.getCameraId());
@@ -122,10 +126,8 @@ public class MediaPaneController {
         frameRateTextField.setText(null);
         endTimestampTextField.setText(null);
         durationTextField.setText(null);
+        annotationCountTextField.setText(null);
     }
-
-
-
 
     public Pane getRoot() {
         return root;
@@ -145,6 +147,27 @@ public class MediaPaneController {
             this.media.set(media);
         });
     }
+
+    public void setMedia(Media media, AnnotationService annotationService) {
+        Platform.runLater(() -> {
+            this.media.set(media);
+            if (media != null) {
+                annotationService.countAnnotations(media.getVideoReferenceUuid())
+                        .thenAccept(ac -> {
+                            final Integer count = ac.getCount();
+                            if (count == null) {
+                                annotationCountTextField.setText(null);
+                            }
+                            else {
+                                String c = ac.getCount().toString();
+                                annotationCountTextField.setText(c);
+                            }
+                        });
+            }
+        });
+    }
+
+
 
     public static MediaPaneController newInstance() {
         return FXMLUtils.newInstance(MediaPaneController.class, "/fxml/MediaPane.fxml");

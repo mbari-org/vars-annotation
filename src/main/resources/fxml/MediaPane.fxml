@@ -24,6 +24,7 @@
         <RowConstraints vgrow="NEVER" />
         <RowConstraints vgrow="NEVER" />
         <RowConstraints vgrow="NEVER" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
     </rowConstraints>
     <children>
         <Label fx:id="cameraIdLabel" styleClass="vars-dialog-label" text="%mediadialog.cameraId" />
@@ -48,6 +49,8 @@
         <TextField fx:id="frameRateTextField" styleClass="vars-dialog-textfield" GridPane.columnIndex="1" GridPane.rowIndex="9" />
         <TextField fx:id="endTimestampTextField" styleClass="vars-dialog-textfield" GridPane.columnIndex="1" GridPane.rowIndex="4" />
         <TextField fx:id="durationTextField" styleClass="vars-dialog-textfield" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      <Label text="%mediadialog.annotationCount" GridPane.rowIndex="11" />
+      <TextField fx:id="annotationCountTextField" GridPane.columnIndex="1" GridPane.rowIndex="11" />
     </children>
     <stylesheets>
         <URL value="@../css/common.css" />

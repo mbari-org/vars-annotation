@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.m3.vars.annotation.ui.shared.DateTimePickerController;
 import org.mbari.m3.vars.annotation.util.FXMLUtils;
@@ -26,6 +27,7 @@ import java.util.ResourceBundle;
 public class VideoBrowserPaneController {
 
     private final BorderPane root;
+    private final AnnotationService annotationService;
     private final MediaService mediaService;
     private DateTimePickerController fromDateController;
     private DateTimePickerController toDateController;
@@ -44,14 +46,18 @@ public class VideoBrowserPaneController {
 
 
     @Inject
-    public VideoBrowserPaneController(MediaService mediaService, ResourceBundle uiBundle) {
+    public VideoBrowserPaneController(AnnotationService annotationService,
+            MediaService mediaService,
+            ResourceBundle uiBundle) {
         this.uiBundle = uiBundle;
+        this.annotationService = annotationService;
         this.mediaService = mediaService;
         fromLabel.setText(uiBundle.getString("mediadialog.fromlabel"));
         toLabel.setText(uiBundle.getString("mediadialog.tolabel"));
         root = new BorderPane(getCenterPane());
         root.setTop(getTopPane());
         root.setRight(getMediaPaneController().getRoot());
+
 
     }
 
@@ -185,7 +191,7 @@ public class VideoBrowserPaneController {
             mediaListView.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldValue, newValue) -> {
-                        getMediaPaneController().setMedia(newValue);
+                        getMediaPaneController().setMedia(newValue, annotationService);
                     });
 
             mediaListView.getSelectionModel()
