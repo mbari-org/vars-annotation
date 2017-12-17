@@ -29,6 +29,7 @@ import org.mbari.m3.vars.annotation.messages.*;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
+import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.FileBrowsingDecorator;
 import org.mbari.m3.vars.annotation.services.UserService;
 import org.mbari.m3.vars.annotation.ui.annotable.AnnotationTableController;
@@ -453,8 +454,9 @@ public class AppPaneController {
     }
 
     private void showMediaOfSelectedRow(Collection<Annotation> annotations) {
+        final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         if (annotations == null || annotations.size() != 1) {
-            mediaPaneController.setMedia(null);
+            mediaPaneController.setMedia(null, annotationService);
         }
         else {
             Annotation annotation = annotations.iterator().next();
@@ -462,13 +464,13 @@ public class AppPaneController {
             if (media != null &&
                     annotation.getVideoReferenceUuid().equals(media.getVideoReferenceUuid())) {
                 mediaPaneController.setMedia(media,
-                        toolBox.getServices().getAnnotationService());
+                        annotationService);
             }
             else {
                 toolBox.getServices()
                         .getMediaService()
                         .findByUuid(annotation.getVideoReferenceUuid())
-                        .thenAccept(m -> mediaPaneController.setMedia(m, toolBox.getServices().getAnnotationService()));
+                        .thenAccept(m -> mediaPaneController.setMedia(m, annotationService));
             }
         }
     }

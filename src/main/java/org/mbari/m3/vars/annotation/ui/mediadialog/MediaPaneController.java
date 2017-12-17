@@ -142,12 +142,14 @@ public class MediaPaneController {
         return media;
     }
 
-    public void setMedia(Media media) {
-        Platform.runLater(() -> {
-            this.media.set(media);
-        });
-    }
 
+    /**
+     * Updates the media value displayed in this dialog. Also makes a call to the
+     * annotation database to get a count of annotations to inform annotators
+     * if a media has been previously annotated.
+     * @param media The media value to view
+     * @param annotationService The service used to look up the annotation count
+     */
     public void setMedia(Media media, AnnotationService annotationService) {
         Platform.runLater(() -> {
             this.media.set(media);

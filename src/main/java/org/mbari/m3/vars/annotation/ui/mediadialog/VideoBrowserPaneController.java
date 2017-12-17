@@ -196,7 +196,7 @@ public class VideoBrowserPaneController {
 
             mediaListView.getSelectionModel()
                     .selectedItemProperty()
-                    .addListener(obs -> getMediaPaneController().setMedia(null));
+                    .addListener(obs -> getMediaPaneController().setMedia(null, annotationService));
         }
         return mediaListView;
     }
