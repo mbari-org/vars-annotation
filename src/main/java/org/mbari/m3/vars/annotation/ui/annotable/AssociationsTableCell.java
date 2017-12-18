@@ -28,6 +28,10 @@ public class AssociationsTableCell extends TableCell<Annotation, List<Associatio
                         Platform.runLater(() -> listView.getSelectionModel().clearSelection()));
     }
 
+    public ListView<Association> getListView() {
+        return listView;
+    }
+
     @Override
     protected void updateItem(List<Association> item, boolean empty) {
         super.updateItem(item, empty);

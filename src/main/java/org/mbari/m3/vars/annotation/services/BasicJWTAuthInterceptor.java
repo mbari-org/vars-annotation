@@ -5,12 +5,16 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.mbari.m3.vars.annotation.Initializer;
+import org.mbari.m3.vars.annotation.messages.ShowFatalErrorAlert;
+import org.mbari.m3.vars.annotation.messages.ShowWarningAlert;
 import org.mbari.m3.vars.annotation.model.Authorization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -53,7 +57,15 @@ public class BasicJWTAuthInterceptor implements Interceptor {
         if ((a == null) || isExpired(a)) {
             log.debug("Reauthorizing using {}", authService);
             a = authService.authorize()
-                    .orElseGet(null);
+                    .orElseGet(() -> {
+                        ResourceBundle i18n = Initializer.getToolBox().getI18nBundle();
+                        Initializer.getToolBox()
+                                .getEventBus()
+                                .send(new ShowWarningAlert(i18n.getString("basicjwt.error.title"),
+                                        i18n.getString("basicjwt.error.header"),
+                                        i18n.getString("basicjwt.error.content")));
+                        return new Authorization("ERROR", "key not found");
+                    });
         }
         return a;
     }

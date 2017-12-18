@@ -114,24 +114,6 @@ public class AnnotationTableController {
                             });
                 }));
 
-        // TODO this should save column widths to prefs
-
-//        ChangeListener<Boolean> visibleListener = (obs, oldVis, newVis) -> {
-//          data.getPreferencesService().findByNameAndKey()
-//        };
-//
-//        data.preferencesServiceProperty().addListener((obs, oldPref, newPref) -> {
-//            getTableView().getColumns()
-//                    .forEach(c -> {
-//                        c.visibleProperty().
-//                    });
-//        });
-//        tableView.getColumns()
-//                .forEach(c -> {
-//                    c.visibleProperty().addListener((obj, oldVal, newVal) -> {
-//                        data.getPreferencesService()
-//                    });
-//                });
     }
 
     private void select(Collection<Annotation> annotations) {
@@ -195,7 +177,15 @@ public class AnnotationTableController {
                     new TableColumn<>(i18n.getString("annotable.col.association"));
             assCol.setCellValueFactory(new PropertyValueFactory<>("associations"));
             assCol.setSortable(false);
-            assCol.setCellFactory(c -> new AssociationsTableCell());
+            assCol.setCellFactory(c -> {
+                AssociationsTableCell cell = new AssociationsTableCell();
+                cell.getListView().setOnMouseClicked(event -> {
+                        TableRow row = cell.getTableRow();
+                        row.getTableView().getSelectionModel().clearAndSelect(row.getIndex(), c);
+                        //row.getTableView().getSelectionModel().select();
+                    });
+                return cell;
+            });
             assCol.setId("associations");
 
             TableColumn<Annotation, FGSValue> fgsCol =
