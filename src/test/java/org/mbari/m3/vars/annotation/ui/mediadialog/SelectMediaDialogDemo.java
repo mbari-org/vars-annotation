@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.model.Authorization;
 import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.BasicJWTAuthService;
 import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.m3.vars.annotation.services.vampiresquid.v1.VamService;
@@ -36,10 +37,12 @@ public class SelectMediaDialogDemo extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         MediaService mediaService = DemoConstants.newMediaService();
+        AnnotationService annotationService = DemoConstants.newAnnotationService();
 
         Label label = new Label();
         Button button = new JFXButton("Browse");
-        Dialog<Media> dialog = new SelectMediaDialog(mediaService, uiBundle);
+        Dialog<Media> dialog = new SelectMediaDialog(annotationService,
+                mediaService, uiBundle);
         button.setOnAction(e -> {
             Optional<Media> media = dialog.showAndWait();
             media.ifPresent(m -> label.setText(m.getUri().toString()));

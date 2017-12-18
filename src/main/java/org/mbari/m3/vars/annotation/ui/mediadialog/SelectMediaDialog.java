@@ -4,6 +4,7 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.MediaService;
 
 import javax.inject.Inject;
@@ -17,14 +18,19 @@ import java.util.ResourceBundle;
  */
 public class SelectMediaDialog extends Dialog<Media> {
 
+    private final AnnotationService annotationService;
     private final MediaService mediaService;
     private final ResourceBundle uiBundle;
 
     @Inject
-    public SelectMediaDialog(MediaService mediaService, ResourceBundle uiBundle) {
+    public SelectMediaDialog(AnnotationService annotationService,
+            MediaService mediaService,
+            ResourceBundle uiBundle) {
+        this.annotationService = annotationService;
         this.mediaService = mediaService;
         this.uiBundle = uiBundle;
-        VideoBrowserPaneController controller = new VideoBrowserPaneController(mediaService, uiBundle);
+        VideoBrowserPaneController controller = new VideoBrowserPaneController(annotationService,
+                mediaService, uiBundle);
         getDialogPane().setContent(controller.getRoot());
         ButtonType ok = new ButtonType(uiBundle.getString("global.ok"), ButtonBar.ButtonData.OK_DONE);
         ButtonType cancel = new ButtonType(uiBundle.getString("global.cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);

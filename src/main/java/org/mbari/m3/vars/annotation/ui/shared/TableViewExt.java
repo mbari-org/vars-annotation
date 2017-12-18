@@ -25,8 +25,9 @@ public class TableViewExt<T> {// com.sun.javafx: implements ChangeListener<Skin<
         final Callback<TableView<T>, TableRow<T>> rf = tableView.getRowFactory();
 
         final Callback<TableView<T>, TableRow<T>> modifiedRowFactory = param -> {
-            TableRow<T> r = rf != null ? rf.call(param) : new TableRow<T>();
+            TableRow<T> r = rf != null ? rf.call(param) : new TableRow<>();
             // Save row, this implementation relies on JaxaFX re-using TableRow efficiently
+            // TODO has been causing gui issues. I wonder if it's because rows are never removed
             rows.add(r);
             return r;
         };
