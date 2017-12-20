@@ -327,12 +327,13 @@ public class BulkEditorPaneController {
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(content);
-        dialog.setResultConverter((buttonType) -> {
-            if (buttonType == ButtonType.OK) {
-                return conceptDialogController.getComboBox().getSelectionModel().getSelectedItem();
-            }
-            return null;
-        });
+//        dialog.setResultConverter((buttonType) -> {
+//            if (buttonType == ButtonType.OK) {
+//                String s=  conceptDialogController.getComboBox().getSelectionModel().getSelectedItem();
+//                return s;
+//            }
+//            return null;
+//        });
 
         Platform.runLater(() -> conceptDialogController.getComboBox().requestFocus());
         Optional<String> opt = dialog.showAndWait();
