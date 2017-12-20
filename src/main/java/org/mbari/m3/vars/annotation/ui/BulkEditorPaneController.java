@@ -61,10 +61,10 @@ public class BulkEditorPaneController {
     private JFXCheckBox associationCheckBox;
 
     @FXML
-    private JFXComboBox<String> conceptCombobox;
+    private ComboBox<String> conceptCombobox;
 
     @FXML
-    private JFXComboBox<Association> associationCombobox;
+    private ComboBox<Association> associationCombobox;
 
     @FXML
     private JFXButton refreshButton;
@@ -91,10 +91,10 @@ public class BulkEditorPaneController {
     private JFXButton searchButton;
 
     @FXML
-    private JFXComboBox<String> groupComboBox;
+    private ComboBox<String> groupComboBox;
 
     @FXML
-    private JFXComboBox<String> activityComboBox;
+    private ComboBox<String> activityComboBox;
 
     @FXML
     private Label groupLabel;
@@ -116,6 +116,9 @@ public class BulkEditorPaneController {
                 toolBox.getServices().getAnnotationService(),
                 toolBox.getServices().getMediaService(),
                 toolBox.getI18nBundle());
+        selectMediaDialog.getDialogPane()
+                .getStylesheets()
+                .addAll(toolBox.getStylesheets());
 
         final Observable<Object> obs = toolBox.getEventBus().toObserverable();
         obs.ofType(AnnotationsChangedEvent.class)
@@ -284,7 +287,7 @@ public class BulkEditorPaneController {
         String header = i18n.getString("bulkeditor.group.dialog.header") + " " + group;
         String content = i18n.getString("bulkeditor.group.dialog.content1") + " " +
                 group + " " + i18n.getString("bulkeditor.group.dialog.content2") + " " +
-                annotations.size() + i18n.getString("bulkeditor.group.dialog.content3");
+                annotations.size() + " " + i18n.getString("bulkeditor.group.dialog.content3");
         Runnable action = () -> toolBox.getEventBus()
                 .send(new ChangeGroupCmd(annotations, group));
         doActionWithAlert(title, header, content, action);
@@ -299,7 +302,7 @@ public class BulkEditorPaneController {
         String header = i18n.getString("bulkeditor.activity.dialog.header") + " " + activity;
         String content = i18n.getString("bulkeditor.activity.dialog.content1") + " " +
                 activity + " " + i18n.getString("bulkeditor.activity.dialog.content2") + " " +
-                annotations.size() + i18n.getString("bulkeditor.activity.dialog.content3");
+                annotations.size() + " " + i18n.getString("bulkeditor.activity.dialog.content3");
         Runnable action = () -> toolBox.getEventBus()
                 .send(new ChangeActivityCmd(annotations, activity));
         doActionWithAlert(title, header, content, action);
@@ -327,14 +330,6 @@ public class BulkEditorPaneController {
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(content);
-//        dialog.setResultConverter((buttonType) -> {
-//            if (buttonType == ButtonType.OK) {
-//                String s=  conceptDialogController.getComboBox().getSelectionModel().getSelectedItem();
-//                return s;
-//            }
-//            return null;
-//        });
-
         Platform.runLater(() -> conceptDialogController.getComboBox().requestFocus());
         Optional<String> opt = dialog.showAndWait();
         opt.ifPresent(c -> toolBox.getEventBus()
