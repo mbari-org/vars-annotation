@@ -23,6 +23,7 @@ public class AVFImageCaptureService implements ImageCaptureService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private AVFImageCapture imageCapture;
+    public static AVFImageCaptureService imageCaptureService;
 
     public AVFImageCaptureService() {
         imageCapture = new AVFImageCapture();
@@ -55,9 +56,16 @@ public class AVFImageCaptureService implements ImageCaptureService {
         }
     }
 
-    @Override
-    public void showSettingsDialog() {
-                // TODO
-    }
 
+    /**
+     * We only want one isntance on any machine as the native libraries will
+     * interfere if more than one instance is active.
+     * @return
+     */
+    public static synchronized AVFImageCaptureService getInstance() {
+        if (imageCaptureService == null) {
+            imageCaptureService = new AVFImageCaptureService();
+        }
+        return imageCaptureService;
+    }
 }

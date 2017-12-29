@@ -84,8 +84,5 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
         }
     }
 
-    @Override
-    public void showSettingsDialog() {
-    }
 
 }

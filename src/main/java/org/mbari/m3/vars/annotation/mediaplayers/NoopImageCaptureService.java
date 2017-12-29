@@ -23,8 +23,5 @@ public class NoopImageCaptureService implements ImageCaptureService {
         // Do nothing
     }
 
-    @Override
-    public void showSettingsDialog() {
-        // Do nothing ... may show empty dialog if we decide to implement this
-    }
+
 }

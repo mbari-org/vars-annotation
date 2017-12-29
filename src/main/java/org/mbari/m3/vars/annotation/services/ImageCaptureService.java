@@ -25,5 +25,4 @@ public interface ImageCaptureService {
      */
     void dispose();
 
-    void showSettingsDialog();
 }
