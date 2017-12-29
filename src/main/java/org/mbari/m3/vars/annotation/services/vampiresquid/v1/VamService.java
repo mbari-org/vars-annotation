@@ -8,6 +8,8 @@ import org.mbari.m3.vars.annotation.services.RetrofitWebService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.net.URI;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -30,8 +32,30 @@ public class VamService implements MediaService, RetrofitWebService {
     }
 
     @Override
-    public CompletableFuture<Media> create() {
-        return null;
+    public CompletableFuture<Media> create(String videoSequenceName,
+            String cameraId,
+            String videoName,
+            URI uri,
+            Instant startTimestamp) {
+        return sendRequest(vamWebService.create(videoSequenceName,
+                cameraId,
+                videoName,
+                uri,
+                startTimestamp,
+                null, null, null, null,
+                null, null, null, null,
+                null, null, defaultHeaders));
+    }
+
+    public CompletableFuture<Media> update(UUID videoReferenceUuid,
+            Instant startTimestamp,
+            Duration duration) {
+
+        Map<String, String> fieldMap = new HashMap<>();
+        addField(fieldMap, "duration_millis", duration.toMillis());
+        addField(fieldMap, "start_timestamp", startTimestamp);
+        return sendRequest(vamWebService.update(videoReferenceUuid,
+                fieldMap, defaultHeaders));
     }
 
     @Override
@@ -93,4 +117,11 @@ public class VamService implements MediaService, RetrofitWebService {
     public CompletableFuture<List<Media>> findByFilename(String filename) {
         return sendRequest(vamWebService.findByFilename(filename));
     }
+
+    private void addField(Map<String, String> map, String key, Object value) {
+        if (value != null) {
+            map.put(key, asString(value));
+        }
+    }
 }
+

@@ -61,6 +61,12 @@ public interface VamWebService {
                        @Field("sha512") byte[] sha512,
                        @HeaderMap Map<String, String> headers);
 
+    @FormUrlEncoded
+    @PUT("media/{uuid}")
+    Call<Media> update(@Path("uuid") UUID videoReferenceUuid,
+            @FieldMap Map<String, String> fields,
+            @HeaderMap Map<String, String> headers);
+
     @GET("videosequences/cameras")
     Call<List<String>> findAllCameraIds();
 

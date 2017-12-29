@@ -3,7 +3,6 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXComboBox?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.Tooltip?>
@@ -69,15 +68,15 @@
          <children>
             <JFXCheckBox fx:id="conceptCheckBox" text="%bulkeditor.concept.checkbox" />
             <JFXCheckBox fx:id="associationCheckBox" text="%bulkeditor.association.checkbox" GridPane.rowIndex="1" />
-            <JFXComboBox fx:id="conceptCombobox" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" />
-            <JFXComboBox fx:id="associationCombobox" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+            <JFXComboBox fx:id="conceptCombobox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" />
+            <JFXComboBox fx:id="associationCombobox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
             <JFXButton fx:id="searchButton" text="%bulkeditor.search.button" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <tooltip>
                   <Tooltip text="%bulkeditor.search.button" />
                </tooltip>
             </JFXButton>
-            <JFXComboBox fx:id="groupComboBox" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
-            <JFXComboBox fx:id="activityComboBox" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
+            <JFXComboBox fx:id="groupComboBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
+            <JFXComboBox fx:id="activityComboBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
             <Label fx:id="groupLabel" text="%bulkeditor.activity.label" GridPane.rowIndex="3" />
             <Label fx:id="activityLabel" text="%bulkeditor.activity.label" GridPane.rowIndex="4" />
          </children>

@@ -2,6 +2,8 @@ package org.mbari.m3.vars.annotation.services;
 
 import org.mbari.m3.vars.annotation.model.Media;
 
+import java.net.URI;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +15,15 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface MediaService {
 
-    CompletableFuture<Media> create();
+    CompletableFuture<Media> create(String videoSequenceName,
+            String cameraId,
+            String videoName,
+            URI uri,
+            Instant startTimestamp);
+
+    CompletableFuture<Media> update(UUID videoReferenceUuid,
+            Instant startTimestamp,
+            Duration duration);
 
     CompletableFuture<Media> findByUuid(UUID uuid);
 
