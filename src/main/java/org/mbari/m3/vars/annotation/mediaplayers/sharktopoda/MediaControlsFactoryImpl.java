@@ -1,12 +1,12 @@
 package org.mbari.m3.vars.annotation.mediaplayers.sharktopoda;
 
-import javafx.scene.layout.Pane;
 import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaControls;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaControlsFactory;
+import org.mbari.m3.vars.annotation.mediaplayers.SettingsPane;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIO;
@@ -33,7 +33,7 @@ import java.util.concurrent.Executors;
 public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
     private final UIToolBox toolBox;
-    private SharktopodaSettingsPaneController paneController;
+    private SettingsPaneImpl settingsPane;
     private SharktoptodaControlPane controlPane;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -44,11 +44,11 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
     }
 
     @Override
-    public Pane getSettingsPane() {
-        if (paneController == null) {
-            paneController = SharktopodaSettingsPaneController.newInstance();
+    public SettingsPane getSettingsPane() {
+        if (settingsPane == null) {
+            settingsPane = new SettingsPaneImpl(toolBox);
         }
-        return paneController.getRoot();
+        return settingsPane;
     }
 
 

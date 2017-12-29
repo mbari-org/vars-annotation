@@ -9,5 +9,7 @@ import org.mbari.m3.vars.annotation.ui.prefs.IPrefs;
  */
 public interface SettingsPane extends IPrefs {
 
+    String getName();
+
     Pane getPane();
 }

@@ -17,7 +17,7 @@ public interface MediaControlsFactory {
      * Should return the settings paen that can be displayed in a dialog
      * @return
      */
-    Pane getSettingsPane();
+    SettingsPane getSettingsPane();
 
     /**
      *

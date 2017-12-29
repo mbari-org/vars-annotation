@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -43,6 +44,12 @@ public class MediaPlayers {
                 });
         Runtime.getRuntime()
                 .addShutdownHook(new Thread(this::close));
+    }
+
+    public List<SettingsPane> getSettingsPanes() {
+        return StreamUtilities.toStream(serviceLoader.iterator())
+                .map(MediaControlsFactory::getSettingsPane)
+                .collect(Collectors.toList());
     }
 
     private void open(Media media) {

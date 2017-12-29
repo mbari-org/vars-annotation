@@ -7825,7 +7825,7 @@
 							"showShadow": true,
 							"containerChangeable": false,
 							"containerExtending": false,
-							"left": 296,
+							"left": 280,
 							"top": 104,
 							"width": 135,
 							"height": 51,
@@ -7855,7 +7855,7 @@
 								"$ref": "AAAAAAFgnoaxVitTOo0="
 							},
 							"lineStyle": 1,
-							"points": "487:131;431:130"
+							"points": "487:131;415:130"
 						},
 						{
 							"_type": "UMLInterfaceView",
