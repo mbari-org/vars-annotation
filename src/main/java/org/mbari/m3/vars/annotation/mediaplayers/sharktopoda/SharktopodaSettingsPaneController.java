@@ -20,7 +20,7 @@ import org.mbari.m3.vars.annotation.util.FXMLUtils;
  * @author Brian Schlining
  * @since 2017-08-08T15:21:00
  */
-public class SharktopodaPaneController implements IPrefs {
+public class SharktopodaSettingsPaneController implements IPrefs {
 
     @FXML
     private TextField controlPortTextField;
@@ -59,7 +59,7 @@ public class SharktopodaPaneController implements IPrefs {
      * @return Pair with Sharkopoda control port (key) and Framecapture port (value)
      */
     public static Pair<Integer, Integer> getPortNumbers() {
-        Preferences prefs = Preferences.userNodeForPackage(SharktopodaPaneController.class);
+        Preferences prefs = Preferences.userNodeForPackage(SharktopodaSettingsPaneController.class);
         int dSharkPort = Initializer.CONFIG.getInt("sharktopoda.defaults.control.port");
         int dFgPort = Initializer.CONFIG.getInt("sharktopoda.defaults.framegrab.port");
 
@@ -73,9 +73,9 @@ public class SharktopodaPaneController implements IPrefs {
         }
     }
 
-    public static SharktopodaPaneController newInstance() {
-        return FXMLUtils.newInstance(SharktopodaPaneController.class,
-                "/fxml/SharktopodaPane.fxml");
+    public static SharktopodaSettingsPaneController newInstance() {
+        return FXMLUtils.newInstance(SharktopodaSettingsPaneController.class,
+                "/fxml/SharktopodaSettingsPane.fxml");
     }
 
     public GridPane getRoot() {

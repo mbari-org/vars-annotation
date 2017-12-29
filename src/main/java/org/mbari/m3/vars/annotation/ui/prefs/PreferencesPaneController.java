@@ -3,7 +3,9 @@ package org.mbari.m3.vars.annotation.ui.prefs;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.SharktopodaPaneController;
+import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayers;
+import org.mbari.m3.vars.annotation.mediaplayers.SettingsPane;
+import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.SharktopodaSettingsPaneController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,6 @@ import java.util.List;
 public class PreferencesPaneController implements IPrefs {
 
     private TabPane root;
-    private SharktopodaPaneController sharkController;
     private final UIToolBox toolBox;
     private final List<IPrefs> prefs = new ArrayList<>();
 
@@ -26,23 +27,23 @@ public class PreferencesPaneController implements IPrefs {
     public TabPane getRoot() {
         if (root == null) {
             root = new TabPane();
-
-            String sharkName = toolBox.getI18nBundle().getString("mediaplayer.sharktopoda.name");
-            Tab sharkTab = new Tab(sharkName);
-            sharkTab.setClosable(false);
-            sharkTab.setContent(getSharkController().getRoot());
-            root.getTabs().add(sharkTab);
-
+            root.setPrefSize(600, 600);
+            loadMediaControlsSettingsPanes();
         }
         return root;
     }
 
-    private SharktopodaPaneController getSharkController()  {
-        if (sharkController == null) {
-            sharkController = SharktopodaPaneController.newInstance();
-            prefs.add(sharkController);
-        }
-        return sharkController;
+    private void loadMediaControlsSettingsPanes() {
+        MediaPlayers mediaPlayers = new MediaPlayers(toolBox);
+        List<SettingsPane> settingsPanes = mediaPlayers.getSettingsPanes();
+        settingsPanes.stream()
+                .forEach(settingsPane -> {
+                    Tab tab = new Tab(settingsPane.getName());
+                    tab.setClosable(false);
+                    tab.setContent(settingsPane.getPane());
+                    root.getTabs().add(tab);
+                    prefs.add(settingsPane);
+                });
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation.mediaplayers.macos;
 
 import org.mbari.m3.vars.annotation.Initializer;
+import org.mbari.m3.vars.annotation.mediaplayers.NoopImageCaptureService;
 import org.mbari.m3.vars.annotation.model.Framegrab;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.ImageCaptureService;
@@ -58,4 +59,5 @@ public class AVFImageCaptureService implements ImageCaptureService {
     public void showSettingsDialog() {
                 // TODO
     }
+
 }
