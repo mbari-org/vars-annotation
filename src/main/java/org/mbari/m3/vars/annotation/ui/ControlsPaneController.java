@@ -6,10 +6,13 @@ import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
+import org.mbari.m3.vars.annotation.events.MediaControlsChangedEvent;
+import org.mbari.m3.vars.annotation.mediaplayers.MediaControls;
 import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.SharktoptodaControlPane;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.ui.abpanel.AssocButtonPaneController;
@@ -27,7 +30,8 @@ import java.util.prefs.Preferences;
 public class ControlsPaneController {
 
     private SplitPane root;
-    private SharktoptodaControlPane sharkPane;
+    private Pane mediaControlsPane;
+    private Pane emptyControlsPane;
     private RowEditorController rowEditorController;
     private AssocButtonPaneController assocBtnPane;
     private final UIToolBox toolBox;
@@ -38,9 +42,27 @@ public class ControlsPaneController {
     public ControlsPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            saveDividerPositions(splitPaneKey, getRoot());
-        }));
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(MediaControlsChangedEvent.class)
+                .subscribe(e -> updateMediaControlPane(e.get()));
+
+        emptyControlsPane = new Pane();
+        emptyControlsPane.setPrefSize(440, 80);
+        emptyControlsPane.setMaxSize(440, 80);
+        emptyControlsPane.setMinSize(440, 80);
+
+        Runtime.getRuntime()
+                .addShutdownHook(new Thread(() -> saveDividerPositions(splitPaneKey, getRoot())));
+    }
+
+    private void updateMediaControlPane(MediaControls mediaControls) {
+        Pane pane = emptyControlsPane;
+        if (mediaControls != null && mediaControls.getMediaControlPanel() != null) {
+            pane = mediaControls.getMediaControlPanel();
+        }
+        getRightPane().getChildren().remove(0);
+        getRightPane().getChildren().add(0, pane);
     }
 
     public SplitPane getRoot() {
@@ -58,14 +80,7 @@ public class ControlsPaneController {
         return root;
     }
 
-    public SharktoptodaControlPane getSharkPane() {
-        if (sharkPane == null) {
-            sharkPane = new SharktoptodaControlPane(toolBox);
-            toolBox.mediaPlayerProperty()
-                    .addListener((obs, oldv, newv) -> sharkPane.setMediaPlayer(newv));
-        }
-        return sharkPane;
-    }
+
 
     public FlowPane getButtonPane() {
         if (buttonPane == null) {
@@ -147,7 +162,7 @@ public class ControlsPaneController {
 
     private VBox getRightPane() {
         if (rightPane == null) {
-            rightPane = new VBox(getSharkPane(), getButtonPane());
+            rightPane = new VBox(emptyControlsPane, getButtonPane());
         }
         return rightPane;
     }

@@ -9,8 +9,6 @@ import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.commands.VideoCommands;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
-import java.util.function.Supplier;
 
 /**
  * @author Brian Schlining
@@ -47,14 +45,18 @@ public class MediaPlayer<S extends VideoState, E extends VideoError> extends org
 
     public CompletableFuture<Boolean> requestIsStopped() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        getVideoIO().getStateObservable().take(1).forEach(s -> future.complete(s.isStopped()));
+        getVideoIO().getStateObservable()
+                .take(1)
+                .forEach(s -> future.complete(s.isStopped()));
         getVideoIO().send(VideoCommands.REQUEST_STATUS);
         return future;
     }
 
     public CompletableFuture<Boolean> requestIsPlaying() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        getVideoIO().getStateObservable().take(1).forEach(s -> future.complete(s.isPlaying()));
+        getVideoIO().getStateObservable()
+                .take(1)
+                .forEach(s -> future.complete(s.isPlaying()));
         getVideoIO().send(VideoCommands.REQUEST_STATUS);
         return future;
     }
@@ -62,7 +64,8 @@ public class MediaPlayer<S extends VideoState, E extends VideoError> extends org
     public CompletableFuture<VideoIndex> requestVideoIndex() {
         CompletableFuture<VideoIndex> future = new CompletableFuture<>();
         getVideoIO().getIndexObservable()
-                .take(1).forEach(future::complete);
+                .take(1)
+                .forEach(future::complete);
         getVideoIO().send(VideoCommands.REQUEST_INDEX);
         return future;
     }

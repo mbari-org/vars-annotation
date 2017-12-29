@@ -53,7 +53,6 @@ public class SharktoptodaControlPane extends Pane {
     //private final Observer
 
     public SharktoptodaControlPane(UIToolBox toolBox) {
-        //setStyle("-fx-background-color: #263238;");
         setPrefSize(440, 80);
         speedDownIcon.setFill(color);
         speedUpIcon.setFill(color);

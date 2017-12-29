@@ -28,13 +28,13 @@ import java.util.concurrent.TimeoutException;
  * @author Brian Schlining
  * @since 2017-08-10T08:09:00
  */
-public class SharktopodaImageCaptureService implements ImageCaptureService {
+public class ImageCaptureServiceImpl implements ImageCaptureService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final SharktopodaVideoIO io;
     private final FramecaptureDecorator decorator;
 
-    public SharktopodaImageCaptureService(SharktopodaVideoIO io, int port) {
+    public ImageCaptureServiceImpl(SharktopodaVideoIO io, int port) {
         this.io = io;
         decorator = new FramecaptureDecorator(io, port);
     }

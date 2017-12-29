@@ -1,34 +1,18 @@
 package org.mbari.m3.vars.annotation.mediaplayers;
 
-import javafx.util.Pair;
+import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
+import org.mbari.m3.vars.annotation.events.MediaControlsChangedEvent;
 import org.mbari.m3.vars.annotation.events.MediaPlayerChangedEvent;
-import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.Sharktopoda;
-import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.SharktopodaPaneController;
 import org.mbari.m3.vars.annotation.model.Media;
-import org.mbari.vcr4j.VideoError;
-import org.mbari.vcr4j.VideoIO;
-import org.mbari.vcr4j.VideoState;
-import org.mbari.vcr4j.decorators.SchedulerVideoIO;
-import org.mbari.vcr4j.decorators.StatusDecorator;
-import org.mbari.vcr4j.decorators.VCRSyncDecorator;
-import org.mbari.vcr4j.sharktopoda.SharktopodaError;
-import org.mbari.vcr4j.sharktopoda.SharktopodaState;
-import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
-import org.mbari.vcr4j.sharktopoda.commands.OpenCmd;
-import org.mbari.vcr4j.sharktopoda.decorators.FauxTimecodeDecorator;
+import org.mbari.util.stream.StreamUtilities;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.SocketException;
-import java.net.URI;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
+import java.util.*;
+
 
 /**
  * @author Brian Schlining
@@ -38,15 +22,25 @@ public class MediaPlayers {
 
     private final UIToolBox toolBox;
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private Sharktopoda sharktopoda = new Sharktopoda();
+    private ServiceLoader<MediaControlsFactory> serviceLoader;
 
     public MediaPlayers(UIToolBox toolBox) {
         this.toolBox = toolBox;
-        toolBox.getEventBus()
-                .toObserverable()
+        serviceLoader = ServiceLoader.load(MediaControlsFactory.class);
+        EventBus eventBus = toolBox.getEventBus();
+        eventBus.toObserverable()
                 .ofType(MediaChangedEvent.class)
                 .subscribe(e -> open(e.get()));
 
+        // TODO change UI on new MediaPlayerChangedEvent., WHere??
+        // Convert MediaControlsChangedEvent to MediaPlayerChangedEvent so that I don't have
+        // to change all prexisting usages
+        eventBus.toObserverable()
+                .ofType(MediaControlsChangedEvent.class)
+                .subscribe(e -> {
+                    eventBus.send(new MediaPlayerChangedEvent(MediaPlayers.this,
+                                    e.get().getMediaPlayer()));
+                });
         Runtime.getRuntime()
                 .addShutdownHook(new Thread(this::close));
     }
@@ -56,29 +50,26 @@ public class MediaPlayers {
         // Close the old one
         close();
 
-        String u = media.getUri().toString();
-        if (u.startsWith("urn:tid")) {
-            // handle tape
+        try {
+            StreamUtilities.toStream(serviceLoader.iterator())
+                    .peek(factory -> log.debug("ServiceLoader found a factory: {}", factory))
+                    .filter(factory -> factory.canOpen(media))
+                    .peek(factory -> log.debug("ServiceLoader using a factory: {}", factory))
+                    .findFirst()
+                    .ifPresent(factory -> factory.safeOpen(media)
+                            .thenAccept(mediaControls -> {
+                                toolBox.getEventBus()
+                                        .send(new MediaControlsChangedEvent(MediaPlayers.this,
+                                                mediaControls));
+                            }));
         }
-        else if (u.startsWith("http") || u.startsWith("file")) {
-            // TODO handlers should be register so that user can select his/her preferred
-            // handler in preferences
-            try {
-                openSharktopoda(media);
-            } catch (Exception e) {
-                log.warn("Failed to open " + media.getUri(), e);
-            }
+        catch (ServiceConfigurationError e) {
+            log.error("Unable to load services", e);
+            toolBox.getEventBus()
+                    .send(new MediaPlayerChangedEvent(null, null));
         }
-
     }
 
-    private void openSharktopoda(Media media) {
-        Pair<Integer, Integer> portNumbers = SharktopodaPaneController.getPortNumbers();
-        sharktopoda.open(media, portNumbers.getKey(), portNumbers.getValue())
-                .thenAccept(mediaPlayer ->  toolBox.getEventBus()
-                            .send(new MediaPlayerChangedEvent(MediaPlayers.this, mediaPlayer))
-                );
-    }
 
     private void close() {
         // Close the old MediaPlayer

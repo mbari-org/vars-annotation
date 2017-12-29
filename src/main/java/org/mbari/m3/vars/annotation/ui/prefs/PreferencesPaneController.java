@@ -3,7 +3,7 @@ package org.mbari.m3.vars.annotation.ui.prefs;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.SharktopodaPaneController;
+import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.SharktopodaSettingsPaneController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 public class PreferencesPaneController implements IPrefs {
 
     private TabPane root;
-    private SharktopodaPaneController sharkController;
+    private SharktopodaSettingsPaneController sharkController;
     private final UIToolBox toolBox;
     private final List<IPrefs> prefs = new ArrayList<>();
 
@@ -37,9 +37,9 @@ public class PreferencesPaneController implements IPrefs {
         return root;
     }
 
-    private SharktopodaPaneController getSharkController()  {
+    private SharktopodaSettingsPaneController getSharkController()  {
         if (sharkController == null) {
-            sharkController = SharktopodaPaneController.newInstance();
+            sharkController = SharktopodaSettingsPaneController.newInstance();
             prefs.add(sharkController);
         }
         return sharkController;
