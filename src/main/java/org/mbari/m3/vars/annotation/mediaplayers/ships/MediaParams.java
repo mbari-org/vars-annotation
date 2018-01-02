@@ -18,6 +18,7 @@ public class MediaParams {
     private final String videoName;
     private final URI uri;
     private static final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+    public static final String URI_PREFIX = "urn:rtva:org.mbari:";
 
     public MediaParams(String cameraId, Long sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
@@ -29,7 +30,7 @@ public class MediaParams {
                 df.format(Instant.now().atZone(ZoneId.of("UTC")));
         String uriName = videoSequenceName.replaceAll("\\s+", "_");
         try {
-            uri = new URI("urn:rtva:org.mbari:" + uriName);
+            uri = new URI(URI_PREFIX + uriName);
         }
         catch (URISyntaxException e) {
             throw new RuntimeException(e);
