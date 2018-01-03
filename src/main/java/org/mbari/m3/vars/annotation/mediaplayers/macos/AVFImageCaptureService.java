@@ -24,8 +24,9 @@ public class AVFImageCaptureService implements ImageCaptureService {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private AVFImageCapture imageCapture;
     public static AVFImageCaptureService imageCaptureService;
+    private String currentDevice = "";
 
-    public AVFImageCaptureService() {
+    protected AVFImageCaptureService() {
         imageCapture = new AVFImageCapture();
     }
 
@@ -34,8 +35,11 @@ public class AVFImageCaptureService implements ImageCaptureService {
     }
 
     public void setDevice(String device) {
-        dispose();
-        imageCapture.startSession(device);
+        if (!currentDevice.equals(device)) {
+            dispose();
+            imageCapture.startSession(device);
+        }
+        currentDevice = device;
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.SharktopodaSettings
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Brian Schlining
@@ -37,6 +38,7 @@ public class PreferencesPaneController implements IPrefs {
         MediaPlayers mediaPlayers = new MediaPlayers(toolBox);
         List<SettingsPane> settingsPanes = mediaPlayers.getSettingsPanes();
         settingsPanes.stream()
+                .filter(Objects::nonNull)
                 .forEach(settingsPane -> {
                     Tab tab = new Tab(settingsPane.getName());
                     tab.setClosable(false);
@@ -51,6 +53,7 @@ public class PreferencesPaneController implements IPrefs {
      */
     @Override
     public void load() {
+        getRoot(); // Loads preferences panes
         prefs.forEach(IPrefs::load);
     }
 
@@ -59,6 +62,7 @@ public class PreferencesPaneController implements IPrefs {
      */
     @Override
     public void save() {
+        getRoot(); // Loads preferences panes
         prefs.forEach(IPrefs::save);
     }
 

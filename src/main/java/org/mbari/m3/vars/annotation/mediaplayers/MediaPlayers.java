@@ -6,8 +6,8 @@ import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
 import org.mbari.m3.vars.annotation.events.MediaControlsChangedEvent;
 import org.mbari.m3.vars.annotation.events.MediaPlayerChangedEvent;
 import org.mbari.m3.vars.annotation.model.Media;
-import org.mbari.util.stream.StreamUtilities;
 
+import org.mbari.util.stream.StreamUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

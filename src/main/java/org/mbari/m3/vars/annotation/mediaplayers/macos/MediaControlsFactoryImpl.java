@@ -7,6 +7,8 @@ import org.mbari.m3.vars.annotation.mediaplayers.SettingsPane;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -20,12 +22,18 @@ import java.util.concurrent.CompletableFuture;
 public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
     private SettingsPane settingsPane;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public SettingsPane getSettingsPane() {
         if (settingsPane == null) {
-            settingsPane = new SettingsPaneImpl(Initializer.getToolBox(),
-                    AVFImageCaptureService.getInstance());
+            try {
+                settingsPane = new SettingsPaneImpl(Initializer.getToolBox(),
+                        AVFImageCaptureService.getInstance());
+            }
+            catch (Exception | UnsatisfiedLinkError e) {
+                log.warn("Unable to create a settings pane for Mac OS Image capture", e);
+            }
         }
         return settingsPane;
     }

@@ -153,9 +153,19 @@
       <version>1.7.25</version>
     </dependency>
     <dependency>
+      <groupId>org.mbari</groupId>
+      <artifactId>mbarix4j</artifactId>
+      <version>1.10.0</version>
+    </dependency>
+    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>1.2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>eu.hansolo</groupId>
+      <artifactId>Medusa</artifactId>
+      <version>7.9</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -170,7 +180,7 @@
     <dependency>
       <groupId>org.mbari.vars</groupId>
       <artifactId>vars-avfoundation</artifactId>
-      <version>2.0</version>
+      <version>2.0.1</version>
     </dependency>
   </dependencies>
 

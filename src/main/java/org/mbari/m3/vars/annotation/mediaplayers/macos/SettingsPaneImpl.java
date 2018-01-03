@@ -74,4 +74,9 @@ public class SettingsPaneImpl implements SettingsPane {
             prefs.put(DEVICE_KEY, selected);
         }
     }
+
+    public static String getSelectedDevice() {
+        Preferences prefs = Preferences.userNodeForPackage(SettingsPaneImpl.class);
+        return prefs.get(DEVICE_KEY, "");
+    }
 }

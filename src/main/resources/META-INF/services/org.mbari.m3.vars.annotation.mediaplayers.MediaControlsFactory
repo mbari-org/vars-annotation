@@ -1,2 +1,3 @@
 org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.MediaControlsFactoryImpl
 org.mbari.m3.vars.annotation.mediaplayers.macos.MediaControlsFactoryImpl
+org.mbari.m3.vars.annotation.mediaplayers.ships.MediaControlsFactoryImpl
