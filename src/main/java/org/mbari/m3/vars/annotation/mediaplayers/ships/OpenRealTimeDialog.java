@@ -40,4 +40,13 @@ public class OpenRealTimeDialog extends Dialog<MediaParams> {
         });
 
     }
+
+    /**
+     * Loads the available platforms into the combobox
+     */
+    public void refresh() {
+        controller.refresh();
+    }
+
+
 }

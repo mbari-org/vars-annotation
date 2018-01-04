@@ -49,6 +49,7 @@ public class MediaPlayers {
     public List<SettingsPane> getSettingsPanes() {
         return StreamUtilities.toStream(serviceLoader.iterator())
                 .map(MediaControlsFactory::getSettingsPane)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 

@@ -3,6 +3,7 @@ package org.mbari.m3.vars.annotation.ui;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTabPane;
 import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
@@ -25,6 +26,9 @@ import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
 import org.mbari.m3.vars.annotation.events.UserAddedEvent;
 import org.mbari.m3.vars.annotation.events.UserChangedEvent;
+import org.mbari.m3.vars.annotation.mediaplayers.ships.MediaParams;
+import org.mbari.m3.vars.annotation.mediaplayers.ships.OpenRealTimeDialog;
+import org.mbari.m3.vars.annotation.mediaplayers.ships.RealTimeService;
 import org.mbari.m3.vars.annotation.messages.*;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
@@ -63,6 +67,7 @@ public class AppPaneController {
     private final ImageViewController imageViewController;
     private final PreferencesDialogController preferencesDialogController;
     private final SelectMediaDialog selectMediaDialog;
+    private final OpenRealTimeDialog realTimeDialog;
     private ControlsPaneController controlsPaneController;
     private MediaPaneController mediaPaneController;
     private BulkEditorPaneController bulkEditorPaneController;
@@ -79,6 +84,10 @@ public class AppPaneController {
                 toolBox.getServices().getMediaService(),
                 toolBox.getI18nBundle());
         selectMediaDialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+
+        realTimeDialog = new OpenRealTimeDialog(toolBox.getI18nBundle());
+        realTimeDialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+
         annotationTableController = new AnnotationTableController(toolBox);
         preferencesDialogController = new PreferencesDialogController(toolBox);
         imageViewController = new ImageViewController(toolBox);
@@ -167,7 +176,7 @@ public class AppPaneController {
 
     public TabPane getTabPane() {
         if (tabPane == null) {
-            tabPane = new TabPane();
+            tabPane = new JFXTabPane();
 
             Observable<Object> observable = toolBox.getEventBus().toObserverable();
 
@@ -312,6 +321,15 @@ public class AppPaneController {
             Text realtimeIcon = gf.createIcon(MaterialIcon.TIMER, "30px");
             Button realtimeButton = new JFXButton(null, realtimeIcon);
             realtimeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.realtime")));
+            realtimeButton.setOnAction(e -> {
+                realTimeDialog.refresh();
+                Optional<MediaParams> opt = realTimeDialog.showAndWait();
+                opt.ifPresent(mediaParams -> {
+                    RealTimeService rts = new RealTimeService(toolBox);
+                    rts.open(mediaParams);
+                });
+
+            });
 
             VBox vbox = new VBox(remoteButton, localButton, tapeButton, realtimeButton);
 
@@ -358,9 +376,11 @@ public class AppPaneController {
                                 .map(User::getUsername)
                                 .sorted(sorter)
                                 .collect(Collectors.toList());
-                        usersComboBox.setItems(FXCollections.observableList(usernames));
-                        String defaultUser = System.getProperty("user.name");
-                        usersComboBox.getSelectionModel().select(defaultUser);
+                        Platform.runLater(() -> {
+                            usersComboBox.setItems(FXCollections.observableList(usernames));
+                            String defaultUser = System.getProperty("user.name");
+                            usersComboBox.getSelectionModel().select(defaultUser);
+                        });
                     });
 
         }

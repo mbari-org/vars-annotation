@@ -55,7 +55,7 @@ public class AVFImageCaptureService implements ImageCaptureService {
         try {
             imageCapture.stopSession();
         }
-        catch (Exception e) {
+        catch (UnsatisfiedLinkError | Exception e) {
             log.error("An error occurred while stopping the AVFoundation image capture", e);
         }
     }

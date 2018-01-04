@@ -47,6 +47,8 @@ public class MediaParamsPaneController {
 
         TextFormatter<String> textFormatter1 = new TextFormatter<>(filter);
         sequenceNumberTextField.setTextFormatter(textFormatter1);
+
+        cameraIdComboBox.setEditable(true);
     }
 
     public void refresh() {

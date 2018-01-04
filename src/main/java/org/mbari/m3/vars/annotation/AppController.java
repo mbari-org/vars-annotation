@@ -1,8 +1,10 @@
 package org.mbari.m3.vars.annotation;
 
 import io.reactivex.Observable;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -198,6 +200,9 @@ public class AppController {
         eventObservable.ofType(SaveImageMsg.class)
                 .subscribe(this::saveImage);
 
+        eventObservable.ofType(ShowWarningAlert.class)
+                .subscribe(this::showWarningAlert);
+
     }
 
     private void saveImage(SaveImageMsg msg) {
@@ -276,5 +281,17 @@ public class AppController {
             }
 
         }
+    }
+
+    private void showWarningAlert(ShowWarningAlert msg) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+            alert.setTitle(msg.getTitle());
+            alert.setHeaderText(msg.getHeaderText());
+            alert.setContentText(msg.getContentText());
+            alert.showAndWait();
+        });
+
     }
 }

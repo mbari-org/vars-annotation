@@ -46,7 +46,7 @@ public class AncillaryDataPaneController {
     }
 
     public void setAncillaryData(UUID observationUuid) {
-        getPropertySheet().getItems().clear();
+        Platform.runLater(() -> getPropertySheet().getItems().clear());
         if (observationUuid != null) {
             toolBox.getServices()
                     .getAnnotationService()

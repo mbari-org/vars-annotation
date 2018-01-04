@@ -28,12 +28,9 @@ import java.util.stream.Collectors;
  */
 public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
-    private final UIToolBox toolBox;
+    private final UIToolBox toolBox = Initializer.getToolBox();
     private Pane controlPane;
 
-    public MediaControlsFactoryImpl(UIToolBox toolBox) {
-        this.toolBox = toolBox;
-    }
 
     private Pane getControlPane() {
         if (controlPane == null) {
@@ -49,7 +46,8 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
     @Override
     public boolean canOpen(Media media) {
-        return media.getUri() != null &&
+        return media != null &&
+                media.getUri() != null &&
                 media.getUri().toString().startsWith(MediaParams.URI_PREFIX);
     }
 

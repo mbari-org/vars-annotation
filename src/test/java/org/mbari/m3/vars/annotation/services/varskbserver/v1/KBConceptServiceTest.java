@@ -7,9 +7,12 @@ import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.model.ConceptDetails;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Brian Schlining
@@ -19,6 +22,12 @@ public class KBConceptServiceTest {
 
     KBConceptService conceptService = Initializer.getInjector().getInstance(KBConceptService.class);
 
+    @Test
+    public void testFindAllNames() throws InterruptedException, ExecutionException, TimeoutException {
+        CompletableFuture<List<String>> f = conceptService.findAllNames();
+        List<String> allNames = f.get(10000, TimeUnit.MILLISECONDS);
+        assertNotNull(allNames);
+    }
 
     @Test
     public void testFetchConceptTree() throws InterruptedException, ExecutionException {

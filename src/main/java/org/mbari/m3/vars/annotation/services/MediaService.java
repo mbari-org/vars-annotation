@@ -29,6 +29,8 @@ public interface MediaService {
 
     CompletableFuture<Media> findBySha512(byte[] sha512);
 
+    CompletableFuture<Media> findByUri(URI uri);
+
     CompletableFuture<List<Media>> findByVideoSequenceName(String videoSequenceName);
 
     CompletableFuture<List<Media>> findByVideoName(String videoName);

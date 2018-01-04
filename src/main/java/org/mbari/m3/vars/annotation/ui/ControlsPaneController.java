@@ -3,6 +3,7 @@ package org.mbari.m3.vars.annotation.ui;
 import com.jfoenix.controls.JFXButton;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.FlowPane;
@@ -57,12 +58,15 @@ public class ControlsPaneController {
     }
 
     private void updateMediaControlPane(MediaControls mediaControls) {
-        Pane pane = emptyControlsPane;
-        if (mediaControls != null && mediaControls.getMediaControlPanel() != null) {
-            pane = mediaControls.getMediaControlPanel();
-        }
-        getRightPane().getChildren().remove(0);
-        getRightPane().getChildren().add(0, pane);
+        Platform.runLater(() -> {
+            Pane pane = emptyControlsPane;
+            if (mediaControls != null && mediaControls.getMediaControlPanel() != null) {
+                pane = mediaControls.getMediaControlPanel();
+            }
+
+            getRightPane().getChildren().remove(0);
+            getRightPane().getChildren().add(0, pane);
+        });
     }
 
     public SplitPane getRoot() {

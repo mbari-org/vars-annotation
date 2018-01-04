@@ -24,10 +24,10 @@ public class MediaParams {
         this.sequenceNumber = sequenceNumber;
         this.cameraId = cameraId;
 
-        videoSequenceName = cameraId + " " + sequenceNumber;
+        videoSequenceName = String.format("%s %04d", cameraId, sequenceNumber);
         startTimestamp = Instant.now();
-        videoName = videoSequenceName + " " +
-                df.format(Instant.now().atZone(ZoneId.of("UTC")));
+        videoName = videoSequenceName + " real-time";
+                //df.format(Instant.now().atZone(ZoneId.of("UTC")));
         String uriName = videoSequenceName.replaceAll("\\s+", "_");
         try {
             uri = new URI(URI_PREFIX + uriName);

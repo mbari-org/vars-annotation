@@ -24,7 +24,7 @@ public interface KBWebService {
     Call<Concept> findTree(@Path("name") String name);
 
     @GET("concept")
-    Call<List<String>> listConceptNames();
+    Call<List<String>> findAllNames();
 
     @GET("concept/{name}")
     Call<ConceptDetails> findDetails(@Path("name") String name);

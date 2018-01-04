@@ -49,7 +49,7 @@ public class KBConceptService implements ConceptService, RetrofitWebService {
 
     @Override
     public CompletableFuture<List<String>> findAllNames() {
-        return sendRequest(service.listConceptNames());
+        return sendRequest(service.findAllNames());
     }
 
     @Override

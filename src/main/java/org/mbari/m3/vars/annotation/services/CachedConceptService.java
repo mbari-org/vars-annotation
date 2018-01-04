@@ -41,6 +41,7 @@ public class CachedConceptService implements ConceptService {
      */
     public CachedConceptService(ConceptService conceptService) {
         this.conceptService = conceptService;
+        findAllNames();
     }
 
     /**

@@ -26,6 +26,9 @@ public interface VamWebService {
     @GET("media/sha512/{sha512}")
     Call<Media> findBySha512(@Path("sha512") String hexSha512);
 
+    @GET("media/uri/{uri}")
+    Call<Media> findByUri(@Path("uri") URI uri);
+
     @GET("media/videosequence/{name}")
     Call<List<Media>> findByVideoSequenceName(@Path("name") String videoSequenceName);
 
@@ -62,8 +65,8 @@ public interface VamWebService {
                        @HeaderMap Map<String, String> headers);
 
     @FormUrlEncoded
-    @PUT("media/{uuid}")
-    Call<Media> update(@Path("uuid") UUID videoReferenceUuid,
+    @PUT("videos/{uuid}")
+    Call<Media> update(@Path("uuid") UUID videoUuid,
             @FieldMap Map<String, String> fields,
             @HeaderMap Map<String, String> headers);
 

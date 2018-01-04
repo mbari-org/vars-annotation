@@ -53,7 +53,7 @@ public class VamService implements MediaService, RetrofitWebService {
 
         Map<String, String> fieldMap = new HashMap<>();
         addField(fieldMap, "duration_millis", duration.toMillis());
-        addField(fieldMap, "start_timestamp", startTimestamp);
+        addField(fieldMap, "start", startTimestamp);
         return sendRequest(vamWebService.update(videoReferenceUuid,
                 fieldMap, defaultHeaders));
     }
@@ -67,6 +67,11 @@ public class VamService implements MediaService, RetrofitWebService {
     public CompletableFuture<Media> findBySha512(byte[] sha512) {
         String hex = ByteArrayConverter.encode(sha512);
         return sendRequest(vamWebService.findBySha512(hex));
+    }
+
+    @Override
+    public CompletableFuture<Media> findByUri(URI uri) {
+        return sendRequest(vamWebService.findByUri(uri));
     }
 
     @Override
