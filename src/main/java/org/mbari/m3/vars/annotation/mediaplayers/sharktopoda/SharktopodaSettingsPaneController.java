@@ -60,8 +60,8 @@ public class SharktopodaSettingsPaneController implements IPrefs {
      */
     public static Pair<Integer, Integer> getPortNumbers() {
         Preferences prefs = Preferences.userNodeForPackage(SharktopodaSettingsPaneController.class);
-        int dSharkPort = Initializer.CONFIG.getInt("sharktopoda.defaults.control.port");
-        int dFgPort = Initializer.CONFIG.getInt("sharktopoda.defaults.framegrab.port");
+        int dSharkPort = Initializer.getConfig().getInt("sharktopoda.defaults.control.port");
+        int dFgPort = Initializer.getConfig().getInt("sharktopoda.defaults.framegrab.port");
 
         try {
             int cport = prefs.getInt(CONTROL_PORT_KEY, dSharkPort);
@@ -84,8 +84,8 @@ public class SharktopodaSettingsPaneController implements IPrefs {
 
     @Override
     public void load() {
-        int dSharkPort = Initializer.CONFIG.getInt("sharktopoda.defaults.control.port");
-        int dFgPort = Initializer.CONFIG.getInt("sharktopoda.defaults.framegrab.port");
+        int dSharkPort = Initializer.getConfig().getInt("sharktopoda.defaults.control.port");
+        int dFgPort = Initializer.getConfig().getInt("sharktopoda.defaults.framegrab.port");
 
         int sharkPort = prefs.getInt(CONTROL_PORT_KEY, dSharkPort);
         int fgPort = prefs.getInt(FRAMEGRAB_PORT_KEY, dFgPort);
@@ -95,7 +95,7 @@ public class SharktopodaSettingsPaneController implements IPrefs {
 
     @Override
     public void save() {
-        Config config = Initializer.CONFIG;
+        Config config = Initializer.getConfig();
         ResourceBundle i18n = Initializer.getToolBox().getI18nBundle();
         int sharkPort = config.getInt("sharktopoda.defaults.control.port");
         int fgPort = config.getInt("sharktopoda.defaults.framegrab.port");

@@ -24,13 +24,34 @@ import java.util.ResourceBundle;
  */
 public class Initializer {
 
-    public static final Config CONFIG = ConfigFactory.load();
-
     private static Path settingsDirectory;
     private static Path imageDirectory;
     private static Injector injector;
 
     private static UIToolBox toolBox;
+
+    private static Config config;
+
+    /**
+     * First looks for the file `~/.vars/application.conf` and, if found,
+     * loads that file. Otherwise used the usual `reference.conf`/`application.conf`
+     * combination for typesafe's config library.
+     * @return
+     */
+    public static Config getConfig() {
+        if (config == null) {
+            final Path p0 = getSettingsDirectory();
+            final Path path = p0.resolve("application.conf");
+            if (Files.exists(path)) {
+                config = ConfigFactory.parseFile(path.toFile());
+            }
+            else {
+                config = ConfigFactory.load();
+            }
+        }
+        return config;
+    }
+
 
     public static UIToolBox getToolBox() {
         if (toolBox == null) {
@@ -46,7 +67,7 @@ public class Initializer {
                     services,
                     new EventBus(),
                     bundle,
-                    CONFIG,
+                    getConfig(),
                     Arrays.asList(stylesheet));
         }
         return toolBox;
@@ -63,23 +84,11 @@ public class Initializer {
     public static Path getSettingsDirectory() {
         if (settingsDirectory == null) {
             String home = System.getProperty("user.home");
-            settingsDirectory = Paths.get(home, ".vars");
-
-            // Make sure the directory exists and we can write to it.
-            if (!Files.exists(settingsDirectory)) {
-                try {
-                    Files.createDirectory(settingsDirectory);
-                    if (!Files.isWritable(settingsDirectory)) {
-                        settingsDirectory = null;
-                    }
-                }
-                catch (IOException e) {
-                    String msg = "Unable to create a setting directory at " + settingsDirectory + ".";
-                    LoggerFactory.getLogger(Initializer.class).error(msg, e);
-                    settingsDirectory = null;
-                }
+            Path path = Paths.get(home, ".vars");
+            settingsDirectory = createDirectory(path);
+            if (settingsDirectory == null) {
+                log.warn("Failed to create settings directory at " + path);
             }
-
         }
         return settingsDirectory;
     }
@@ -87,28 +96,39 @@ public class Initializer {
     public static Path getImageDirectory() {
         if (imageDirectory == null) {
             Path settingsDir = getSettingsDirectory();
-            imageDirectory = Paths.get(settingsDir.toString(), "images");
-
-            if (!Files.exists(imageDirectory)) {
-                try {
-                    Files.createDirectory(imageDirectory);
-                    if (!Files.isWritable(imageDirectory)) {
-                        imageDirectory = null;
-                    }
-                }
-                catch (IOException e) {
-                    String msg = "Unable to create an image directory at " + imageDirectory + ".";
-                    LoggerFactory.getLogger(Initializer.class).error(msg, e);
-                    imageDirectory = null;
+            if (settingsDir != null) {
+                Path path = Paths.get(settingsDir.toString(), "images");
+                imageDirectory = createDirectory(path);
+                if (imageDirectory == null) {
+                    log.warn("Failed to create image directory at " + path);
                 }
             }
+
         }
         return imageDirectory;
     }
 
+    private static Path createDirectory(Path path) {
+        Path createdPath = path;
+        if (!Files.exists(path)) {
+            try {
+                Files.createDirectory(path);
+                if (!Files.isWritable(path)) {
+                    createdPath = null;
+                }
+            }
+            catch (IOException e) {
+                String msg = "Unable to create a directory at " + path + ".";
+                LoggerFactory.getLogger(Initializer.class).error(msg, e);
+                createdPath = null;
+            }
+        }
+        return createdPath;
+    }
+
     public static Injector getInjector() {
         if (injector == null) {
-            String moduleName = CONFIG.getString("app.injector.module.class");
+            String moduleName = getConfig().getString("app.injector.module.class");
             try {
                 Class clazz = Class.forName(moduleName);
                 Module module = (Module) clazz.newInstance();
