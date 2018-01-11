@@ -131,6 +131,8 @@ public class AnnotationTableController {
             tableView = new TableView<>();
             tableView.setTableMenuButtonVisible(true);
 
+            //tableViewExt = new TableViewExt<>(tableView);
+
             tableView.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldv, newv) -> {
@@ -141,7 +143,7 @@ public class AnnotationTableController {
                         }
                     });
 
-            tableViewExt = new TableViewExt<>(tableView);
+
 
             // --- Add all columns
             TableColumn<Annotation, Instant> timestampCol = new TableColumn<>(i18n.getString("annotable.col.timestamp"));
