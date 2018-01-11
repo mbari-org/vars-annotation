@@ -20,6 +20,11 @@ public class OpenRealTimeDialog extends Dialog<MediaParams> {
     @Inject
     public OpenRealTimeDialog(ResourceBundle i18n) {
         controller = MediaParamsPaneController.newInstance();
+
+        setTitle(i18n.getString("realtime.dialog.title"));
+        setHeaderText(i18n.getString("realtime.dialog.header"));
+        setContentText(i18n.getString("realtime.dialog.content"));
+
         getDialogPane().setContent(controller.getRoot());
         ButtonType ok = new ButtonType(i18n.getString("global.ok"), ButtonBar.ButtonData.OK_DONE);
         ButtonType cancel = new ButtonType(i18n.getString("global.cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);

@@ -81,7 +81,8 @@ public class ConceptButtonPaneController {
 
     private void loadButtonsFromPreferences() {
         // TODO show a loading symbol
-        ConceptButtonFactory factory = new ConceptButtonFactory(conceptService, eventBus, i18n);
+        ConceptButtonFactory factory =
+                new ConceptButtonFactory(conceptService, eventBus, i18n);
         try {
             List<Button> buttons = Arrays.stream(panePreferences.childrenNames())
                     .map(nodeName -> {
@@ -98,10 +99,10 @@ public class ConceptButtonPaneController {
             getPane().getChildren().addAll(buttons);
         }
         catch (Exception e) {
-            // TODO convert to i18n
-            eventBus.send(new ShowNonfatalErrorAlert("VARS Nonfatal Error",
-                    "Failed to configure user interface",
-                    "An error occurred when loading concept buttons from preferences",
+            eventBus.send(new ShowNonfatalErrorAlert(
+                    i18n.getString("cbpanel.alert.prefsfail.load.title"),
+                    i18n.getString("cbpanel.alert.prefsfail.load.header"),
+                    i18n.getString("cbpanel.alert.prefsfail.load.content"),
                     e));
         }
 
@@ -145,9 +146,10 @@ public class ConceptButtonPaneController {
             });
         }
         catch (Exception e) {
-            eventBus.send(new ShowNonfatalErrorAlert("VARS Nonfatal Error",
-                    "Failed to configure user interface",
-                    "An error occurred when removing unused buttons from preferences",
+            eventBus.send(new ShowNonfatalErrorAlert(
+                    i18n.getString("cbpanel.alert.prefsfail.save.title"),
+                    i18n.getString("cbpanel.alert.prefsfail.save.header"),
+                    i18n.getString("cbpanel.alert.prefsfail.save.content"),
                     e));
         }
 

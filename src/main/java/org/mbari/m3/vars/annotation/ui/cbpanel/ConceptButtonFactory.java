@@ -73,7 +73,7 @@ public class ConceptButtonFactory {
                 .thenApply(opt -> {
                     if (!opt.isPresent()) {
                         Platform.runLater(() -> {
-                            button.getStyleClass().add(".button-invalid");
+                            button.getStyleClass().add("button-invalid");
                             button.setOnAction(e -> {});
                         });
                     }

@@ -20,6 +20,7 @@ import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
+import org.mbari.m3.vars.annotation.ui.Alerts;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
 import org.mbari.m3.vars.annotation.ui.AppPaneController;
 import org.mbari.net.URLUtilities;
@@ -46,6 +47,7 @@ import java.util.stream.Collectors;
 public class AppController {
     private Scene scene;
     private final UIToolBox toolBox;
+    private final Alerts alerts;
 
     // Should automatically open the correct player. Listens for MediaChangedEvents
     private final MediaPlayers mediaPlayers;
@@ -54,6 +56,7 @@ public class AppController {
 
     public AppController(UIToolBox toolBox) {
         this.toolBox = toolBox;
+        alerts = new Alerts(toolBox);
         mediaPlayers = new MediaPlayers(toolBox);
         initialize();
     }
@@ -200,8 +203,8 @@ public class AppController {
         eventObservable.ofType(SaveImageMsg.class)
                 .subscribe(this::saveImage);
 
-        eventObservable.ofType(ShowWarningAlert.class)
-                .subscribe(this::showWarningAlert);
+        eventObservable.ofType(ShowAlert.class)
+                .subscribe(alerts::showAlert);
 
     }
 
@@ -283,15 +286,8 @@ public class AppController {
         }
     }
 
-    private void showWarningAlert(ShowWarningAlert msg) {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
-            alert.setTitle(msg.getTitle());
-            alert.setHeaderText(msg.getHeaderText());
-            alert.setContentText(msg.getContentText());
-            alert.showAndWait();
-        });
 
-    }
+
+
+
 }

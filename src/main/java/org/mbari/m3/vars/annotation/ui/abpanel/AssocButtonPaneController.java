@@ -15,7 +15,6 @@ import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.messages.ShowNonfatalErrorAlert;
 import org.mbari.m3.vars.annotation.model.Association;
-import org.mbari.m3.vars.annotation.model.ConceptAssociationTemplate;
 import org.mbari.m3.vars.annotation.model.User;
 import org.mbari.m3.vars.annotation.ui.shared.animation.FlashTransition;
 import org.slf4j.Logger;
@@ -154,13 +153,15 @@ public class AssocButtonPaneController {
                         .sorted(Comparator.comparingInt(ButtonPref::getOrder))
                         .map(ButtonPref::getButton)
                         .collect(Collectors.toList());
-                getPane().getChildren().addAll(buttons);
+                Platform.runLater(() -> getPane().getChildren().addAll(buttons));
             }
             catch (Exception e) {
+                ResourceBundle i18n = toolBox.getI18nBundle();
                 toolBox.getEventBus()
-                        .send(new ShowNonfatalErrorAlert("VARS Nonfatal Error",
-                                "Failed to configure user interface",
-                                "An error occurred when loading association buttons from preferences",
+                        .send(new ShowNonfatalErrorAlert(
+                                i18n.getString("abpanel.alert.prefsfail.load.title"),
+                                i18n.getString("abpanel.alert.prefsfail.load.header"),
+                                i18n.getString("abpanel.alert.prefsfail.load.content"),
                                 e));
             }
         });
@@ -206,10 +207,11 @@ public class AssocButtonPaneController {
                 });
             }
             catch (Exception e) {
+                ResourceBundle i18n = toolBox.getI18nBundle();
                 toolBox.getEventBus()
-                        .send(new ShowNonfatalErrorAlert("VARS Nonfatal Error",
-                                "Failed to configure user interface",
-                                "An error occurred when removing unused buttons from preferences",
+                        .send(new ShowNonfatalErrorAlert(i18n.getString("abpanel.alert.prefsfail.save.title"),
+                                i18n.getString("abpanel.alert.prefsfail.save.header"),
+                                i18n.getString("abpanel.alert.prefsfail.save.content"),
                                 e));
             }
         });
