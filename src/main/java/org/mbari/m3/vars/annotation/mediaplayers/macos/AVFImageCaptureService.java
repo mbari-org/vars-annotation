@@ -6,12 +6,17 @@ import org.mbari.m3.vars.annotation.model.Framegrab;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.ImageCaptureService;
 import org.mbari.vars.avfoundation.AVFImageCapture;
+import org.mbari.vcr4j.VideoIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.io.File;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * This class prvides and ImageCaptureService facade to the AVFoundation code from the
@@ -35,29 +40,36 @@ public class AVFImageCaptureService implements ImageCaptureService {
     }
 
     public void setDevice(String device) {
-        if (!currentDevice.equals(device)) {
-            dispose();
-            imageCapture.startSession(device);
-        }
         currentDevice = device;
     }
 
     @Override
     public Framegrab capture(File file) {
         Framegrab framegrab = new Framegrab();
-        imageCapture.capture(file)
-                .ifPresent(framegrab::setImage);
+        imageCapture.startSessionWithNamedDevice(currentDevice);
+        Optional<Image> imageOpt = imageCapture.capture(file, Duration.ofSeconds(10));
+        if (imageOpt.isPresent()) {
+            framegrab.setImage(imageOpt.get());
+            // HACK - This only works for real-time annotation.
+            // FIXME - Change this for tape annotation
+            framegrab.setVideoIndex(new VideoIndex(Instant.now()));
+        }
+        else {
+            log.warn("Failed to capture image from device named '" +
+                    currentDevice + "'");
+        }
+        imageCapture.stopSession();
         return framegrab;
     }
 
     @Override
     public void dispose() {
-        try {
-            imageCapture.stopSession();
-        }
-        catch (UnsatisfiedLinkError | Exception e) {
-            log.error("An error occurred while stopping the AVFoundation image capture", e);
-        }
+//        try {
+//            imageCapture.stopSession();
+//        }
+//        catch (UnsatisfiedLinkError | Exception e) {
+//            log.error("An error occurred while stopping the AVFoundation image capture", e);
+//        }
     }
 
 
@@ -71,5 +83,9 @@ public class AVFImageCaptureService implements ImageCaptureService {
             imageCaptureService = new AVFImageCaptureService();
         }
         return imageCaptureService;
+    }
+
+    public AVFImageCapture getImageCapture() {
+        return imageCapture;
     }
 }

@@ -42,6 +42,8 @@ import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
 import org.mbari.m3.vars.annotation.ui.mediadialog.MediaPaneController;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.prefs.PreferencesDialogController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.prefs.Preferences;
@@ -75,7 +77,7 @@ public class AppPaneController {
     private static final String masterPaneKey =  "master-split-pane";
     private static final String topPaneKey = "top-split-pane";
     private static final String bottomPaneKey = "bottom-split-pane";
-
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
 
     public AppPaneController(UIToolBox toolBox) {
@@ -392,7 +394,7 @@ public class AppPaneController {
             utilityPane = new StatusBar();
             utilityPane.setText(null);
 
-            // Listen for progress bar notifications
+            // --- Listen for progress bar notifications
             Observable<Object> observable = toolBox.getEventBus().toObserverable();
             observable.ofType(ShowProgress.class)
                     .subscribe(s -> Platform.runLater(() -> utilityPane.setProgress(0.00001)));
@@ -403,8 +405,10 @@ public class AppPaneController {
             observable.ofType(SetStatusBarMsg.class)
                     .subscribe(s -> Platform.runLater(() -> utilityPane.setText(s.getMsg())));
 
+            // --- Configure group control
             Label groupLabel = new Label(toolBox.getI18nBundle()
                     .getString("apppane.statusbar.label.group"));
+            groupLabel.getStyleClass().add("utility-label");
             ComboBox<String> groupCombobox = new JFXComboBox<>();
             groupCombobox.setEditable(true);
             toolBox.getServices()
@@ -421,13 +425,23 @@ public class AppPaneController {
             groupCombobox.valueProperty().addListener((obs, oldv, newv) ->
                     toolBox.getData().setGroup(newv));
 
-            Pane spacer0 = new Pane();
-            spacer0.setPrefSize(20, 5);
+            // Set default value if defined in config.
+            try {
+                String defaultGroup = toolBox.getConfig()
+                        .getString("app.defaults.group");
+                groupCombobox.getSelectionModel().select(defaultGroup);
+            }
+            catch (Exception e) {
+                log.info("Default group is not defined in configuration files. (app.defaults.group)");
+            }
 
+            // --- Configure activity controls
             Label activityLabel = new Label(toolBox.getI18nBundle()
                     .getString("apppane.statusbar.label.activity"));
+            activityLabel.getStyleClass().add("utility-label");
             ComboBox<String> activityCombobox = new JFXComboBox<>();
             activityCombobox.setEditable(true);
+
             toolBox.getServices()
                     .getAnnotationService()
                     .findActivities()
@@ -442,11 +456,22 @@ public class AppPaneController {
             activityCombobox.valueProperty().addListener((obs, oldv, newv) ->
                     toolBox.getData().setActivity(newv));
 
-            Pane spacer1 = new Pane();
-            spacer1.setPrefSize(20, 5);
+            // Set default value if defined in config.
+            try {
+                String defaultActivity = toolBox.getConfig()
+                        .getString("app.defaults.activity");
+                activityCombobox.getSelectionModel().select(defaultActivity);
+            }
+            catch (Exception e) {
+                log.info("Default activity is not defined in configuration files. (app.defaults.activity)");
+            }
+
+            // --- Configure concurrent controls
+
 
             CheckBox checkBox = new JFXCheckBox(toolBox.getI18nBundle()
                     .getString("apppane.statusbar.label.concurrent"));
+            checkBox.getStyleClass().add("utility-label");
             checkBox.selectedProperty()
                     .addListener((obs, oldv, newv) ->
                             toolBox.getEventBus().send(new ShowConcurrentAnnotationsMsg(newv)));
@@ -454,6 +479,11 @@ public class AppPaneController {
             toolBox.getData()
                     .mediaProperty()
                     .addListener((obs, oldv, newv) -> checkBox.setSelected(false));
+
+            Pane spacer0 = new Pane();
+            spacer0.setPrefSize(20, 5);
+            Pane spacer1 = new Pane();
+            spacer1.setPrefSize(20, 5);
 
             utilityPane.getLeftItems()
                     .addAll(groupLabel,

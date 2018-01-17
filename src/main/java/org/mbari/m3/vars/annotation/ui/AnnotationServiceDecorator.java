@@ -43,8 +43,6 @@ public class AnnotationServiceDecorator {
 
     public void findAnnotations(UUID videoReferenceUuid) {
         AnnotationService service = toolBox.getServices().getAnnotationService();
-        EventBus eventBus = toolBox.getEventBus();
-
         AtomicInteger loadedAnnotationCount = new AtomicInteger(0);
         service.countAnnotations(videoReferenceUuid)
                 .thenAccept(ac ->
@@ -125,8 +123,6 @@ public class AnnotationServiceDecorator {
     }
 
     public void findConcurrentAnnotations(Collection<UUID> videoReferenceUuids) {
-        //videoReferenceUuids.forEach(this::findAnnotations);
-
         AnnotationService service = toolBox.getServices().getAnnotationService();
         EventBus eventBus = toolBox.getEventBus();
         Optional<Media> media = Optional.ofNullable(toolBox.getData().getMedia());

@@ -16,6 +16,8 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.util.FXMLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MediaParamsPaneController {
 
@@ -33,6 +35,8 @@ public class MediaParamsPaneController {
 
     @FXML
     private JFXTextField sequenceNumberTextField;
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @FXML
     void initialize() {
@@ -61,6 +65,7 @@ public class MediaParamsPaneController {
                         sequenceNumberTextField.setText(null);
                         final ObservableList<String> items = FXCollections.observableArrayList(cameraIds);
                         cameraIdComboBox.setItems(items);
+                        updateUiWithDefaults();
                     });
                 });
     }
@@ -79,5 +84,18 @@ public class MediaParamsPaneController {
 
     public static MediaParamsPaneController newInstance() {
         return FXMLUtils.newInstance(MediaParamsPaneController.class, "/fxml/MediaParamsPane.fxml");
+    }
+
+    private void updateUiWithDefaults() {
+        try {
+            String cameraid = Initializer.getToolBox()
+                    .getConfig()
+                    .getString("app.defaults.cameraid");
+            cameraIdComboBox.getSelectionModel().select(cameraid);
+        }
+        catch (Exception e) {
+            log.info("No default cameraId was found in the configuration file." +
+                    " (app.defaults.cameraid");
+        }
     }
 }

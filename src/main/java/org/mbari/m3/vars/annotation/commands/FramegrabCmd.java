@@ -14,6 +14,8 @@ import org.mbari.m3.vars.annotation.services.ImageCaptureService;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -37,6 +39,7 @@ public class FramegrabCmd implements Command {
 
     private volatile Annotation annotationRef;
     private volatile Image imageRef;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public void apply(UIToolBox toolBox) {
@@ -70,15 +73,28 @@ public class FramegrabCmd implements Command {
         File imageFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".png");
         Optional<Framegrab> framegrabOpt = capture(imageFile, media, mediaPlayer);
         if (!framegrabOpt.isPresent()) {
-            // TODO handle error. Show warning
+            toolBox.getEventBus()
+                    .send(new ShowWarningAlert(
+                            i18n.getString("commands.framecapture.title"),
+                            i18n.getString("commands.framecapture.header"),
+                            i18n.getString("commands.framecapture.nomedia.content") +
+                                    " " + imageFile.getAbsolutePath()
+                    ));
             return;
         }
+        log.debug("Captured framegrab locally to {}", imageFile.getAbsolutePath());
 
         URL url;
         try {
             url = imageFile.toURI().toURL();
         } catch (MalformedURLException e) {
-            // TODO handle error. Show warning
+            toolBox.getEventBus()
+                    .send(new ShowWarningAlert(
+                            i18n.getString("commands.framecapture.title"),
+                            i18n.getString("commands.framecapture.header"),
+                            i18n.getString("commands.framecapture.badurl.content") +
+                                    " " + imageFile.getAbsolutePath()
+                    ));
             return;
         }
 
@@ -91,6 +107,7 @@ public class FramegrabCmd implements Command {
                 createAnnotationInDatastore(toolBox, image)
                         .thenApply(a1 -> {
                             // notify UI
+                            log.debug("Created annotation for framegrab: {}" + a1);
                             eventBus.send(new AnnotationsAddedEvent(a1));
                             eventBus.send(new AnnotationsSelectedEvent(a1));
                             return a1;
@@ -99,20 +116,24 @@ public class FramegrabCmd implements Command {
                             // upload image
                             archiveImage(toolBox, media, image, imageFile.toPath()).handle((iur, ex) -> {
                                 if (ex != null) {
+                                    log.debug("Failed to archive framegrab with image service", ex);
                                     annotationService.deleteImage(image.getImageReferenceUuid());
                                     asd.refreshAnnotationsView(a1.getObservationUuid());
                                     imageFile.delete();
                                 } else {
+                                    log.debug("Uploaded framegrab to {}", iur.getUri());
                                     // update URL used by images in annotations
                                     updateAnnotationWithArchivedImage(toolBox, image, iur)
                                             .handle((annos, ex1) -> {
                                                 if (ex1 != null) {
+                                                    log.debug("Failed to update annotation with remote framegrab URI", ex1);
                                                     annotationService.deleteImage(image.getImageReferenceUuid());
                                                     asd.refreshAnnotationsView(a1.getObservationUuid());
                                                     imageFile.delete();
                                                 }
                                                 else {
                                                     // Notify UI
+                                                    log.debug("Updated annotation with remote framegrab URI");
                                                     Set<UUID> uuids = toolBox.getData()
                                                             .getSelectedAnnotations()
                                                             .stream()
@@ -124,6 +145,7 @@ public class FramegrabCmd implements Command {
                                             })
                                             .thenAccept(v -> imageFile.delete())
                                             .thenAccept(v -> {
+                                                log.debug("Compressing framegrab");
                                                 ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
                                                 decorator.compressFramegrab(media, framegrab, iur);
                                             });
@@ -151,7 +173,7 @@ public class FramegrabCmd implements Command {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Framegrab";
     }
 
 

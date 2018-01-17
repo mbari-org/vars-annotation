@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -246,10 +248,14 @@ public class ImageArchiveServiceDecorator {
     public static File buildLocalImageFile(Media media, String ext) {
         try {
             String deploymentKey = media.getVideoName() + "-" + media.getVideoReferenceUuid();
-            return File.createTempFile(deploymentKey + "-", ext,
-                    Initializer.getImageDirectory().toFile());
+            String filename = deploymentKey + "-" + Instant.now() + ext;
+            Path path = Paths.get(Initializer.getImageDirectory().toString(),
+                filename);
+            return path.toFile();
+//            return File.createTempFile(deploymentKey + "-", ext,
+//                    Initializer.getImageDirectory().toFile());
         }
-        catch (IOException e) {
+        catch (Exception e) {
             throw new RuntimeException("Failed to build a local image temp file", e);
         }
     }
