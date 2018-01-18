@@ -33,7 +33,7 @@ public class Initializer {
     private static Config config;
 
     /**
-     * First looks for the file `~/.vars/application.conf` and, if found,
+     * First looks for the file `~/.vars/vars-annotation.conf` and, if found,
      * loads that file. Otherwise used the usual `reference.conf`/`application.conf`
      * combination for typesafe's config library.
      * @return
@@ -41,7 +41,7 @@ public class Initializer {
     public static Config getConfig() {
         if (config == null) {
             final Path p0 = getSettingsDirectory();
-            final Path path = p0.resolve("application.conf");
+            final Path path = p0.resolve("vars-annotation.conf");
             if (Files.exists(path)) {
                 config = ConfigFactory.parseFile(path.toFile());
             }
