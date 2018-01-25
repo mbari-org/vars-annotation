@@ -36,7 +36,7 @@ public class MBARIInjectorModule implements Module {
     private final Executor defaultExecutor = new ForkJoinPool();
 
     public MBARIInjectorModule() {
-        this.config = ConfigFactory.load();
+        this.config = Initializer.getConfig();
     }
 
     @Override
