@@ -34,7 +34,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
     private Pane getControlPane() {
         if (controlPane == null) {
-            controlPane = new ShipControlPane();
+            controlPane = new ShipControlPane(toolBox.getI18nBundle());
         }
         return controlPane;
     }
