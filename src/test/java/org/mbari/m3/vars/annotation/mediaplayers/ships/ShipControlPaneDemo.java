@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.Initializer;
+import org.mbari.m3.vars.annotation.UIToolBox;
 
 /**
  * @author Brian Schlining
@@ -17,9 +18,10 @@ public class ShipControlPaneDemo extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        ShipControlPane pane = new ShipControlPane();
+        UIToolBox toolBox = Initializer.getToolBox();
+        ShipControlPane pane = new ShipControlPane(toolBox.getI18nBundle());
         Scene scene = new Scene(pane);
-        scene.getStylesheets().addAll(Initializer.getToolBox().getStylesheets());
+        scene.getStylesheets().addAll(toolBox.getStylesheets());
         primaryStage.setScene(scene);
 
         primaryStage.show();

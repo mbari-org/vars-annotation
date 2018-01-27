@@ -253,6 +253,7 @@ public class AppController {
         AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
         decorator.findAnnotations(newMedia.getVideoReferenceUuid());
 
+
     }
 
     private void showConcurrentMedia(Boolean show) {
