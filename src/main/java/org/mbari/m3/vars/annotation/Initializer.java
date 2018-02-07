@@ -40,13 +40,15 @@ public class Initializer {
      */
     public static Config getConfig() {
         if (config == null) {
+            Config defaultConfig =  ConfigFactory.load();
             final Path p0 = getSettingsDirectory();
             final Path path = p0.resolve("vars-annotation.conf");
             if (Files.exists(path)) {
-                config = ConfigFactory.parseFile(path.toFile());
+                config = ConfigFactory.parseFile(path.toFile())
+                        .withFallback(defaultConfig);
             }
             else {
-                config = ConfigFactory.load();
+                config = defaultConfig;
             }
         }
         return config;
