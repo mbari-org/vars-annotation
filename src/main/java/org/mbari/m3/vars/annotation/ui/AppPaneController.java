@@ -42,6 +42,7 @@ import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
 import org.mbari.m3.vars.annotation.ui.mediadialog.MediaPaneController;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.prefs.PreferencesDialogController;
+import org.mbari.m3.vars.annotation.ui.userdialog.CreateUserDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -257,6 +258,15 @@ public class AppPaneController {
             prefsButton.setOnAction(e -> preferencesDialogController.show());
             prefsButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.prefs")));
 
+            Text usersIcon = gf.createIcon(MaterialIcon.PERSON_ADD, "30px");
+            Button createUserButton = new JFXButton();
+            createUserButton.setGraphic(usersIcon);
+            createUserButton.setOnAction(e -> {
+                CreateUserDialog dialog = new CreateUserDialog(toolBox);
+                Optional<User> user = dialog.showAndWait();
+            });
+
+
             Label videoLabel = new Label(toolBox.getI18nBundle().getString("apppane.label.media"));
             Label mediaLabel = new Label();
             toolBox.getEventBus()
@@ -287,6 +297,7 @@ public class AppPaneController {
                     redoButton,
                     refreshButton,
                     prefsButton,
+                    createUserButton,
                     new Label(bundle.getString("apppane.label.user")),
                     getUsersComboBox(),
                     videoLabel,
