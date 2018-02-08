@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBConceptService;
@@ -34,6 +35,7 @@ public class SearchableTreePaneDemo extends Application {
         SearchTreePaneController controller = new SearchTreePaneController(conceptService, uiBundle);
         BorderPane node = controller.getRoot();
         Scene scene = new Scene(node, 800, 800);
+        scene.getStylesheets().addAll(Initializer.getToolBox().getStylesheets());
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {
