@@ -87,14 +87,14 @@ public class TreeViewController {
             treeView.setEditable(false);
             treeView.setCellFactory(tv -> cellFactory.build());
             treeView.setContextMenu(getContextMenu());
+            log.debug("Building fucking tree");
             conceptService.findRoot()
-                    .thenApply(root -> {
+                    .thenAccept(root -> {
                         Platform.runLater(() -> {
-                            log.debug("Using root '" + root.getName() + "' tpo build tree");
+                            log.debug("Using root '" + root.getName() + "' to build tree");
                             TreeItem<Concept> rootItem = buildTreeItem(root, null);
                             treeView.setRoot(rootItem);
                         });
-                        return null;
                     });
         }
         return treeView;
