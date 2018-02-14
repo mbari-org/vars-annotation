@@ -88,15 +88,16 @@ public class MBARIInjectorModule implements Module {
         KBWebServiceFactory factory = new KBWebServiceFactory(endpoint, timeout, defaultExecutor);
         KBConceptService service = new KBConceptService(factory);
         // --- Using a local cache
+        CachedConceptService2 cachedService = new CachedConceptService2(service);
         //CachedConceptService cachedService = new CachedConceptService(service);
-        List<String> cachedConceptTemplates = config.getStringList("app.annotation.details.cache");
+        //List<String> cachedConceptTemplates = config.getStringList("app.annotation.details.cache");
         //cachedService.prefetch(cachedConceptTemplates);
         binder.bind(String.class)
                 .annotatedWith(Names.named("CONCEPT_ENDPOINT"))
                 .toInstance(endpoint);
         binder.bind(KBWebServiceFactory.class).toInstance(factory);
-        //binder.bind(ConceptService.class).toInstance(cachedService);
-        binder.bind(ConceptService.class).toInstance(service);
+        binder.bind(ConceptService.class).toInstance(cachedService);
+        //binder.bind(ConceptService.class).toInstance(service);
     }
 
     private void configurePrefsServices(Binder binder) {
