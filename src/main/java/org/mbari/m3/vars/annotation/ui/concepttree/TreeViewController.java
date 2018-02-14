@@ -11,6 +11,8 @@ import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.model.ConceptMedia;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.shared.ImageStage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Brian Schlining
@@ -22,6 +24,7 @@ public class TreeViewController {
     private ContextMenu contextMenu;
     private ImageStage imageStage;
     private TreeView<Concept> treeView;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public TreeViewController(ConceptService conceptService) {
         this.conceptService = conceptService;
@@ -29,6 +32,7 @@ public class TreeViewController {
 
     private FilterableTreeItem<Concept> buildTreeItem(Concept concept, FilterableTreeItem<Concept> parent) {
         FilterableTreeItem<Concept> item = new FilterableTreeItem<>(concept);
+        System.out.println(concept);
         if (parent != null) {
             parent.getInternalChildren().add(item);
         }
@@ -83,13 +87,14 @@ public class TreeViewController {
             treeView.setEditable(false);
             treeView.setCellFactory(tv -> cellFactory.build());
             treeView.setContextMenu(getContextMenu());
+            log.debug("Building fucking tree");
             conceptService.findRoot()
-                    .thenApply(root -> {
+                    .thenAccept(root -> {
                         Platform.runLater(() -> {
+                            log.debug("Using root '" + root.getName() + "' to build tree");
                             TreeItem<Concept> rootItem = buildTreeItem(root, null);
                             treeView.setRoot(rootItem);
                         });
-                        return null;
                     });
         }
         return treeView;

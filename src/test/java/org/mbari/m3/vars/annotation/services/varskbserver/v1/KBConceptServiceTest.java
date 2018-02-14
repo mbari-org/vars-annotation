@@ -23,9 +23,16 @@ public class KBConceptServiceTest {
     KBConceptService conceptService = Initializer.getInjector().getInstance(KBConceptService.class);
 
     @Test
+    public void findRoot() throws InterruptedException, ExecutionException, TimeoutException {
+        CompletableFuture<Concept> f = conceptService.findRoot();
+        Concept root = f.get(10000, TimeUnit.MILLISECONDS);
+        assertNotNull(root);
+    }
+
+    @Test
     public void testFindAllNames() throws InterruptedException, ExecutionException, TimeoutException {
         CompletableFuture<List<String>> f = conceptService.findAllNames();
-        List<String> allNames = f.get(10000, TimeUnit.MILLISECONDS);
+        List<String> allNames = f.get(20000, TimeUnit.MILLISECONDS);
         assertNotNull(allNames);
     }
 
