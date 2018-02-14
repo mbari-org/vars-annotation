@@ -32,7 +32,6 @@ public class TreeViewController {
 
     private FilterableTreeItem<Concept> buildTreeItem(Concept concept, FilterableTreeItem<Concept> parent) {
         FilterableTreeItem<Concept> item = new FilterableTreeItem<>(concept);
-        System.out.println(concept);
         if (parent != null) {
             parent.getInternalChildren().add(item);
         }
@@ -87,7 +86,6 @@ public class TreeViewController {
             treeView.setEditable(false);
             treeView.setCellFactory(tv -> cellFactory.build());
             treeView.setContextMenu(getContextMenu());
-            log.debug("Building fucking tree");
             conceptService.findRoot()
                     .thenAccept(root -> {
                         Platform.runLater(() -> {
