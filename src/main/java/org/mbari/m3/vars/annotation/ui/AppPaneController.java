@@ -364,10 +364,12 @@ public class AppPaneController {
             eventBus.toObserverable()
                     .ofType(UserAddedEvent.class)
                     .subscribe(event -> {
-                        User user = event.get();
-                        usersComboBox.getItems().add(user.getUsername());
-                        FXCollections.sort(usersComboBox.getItems(), sorter);
-                        usersComboBox.getSelectionModel().select(user.getUsername());
+                        Platform.runLater(() -> {
+                            User user = event.get();
+                            usersComboBox.getItems().add(user.getUsername());
+                            FXCollections.sort(usersComboBox.getItems(), sorter);
+                            usersComboBox.getSelectionModel().select(user.getUsername());
+                        });
                     });
 
             // When a username is selected send a change event
