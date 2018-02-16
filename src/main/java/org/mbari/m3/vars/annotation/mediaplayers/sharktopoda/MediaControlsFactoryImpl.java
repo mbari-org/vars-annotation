@@ -11,6 +11,7 @@ import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIO;
 import org.mbari.vcr4j.VideoState;
+import org.mbari.vcr4j.decorators.LoggingDecorator;
 import org.mbari.vcr4j.decorators.SchedulerVideoIO;
 import org.mbari.vcr4j.decorators.StatusDecorator;
 import org.mbari.vcr4j.decorators.VideoSyncDecorator;
@@ -82,11 +83,16 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                 videoIO.send(new OpenCmd(media.getUri().toURL()));
                 VideoIO<SharktopodaState, SharktopodaError> io =
                         new SchedulerVideoIO<>(videoIO, Executors.newCachedThreadPool());
-                new StatusDecorator<>(io);
-                new VideoSyncDecorator<>(io);
+                StatusDecorator<SharktopodaState, SharktopodaError> statusDecorator = new StatusDecorator<>(io);
+                VideoSyncDecorator<SharktopodaState, SharktopodaError> syncDecorator = new VideoSyncDecorator<>(io);
                 MediaPlayer<SharktopodaState, SharktopodaError> newVc =
                         new MediaPlayer<>(media, new ImageCaptureServiceImpl(videoIO, framecapturePort),
-                                io, () -> videoIO.send(SharkCommands.CLOSE));
+                                io,
+                                () -> {
+                                    io.send(SharkCommands.CLOSE);
+                                    statusDecorator.unsubscribe();
+                                    syncDecorator.unsubscribe();
+                                 });
                 cf.complete(newVc);
                 io.send(SharkCommands.SHOW);
             } catch (Exception e) {
