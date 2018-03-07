@@ -2,6 +2,7 @@ package org.mbari.m3.vars.annotation.services;
 
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.model.ConceptAssociationTemplate;
 import org.mbari.m3.vars.annotation.model.ConceptDetails;
@@ -14,10 +15,9 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Brian Schlining
- * @since 2018-02-14T14:45:00
- * @deprecated
+ * @since 2018-03-06T15:13:00
  */
-public class CachedConceptService2 implements ConceptService {
+public class CachedConceptService3 implements ConceptService {
 
     private final ConceptService conceptService;
     private volatile String rootName;
@@ -26,8 +26,7 @@ public class CachedConceptService2 implements ConceptService {
     private final AsyncLoadingCache<String, Optional<Concept>> conceptCache;
     private final AsyncLoadingCache<String, List<ConceptAssociationTemplate>> templateCache;
 
-
-    public CachedConceptService2(ConceptService conceptService) {
+    public CachedConceptService3(ConceptService conceptService) {
         this.conceptService = conceptService;
         conceptCache = Caffeine.newBuilder()
                 .expireAfterWrite(120, TimeUnit.MINUTES)
@@ -68,6 +67,7 @@ public class CachedConceptService2 implements ConceptService {
                     .thenApply(c -> {
                         rootName = c.getName();
                         conceptCache.put(rootName, loadConceptDetails(c));
+                        cacheChildren(c);
                         return c;
                     });
         }
@@ -77,10 +77,44 @@ public class CachedConceptService2 implements ConceptService {
         }
     }
 
+    private void cacheChildren(Concept concept) {
+        concept.getChildren()
+                .forEach(child -> {
+                    Optional<Concept> opt = Optional.of(child);
+                    LoadingCache<String, Optional<Concept>> syncCache = conceptCache.synchronous();
+                    syncCache.put(child.getName(), opt);
+                    child.getAlternativeNames()
+                            .forEach(alternateName -> syncCache.put(alternateName, opt));
+                    cacheChildren(child);
+                });
+    }
+
     @Override
     public CompletableFuture<Optional<ConceptDetails>> findDetails(String name) {
-        return conceptCache.get(name)
-                .thenApply(opt -> opt.map(Concept::getConceptDetails));
+        CompletableFuture<Optional<ConceptDetails>> f = new CompletableFuture<>();
+        conceptCache.get(name)
+                .thenAccept(opt -> {
+                    if (opt.isPresent()) {
+                        Concept concept = opt.get();
+                        if (concept.getConceptDetails() == null) {
+                            loadConceptDetails(concept)
+                                    .thenAccept(opt2 -> {
+                                        if (opt2.isPresent()) {
+                                            f.complete(Optional.ofNullable(opt2.get().getConceptDetails()));
+                                        }
+                                        else {
+                                            f.complete(Optional.empty());
+                                        }
+                                    });
+                        } else {
+                            f.complete(Optional.of(concept.getConceptDetails()));
+                        }
+                    }
+                    else {
+                        f.complete(Optional.empty());
+                    }
+                });
+        return f;
     }
 
     @Override

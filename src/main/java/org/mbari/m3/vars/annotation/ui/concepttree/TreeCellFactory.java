@@ -77,15 +77,6 @@ class TreeCellFactory {
             String s = ans.isEmpty() ? item.getName() :
                     item.getName() + " (" + names + ")";
 
-//            if (item.getConceptDetails() != null) {
-//                ConceptDetails cd = item.getConceptDetails();
-//                List<String> ans = cd.getAlternateNames();
-//                String names = cd.getAlternateNames()
-//                        .stream()
-//                        .collect(Collectors.joining(", "));
-//                s = (ans == null || ans.isEmpty()) ? item.getName() :
-//                        item.getName() + " (" + names + ")";
-//            }
             return s;
         }
 

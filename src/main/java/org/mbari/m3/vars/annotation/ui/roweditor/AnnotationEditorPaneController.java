@@ -155,11 +155,11 @@ public class AnnotationEditorPaneController {
 
                     toolBox.getServices()
                             .getConceptService()
-                            .findDetails(item)
-                            .thenAccept(opt -> {
-                                opt.ifPresent(conceptDetails -> {
+                            .findConcept(item)
+                            .thenAccept(opt -> opt.ifPresent(concept -> {
+                                String primaryName = concept.getName();
+                                //if (!primaryName.equals(item)) {
                                     // Change to the primary name. Fire off updated event
-                                    String primaryName = conceptDetails.getName();
                                     Annotation oldA = this.annotation.get();
                                     Annotation newA = new Annotation(oldA);
                                     newA.setConcept(primaryName);
@@ -167,8 +167,8 @@ public class AnnotationEditorPaneController {
                                         conceptComboBox.getSelectionModel().select(primaryName);
                                         eventBus.send(new UpdateAnnotationCmd(oldA, newA));
                                     });
-                                });
-                            });
+                                //}
+                            }));
                 }
             }
         });

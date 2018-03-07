@@ -4,13 +4,11 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.mbari.m3.vars.annotation.model.Authorization;
 import org.mbari.m3.vars.annotation.services.*;
 import org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoService;
 import org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoWebServiceFactory;
 import org.mbari.m3.vars.annotation.services.panoptes.v1.PanoptesService;
-import org.mbari.m3.vars.annotation.services.panoptes.v1.PanoptesWebService;
 import org.mbari.m3.vars.annotation.services.panoptes.v1.PanoptesWebServiceFactory;
 import org.mbari.m3.vars.annotation.services.vampiresquid.v1.VamService;
 import org.mbari.m3.vars.annotation.services.vampiresquid.v1.VamWebServiceFactory;
@@ -21,9 +19,7 @@ import org.mbari.m3.vars.annotation.util.PreferencesFactory;
 import org.mbari.m3.vars.annotation.util.WebPreferencesFactory;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 
 /**
@@ -88,7 +84,7 @@ public class MBARIInjectorModule implements Module {
         KBWebServiceFactory factory = new KBWebServiceFactory(endpoint, timeout, defaultExecutor);
         KBConceptService service = new KBConceptService(factory);
         // --- Using a local cache
-        CachedConceptService2 cachedService = new CachedConceptService2(service);
+        CachedConceptService3 cachedService = new CachedConceptService3(service);
         //CachedConceptService cachedService = new CachedConceptService(service);
         //List<String> cachedConceptTemplates = config.getStringList("app.annotation.details.cache");
         //cachedService.prefetch(cachedConceptTemplates);
