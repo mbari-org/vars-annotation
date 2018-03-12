@@ -320,18 +320,18 @@ public class AppPaneController {
                 media.ifPresent(m -> toolBox.getEventBus().send(new MediaChangedEvent(null, m)));
             });
 
-            Text localIcon = gf.createIcon(MaterialIcon.QUEUE, "30px");
+            Text localIcon = gf.createIcon(MaterialIcon.FOLDER, "30px");
             Button localButton = new JFXButton(null, localIcon);
             localButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.local")));
             FileBrowsingDecorator decorator = new FileBrowsingDecorator(toolBox);
             localButton.setOnAction(e ->
                 decorator.apply(AppPaneController.this.getRoot().getScene().getWindow()));
 
-            Text tapeIcon = gf.createIcon(MaterialIcon.PERM_MEDIA, "30px");
+            Text tapeIcon = gf.createIcon(MaterialIcon.LIVE_TV, "30px");
             Button tapeButton = new JFXButton(null, tapeIcon);
             tapeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.tape")));
 
-            Text realtimeIcon = gf.createIcon(MaterialIcon.TIMER, "30px");
+            Text realtimeIcon = gf.createIcon(MaterialIcon.DIRECTIONS_BOAT, "30px");
             Button realtimeButton = new JFXButton(null, realtimeIcon);
             realtimeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.realtime")));
             realtimeButton.setOnAction(e -> {
