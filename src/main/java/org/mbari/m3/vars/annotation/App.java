@@ -103,6 +103,15 @@ public class App extends Application {
         double width = prefs.getDouble(WIDTH_KEY, 1000D);
         double height = prefs.getDouble(HEIGHT_KEY, 800D);
 
+        // ON rare occasions the user sets one of these to 0 and are never
+        // able to see the annotation window again. Make sure this doesn't happen.
+        if (width < 200) {
+            width = 200;
+        }
+        if (height < 200) {
+            height = 200;
+        }
+
         primaryStage.setScene(appController.getScene());
         primaryStage.setWidth(width);
         primaryStage.setHeight(height);
