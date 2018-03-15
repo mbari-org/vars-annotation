@@ -271,6 +271,9 @@ public class ImageArchiveServiceDecorator {
         Optional<Duration> elapsedTime = videoIndex.getElapsedTime();
         Optional<Instant> timestamp = videoIndex.getTimestamp();
         String idx;
+        if (timestamp.isPresent()) {
+            idx = timeFormat.format(timestamp.get());
+        }
         if (timecode.isPresent()) {
             idx = timecode.get().toString().replace(':', '_');
         }
@@ -278,9 +281,7 @@ public class ImageArchiveServiceDecorator {
             idx = elapsedTime.get().toMillis() + "";
         }
         else {
-            Instant t = timestamp.orElse(Instant.now());
-            idx = timeFormat.format(t);
-
+            idx = timeFormat.format(Instant.now());
         }
         return idx + "-" + videoReferenceUuid + ext;
     }
