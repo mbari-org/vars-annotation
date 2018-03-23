@@ -4,6 +4,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
+import org.mbari.m3.vars.annotation.messages.ShowInfoAlert;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.util.FormatUtils;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 /**
  * @author Brian Schlining
@@ -38,7 +40,7 @@ public class FileBrowsingDecorator {
             try {
                 bytes = readSha512(file);
             } catch (IOException e) {
-                log.warn("Failed to lookup file by sha512 sidecar file", e);
+                log.info("Unable to locate sha512 sidecar file for {}", file.getAbsolutePath());
             }
             if (bytes.isPresent()) {
                 fetchBySha51(bytes.get(), file);
@@ -72,10 +74,26 @@ public class FileBrowsingDecorator {
                 .findByFilename(file.getName())
                 .thenAccept(media -> {
                     if (media.isEmpty()) {
-                        // TODO Show not found dialog
+                        // Show not found dialog
+                        log.warn("Did not find any media in the video asset manager with the name {}", file.getName());
+                        ResourceBundle i18n = toolBox.getI18nBundle();
+                        String title = i18n.getString("filebrowsing.open.missing.title");
+                        String header = i18n.getString("filebrowsing.open.missing.header");
+                        String content=i18n.getString("filebrowsing.open.missing.content");
+                        toolBox.getEventBus()
+                                .send(new ShowInfoAlert(title, header, content));
                     }
                     else if (media.size() > 1) {
-                        // TODO Show to many matches found dialog
+                        // Show to many matches found dialog
+                        log.warn("More than one media exists in the video asset manager with the name {}", file.getName());
+                        ResourceBundle i18n = toolBox.getI18nBundle();
+                        String title = i18n.getString("filebrowsing.open.toomany.title");
+                        String header = i18n.getString("filebrowsing.open.toomany.header");
+                        String content1=i18n.getString("filebrowsing.open.toomany.content1");
+                        String content2=i18n.getString("filebrowsing.open.toomany.content2");
+                        String content = content1 + " " + file.getName() + " " + content2;
+                        toolBox.getEventBus()
+                                .send(new ShowInfoAlert(title, header, content));
                     }
                     else {
                         // 1 media, open it.

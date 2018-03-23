@@ -1,9 +1,7 @@
 package org.mbari.m3.vars.annotation.events;
 
-import com.google.common.collect.ImmutableList;
 import org.mbari.m3.vars.annotation.model.Annotation;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -13,7 +11,7 @@ import java.util.*;
 public class AnnotationsSelectedEvent extends UISelectionEvent<Collection<Annotation>> {
 
     public AnnotationsSelectedEvent(Object selectionSource, Collection<Annotation> annotations) {
-        super(selectionSource, ImmutableList.copyOf(annotations));
+        super(selectionSource, Collections.unmodifiableCollection(annotations));
     }
 
     public AnnotationsSelectedEvent(Collection<Annotation> annotations) {
@@ -21,6 +19,6 @@ public class AnnotationsSelectedEvent extends UISelectionEvent<Collection<Annota
     }
 
     public AnnotationsSelectedEvent(Annotation annotation) {
-        this(null, Arrays.asList(annotation));
+        this(null, Collections.singletonList(annotation));
     }
 }
