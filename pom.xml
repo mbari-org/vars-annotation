@@ -81,6 +81,11 @@
       <version>4.0.2-SNAPSHOT</version>
     </dependency>
     <dependency>
+      <groupId>org.mbari.vcr4j</groupId>
+      <artifactId>vcr4j-rxtx</artifactId>
+      <version>4.0.2-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>com.squareup.retrofit2</groupId>
       <artifactId>retrofit</artifactId>
       <version>2.4.0</version>
