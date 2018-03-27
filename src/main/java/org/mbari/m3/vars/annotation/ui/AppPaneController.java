@@ -28,7 +28,9 @@ import org.mbari.m3.vars.annotation.events.UserAddedEvent;
 import org.mbari.m3.vars.annotation.events.UserChangedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.ships.MediaParams;
 import org.mbari.m3.vars.annotation.mediaplayers.ships.OpenRealTimeDialog;
-import org.mbari.m3.vars.annotation.mediaplayers.ships.RealTimeService;
+import org.mbari.m3.vars.annotation.mediaplayers.ships.OpenRealTimeService;
+import org.mbari.m3.vars.annotation.mediaplayers.vcr.OpenTapeDialog;
+import org.mbari.m3.vars.annotation.mediaplayers.vcr.OpenTapeService;
 import org.mbari.m3.vars.annotation.messages.*;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
@@ -71,6 +73,7 @@ public class AppPaneController {
     private final PreferencesDialogController preferencesDialogController;
     private final SelectMediaDialog selectMediaDialog;
     private final OpenRealTimeDialog realTimeDialog;
+    private final OpenTapeDialog tapeDialog;
     private ControlsPaneController controlsPaneController;
     private MediaPaneController mediaPaneController;
     private BulkEditorPaneController bulkEditorPaneController;
@@ -90,6 +93,9 @@ public class AppPaneController {
 
         realTimeDialog = new OpenRealTimeDialog(toolBox.getI18nBundle());
         realTimeDialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+
+        tapeDialog = new OpenTapeDialog(toolBox.getI18nBundle());
+        tapeDialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
 
         annotationTableController = new AnnotationTableController(toolBox);
         preferencesDialogController = new PreferencesDialogController(toolBox);
@@ -330,6 +336,14 @@ public class AppPaneController {
             Text tapeIcon = gf.createIcon(MaterialIcon.LIVE_TV, "30px");
             Button tapeButton = new JFXButton(null, tapeIcon);
             tapeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.tape")));
+            tapeButton.setOnAction(e -> {
+                tapeDialog.refresh();
+                Optional<org.mbari.m3.vars.annotation.mediaplayers.vcr.MediaParams> opt = tapeDialog.showAndWait();
+                opt.ifPresent(mediaParams -> {
+                    OpenTapeService ots = new OpenTapeService(toolBox);
+                    ots.open(mediaParams);
+                });
+            });
 
             Text realtimeIcon = gf.createIcon(MaterialIcon.DIRECTIONS_BOAT, "30px");
             Button realtimeButton = new JFXButton(null, realtimeIcon);
@@ -338,7 +352,7 @@ public class AppPaneController {
                 realTimeDialog.refresh();
                 Optional<MediaParams> opt = realTimeDialog.showAndWait();
                 opt.ifPresent(mediaParams -> {
-                    RealTimeService rts = new RealTimeService(toolBox);
+                    OpenRealTimeService rts = new OpenRealTimeService(toolBox);
                     rts.open(mediaParams);
                 });
 

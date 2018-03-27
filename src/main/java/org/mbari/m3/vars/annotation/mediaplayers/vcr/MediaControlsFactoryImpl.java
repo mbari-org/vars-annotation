@@ -4,6 +4,8 @@ import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.mediaplayers.*;
 import org.mbari.m3.vars.annotation.mediaplayers.macos.MacImageCaptureServiceRef;
+import org.mbari.m3.vars.annotation.messages.ShowInfoAlert;
+import org.mbari.m3.vars.annotation.messages.ShowNonfatalErrorAlert;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.ImageCaptureService;
@@ -12,20 +14,16 @@ import org.mbari.util.SystemUtilities;
 import org.mbari.vcr4j.*;
 import org.mbari.vcr4j.decorators.StatusDecorator;
 import org.mbari.vcr4j.decorators.VCRSyncDecorator;
+import org.mbari.vcr4j.jserialcomm.SerialCommVideoIO;
 import org.mbari.vcr4j.rs422.RS422Error;
 import org.mbari.vcr4j.rs422.RS422State;
 import org.mbari.vcr4j.rs422.commands.RS422VideoCommands;
 import org.mbari.vcr4j.rs422.decorators.UserbitsAsTimeDecorator;
-import org.mbari.vcr4j.rxtx.RXTX;
-import org.mbari.vcr4j.rxtx.RXTXVideoIO;
 import org.mbari.vcr4j.ui.javafx.VcrControlPaneController;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
@@ -45,7 +43,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
 
     public MediaControlsFactoryImpl() {
-        RXTX.setup();
+
     }
 
     @Override
@@ -70,20 +68,6 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
         });
     }
 
-    public void open(MediaParams mediaParams, UIToolBox toolBox) {
-        MediaService mediaService = toolBox.getServices().getMediaService();
-        mediaService.findByUri(mediaParams.getUri())
-                .thenAccept(media -> {
-                    if (media == null) {
-                        mediaService.create(mediaParams.getVideoSequenceName(),
-                                mediaParams.getCameraId(),
-                                mediaParams.getVideoName(),
-                                mediaParams.getUri(),
-                                null);
-                    }
-                });
-    }
-
     private CompletableFuture<MediaPlayer<RS422State, RS422Error>> openMediaPlayer(Media media) {
         CompletableFuture<MediaPlayer<RS422State, RS422Error>> cf =
                 new CompletableFuture<>();
@@ -97,7 +81,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
             String serialPort = prefs.get(PREF_SERIALPORT_KEY, "");
             if (serialPort != null && !serialPort.isEmpty()) {
-                RXTXVideoIO io = RXTXVideoIO.open(serialPort);
+                SerialCommVideoIO io = SerialCommVideoIO.open(serialPort);
                 VCRSyncDecorator<RS422State, RS422Error> syncDecorator = new VCRSyncDecorator<>(io);
                 StatusDecorator<RS422State, RS422Error> statusDecorator = new StatusDecorator<>(io);
                 UserbitsAsTimeDecorator timeDecorator = new UserbitsAsTimeDecorator(io);
@@ -133,12 +117,65 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                 cf.complete(mediaPlayer);
             } else {
                 // TODO send alert to pop up dialog
+                ResourceBundle i18n = Initializer.getToolBox().getI18nBundle();
+                String title = i18n.getString("mediaplayer.vcr.open.missing.title");
+                String header = i18n.getString("mediaplayer.vcr.open.missing.header");
+                String content = i18n.getString("mediaplayer.vcr.open.missing.content");
+                ShowInfoAlert alert = new ShowInfoAlert(title, header, content);
+                Initializer.getToolBox()
+                        .getEventBus()
+                        .send(alert);
             }
         };
-        Thread thread = new Thread(runnable);
+        Thread thread = new Thread(runnable,
+                getClass().getSimpleName() + "-" + Instant.now());
         thread.setDaemon(true);
+        thread.setUncaughtExceptionHandler((th, ex) -> {
+            ResourceBundle i18n = Initializer.getToolBox().getI18nBundle();
+            String title = i18n.getString("mediaplayer.vcr.open.error.title");
+            String header = i18n.getString("mediaplayer.vcr.open.error.header");
+            String content = i18n.getString("mediaplayer.vcr.open.error.content") + " " +
+                     MediaControlsFactoryImpl.getSelectedSerialPort().orElse("<undefined>");
+            ShowNonfatalErrorAlert alert = new ShowNonfatalErrorAlert(title, header, content, new RuntimeException(ex));
+            Initializer.getToolBox()
+                    .getEventBus()
+                    .send(alert);
+        });
         thread.start();
 
         return cf;
+    }
+
+    /**
+     *
+     * @return All serial ports
+     */
+    public static List<String> getSerialPorts() {
+        return SerialCommVideoIO.getSerialPorts();
+    }
+
+    /**
+     * Retrieves the serialPort value from local preferences
+     * @return The current or most recently used serial port
+     */
+    public static Optional<String> getSelectedSerialPort() {
+        Preferences prefs = Preferences.userNodeForPackage(PREF_NODE_KEY);
+        String serialPort = prefs.get(PREF_SERIALPORT_KEY, null);
+        if (serialPort == null || serialPort.isEmpty()) {
+            return Optional.empty();
+        }
+        else {
+            return Optional.of(serialPort);
+        }
+    }
+
+
+    /**
+     * Stores the serialPort value to local preferences
+     * @param serialPort
+     */
+    public static void setSelectedSerialPort(String serialPort) {
+        Preferences prefs = Preferences.userNodeForPackage(MediaControlsFactoryImpl.PREF_NODE_KEY);
+        prefs.put(MediaControlsFactoryImpl.PREF_SERIALPORT_KEY, serialPort);
     }
 }

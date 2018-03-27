@@ -6,7 +6,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 
 /**
  * @author Brian Schlining
@@ -15,6 +14,7 @@ import java.util.prefs.Preferences;
 public class OpenTapeDialog extends Dialog<MediaParams> {
 
     private final MediaParamsPaneController controller;
+
 
     public OpenTapeDialog(ResourceBundle i18n) {
         controller = MediaParamsPaneController.newInstance();
@@ -32,12 +32,13 @@ public class OpenTapeDialog extends Dialog<MediaParams> {
             MediaParams mediaParams = null;
             if (buttonType == ok && controller.getMediaParams().isPresent()) {
                 mediaParams = controller.getMediaParams().get();
-                // Save serial port to preferences, so MediaControlsFactoryImpl can look it up later
-                Preferences prefs = Preferences.userNodeForPackage(MediaControlsFactoryImpl.PREF_NODE_KEY);
-                prefs.put(MediaControlsFactoryImpl.PREF_SERIALPORT_KEY, mediaParams.getSerialPort());
             }
             return mediaParams;
         });
 
+    }
+
+    public void refresh() {
+        controller.refresh();
     }
 }

@@ -13,12 +13,12 @@ import java.util.concurrent.CompletableFuture;
  * @author Brian Schlining
  * @since 2018-01-03T11:25:00
  */
-public class RealTimeService {
+public class OpenRealTimeService {
 
     private final UIToolBox toolBox;
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    public RealTimeService(UIToolBox toolBox) {
+    public OpenRealTimeService(UIToolBox toolBox) {
         this.toolBox = toolBox;
     }
 

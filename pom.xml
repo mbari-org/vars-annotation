@@ -82,7 +82,7 @@
     </dependency>
     <dependency>
       <groupId>org.mbari.vcr4j</groupId>
-      <artifactId>vcr4j-rxtx</artifactId>
+      <artifactId>vcr4j-jserialcomm</artifactId>
       <version>4.0.2-SNAPSHOT</version>
     </dependency>
     <dependency>
