@@ -48,8 +48,5 @@ public class RealTimeService {
                                 .send(new MediaChangedEvent(null, media));
                     }
                 });
-
-        // If not found create it.
-
     }
 }

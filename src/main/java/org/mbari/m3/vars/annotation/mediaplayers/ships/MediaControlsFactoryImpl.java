@@ -66,6 +66,8 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                 imageCaptureService,
                 io,
                 () -> {
+                    // Set start and end date of a Video in the video asset manager
+                    // based on the annotations
                     List<Annotation> annotations = new ArrayList<>(toolBox.getData().getAnnotations());
                     if (annotations.size() > 1) {
                         List<Annotation> sorted = annotations.stream()

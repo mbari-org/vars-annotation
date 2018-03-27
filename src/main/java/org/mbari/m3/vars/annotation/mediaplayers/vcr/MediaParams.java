@@ -15,6 +15,7 @@ public class MediaParams {
     private final Integer diveNumber;
     private final Integer tapeNumber;
     private final boolean isHd;
+    private final String videoName;
     private final String videoSequenceName;
     private final String serialPort;
     private final URI uri;
@@ -30,15 +31,17 @@ public class MediaParams {
         this.isHd = isHd;
         this.serialPort = serialPort;
 
+        videoSequenceName = String.format("%s %04d", cameraId, diveNumber);
+
         String hd = isHd ? "HD" : "";
-        videoSequenceName = String.format("%s%04d-%02d%s",
+        videoName = String.format("%s%04d-%02d%s",
                 cameraId.toUpperCase().charAt(0),
                 diveNumber,
                 tapeNumber,
                 hd);
 
         try {
-            uri = new URI(URI_PREFIX + videoSequenceName);
+            uri = new URI(URI_PREFIX + videoName);
         }
         catch (URISyntaxException e) {
             throw new RuntimeException(e);
@@ -46,7 +49,7 @@ public class MediaParams {
     }
 
     public String getVideoSequencename() {
-        return videoSequenceName;
+        return videoName;
     }
 
     public URI getUri() {
@@ -71,6 +74,10 @@ public class MediaParams {
 
     public String getVideoSequenceName() {
         return videoSequenceName;
+    }
+
+    public String getVideoName() {
+        return videoName;
     }
 
     public String getSerialPort() {

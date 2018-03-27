@@ -111,6 +111,10 @@ public class MediaParamsPaneController {
                 "/fxml/VcrSettingsPane.fxml");
     }
 
+    public GridPane getRoot() {
+        return root;
+    }
+
     private void updateUiWithDefaults() {
         try {
             String cameraid = Initializer.getToolBox()
