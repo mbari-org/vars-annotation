@@ -22,13 +22,13 @@
   </rowConstraints>
    <children>
       <Label text="%mediaplayer.vcr.open.cameraid" GridPane.hgrow="NEVER" />
-      <Label text="%mediaplayer.vcr.open.deploymentkeymediaplayer.vcr.open.deploymentkey" GridPane.rowIndex="1" />
+      <Label text="%keymediaplayer.vcr.open.deploymentkey" GridPane.rowIndex="1" />
       <JFXComboBox fx:id="cameraIdComboBox" prefWidth="300.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
       <JFXTextField fx:id="deploymentKeyTextField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
       <JFXTextField fx:id="tapeNumberTextField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
-      <Label text="%mediaplayer.vcr.open.tapenumbermediaplayer.vcr.open.tapenumber" GridPane.rowIndex="2" />
-      <JFXCheckBox fx:id="hdCheckBox" text="%mediaplayer.vcr.open.ishdmediaplayer.vcr.open.ishd" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+      <Label text="%mediaplayer.vcr.open.tapenumber" GridPane.rowIndex="2" />
+      <JFXCheckBox fx:id="hdCheckBox" text="%mediaplayer.vcr.open.ishd" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
       <JFXComboBox fx:id="commportComboBox" prefWidth="300.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" />
-      <Label text="%mediaplayer.vcr.open.commportmediaplayer.vcr.open.commport" GridPane.rowIndex="4" />
+      <Label text="%mediaplayer.vcr.open.commport" GridPane.rowIndex="4" />
    </children>
 </GridPane>
