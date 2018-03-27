@@ -6,13 +6,13 @@ import static org.junit.Assert.*;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.model.ConceptDetails;
+import org.mbari.m3.vars.annotation.services.ConceptService;
+import org.mbari.m3.vars.annotation.services.varsuserserver.v1.KBUserService;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 /**
  * @author Brian Schlining
@@ -20,12 +20,22 @@ import java.util.concurrent.TimeoutException;
  */
 public class KBConceptServiceTest {
 
-    KBConceptService conceptService = Initializer.getInjector().getInstance(KBConceptService.class);
+    String endpoint = "http://localhost:8083/kb/v1/";
+    //KBConceptService conceptService = Initializer.getInjector().getInstance(KBConceptService.class);
+    ConceptService conceptService = new KBConceptService(new KBWebServiceFactory(endpoint,
+                    Duration.ofSeconds(5), Executors.newFixedThreadPool(2)));
+
+    @Test
+    public void findRoot() throws InterruptedException, ExecutionException, TimeoutException {
+        CompletableFuture<Concept> f = conceptService.findRoot();
+        Concept root = f.get(10000, TimeUnit.MILLISECONDS);
+        assertNotNull(root);
+    }
 
     @Test
     public void testFindAllNames() throws InterruptedException, ExecutionException, TimeoutException {
         CompletableFuture<List<String>> f = conceptService.findAllNames();
-        List<String> allNames = f.get(10000, TimeUnit.MILLISECONDS);
+        List<String> allNames = f.get(20000, TimeUnit.MILLISECONDS);
         assertNotNull(allNames);
     }
 

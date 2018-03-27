@@ -20,6 +20,9 @@ import java.util.List;
  */
 public interface KBWebService {
 
+    @GET("concept/root")
+    Call<ConceptDetails> findRootDetails();
+
     @GET("phylogeny/down/{name}")
     Call<Concept> findTree(@Path("name") String name);
 
@@ -38,8 +41,5 @@ public interface KBWebService {
     @GET("links/{name}/using/{linkname}")
     Call<List<ConceptAssociationTemplate>> findTemplates(@Path("name") String name,
                                                          @Path("linkname") String linkname);
-
-    @GET("concept/root")
-    Call<ConceptDetails> findRootDetails();
 
 }

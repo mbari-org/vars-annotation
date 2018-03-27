@@ -71,16 +71,12 @@ class TreeCellFactory {
         }
 
         private String asString(Concept item) {
-            String s = item.getName();
-            if (item.getConceptDetails() != null) {
-                ConceptDetails cd = item.getConceptDetails();
-                List<String> ans = cd.getAlternateNames();
-                String names = cd.getAlternateNames()
-                        .stream()
-                        .collect(Collectors.joining(", "));
-                s = (ans == null || ans.isEmpty()) ? item.getName() :
-                        item.getName() + " (" + names + ")";
-            }
+            List<String> ans = item.getAlternativeNames();
+            String names = ans.stream()
+                    .collect(Collectors.joining(", "));
+            String s = ans.isEmpty() ? item.getName() :
+                    item.getName() + " (" + names + ")";
+
             return s;
         }
 

@@ -21,6 +21,7 @@ import org.mbari.m3.vars.annotation.util.FormatUtils;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
+import org.mbari.m3.vars.annotation.util.JFXUtilities;
 import org.mbari.vcr4j.time.Timecode;
 
 import javax.inject.Inject;
@@ -117,7 +118,7 @@ public class AnnotationTableController {
     }
 
     private void select(Collection<Annotation> annotations) {
-        Platform.runLater(() -> {
+        JFXUtilities.runOnFXThread(() -> {
             TableView.TableViewSelectionModel<Annotation> selectionModel = getTableView().getSelectionModel();
             selectionModel.clearSelection();
             annotations.forEach(selectionModel::select);
@@ -136,11 +137,13 @@ public class AnnotationTableController {
             tableView.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldv, newv) -> {
-                        int[] visibleRows = getVisibleRows();
-                        int i = tableView.getItems().indexOf(newv);
-                        if (i < visibleRows[0] || i > visibleRows[1]) {
-                            tableView.scrollTo(newv);
-                        }
+                        JFXUtilities.runOnFXThread(() -> {
+                            int[] visibleRows = getVisibleRows();
+                            int i = tableView.getItems().indexOf(newv);
+                            if (i < visibleRows[0] || i > visibleRows[1]) {
+                                tableView.scrollTo(newv);
+                            }
+                        });
                     });
 
 

@@ -41,7 +41,7 @@ public class CachedConceptService implements ConceptService {
      */
     public CachedConceptService(ConceptService conceptService) {
         this.conceptService = conceptService;
-        findAllNames();
+        //findAllNames();
     }
 
     /**
@@ -60,15 +60,6 @@ public class CachedConceptService implements ConceptService {
                 .map(p -> p.getValue())
                 .collect(Collectors.toList());
 
-        CompletableFuture<Void> f0 = findRoot().thenCompose(n -> {
-            findAllNames();
-            return null;
-        });
-
-        CompletableFuture<?> f1 = findAllTemplates();
-
-        futures.add(f0);
-        futures.add(f1);
         CompletableFuture[] futureArray = futures.toArray(new CompletableFuture[futures.size()]);
 
         return CompletableFuture.allOf(futureArray);
@@ -83,11 +74,8 @@ public class CachedConceptService implements ConceptService {
                     .thenApply(c -> {
                         // Note that these are done in background, so the tree is
                         // returned while the details are still being fetched.
-                        addToCache(c);
-                        return c;
-                    })
-                    .thenApply(c -> {
                         root = c;
+                        addToCache(c);
                         return c;
                     });
         }
@@ -147,7 +135,7 @@ public class CachedConceptService implements ConceptService {
         if (allNames.isEmpty()) {
             return conceptService.findAllNames()
                     .thenApply(ns -> {
-                        allNames = ns;
+                        allNames = Collections.unmodifiableList(ns);
                         return allNames;
                     });
         }
@@ -212,7 +200,7 @@ public class CachedConceptService implements ConceptService {
             CompletableFuture<List<ConceptAssociationTemplate>> future = conceptService.findAllTemplates();
             future.thenAccept(cats -> {
                 cats.sort(Comparator.comparing(ConceptAssociationTemplate::getLinkName));
-                this.allTemplates = cats;
+                this.allTemplates = Collections.unmodifiableList(cats);
             });
             return future;
         }

@@ -1,11 +1,11 @@
 package org.mbari.m3.vars.annotation.ui.prefs;
 
+import com.jfoenix.controls.JFXTabPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayers;
 import org.mbari.m3.vars.annotation.mediaplayers.SettingsPane;
-import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.SharktopodaSettingsPaneController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.Objects;
  */
 public class PreferencesPaneController implements IPrefs {
 
-    private TabPane root;
+    private JFXTabPane root;
     private final UIToolBox toolBox;
     private final List<IPrefs> prefs = new ArrayList<>();
 
@@ -27,7 +27,7 @@ public class PreferencesPaneController implements IPrefs {
 
     public TabPane getRoot() {
         if (root == null) {
-            root = new TabPane();
+            root = new JFXTabPane();
             root.setPrefSize(600, 600);
             loadMediaControlsSettingsPanes();
         }

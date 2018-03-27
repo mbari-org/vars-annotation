@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeView;
 import javafx.stage.Stage;
+import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
@@ -30,6 +31,7 @@ public class TreeViewDemo extends Application {
         Platform.setImplicitExit(true);
         TreeView<Concept> treeView = controller.getTreeView();
         Scene scene = new Scene(treeView, 800, 800);
+        scene.getStylesheets().addAll(Initializer.getToolBox().getStylesheets());
         primaryStage.setScene(scene);
 
         primaryStage.setOnCloseRequest(e -> {

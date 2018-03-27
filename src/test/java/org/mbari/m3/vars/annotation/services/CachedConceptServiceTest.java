@@ -21,10 +21,13 @@ import static org.junit.Assert.assertTrue;
  */
 public class CachedConceptServiceTest {
 
-    String endpoint = "http://m3.shore.mbari.org/kb/v1/";
+    String endpoint = "http://localhost:8083/kb/v1/";
     ConceptService conceptService = new CachedConceptService(
             new KBConceptService(new KBWebServiceFactory(endpoint,
                     Duration.ofSeconds(5), Executors.newFixedThreadPool(2))));
+
+//    ConceptService conceptService = new KBConceptService(new KBWebServiceFactory(endpoint,
+//                    Duration.ofSeconds(5), Executors.newFixedThreadPool(2)));
 
     @Test
     public void testFetchConceptTree() throws InterruptedException, ExecutionException {
@@ -38,7 +41,8 @@ public class CachedConceptServiceTest {
 
     @Test
     public void testFindDetails() throws InterruptedException, ExecutionException  {
-        CompletableFuture<Concept> f0 = conceptService.findRoot();
+        //CompletableFuture<Concept> f0 = conceptService.findRoot();
+        CompletableFuture<Concept> f0 = conceptService.findConcept("Nanomia").thenApply(a -> a.get());
         while (!f0.isDone()) {
             Thread.sleep(20);
         }

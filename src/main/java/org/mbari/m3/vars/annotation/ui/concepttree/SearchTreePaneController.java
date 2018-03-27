@@ -12,11 +12,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.messages.ClearCacheMsg;
-import org.mbari.m3.vars.annotation.messages.ShowConceptInTreeViewMsg;
 import org.mbari.m3.vars.annotation.model.Concept;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 
 
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -109,12 +109,16 @@ public class SearchTreePaneController {
                             else {
                                 return TreeItemPredicate.create(c -> {
                                     String t = c.getName();
-                                    if (c.getConceptDetails() != null) {
-                                        t = t + c.getConceptDetails()
-                                                .getAlternateNames()
-                                                .stream()
-                                                .collect(Collectors.joining());
+                                    List<String> alternativeNames = c.getAlternativeNames();
+                                    if (alternativeNames != null && !alternativeNames.isEmpty()) {
+                                        t = t + alternativeNames.stream().collect(Collectors.joining());
                                     }
+//                                    if (c.getConceptDetails() != null) {
+//                                        t = t + c.getConceptDetails()
+//                                                .getAlternateNames()
+//                                                .stream()
+//                                                .collect(Collectors.joining());
+//                                    }
                                     return t.toLowerCase().contains(tf.getText().toLowerCase());
                                 });
                             }

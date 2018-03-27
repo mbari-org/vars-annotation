@@ -1,8 +1,6 @@
 package org.mbari.m3.vars.annotation.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -12,12 +10,17 @@ import java.util.stream.Collectors;
 public class Concept {
     private String name;
     private String rank;
+    private List<String> alternativeNames;
     private List<Concept> children;
     private ConceptDetails conceptDetails;
 
-    public Concept(String name, String rank, List<Concept> children) {
+    public Concept(String name, String rank, List<String> alternativeNames, List<Concept> children) {
         this.name = name;
         this.rank = rank;
+        this.alternativeNames = Collections.unmodifiableList(alternativeNames.stream()
+            .sorted(String.CASE_INSENSITIVE_ORDER)
+            .collect(Collectors.toList()));
+
         this.children = Collections.unmodifiableList(children.stream()
                     .sorted((a, b) -> a.getName().compareToIgnoreCase(b.getName()))
                     .collect(Collectors.toList()));
@@ -31,7 +34,21 @@ public class Concept {
         return rank;
     }
 
+    public List<String> getAlternativeNames() {
+        Set<String> alternateNames = new HashSet<>();
+        if (alternativeNames != null) {
+            alternateNames.addAll(alternativeNames);
+        }
+        if (getConceptDetails() != null) {
+            alternateNames.addAll(getConceptDetails().getAlternateNames());
+        }
+        return new ArrayList<>(alternateNames);
+    }
+
     public List<Concept> getChildren() {
+        if (children == null) {
+            children = Collections.emptyList();
+        }
         return children;
     }
 
@@ -59,9 +76,7 @@ public class Concept {
 
     private static void flatten(Concept concept, List<String> accum) {
         accum.add(concept.getName());
-        if (concept.getConceptDetails() != null) {
-            accum.addAll(concept.getConceptDetails().getAlternateNames());
-        }
+        accum.addAll(concept.getAlternativeNames());
         concept.getChildren()
                 .forEach(c -> flatten(c, accum));
     }

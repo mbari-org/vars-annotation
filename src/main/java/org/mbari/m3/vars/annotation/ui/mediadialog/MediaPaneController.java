@@ -24,6 +24,7 @@ import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.util.FXMLUtils;
 import org.mbari.m3.vars.annotation.util.FormatUtils;
 import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.util.JFXUtilities;
 
 import java.util.ResourceBundle;
 
@@ -156,14 +157,11 @@ public class MediaPaneController {
             if (media != null) {
                 annotationService.countAnnotations(media.getVideoReferenceUuid())
                         .thenAccept(ac -> {
-                            final Integer count = ac.getCount();
-                            if (count == null) {
-                                annotationCountTextField.setText(null);
+                            int count = 0;
+                            if (ac != null && ac.getCount() != null) {
+                                count = ac.getCount();
                             }
-                            else {
-                                String c = ac.getCount().toString();
-                                annotationCountTextField.setText(c);
-                            }
+                            annotationCountTextField.setText(count + "");
                         });
             }
         });

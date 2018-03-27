@@ -42,6 +42,7 @@ import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
 import org.mbari.m3.vars.annotation.ui.mediadialog.MediaPaneController;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.prefs.PreferencesDialogController;
+import org.mbari.m3.vars.annotation.ui.userdialog.CreateUserDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -257,6 +258,15 @@ public class AppPaneController {
             prefsButton.setOnAction(e -> preferencesDialogController.show());
             prefsButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.prefs")));
 
+            Text usersIcon = gf.createIcon(MaterialIcon.PERSON_ADD, "30px");
+            Button createUserButton = new JFXButton();
+            createUserButton.setGraphic(usersIcon);
+            createUserButton.setOnAction(e -> {
+                CreateUserDialog dialog = new CreateUserDialog(toolBox);
+                Optional<User> user = dialog.showAndWait();
+            });
+
+
             Label videoLabel = new Label(toolBox.getI18nBundle().getString("apppane.label.media"));
             Label mediaLabel = new Label();
             toolBox.getEventBus()
@@ -287,6 +297,7 @@ public class AppPaneController {
                     redoButton,
                     refreshButton,
                     prefsButton,
+                    createUserButton,
                     new Label(bundle.getString("apppane.label.user")),
                     getUsersComboBox(),
                     videoLabel,
@@ -309,18 +320,18 @@ public class AppPaneController {
                 media.ifPresent(m -> toolBox.getEventBus().send(new MediaChangedEvent(null, m)));
             });
 
-            Text localIcon = gf.createIcon(MaterialIcon.QUEUE, "30px");
+            Text localIcon = gf.createIcon(MaterialIcon.FOLDER, "30px");
             Button localButton = new JFXButton(null, localIcon);
             localButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.local")));
             FileBrowsingDecorator decorator = new FileBrowsingDecorator(toolBox);
             localButton.setOnAction(e ->
                 decorator.apply(AppPaneController.this.getRoot().getScene().getWindow()));
 
-            Text tapeIcon = gf.createIcon(MaterialIcon.PERM_MEDIA, "30px");
+            Text tapeIcon = gf.createIcon(MaterialIcon.LIVE_TV, "30px");
             Button tapeButton = new JFXButton(null, tapeIcon);
             tapeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.tape")));
 
-            Text realtimeIcon = gf.createIcon(MaterialIcon.TIMER, "30px");
+            Text realtimeIcon = gf.createIcon(MaterialIcon.DIRECTIONS_BOAT, "30px");
             Button realtimeButton = new JFXButton(null, realtimeIcon);
             realtimeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.realtime")));
             realtimeButton.setOnAction(e -> {
@@ -353,10 +364,12 @@ public class AppPaneController {
             eventBus.toObserverable()
                     .ofType(UserAddedEvent.class)
                     .subscribe(event -> {
-                        User user = event.get();
-                        usersComboBox.getItems().add(user.getUsername());
-                        FXCollections.sort(usersComboBox.getItems(), sorter);
-                        usersComboBox.getSelectionModel().select(user.getUsername());
+                        Platform.runLater(() -> {
+                            User user = event.get();
+                            usersComboBox.getItems().add(user.getUsername());
+                            FXCollections.sort(usersComboBox.getItems(), sorter);
+                            usersComboBox.getSelectionModel().select(user.getUsername());
+                        });
                     });
 
             // When a username is selected send a change event

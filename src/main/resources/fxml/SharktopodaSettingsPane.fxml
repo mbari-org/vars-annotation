@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -17,8 +18,8 @@
   </rowConstraints>
    <children>
       <Label text="%mediaplayer.sharktopoda.port" GridPane.hgrow="SOMETIMES" />
-      <TextField fx:id="controlPortTextField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
-      <TextField fx:id="framegrabPortTextField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+      <JFXTextField fx:id="controlPortTextField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+      <JFXTextField fx:id="framegrabPortTextField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
       <Label text="%mediaplayer.sharktopoda.framecapture.port" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="1" />
    </children>
 </GridPane>
