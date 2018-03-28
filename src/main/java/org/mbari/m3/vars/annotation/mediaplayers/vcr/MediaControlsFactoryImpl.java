@@ -18,7 +18,6 @@ import org.mbari.vcr4j.decorators.VCRSyncDecorator;
 import org.mbari.vcr4j.jserialcomm.SerialCommVideoIO;
 import org.mbari.vcr4j.rs422.RS422Error;
 import org.mbari.vcr4j.rs422.RS422State;
-import org.mbari.vcr4j.rs422.commands.RS422VideoCommands;
 import org.mbari.vcr4j.rs422.decorators.UserbitsAsTimeDecorator;
 
 import org.mbari.vcr4j.ui.javafx.VcrControlPaneController;
@@ -75,10 +74,10 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
         // We need to close the old media player before a new one is created. Otherwise the
         // serial port may already be in use
-        MediaPlayer<? extends VideoState, ? extends VideoError> oldMediaPlayer = toolBox.getMediaPlayer();
-        if (oldMediaPlayer != null) {
-            oldMediaPlayer.close();
-        }
+//        MediaPlayer<? extends VideoState, ? extends VideoError> oldMediaPlayer = toolBox.getMediaPlayer();
+//        if (oldMediaPlayer != null) {
+//            oldMediaPlayer.close();
+//        }
 
         Runnable runnable = () -> {
 
@@ -104,6 +103,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                         imageCaptureService,
                         simpleIo,
                         () -> {
+                            io.close(); // Explicitly close the original SerialCommVideoIO
                             // Set start and end date of a Video in the video asset manager
                             // based on the annotations
                             List<Annotation> annotations = new ArrayList<>(toolBox.getData().getAnnotations());
@@ -168,7 +168,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                 break;
             }
             catch (Exception e) {
-                log.warn("Failed to connect to serial port, " + serialPort + ". Attempt #" + n);
+                log.warn("Failed to connect to serial port, " + serialPort + ". Attempt #" + n, e);
             }
         }
         return io;

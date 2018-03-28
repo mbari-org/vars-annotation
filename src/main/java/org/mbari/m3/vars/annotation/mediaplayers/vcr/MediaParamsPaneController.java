@@ -15,6 +15,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.util.FXMLUtils;
+import org.mbari.m3.vars.annotation.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,12 +82,15 @@ public class MediaParamsPaneController {
                 .getMediaService()
                 .findAllCameraIds()
                 .thenAccept(cameraIds -> {
-                    deploymentKeyTextField.setText(null);
-                    tapeNumberTextField.setText(null);
-                    hdCheckBox.setSelected(true);
-                    final ObservableList<String> items = FXCollections.observableArrayList(cameraIds);
-                    cameraIdComboBox.setItems(items);
-                    updateUiWithDefaults();
+                    JFXUtilities.runOnFXThread(() -> {
+                        deploymentKeyTextField.setText(null);
+                        tapeNumberTextField.setText(null);
+                        hdCheckBox.setSelected(true);
+                        final ObservableList<String> items = FXCollections.observableArrayList(cameraIds);
+                        cameraIdComboBox.setItems(items);
+                        updateUiWithDefaults();
+                    });
+
                 });
     }
 
