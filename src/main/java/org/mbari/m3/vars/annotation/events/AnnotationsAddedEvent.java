@@ -5,6 +5,7 @@ import org.mbari.m3.vars.annotation.model.Annotation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author Brian Schlining
@@ -21,6 +22,6 @@ public class AnnotationsAddedEvent extends UIEvent<Collection<Annotation>> {
     }
 
     public AnnotationsAddedEvent(Annotation annotation) {
-        this(null, Arrays.asList(annotation));
+        this(null, Collections.singletonList(annotation));
     }
 }
