@@ -22,6 +22,8 @@ import org.mbari.vcr4j.rs422.commands.RS422VideoCommands;
 import org.mbari.vcr4j.rs422.decorators.UserbitsAsTimeDecorator;
 
 import org.mbari.vcr4j.ui.javafx.VcrControlPaneController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -36,11 +38,10 @@ import java.util.stream.Collectors;
  */
 public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
-
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final UIToolBox toolBox = Initializer.getToolBox();
     public static Class PREF_NODE_KEY = MediaControlsFactoryImpl.class;
     public static final String PREF_SERIALPORT_KEY = "serial-port";
-    private final Preferences prefs = Preferences.userNodeForPackage(PREF_NODE_KEY);
     private final VcrControlPaneController vcrController = VcrControlPaneController.newInstance();
 
     public MediaControlsFactoryImpl() {
@@ -89,7 +90,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
             Optional<String> opt = getSelectedSerialPort();
             if (opt.isPresent()) {
                 String serialPort = opt.get();
-                SerialCommVideoIO io = SerialCommVideoIO.open(serialPort);
+                SerialCommVideoIO io = connectWithRetry(serialPort, 8);
                 VCRSyncDecorator<RS422State, RS422Error> syncDecorator = new VCRSyncDecorator<>(io);
                 StatusDecorator<RS422State, RS422Error> statusDecorator = new StatusDecorator<>(io);
                 UserbitsAsTimeDecorator timeDecorator = new UserbitsAsTimeDecorator(io);
@@ -152,6 +153,25 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
         thread.start();
 
         return cf;
+    }
+
+
+    private SerialCommVideoIO connectWithRetry(String serialPort, int retries) {
+        SerialCommVideoIO io = null;
+        int n = 0;
+        while (n < retries) {
+            n++;
+            try {
+                io = SerialCommVideoIO.open(serialPort);
+                io.send(VideoCommands.REQUEST_STATUS);
+                Thread.sleep(250);
+                break;
+            }
+            catch (Exception e) {
+                log.warn("Failed to connect to serial port, " + serialPort + ". Attempt #" + n);
+            }
+        }
+        return io;
     }
 
     /**
