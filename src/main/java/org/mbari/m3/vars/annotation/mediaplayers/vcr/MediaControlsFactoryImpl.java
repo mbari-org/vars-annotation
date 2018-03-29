@@ -12,14 +12,17 @@ import org.mbari.m3.vars.annotation.services.ImageCaptureService;
 import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.util.SystemUtilities;
 import org.mbari.vcr4j.*;
+import org.mbari.vcr4j.commands.VideoCommands;
 import org.mbari.vcr4j.decorators.StatusDecorator;
 import org.mbari.vcr4j.decorators.VCRSyncDecorator;
 import org.mbari.vcr4j.jserialcomm.SerialCommVideoIO;
 import org.mbari.vcr4j.rs422.RS422Error;
 import org.mbari.vcr4j.rs422.RS422State;
-import org.mbari.vcr4j.rs422.commands.RS422VideoCommands;
 import org.mbari.vcr4j.rs422.decorators.UserbitsAsTimeDecorator;
+
 import org.mbari.vcr4j.ui.javafx.VcrControlPaneController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -34,16 +37,13 @@ import java.util.stream.Collectors;
  */
 public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
-
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final UIToolBox toolBox = Initializer.getToolBox();
     public static Class PREF_NODE_KEY = MediaControlsFactoryImpl.class;
     public static final String PREF_SERIALPORT_KEY = "serial-port";
-    private final Preferences prefs = Preferences.userNodeForPackage(PREF_NODE_KEY);
     private final VcrControlPaneController vcrController = VcrControlPaneController.newInstance();
 
-
     public MediaControlsFactoryImpl() {
-
     }
 
     @Override
@@ -72,6 +72,13 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
         CompletableFuture<MediaPlayer<RS422State, RS422Error>> cf =
                 new CompletableFuture<>();
 
+        // We need to close the old media player before a new one is created. Otherwise the
+        // serial port may already be in use
+//        MediaPlayer<? extends VideoState, ? extends VideoError> oldMediaPlayer = toolBox.getMediaPlayer();
+//        if (oldMediaPlayer != null) {
+//            oldMediaPlayer.close();
+//        }
+
         Runnable runnable = () -> {
 
             ImageCaptureService imageCaptureService = new NoopImageCaptureService();
@@ -79,9 +86,10 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                 imageCaptureService = new MacImageCaptureServiceRef();
             }
 
-            String serialPort = prefs.get(PREF_SERIALPORT_KEY, "");
-            if (serialPort != null && !serialPort.isEmpty()) {
-                SerialCommVideoIO io = SerialCommVideoIO.open(serialPort);
+            Optional<String> opt = getSelectedSerialPort();
+            if (opt.isPresent()) {
+                String serialPort = opt.get();
+                SerialCommVideoIO io = connectWithRetry(serialPort, 8);
                 VCRSyncDecorator<RS422State, RS422Error> syncDecorator = new VCRSyncDecorator<>(io);
                 StatusDecorator<RS422State, RS422Error> statusDecorator = new StatusDecorator<>(io);
                 UserbitsAsTimeDecorator timeDecorator = new UserbitsAsTimeDecorator(io);
@@ -90,10 +98,12 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                         io.getStateObservable(),
                         io.getErrorObservable(),
                         timeDecorator.getIndexObservable());
+                simpleIo.send(VideoCommands.REQUEST_INDEX);
                 MediaPlayer<RS422State, RS422Error> mediaPlayer = new MediaPlayer<>(media,
                         imageCaptureService,
                         simpleIo,
                         () -> {
+                            io.close(); // Explicitly close the original SerialCommVideoIO
                             // Set start and end date of a Video in the video asset manager
                             // based on the annotations
                             List<Annotation> annotations = new ArrayList<>(toolBox.getData().getAnnotations());
@@ -109,7 +119,6 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                                 MediaService mediaService = toolBox.getServices().getMediaService();
                                 mediaService.update(media.getVideoReferenceUuid(), start, duration);
                             }
-                            io.send(RS422VideoCommands.DISCONNECT);
                             syncDecorator.unsubscribe();
                             statusDecorator.unsubscribe();
                             timeDecorator.unsubscribe();
@@ -144,6 +153,25 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
         thread.start();
 
         return cf;
+    }
+
+
+    private SerialCommVideoIO connectWithRetry(String serialPort, int retries) {
+        SerialCommVideoIO io = null;
+        int n = 0;
+        while (n < retries) {
+            n++;
+            try {
+                io = SerialCommVideoIO.open(serialPort);
+                io.send(VideoCommands.REQUEST_STATUS);
+                Thread.sleep(250);
+                break;
+            }
+            catch (Exception e) {
+                log.warn("Failed to connect to serial port, " + serialPort + ". Attempt #" + n, e);
+            }
+        }
+        return io;
     }
 
     /**

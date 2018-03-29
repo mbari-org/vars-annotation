@@ -25,6 +25,8 @@ import org.mbari.m3.vars.annotation.util.FXMLUtils;
 import org.mbari.m3.vars.annotation.util.FormatUtils;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.util.JFXUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ResourceBundle;
 
@@ -33,6 +35,8 @@ import java.util.ResourceBundle;
  * @since 2017-05-31T16:38:00
  */
 public class MediaPaneController {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
     @FXML
     private ResourceBundle bundle;
 
@@ -156,13 +160,10 @@ public class MediaPaneController {
             this.media.set(media);
             if (media != null) {
                 annotationService.countAnnotations(media.getVideoReferenceUuid())
-                        .thenAccept(ac -> {
-                            int count = 0;
-                            if (ac != null && ac.getCount() != null) {
-                                count = ac.getCount();
-                            }
-                            annotationCountTextField.setText(count + "");
-                        });
+                        .thenAccept(ac ->
+                            JFXUtilities.runOnFXThread(() -> {
+                                annotationCountTextField.setText(ac.getCount() + "");
+                            }));
             }
         });
     }
