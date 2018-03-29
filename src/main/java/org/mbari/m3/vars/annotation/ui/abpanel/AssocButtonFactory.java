@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation.ui.abpanel;
 
 import com.jfoenix.controls.JFXButton;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 public class AssocButtonFactory {
 
     private final UIToolBox toolBox;
+    private static final String styleClass = "abpanel-button";
 
 
     public AssocButtonFactory(UIToolBox toolBox) {
@@ -33,7 +35,7 @@ public class AssocButtonFactory {
 
         Button button = new JFXButton(name);
         button.setUserData(association);
-        button.getStyleClass().add("abpanel-button");
+        button.getStyleClass().add(styleClass);
         button.setOnAction(event -> {
             ArrayList<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
             eventBus.send(new CreateAssociationsCmd(association, annotations));
@@ -53,6 +55,16 @@ public class AssocButtonFactory {
 
     Button build(NamedAssociation na) {
         return build(na.getName(), na);
+    }
+
+    public static boolean isAssocButton(Node node) {
+        boolean isBtn = false;
+        if (node instanceof Button) {
+            Button button = (Button) node;
+            isBtn = button.getStyleClass().contains(styleClass)
+                    && button.getUserData() instanceof Association;
+        }
+        return isBtn;
     }
 
 }

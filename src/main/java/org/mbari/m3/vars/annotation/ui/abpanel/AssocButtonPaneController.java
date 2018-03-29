@@ -5,6 +5,7 @@ import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -153,7 +154,15 @@ public class AssocButtonPaneController {
                         .sorted(Comparator.comparingInt(ButtonPref::getOrder))
                         .map(ButtonPref::getButton)
                         .collect(Collectors.toList());
-                Platform.runLater(() -> getPane().getChildren().addAll(buttons));
+                Platform.runLater(() -> {
+                    ObservableList<Node> children = getPane().getChildren();
+                    List<Node> oldButtons = getPane().getChildren()
+                            .stream()
+                            .filter(AssocButtonFactory::isAssocButton)
+                            .collect(Collectors.toList());
+                    children.removeAll(oldButtons);
+                    children.addAll(buttons);
+                });
             }
             catch (Exception e) {
                 ResourceBundle i18n = toolBox.getI18nBundle();
