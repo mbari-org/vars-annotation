@@ -72,13 +72,6 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
         CompletableFuture<MediaPlayer<RS422State, RS422Error>> cf =
                 new CompletableFuture<>();
 
-        // We need to close the old media player before a new one is created. Otherwise the
-        // serial port may already be in use
-//        MediaPlayer<? extends VideoState, ? extends VideoError> oldMediaPlayer = toolBox.getMediaPlayer();
-//        if (oldMediaPlayer != null) {
-//            oldMediaPlayer.close();
-//        }
-
         Runnable runnable = () -> {
 
             ImageCaptureService imageCaptureService = new NoopImageCaptureService();
@@ -93,17 +86,23 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                 VCRSyncDecorator<RS422State, RS422Error> syncDecorator = new VCRSyncDecorator<>(io);
                 StatusDecorator<RS422State, RS422Error> statusDecorator = new StatusDecorator<>(io);
                 UserbitsAsTimeDecorator timeDecorator = new UserbitsAsTimeDecorator(io);
-                VideoIO<RS422State, RS422Error> simpleIo = new SimpleVideoIO<>(io.getConnectionID(),
+                VideoIO<RS422State, RS422Error> simpleIo = new SimpleVideoIO<RS422State, RS422Error>(io.getConnectionID(),
                         io.getCommandSubject(),
                         io.getStateObservable(),
                         io.getErrorObservable(),
-                        timeDecorator.getIndexObservable());
+                        timeDecorator.getIndexObservable()) {
+                    @Override
+                    public void close() {
+                        io.close();
+                        super.close();
+                    }
+                };
                 simpleIo.send(VideoCommands.REQUEST_INDEX);
                 MediaPlayer<RS422State, RS422Error> mediaPlayer = new MediaPlayer<>(media,
                         imageCaptureService,
                         simpleIo,
                         () -> {
-                            io.close(); // Explicitly close the original SerialCommVideoIO
+                            //io.close(); // Explicitly close the original SerialCommVideoIO
                             // Set start and end date of a Video in the video asset manager
                             // based on the annotations
                             List<Annotation> annotations = new ArrayList<>(toolBox.getData().getAnnotations());

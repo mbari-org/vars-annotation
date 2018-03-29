@@ -2,16 +2,14 @@ package org.mbari.m3.vars.annotation.mediaplayers.ships;
 
 import eu.hansolo.medusa.Clock;
 import eu.hansolo.medusa.ClockBuilder;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 
 import java.time.ZoneId;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -31,6 +29,10 @@ public class ShipControlPane extends HBox {
                 .textColor(Color.ORANGERED)
                 .dateColor(Color.DARKGRAY)
                 .build();
+        // Medusa uses AM/PM format for US and 24 hour clock everywhere else
+        // use a non-US locale to get our 24 hour clock
+        // https://github.com/HanSolo/Medusa/blob/master/src/main/java/eu/hansolo/medusa/skins/DigitalClockSkin.java#L130
+        clock.setLocale(Locale.CANADA);
         setPrefSize(440, 80);
         setMaxSize(440, 80);
         setMinSize(440, 80);
