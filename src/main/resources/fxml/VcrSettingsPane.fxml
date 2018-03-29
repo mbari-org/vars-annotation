@@ -22,7 +22,7 @@
   </rowConstraints>
    <children>
       <Label text="%mediaplayer.vcr.open.cameraid" GridPane.hgrow="NEVER" />
-      <Label text="%keymediaplayer.vcr.open.deploymentkey" GridPane.rowIndex="1" />
+      <Label text="%mediaplayer.vcr.open.deploymentkey" GridPane.rowIndex="1" />
       <JFXComboBox fx:id="cameraIdComboBox" prefWidth="300.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
       <JFXTextField fx:id="deploymentKeyTextField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
       <JFXTextField fx:id="tapeNumberTextField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
