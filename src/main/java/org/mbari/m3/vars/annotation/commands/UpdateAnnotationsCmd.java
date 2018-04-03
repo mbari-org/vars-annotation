@@ -25,6 +25,7 @@ public abstract class UpdateAnnotationsCmd implements Command {
     protected List<Annotation> originalAnnotations;
     protected List<Annotation> changedAnnotations;
     private volatile boolean checkConceptName;
+    private boolean updateUser = false;
 
     public UpdateAnnotationsCmd(List<Annotation> originalAnnotations,
                                 List<Annotation> changedAnnotations) {
@@ -40,6 +41,13 @@ public abstract class UpdateAnnotationsCmd implements Command {
     public UpdateAnnotationsCmd(List<Annotation> originalAnnotations,
                                 List<Annotation> changedAnnotations,
                                 boolean checkConceptName) {
+        this(originalAnnotations, changedAnnotations, checkConceptName, false);
+    }
+
+    public UpdateAnnotationsCmd(List<Annotation> originalAnnotations,
+                                List<Annotation> changedAnnotations,
+                                boolean checkConceptName,
+                                boolean updateUser) {
         Preconditions.checkArgument(originalAnnotations != null,
                 "Original annotations can not be null");
         Preconditions.checkArgument(changedAnnotations != null,
@@ -51,10 +59,12 @@ public abstract class UpdateAnnotationsCmd implements Command {
         final Instant now = Instant.now();
         changedAnnotations.forEach(a -> a.setObservationTimestamp(now));
         this.checkConceptName = checkConceptName;
+        this.updateUser = updateUser;
     }
 
     @Override
     public void apply(UIToolBox toolBox) {
+        // Dont' change user when activity is changed.
         final User user = toolBox.getData().getUser();
         if (user != null) {
             changedAnnotations.forEach(a -> a.setObserver(user.getUsername()));

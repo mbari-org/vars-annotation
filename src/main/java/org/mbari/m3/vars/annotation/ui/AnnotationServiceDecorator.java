@@ -199,9 +199,8 @@ public class AnnotationServiceDecorator {
                 .toArray(i -> new CompletableFuture[i]);
         CompletableFuture<Void> all = CompletableFuture.allOf(futures);
         final EventBus eventBus = toolBox.getEventBus();
-        all.thenAccept(v -> {
-            eventBus.send(new AnnotationsChangedEvent(annotations));
-        });
+        all.thenAccept(v ->
+            eventBus.send(new AnnotationsChangedEvent(annotations)));
     }
 
     public void refreshAnnotationsView(UUID observationUuid) {

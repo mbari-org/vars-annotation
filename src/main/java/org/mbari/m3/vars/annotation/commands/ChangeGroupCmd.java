@@ -19,7 +19,7 @@ public class ChangeGroupCmd extends UpdateAnnotationsCmd {
         super(originalAnnotations, originalAnnotations.stream()
             .map(a -> new Annotation(a))
             .peek(a -> a.setGroup(group))
-            .collect(Collectors.toList()));
+            .collect(Collectors.toList()), false, false);
         this.group = group;
     }
 

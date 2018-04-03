@@ -18,7 +18,7 @@ public class ChangeActivityCmd extends UpdateAnnotationsCmd {
         super(originalAnnotations, originalAnnotations.stream()
                 .map(Annotation::new)
                 .peek(a -> a.setActivity(activity))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList()), false, false);
         this.activity = activity;
     }
 
