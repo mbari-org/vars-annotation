@@ -26,12 +26,10 @@ import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.messages.ClearCacheMsg;
 import org.mbari.m3.vars.annotation.commands.DeleteAssociationsCmd;
 import org.mbari.m3.vars.annotation.commands.UpdateAnnotationCmd;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
-import org.mbari.m3.vars.annotation.ui.shared.AutoCompleteComboBoxListener;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
 
 public class AnnotationEditorPaneController {

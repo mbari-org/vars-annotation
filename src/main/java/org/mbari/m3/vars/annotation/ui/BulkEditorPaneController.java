@@ -33,6 +33,7 @@ import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.shared.ConceptSelectionDialogController;
 import org.mbari.m3.vars.annotation.util.FnUtils;
+import org.mbari.m3.vars.annotation.util.JFXUtilities;
 
 /**
  *
@@ -275,7 +276,7 @@ public class BulkEditorPaneController {
     }
 
     private void needsRefresh() {
-        refreshButton.setDisable(false);
+        JFXUtilities.runOnFXThread(() -> refreshButton.setDisable(false));
     }
 
     private void changeGroups() {
