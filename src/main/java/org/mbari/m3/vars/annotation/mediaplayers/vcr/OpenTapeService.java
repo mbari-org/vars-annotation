@@ -24,8 +24,8 @@ public class OpenTapeService {
     public void open(MediaParams mediaParams) {
         MediaService mediaService = toolBox.getServices().getMediaService();
         if (mediaParams.getSerialPort() != null) {
-            // Save serial port to preferences, so MediaControlsFactoryImpl can look it up later
-            MediaControlsFactoryImpl.setSelectedSerialPort(mediaParams.getSerialPort());
+            // Save serial port to preferences, so MediaControlsFactoryImplOriginal can look it up later
+            MediaControlsFactoryImplOriginal.setSelectedSerialPort(mediaParams.getSerialPort());
         }
         mediaService.findByUri(mediaParams.getUri())
                 .thenAccept(media -> {

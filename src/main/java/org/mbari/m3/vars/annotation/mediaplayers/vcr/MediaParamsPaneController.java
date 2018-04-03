@@ -70,9 +70,9 @@ public class MediaParamsPaneController {
         tapeNumberTextField.setTextFormatter(textFormatter2);
 
         commportComboBox.setEditable(false);
-        ObservableList<String> serialPorts = FXCollections.observableArrayList(MediaControlsFactoryImpl.getSerialPorts());
+        ObservableList<String> serialPorts = FXCollections.observableArrayList(MediaControlsFactoryImplOriginal.getSerialPorts());
         commportComboBox.setItems(serialPorts);
-        MediaControlsFactoryImpl.getSelectedSerialPort()
+        MediaControlsFactoryImplOriginal.getSelectedSerialPort()
                 .ifPresent(sp -> commportComboBox.getSelectionModel().select(sp));
     }
 
