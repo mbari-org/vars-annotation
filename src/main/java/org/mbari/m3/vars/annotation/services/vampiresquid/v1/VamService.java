@@ -47,14 +47,14 @@ public class VamService implements MediaService, RetrofitWebService {
                 null, null, defaultHeaders));
     }
 
-    public CompletableFuture<Media> update(UUID videoReferenceUuid,
+    public CompletableFuture<Media> update(UUID videoUuid,
             Instant startTimestamp,
             Duration duration) {
 
         Map<String, String> fieldMap = new HashMap<>();
         addField(fieldMap, "duration_millis", duration.toMillis());
         addField(fieldMap, "start", startTimestamp);
-        return sendRequest(vamWebService.update(videoReferenceUuid,
+        return sendRequest(vamWebService.update(videoUuid,
                 fieldMap, defaultHeaders));
     }
 

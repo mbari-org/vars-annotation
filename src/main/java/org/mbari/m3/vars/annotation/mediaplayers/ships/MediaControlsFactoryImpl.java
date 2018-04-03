@@ -78,7 +78,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                         Instant end = sorted.get(sorted.size() - 1).getRecordedTimestamp();
                         Duration duration = Duration.between(start, end);
                         MediaService mediaService = toolBox.getServices().getMediaService();
-                        mediaService.update(media.getVideoReferenceUuid(), start, duration);
+                        mediaService.update(media.getVideoUuid(), start, duration);
                     }
                 });
 
