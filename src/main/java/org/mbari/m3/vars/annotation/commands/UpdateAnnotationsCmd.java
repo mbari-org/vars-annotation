@@ -65,9 +65,11 @@ public abstract class UpdateAnnotationsCmd implements Command {
     @Override
     public void apply(UIToolBox toolBox) {
         // Dont' change user when activity is changed.
-        final User user = toolBox.getData().getUser();
-        if (user != null) {
-            changedAnnotations.forEach(a -> a.setObserver(user.getUsername()));
+        if (updateUser) {
+            final User user = toolBox.getData().getUser();
+            if (user != null) {
+                changedAnnotations.forEach(a -> a.setObserver(user.getUsername()));
+            }
         }
         if (checkConceptName) {
             ConceptService conceptService = toolBox.getServices().getConceptService();
