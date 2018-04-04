@@ -21,6 +21,7 @@ import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIO;
 import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.commands.VideoCommands;
+import org.mbari.vcr4j.decorators.SchedulerVideoIO;
 import org.mbari.vcr4j.decorators.StatusDecorator;
 import org.mbari.vcr4j.decorators.VCRSyncDecorator;
 import org.mbari.vcr4j.jserialcomm.SerialCommVideoIO;
@@ -40,6 +41,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
@@ -167,8 +169,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
     private VideoIO<RS422State, RS422Error> openVideoIO(String serialPort) {
 
-        if (lastSerialPort != null
-                && serialPort.equals(lastSerialPort)
+        if (serialPort.equals(lastSerialPort)
                 && videoIO != null) {
             return videoIO;
         }
@@ -177,10 +178,12 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                 videoIO.close();
             }
             lastSerialPort = serialPort;
-            SerialCommVideoIO io = connectWithRetry(serialPort, 8);
+            SerialCommVideoIO rawIo = connectWithRetry(serialPort, 8);
+            SchedulerVideoIO<RS422State, RS422Error> io =
+                    new SchedulerVideoIO<>(rawIo, Executors.newCachedThreadPool());
             VCRSyncDecorator<RS422State, RS422Error> syncDecorator = new VCRSyncDecorator<>(io);
             StatusDecorator<RS422State, RS422Error> statusDecorator = new StatusDecorator<>(io);
-            UserbitsAsTimeDecorator timeDecorator = new UserbitsAsTimeDecorator(io);
+            UserbitsAsTimeDecorator timeDecorator = new UserbitsAsTimeDecorator(rawIo);
             videoIO = new SimpleVideoIO<RS422State, RS422Error>(io.getConnectionID(),
                     io.getCommandSubject(),
                     io.getStateObservable(),
@@ -192,6 +195,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                     statusDecorator.unsubscribe();
                     timeDecorator.unsubscribe();
                     io.getCommandSubject().onComplete();
+                    rawIo.getCommandSubject().onComplete();
                     io.close();
                 }
 
