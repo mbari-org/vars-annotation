@@ -16,8 +16,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.mbari.m3.vars.annotation.ui.concepttree.FilterableTreeItem;
-import org.mbari.m3.vars.annotation.ui.concepttree.TreeItemPredicate;
 
 
 /**
@@ -74,7 +72,7 @@ public class FilterableTreeItemDemo extends Application {
         Button addBtn = new Button("Add new actor to \"Folder 1\"");
         addBtn.setOnAction(event -> {
             FilterableTreeItem<Actor> treeItem = new FilterableTreeItem<>(new Actor(firstname.getText(), lastname.getText()));
-            folder1.getInternalChildren().add(treeItem);
+            folder1.getSourceChildren().add(treeItem);
         });
         addBtn.disableProperty().bind(Bindings.isEmpty(lastname.textProperty()));
 
@@ -97,7 +95,7 @@ public class FilterableTreeItemDemo extends Application {
         root.predicateProperty().bind(Bindings.createObjectBinding(() -> {
             if (filterField.getText() == null || filterField.getText().isEmpty())
                 return null;
-            return TreeItemPredicate.create(actor -> actor.toString().contains(filterField.getText()));
+            return actor -> actor.toString().contains(filterField.getText());
         }, filterField.textProperty()));
 
         TreeView<Actor> treeView = new TreeView<>(root);
@@ -113,15 +111,15 @@ public class FilterableTreeItemDemo extends Application {
         FilterableTreeItem<Actor> root = new FilterableTreeItem<>(new Actor("Root"));
         folder1 = createFolder("Folder 1");
         folder1.setExpanded(true);
-        root.getInternalChildren().add(folder1);
-        root.getInternalChildren().add(createFolder("Folder 2"));
-        root.getInternalChildren().add(createFolder("Folder 3"));
+        root.getSourceChildren().add(folder1);
+        root.getSourceChildren().add(createFolder("Folder 2"));
+        root.getSourceChildren().add(createFolder("Folder 3"));
         return root;
     }
 
     private FilterableTreeItem<Actor> createFolder(String name) {
         FilterableTreeItem<Actor> folder = new FilterableTreeItem<>(new Actor(name));
-        getActorList().forEach(actor -> folder.getInternalChildren().add(new FilterableTreeItem<>(actor)));
+        getActorList().forEach(actor -> folder.getSourceChildren().add(new FilterableTreeItem<>(actor)));
         return folder;
     }
 

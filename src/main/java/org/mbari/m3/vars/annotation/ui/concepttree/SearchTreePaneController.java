@@ -18,6 +18,7 @@ import org.mbari.m3.vars.annotation.services.ConceptService;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -101,26 +102,21 @@ public class SearchTreePaneController {
                 public void changed(ObservableValue<? extends TreeItem<Concept>> observable, TreeItem<Concept> oldValue, TreeItem<Concept> newValue) {
                     if (!completed) {
                         TextField tf = getTextField();
-                        FilterableTreeItem<Concept> root = (FilterableTreeItem<Concept>) newValue;
+                        org.mbari.m3.vars.annotation.ui.shared.FilterableTreeItem<Concept> root = (org.mbari.m3.vars.annotation.ui.shared.FilterableTreeItem<Concept>) newValue;
                         root.predicateProperty().bind(Bindings.createObjectBinding(() -> {
                             if (tf.getText() == null || tf.getText().isEmpty()) {
                                 return null;
                             }
                             else {
-                                return TreeItemPredicate.create(c -> {
+                                return (Concept c) -> {
                                     String t = c.getName();
                                     List<String> alternativeNames = c.getAlternativeNames();
                                     if (alternativeNames != null && !alternativeNames.isEmpty()) {
                                         t = t + alternativeNames.stream().collect(Collectors.joining());
                                     }
-//                                    if (c.getConceptDetails() != null) {
-//                                        t = t + c.getConceptDetails()
-//                                                .getAlternateNames()
-//                                                .stream()
-//                                                .collect(Collectors.joining());
-//                                    }
                                     return t.toLowerCase().contains(tf.getText().toLowerCase());
-                                });
+                                };
+
                             }
                         }, tf.textProperty()));
                         completed = true;

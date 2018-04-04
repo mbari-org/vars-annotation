@@ -30,10 +30,11 @@ public class TreeViewController {
         this.conceptService = conceptService;
     }
 
-    private FilterableTreeItem<Concept> buildTreeItem(Concept concept, FilterableTreeItem<Concept> parent) {
-        FilterableTreeItem<Concept> item = new FilterableTreeItem<>(concept);
+    private org.mbari.m3.vars.annotation.ui.shared.FilterableTreeItem<Concept> buildTreeItem(Concept concept, org.mbari.m3.vars.annotation.ui.shared.FilterableTreeItem<Concept> parent) {
+        org.mbari.m3.vars.annotation.ui.shared.FilterableTreeItem<Concept> item = new org.mbari.m3.vars.annotation.ui.shared.FilterableTreeItem<>(concept);
         if (parent != null) {
-            parent.getInternalChildren().add(item);
+            //parent.getInternalChildren().add(item);
+            parent.getSourceChildren().add(item);
         }
         concept.getChildren()
                 .forEach(c -> buildTreeItem(c, item));
