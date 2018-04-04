@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.Initializer;
@@ -54,7 +55,10 @@ public class FilteredComboBoxDecoratorDemo extends Application {
                 .thenAccept(names -> {
                    Platform.runLater(() -> cmb.setItems(FXCollections.observableArrayList(names)));
                 });
-        Scene scene = new Scene(new StackPane(cmb));
+        //Scene scene = new Scene(new StackPane(cmb));
+        BorderPane pane = new BorderPane();
+        pane.setTop(cmb);
+        Scene scene = new Scene(pane);
         scene.getStylesheets().addAll(Initializer.getToolBox().getStylesheets());
         stage.setScene(scene);
         stage.show();
