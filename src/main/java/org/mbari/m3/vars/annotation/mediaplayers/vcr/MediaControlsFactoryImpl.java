@@ -181,7 +181,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
             SerialCommVideoIO rawIo = connectWithRetry(serialPort, 8);
             SchedulerVideoIO<RS422State, RS422Error> io =
                     new SchedulerVideoIO<>(rawIo, Executors.newCachedThreadPool());
-            VCRSyncDecorator<RS422State, RS422Error> syncDecorator = new VCRSyncDecorator<>(io);
+            VCRSyncDecorator<RS422State, RS422Error> syncDecorator = new VCRSyncDecorator<>(io, 500L, 100L, 750L);
             StatusDecorator<RS422State, RS422Error> statusDecorator = new StatusDecorator<>(io);
             UserbitsAsTimeDecorator timeDecorator = new UserbitsAsTimeDecorator(rawIo);
             videoIO = new SimpleVideoIO<RS422State, RS422Error>(io.getConnectionID(),
