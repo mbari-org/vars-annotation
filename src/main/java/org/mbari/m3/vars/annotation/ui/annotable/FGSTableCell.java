@@ -58,38 +58,3 @@ public class FGSTableCell extends TableCell<Annotation, FGSValue> {
         });
     }
 }
-
-class FGSValue {
-
-    private final Annotation annotation;
-    private static final List<String> sampleKeys = Initializer.getToolBox()
-            .getConfig()
-            .getStringList("app.annotation.sample.linknames");
-
-    FGSValue(Annotation annotation) {
-        this.annotation = annotation;
-    }
-
-    boolean hasImage() {
-        return annotation != null &&
-                annotation.getImages() != null &&
-                !annotation.getImages().isEmpty();
-    }
-
-    boolean hasSample() {
-        return annotation != null &&
-                annotation.getAssociations() != null &&
-                annotation.getAssociations()
-                        .stream()
-                        .anyMatch(a ->  a.getLinkName() != null &&
-                                sampleKeys.contains(a.getLinkName())
-                        );
-    }
-
-    boolean isConcurrent() {
-        Media media = Initializer.getToolBox().getData().getMedia();
-        return media != null &&
-                annotation != null &&
-                !annotation.getVideoReferenceUuid().equals(media.getVideoReferenceUuid());
-    }
-}

@@ -41,6 +41,11 @@ public class AnnotationServiceDecorator {
         this.chunkSize = toolBox.getConfig().getInt("annotation.service.chunk.size");
     }
 
+    /**
+     * Find all annotations for a given video reference. The calls to retrieve
+     * the annotations are
+     * @param videoReferenceUuid
+     */
     public void findAnnotations(UUID videoReferenceUuid) {
         AnnotationService service = toolBox.getServices().getAnnotationService();
         AtomicInteger loadedAnnotationCount = new AtomicInteger(0);
