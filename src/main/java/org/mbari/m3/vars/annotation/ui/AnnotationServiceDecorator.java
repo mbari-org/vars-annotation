@@ -15,13 +15,13 @@ import org.mbari.m3.vars.annotation.model.AnnotationCount;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentNavigableMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -33,12 +33,15 @@ import java.util.stream.Collectors;
  */
 public class AnnotationServiceDecorator {
 
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final UIToolBox toolBox;
     private final int chunkSize;
+    private final Duration chunkTimeout;
 
     public AnnotationServiceDecorator(UIToolBox toolBox) {
         this.toolBox = toolBox;
         this.chunkSize = toolBox.getConfig().getInt("annotation.service.chunk.size");
+        this.chunkTimeout = toolBox.getConfig().getDuration("annotation.service.timeout");
     }
 
     /**
@@ -59,10 +62,12 @@ public class AnnotationServiceDecorator {
     }
 
     private CompletableFuture<Void> loadAnnotationPages(AtomicInteger loadedAnnotationCount,
-                                                        int totalAnnotationCount,
-                                                        AnnotationCount ac,
-                                                        boolean sendNotifcations,
-                                                        Optional<Media> masterMedia) {
+                                                           int totalAnnotationCount,
+                                                           AnnotationCount ac,
+                                                           boolean sendNotifcations,
+                                                           Optional<Media> masterMedia) {
+
+        CompletableFuture<Void> cf = new CompletableFuture<>();
         AnnotationService service = toolBox.getServices().getAnnotationService();
         EventBus eventBus = toolBox.getEventBus();
 
@@ -76,56 +81,69 @@ public class AnnotationServiceDecorator {
             eventBus.send(new ShowProgress());
         }
 
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
+        Runnable task = () -> {
+            int n = (int) Math.ceil(ac.getCount() / (double) chunkSize);
+            for (int i = 0; i < n; i++) {
+                long offset = i * chunkSize;
+                long limit = chunkSize;
 
-        int n = (int) Math.ceil(ac.getCount() / (double) chunkSize);
-        for (int i = 0; i < n; i++) {
-            long offset = i * chunkSize;
-            long limit = chunkSize;
-            CompletableFuture<Void> future = service.findAnnotations(ac.getVideoReferenceUuid(), limit, offset)
-                    .thenAccept(annotations -> {
-                        if (sendNotifcations && annotations.size() == 0) {
-                            eventBus.send(new HideProgress());
-                        } else {
+                CompletableFuture<Void> future = service.findAnnotations(ac.getVideoReferenceUuid(), limit, offset)
+                        .thenAccept(annotations -> {
+                            if (sendNotifcations && annotations.size() == 0) {
+                                eventBus.send(new HideProgress());
+                            } else {
 
-                            int c = loadedAnnotationCount.addAndGet(annotations.size());
-                            double progress = c / totalAnnotationCount;
+                                int c = loadedAnnotationCount.addAndGet(annotations.size());
+                                double progress = c / totalAnnotationCount;
 
-                            List<Annotation> annos = annotations;
-                            if (mediaBounds.isPresent()) {
-                                Pair<Instant, Instant> bounds = mediaBounds.get();
-                                Instant startTime = bounds.getKey();
-                                Instant endTime = bounds.getValue();
-                                if (startTime != null && endTime != null) {
-                                    annos = annotations.stream()
-                                            .filter(a -> {
-                                                Instant rt = a.getRecordedTimestamp();
-                                                return rt != null &&
-                                                        (rt.equals(startTime) ||
-                                                        rt.equals(endTime) ||
-                                                                (rt.isAfter(startTime) && rt.isBefore(endTime)));
-                                            })
-                                            .collect(Collectors.toList());
+                                List<Annotation> annos = annotations;
+                                if (mediaBounds.isPresent()) {
+                                    Pair<Instant, Instant> bounds = mediaBounds.get();
+                                    Instant startTime = bounds.getKey();
+                                    Instant endTime = bounds.getValue();
+                                    if (startTime != null && endTime != null) {
+                                        annos = annotations.stream()
+                                                .filter(a -> {
+                                                    Instant rt = a.getRecordedTimestamp();
+                                                    return rt != null &&
+                                                            (rt.equals(startTime) ||
+                                                                    rt.equals(endTime) ||
+                                                                    (rt.isAfter(startTime) && rt.isBefore(endTime)));
+                                                })
+                                                .collect(Collectors.toList());
+                                    }
+                                }
+                                eventBus.send(new AnnotationsAddedEvent(annos));
+
+                                if (sendNotifcations) {
+                                    if (progress >= 1.0) {
+                                        eventBus.send(new HideProgress());
+                                    } else {
+                                        eventBus.send(new SetProgress(progress));
+                                    }
                                 }
                             }
-                            eventBus.send(new AnnotationsAddedEvent(annos));
+                        });
 
-                            if (sendNotifcations) {
-                                if (progress >= 1.0) {
-                                    eventBus.send(new HideProgress());
-                                } else {
-                                    eventBus.send(new SetProgress(progress));
-                                }
-                            }
-                        }
-                    });
-            futures.add(future);
-        }
+                try {
+                    future.get(chunkTimeout.toMillis(), TimeUnit.MILLISECONDS);
+                }
+                catch (Exception e) {
+                    log.warn("Failed to load page chunk (" + offset + " to " +
+                            offset + limit + ")", e);
+                }
+            }
+            cf.complete(null);
 
-        CompletableFuture[] cfs = futures.toArray(new CompletableFuture[futures.size()]);
-        return CompletableFuture.allOf(cfs);
+        };
+
+        toolBox.getExecutorService().submit(task);
+
+        return cf;
 
     }
+
+
 
     public void findConcurrentAnnotations(Collection<UUID> videoReferenceUuids) {
         AnnotationService service = toolBox.getServices().getAnnotationService();

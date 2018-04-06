@@ -3,12 +3,15 @@ package org.mbari.m3.vars.annotation.services;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.AnnotationCount;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Brian Schlining
@@ -16,14 +19,15 @@ import java.util.stream.Collectors;
  */
 public class CombinedMediaAnnotationDecorator {
 
-    private final MediaService mediaService;
-    private final AnnotationService annotationService;
+    private final UIToolBox toolBox;
     private final int chunkSize;
+    private final Duration chunkTimeout;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public CombinedMediaAnnotationDecorator(UIToolBox toolBox) {
-        this.mediaService = toolBox.getServices().getMediaService();
-        this.annotationService = toolBox.getServices().getAnnotationService();
+        this.toolBox = toolBox;
         this.chunkSize = toolBox.getConfig().getInt("annotation.service.chunk.size");
+        this.chunkTimeout = toolBox.getConfig().getDuration("annotation.service.timeout");
     }
 
     /**
@@ -31,26 +35,37 @@ public class CombinedMediaAnnotationDecorator {
      * @param videoSequenceName The name of the video sequence to lookup
      * @return All annotations from all video references in a video sequence
      */
-    public CompletableFuture<List<Annotation>> findAllAnnotationsInDeployment(String videoSequenceName) {
+    public CompletableFuture<List<Annotation>>  findAllAnnotationsInDeployment(String videoSequenceName) {
 
-        // Storage of annotations as futures complete. We'll flatten it later
-        List<List<Annotation>> listsOfAnnotations = new ArrayList<>();
+
+        CompletableFuture<List<Annotation>> cf = new CompletableFuture<>();
+
+        MediaService mediaService = toolBox.getServices().getMediaService();
+        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
 
         // Store futures so that we cn wait on all of them to complete
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
-
         mediaService.findByVideoSequenceName(videoSequenceName)
-                .thenAccept(medias -> medias.forEach(media -> {
-                            CompletableFuture<Void> f = annotationService.findAnnotations(media.getVideoReferenceUuid())
-                                    .thenAccept(listsOfAnnotations::add);
-                            futures.add(f);
-                        }));
+                .thenAccept(medias -> {
 
-        CompletableFuture[] cfs = futures.toArray(new CompletableFuture[futures.size()]);
-        return CompletableFuture.allOf(cfs)
-                .thenApply(done -> listsOfAnnotations.stream()
-                        .flatMap(List::stream)
-                        .collect(Collectors.toList()));
+                    // Storage of annotations as futures complete
+                    List<Annotation> allAnnotations = new ArrayList<>();
+
+                    medias.forEach(media -> {
+                        CompletableFuture<List<Annotation>> f = annotationService.findAnnotations(media.getVideoReferenceUuid());
+                        try {
+                            // TODO move time to config file
+                            List<Annotation> annotations = f.get(chunkTimeout.toMillis(), TimeUnit.MILLISECONDS);
+                            allAnnotations.addAll(annotations);
+                        } catch (Exception e) {
+                            log.warn("Failed to load some annotations", e);
+                        }
+                    });
+
+                    cf.complete(allAnnotations);
+
+                });
+
+        return cf;
     }
 
     /**
@@ -61,6 +76,7 @@ public class CombinedMediaAnnotationDecorator {
      */
     public CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid) {
         CompletableFuture<List<Annotation>> cf = new CompletableFuture<>();
+        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         annotationService.countAnnotations(videoReferenceUuid)
                 .thenApply(ac ->  loadAnnotationPages(ac)
                     .thenApply(cf::complete));
@@ -75,29 +91,34 @@ public class CombinedMediaAnnotationDecorator {
      */
     private CompletableFuture<List<Annotation>> loadAnnotationPages(AnnotationCount ac) {
 
-        // Storage of annotations as futures complete. We'll flatten it later
-        List<List<Annotation>> listsOfAnnotations = new ArrayList<>();
+        CompletableFuture<List<Annotation>> cf = new CompletableFuture<>();
+        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
 
-        // Store futures so that we cn wait on all of them to complete
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
+        Runnable task = () -> {
+            // Iterate over pages of annotations making individual calls
+            List<Annotation> allAnnotations = new ArrayList<>();
+            int n = (int) Math.ceil(ac.getCount() / (double) chunkSize);
+            for (int i = 0; i < n; i++) {
+                long offset = i * chunkSize;
+                long limit = chunkSize;
 
-        // Iterate over pages of annotations making individual calls
-        int n = (int) Math.ceil(ac.getCount() / (double) chunkSize);
-        for (int i = 0; i < n; i++) {
-            long offset = i * chunkSize;
-            long limit = chunkSize;
-            CompletableFuture<Void> future = annotationService.findAnnotations(ac.getVideoReferenceUuid(), limit, offset)
-                    .thenAccept(listsOfAnnotations::add);
-            futures.add(future);
+                try {
+                    List<Annotation> annotations = annotationService
+                            .findAnnotations(ac.getVideoReferenceUuid(), limit, offset)
+                            .get(chunkTimeout.toMillis(), TimeUnit.MILLISECONDS);
+                    allAnnotations.addAll(annotations);
+                }
+                catch (Exception e) {
+                    log.warn("Failed to load page chunk (" + offset + " to " +
+                            offset + limit + ")", e);
+                }
+            }
+            cf.complete(allAnnotations);
+        };
 
-        }
+        toolBox.getExecutorService().submit(task);
 
-        // Combine and flatten results.
-        CompletableFuture[] cfs = futures.toArray(new CompletableFuture[futures.size()]);
-        return CompletableFuture.allOf(cfs)
-                .thenApply(done -> listsOfAnnotations.stream()
-                        .flatMap(List::stream)
-                        .collect(Collectors.toList()));
+        return cf;
 
     }
 }

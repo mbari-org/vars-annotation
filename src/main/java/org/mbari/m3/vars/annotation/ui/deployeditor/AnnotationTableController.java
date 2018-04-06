@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation.ui.deployeditor;
 
 import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
@@ -23,9 +24,7 @@ import org.mbari.vcr4j.time.Timecode;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.prefs.Preferences;
 
 /**
@@ -36,51 +35,16 @@ public class AnnotationTableController {
 
     private TableView<Annotation> tableView;
     private final ResourceBundle i18n;
-    private final EventBus eventBus;
 
     public AnnotationTableController(UIToolBox toolBox) {
         this.i18n = toolBox.getI18nBundle();
-        this.eventBus = toolBox.getEventBus();
 
-        Observable<Object> observable = eventBus.toObserverable();
+        // Load the column visibility and width
+        loadPreferences();
 
-        observable.ofType(MediaChangedEvent.class)
-                .subscribe(e -> {
-                    // load all annotations
-                    CombinedMediaAnnotationDecorator decorator = new CombinedMediaAnnotationDecorator(toolBox);
-                    decorator.findAllAnnotationsInDeployment(e.get().getVideoSequenceName())
-                        .thenAccept(annotations -> {
-                            ObservableList<Annotation> items = getTableView().getItems();
-                            items.clear();
-                            items.addAll(annotations);
-                        });
-                });
+    }
 
-        observable.ofType(AnnotationsAddedEvent.class)
-                .subscribe(e -> JFXUtilities.runOnFXThread(() -> {
-                    getTableView().getItems().addAll(e.get());
-                    getTableView().sort();
-                }));
-
-        observable.ofType(AnnotationsRemovedEvent.class)
-                .subscribe(e -> JFXUtilities.runOnFXThread(() ->
-                        getTableView().getItems().removeAll(e.get())));
-
-        observable.ofType(AnnotationsChangedEvent.class)
-                .subscribe(e -> {
-                    JFXUtilities.runOnFXThread(() -> {
-                        Collection<Annotation> annotations = e.get();
-                        ObservableList<Annotation> items = getTableView().getItems();
-                        for (Annotation a : annotations) {
-                            int idx = items.indexOf(a);
-                            items.remove(idx);
-                            items.add(idx, a);
-                        }
-                        tableView.refresh();
-                        tableView.sort();
-                    });
-                });
-
+    private void loadPreferences() {
         // Load the column visibility and width
         Preferences prefs = Preferences.userNodeForPackage(getClass());
         Preferences columnPrefs = prefs.node("table-columns");
@@ -97,22 +61,22 @@ public class AnnotationTableController {
                     });
                 });
 
+    }
 
-        // Save column visibility and width
-        Runtime.getRuntime()
-                .addShutdownHook(new Thread(() -> {
-                    getTableView().getColumns()
-                            .forEach(tc -> {
-                                Preferences p = columnPrefs.node(tc.getId());
-                                p.put("visible", "false");
-                                p.put("width", tc.getWidth() + "");
-                            });
-                    getTableView().getVisibleLeafColumns()
-                            .forEach(tc -> {
-                                Preferences p = columnPrefs.node(tc.getId());
-                                p.put("visible", "true");
-                            });
-                }));
+    public void savePreferences() {
+        Preferences prefs = Preferences.userNodeForPackage(getClass());
+        Preferences columnPrefs = prefs.node("table-columns");
+        getTableView().getColumns()
+                .forEach(tc -> {
+                    Preferences p = columnPrefs.node(tc.getId());
+                    p.put("visible", "false");
+                    p.put("width", tc.getWidth() + "");
+                });
+        getTableView().getVisibleLeafColumns()
+                .forEach(tc -> {
+                    Preferences p = columnPrefs.node(tc.getId());
+                    p.put("visible", "true");
+                });
     }
 
     public TableView<Annotation> getTableView() {
@@ -205,9 +169,15 @@ public class AnnotationTableController {
             grpCol.setCellValueFactory(new PropertyValueFactory<>("group"));
             grpCol.setId("group");
 
+            TableColumn<Annotation, UUID> vruCol
+                    = new TableColumn<>(i18n.getString("annotable.col.videoreference"));
+            vruCol.setCellValueFactory(new PropertyValueFactory<>("videoReferenceUuid"));
+            vruCol.setId("videoReferenceUuid");
+
+
             // TODO get column order from preferences
             tableView.getColumns().addAll(timecodeCol, elapsedTimeCol, timestampCol,
-                    obsCol, assCol, fgsCol, obvCol, durationCol, actCol, grpCol);
+                    obsCol, assCol, fgsCol, obvCol, durationCol, actCol, grpCol, vruCol);
 
 
         }

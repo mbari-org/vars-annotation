@@ -13,10 +13,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
 /**
  * @author Brian Schlining
@@ -70,7 +69,8 @@ public class Initializer {
                     new EventBus(),
                     bundle,
                     getConfig(),
-                    Arrays.asList(stylesheet));
+                    Collections.singletonList(stylesheet),
+                    new ForkJoinPool());
         }
         return toolBox;
     }

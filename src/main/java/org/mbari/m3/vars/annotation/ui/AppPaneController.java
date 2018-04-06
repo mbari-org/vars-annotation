@@ -41,6 +41,7 @@ import org.mbari.m3.vars.annotation.services.UserService;
 import org.mbari.m3.vars.annotation.ui.annotable.AnnotationTableController;
 import org.mbari.m3.vars.annotation.ui.cbpanel.ConceptButtonPanesController;
 import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
+import org.mbari.m3.vars.annotation.ui.deployeditor.AnnotationViewController;
 import org.mbari.m3.vars.annotation.ui.mediadialog.MediaPaneController;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.prefs.PreferencesDialogController;
@@ -79,6 +80,7 @@ public class AppPaneController {
     private MediaPaneController mediaPaneController;
     private BulkEditorPaneController bulkEditorPaneController;
     private AncillaryDataPaneController ancillaryDataPaneController;
+    private final AnnotationViewController annotationViewController;
     private static final String masterPaneKey =  "master-split-pane";
     private static final String topPaneKey = "top-split-pane";
     private static final String bottomPaneKey = "bottom-split-pane";
@@ -105,6 +107,7 @@ public class AppPaneController {
         mediaPaneController = MediaPaneController.newInstance();
         bulkEditorPaneController = BulkEditorPaneController.newInstance(toolBox);
         ancillaryDataPaneController = new AncillaryDataPaneController(toolBox);
+        annotationViewController = new AnnotationViewController(toolBox);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             saveDividerPositions(masterPaneKey, getMasterPane());
@@ -271,7 +274,19 @@ public class AppPaneController {
             createUserButton.setOnAction(e -> {
                 CreateUserDialog dialog = new CreateUserDialog(toolBox);
                 Optional<User> user = dialog.showAndWait();
+                user.ifPresent(u -> toolBox.getEventBus()
+                        .send(new UserChangedEvent(u)));
             });
+            createUserButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.user")));
+
+            Text deploymentIcon = gf.createIcon(MaterialIcon.GRID_ON, "30px");
+            Button showDeploymentButton = new JFXButton();
+            showDeploymentButton.setGraphic(deploymentIcon);
+            showDeploymentButton.setOnAction(e -> {
+                annotationViewController.show();
+            });
+            showDeploymentButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.deployment")));
+
 
 
             Label videoLabel = new Label(toolBox.getI18nBundle().getString("apppane.label.media"));
@@ -303,6 +318,7 @@ public class AppPaneController {
                     undoButton,
                     redoButton,
                     refreshButton,
+                    showDeploymentButton,
                     prefsButton,
                     createUserButton,
                     new Label(bundle.getString("apppane.label.user")),

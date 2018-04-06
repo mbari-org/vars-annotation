@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author Brian Schlining
@@ -19,6 +21,7 @@ import java.util.ResourceBundle;
  */
 public class UIToolBox {
 
+    private final ExecutorService executorService;
     private final EventBus eventBus;
     private final ResourceBundle i18nBundle;
     private final Config config;
@@ -35,13 +38,19 @@ public class UIToolBox {
                      EventBus eventBus,
                      ResourceBundle i18nBundle,
                      Config config,
-                     Collection<String> stylesheets) {
+                     Collection<String> stylesheets,
+                     ExecutorService executorService) {
         this.data = data;
         this.services = services;
         this.eventBus = eventBus;
         this.i18nBundle = i18nBundle;
         this.config = config;
         this.stylesheets = Collections.unmodifiableCollection(stylesheets);
+        this.executorService = executorService;
+    }
+
+    public ExecutorService getExecutorService() {
+        return executorService;
     }
 
     public Collection<String> getStylesheets() {
