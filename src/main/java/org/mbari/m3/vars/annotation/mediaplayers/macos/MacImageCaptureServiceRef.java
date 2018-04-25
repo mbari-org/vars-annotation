@@ -16,40 +16,34 @@ import java.io.File;
  */
 public class MacImageCaptureServiceRef implements ImageCaptureService {
 
-    private static ImageCaptureService imageCaptureService;
     private static final Logger log = LoggerFactory.getLogger(MacImageCaptureServiceRef.class);
 
     private static ImageCaptureService getImageCaptureService() {
-        if (imageCaptureService == null) {
-            try {
-                imageCaptureService = AVFImageCaptureService.getInstance();
-            }
-            catch (UnsatisfiedLinkError e) {
-                log.warn("Failed to instantiate AVFoundation Image Capture.");
-                imageCaptureService = new NoopImageCaptureService();
-            }
+
+        String captureApi = CaptureApiSettings.getSelectedCaptureApi();
+        String deviceName = CaptureApiSettings.getSelectedDevice();
+        CaptureApi api = CaptureApi.findByName(captureApi);
+
+        SelectableImageCaptureService imageCaptureService = CaptureApi.NONE.getImageCaptureService();
+        try {
+            imageCaptureService = api.getImageCaptureService();
+        }
+        catch (UnsatisfiedLinkError e) {
+            log.warn("Failed to instantiate image capture service for " + api.getName());
+        }
+        try {
+            imageCaptureService.setDevice(deviceName);
+        }
+        catch (Exception e) {
+            log.warn("Failed to set device to " + deviceName + " for the " +
+                    api.getName() + " API", e);
         }
         return imageCaptureService;
     }
 
     @Override
     public Framegrab capture(File file) {
-        ImageCaptureService ics = getImageCaptureService();
-        if (ics instanceof AVFImageCaptureService) {
-            // Lookup selected device from settings everytime we run
-            // TODO avf currently uses local computer time for video-index.
-            // That only works for real-time annotations.
-            AVFImageCaptureService avf = (AVFImageCaptureService) imageCaptureService;
-            String selectedDevice = SettingsPaneImpl.getSelectedDevice();
-            if (selectedDevice == null || selectedDevice.isEmpty()) {
-                log.warn("No image capture device has been selected in settings");
-            }
-            else {
-                avf.setDevice(selectedDevice);
-            }
-
-        }
-        return ics.capture(file);
+        return getImageCaptureService().capture(file);
     }
 
     @Override

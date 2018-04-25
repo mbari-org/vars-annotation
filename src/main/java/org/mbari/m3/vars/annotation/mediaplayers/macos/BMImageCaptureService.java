@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * @author Brian Schlining
  * @since 2018-04-24T16:11:00
  */
-public class BMImageCaptureService implements ImageCaptureService {
+public class BMImageCaptureService implements SelectableImageCaptureService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private BlackmagicImageCapture imageCapture;
@@ -40,8 +40,14 @@ public class BMImageCaptureService implements ImageCaptureService {
     }
 
     public void setDevice(String device) {
+        String cd = currentDevice == null ? "" : currentDevice;
+        if (!cd.equals(device)) {
+            imageCapture.stopSession();
+        }
+        if (device != null) {
+            imageCapture.startSessionWithNamedDevice(device);
+        }
         currentDevice = device;
-        imageCapture.startSessionWithNamedDevice(currentDevice);
     }
 
     @Override

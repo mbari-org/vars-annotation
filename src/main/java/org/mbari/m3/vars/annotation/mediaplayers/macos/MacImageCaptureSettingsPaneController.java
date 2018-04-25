@@ -3,23 +3,29 @@ package org.mbari.m3.vars.annotation.mediaplayers.macos;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXRadioButton;
 import java.net.URL;
+import java.util.Collection;
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 
-import com.typesafe.config.Config;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
-import org.mbari.m3.vars.annotation.Initializer;
+import javafx.scene.layout.Pane;
+import org.mbari.m3.vars.annotation.mediaplayers.SettingsPane;
 import org.mbari.m3.vars.annotation.util.FXMLUtils;
+import org.mbari.m3.vars.annotation.util.JFXUtilities;
 
 /**
  * @author Brian Schlining
  * @since 2018-04-24T16:50:00
  */
-public class MacImageCaptureSettingsPaneController {
+public class MacImageCaptureSettingsPaneController implements SettingsPane  {
 
     public static final String DEVICE_KEY = "macos-imagecapture-device";
     public static final String CAPTURE_API_KEY ="macos-imagecapture-api";
+    private String name;
+
 
     @FXML
     private ResourceBundle resources;
@@ -40,26 +46,77 @@ public class MacImageCaptureSettingsPaneController {
     private JFXRadioButton bmRadioButton;
 
     @FXML
-    private JFXComboBox<?> deviceComboBox;
+    private JFXComboBox<String> deviceComboBox;
+
+    private final ToggleGroup toggleGroup = new ToggleGroup();
 
     @FXML
     void initialize() {
 
+        name = resources.getString("mediaplayer.macos.name");
+
+        noneRadioButton.setToggleGroup(toggleGroup);
+        noneRadioButton.setUserData(CaptureApi.NONE);
+        avfRadioButton.setToggleGroup(toggleGroup);
+        avfRadioButton.setUserData(CaptureApi.AVFOUNDATION);
+        bmRadioButton.setToggleGroup(toggleGroup);
+        bmRadioButton.setUserData(CaptureApi.BLACKMAGIC_DESIGN);
+        toggleGroup.selectedToggleProperty().addListener((obs, oldv, newv) -> {
+            if (newv != null) {
+                CaptureApi captureApi = (CaptureApi) newv.getUserData();
+                setCaptureDevice(captureApi, null);
+            }
+        });
     }
+
+
+    private void setCaptureDevice(CaptureApi captureApi, String deviceName) {
+        Collection<String> devices = captureApi.getImageCaptureService().listDevices();
+        Runnable r = () -> {
+            deviceComboBox.setItems(FXCollections.observableArrayList(devices));
+            if (deviceName != null && devices.contains(deviceName)) {
+                deviceComboBox.getSelectionModel().select(deviceName);
+            }
+            else {
+                deviceComboBox.getSelectionModel().select(0);
+            }
+        };
+        JFXUtilities.runOnFXThread(r);
+    }
+
 
     public static MacImageCaptureSettingsPaneController newInstance() {
         return FXMLUtils.newInstance(MacImageCaptureSettingsPaneController.class,
                 "/fxml/MacImageCaptureSettingsPane.fxml");
     }
-    
 
-    public static String getSelectedDevice() {
-        Preferences prefs = Preferences.userNodeForPackage(SettingsPaneImpl.class);
-        return prefs.get(DEVICE_KEY, "");
+    public void load() {
+        String captureApi = CaptureApiSettings.getSelectedCaptureApi();
+        String deviceName = CaptureApiSettings.getSelectedDevice();
+        CaptureApi api = CaptureApi.findByName(captureApi);
+        setCaptureDevice(api, deviceName);
     }
 
-    public static String getSelectedCaptureApi() {
-        Preferences prefs = Preferences.userNodeForPackage(SettingsPaneImpl.class);
-        return prefs.get(CAPTURE_API_KEY, "");
+    public void save() {
+        Toggle toggle = toggleGroup.getSelectedToggle();
+        CaptureApi captureApi = CaptureApi.NONE;
+        if (toggle != null) {
+            captureApi = (CaptureApi) toggle.getUserData();
+        }
+        String deviceName = "";
+        if (!deviceComboBox.getSelectionModel().isEmpty()) {
+            deviceName = deviceComboBox.getSelectionModel().getSelectedItem();
+        }
+        CaptureApiSettings.setCaptureDevice(captureApi, deviceName);
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Pane getPane() {
+        return root;
     }
 }

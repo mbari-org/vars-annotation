@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
  * @author Brian Schlining
  * @since 2017-08-11T09:16:00
  */
-public class AVFImageCaptureService implements ImageCaptureService {
+public class AVFImageCaptureService implements SelectableImageCaptureService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private AVFImageCapture imageCapture;
