@@ -203,6 +203,11 @@
       <version>2.1.0</version>
     </dependency>
     <dependency>
+      <groupId>org.mbari.m3</groupId>
+      <artifactId>vars-blackmagic</artifactId>
+      <version>0.0.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.scijava</groupId>
       <artifactId>native-lib-loader</artifactId>
       <version>2.2.0</version>
