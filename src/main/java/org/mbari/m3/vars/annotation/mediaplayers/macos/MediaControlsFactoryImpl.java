@@ -1,6 +1,5 @@
 package org.mbari.m3.vars.annotation.mediaplayers.macos;
 
-import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaControls;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaControlsFactory;
 import org.mbari.m3.vars.annotation.mediaplayers.SettingsPane;
@@ -28,8 +27,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
     public SettingsPane getSettingsPane() {
         if (settingsPane == null) {
             try {
-                settingsPane = new SettingsPaneImpl(Initializer.getToolBox(),
-                        AVFImageCaptureService.getInstance());
+                settingsPane = MacImageCaptureSettingsPaneController.newInstance();
             }
             catch (Exception | UnsatisfiedLinkError e) {
                 log.warn("Unable to create a settings pane for Mac OS Image capture", e);

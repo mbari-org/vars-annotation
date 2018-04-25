@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXRadioButton;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -73,6 +74,10 @@ public class MacImageCaptureSettingsPaneController implements SettingsPane  {
     private void setCaptureDevice(CaptureApi captureApi, String deviceName) {
         Collection<String> devices = captureApi.getImageCaptureService().listDevices();
         Runnable r = () -> {
+            toggleGroup.getToggles()
+                    .stream()
+                    .filter(toggle -> toggle.getUserData() == captureApi)
+                    .forEach(toggleGroup::selectToggle);
             deviceComboBox.setItems(FXCollections.observableArrayList(devices));
             if (deviceName != null && devices.contains(deviceName)) {
                 deviceComboBox.getSelectionModel().select(deviceName);
