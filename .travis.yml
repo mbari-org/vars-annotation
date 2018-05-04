@@ -4,6 +4,8 @@ jdk:
 branches:
   only:
     - master
+install: true
+script: mvn clean compile -DskipTests=true
 notifications:
   email:
     - bschlining@gmail.com
