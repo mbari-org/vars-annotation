@@ -133,11 +133,13 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                                         .filter(a -> a.getRecordedTimestamp() != null && a.getRecordedTimestamp().isAfter(Instant.EPOCH))
                                         .sorted(Comparator.comparing(Annotation::getRecordedTimestamp))
                                         .collect(Collectors.toList());
-                                Instant start = sorted.get(0).getRecordedTimestamp();
-                                Instant end = sorted.get(sorted.size() - 1).getRecordedTimestamp();
-                                Duration duration = Duration.between(start, end);
-                                MediaService mediaService = toolBox.getServices().getMediaService();
-                                mediaService.update(media.getVideoUuid(), start, duration);
+                                if (!sorted.isEmpty()) {
+                                    Instant start = sorted.get(0).getRecordedTimestamp();
+                                    Instant end = sorted.get(sorted.size() - 1).getRecordedTimestamp();
+                                    Duration duration = Duration.between(start, end);
+                                    MediaService mediaService = toolBox.getServices().getMediaService();
+                                    mediaService.update(media.getVideoUuid(), start, duration);
+                                }
                             }
                         });
                 cf.complete(mediaPlayer);
