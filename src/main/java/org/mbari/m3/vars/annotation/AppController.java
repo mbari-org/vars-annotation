@@ -263,6 +263,14 @@ public class AppController {
             if (media != null) {
                 UUID uuid = media.getVideoReferenceUuid();
 
+                /*
+                  1. Find medias for your deployment that overlap the one with
+                     the uuid you provided
+                  2. Convert those medias to a list of their UUIDs
+                  3. Pass that list to findConcurrentAnnotations. That will
+                     get all annotations, from the overlapping media, that
+                     overlap with the timebounds of your current media
+                 */
                 toolBox.getServices()
                         .getMediaService()
                         .findConcurrentByVideoReferenceUuid(uuid)
