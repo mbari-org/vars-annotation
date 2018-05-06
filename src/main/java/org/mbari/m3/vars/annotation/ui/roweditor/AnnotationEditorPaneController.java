@@ -242,7 +242,7 @@ public class AnnotationEditorPaneController {
             return loader.getController();
         }
         catch (Exception e) {
-            throw new RuntimeException("Failed to load RowEditorPane from FXML", e);
+            throw new RuntimeException("Failed to load AnnotationEditorPane from FXML", e);
         }
     }
 

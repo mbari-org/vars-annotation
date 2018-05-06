@@ -161,7 +161,7 @@ public class ImageViewController {
             comboBox.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldv, newv) -> {
-                        Image image = newv == null ? null : new Image(newv.getUrl().toExternalForm());
+                        Image image = newv == null ? null : new Image(newv.getUrl().toExternalForm(), true);
                         getImageView().setImage(image);
                     });
             comboBox.setMaxWidth(Double.MAX_VALUE);

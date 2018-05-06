@@ -71,6 +71,11 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(imageService.findByUuid(imageReferenceUuid));
     }
 
+    @Override
+    public CompletableFuture<List<Image>> findImagesByVideoReferenceUuid(UUID videoReferenceUuid) {
+        return sendRequest(imageService.findByVideoReferenceUuid(videoReferenceUuid));
+    }
+
     public CompletableFuture<Association> findAssociationByUuid(UUID associationUuid) {
         return sendRequest(assService.findByUuid(associationUuid));
     }
