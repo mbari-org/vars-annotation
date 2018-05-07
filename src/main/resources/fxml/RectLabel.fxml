@@ -2,18 +2,20 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 
-
-<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.rectlabel.RectLabelController">
+<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.rectlabel.RectLabelController">
    <center>
-      <StackPane fx:id="imageStackPane" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <StackPane fx:id="imageStackPane" minHeight="0.0" minWidth="0.0" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
             <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="369.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER" />
+            <AnchorPane fx:id="boxPane" prefHeight="200.0" prefWidth="200.0" />
          </children>
       </StackPane>
    </center>
@@ -26,10 +28,18 @@
       </ToolBar>
    </top>
    <right>
-      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <HBox fx:id="rightPane" BorderPane.alignment="CENTER">
          <children>
-            <JFXListView fx:id="imageReferenceListView" />
-            <JFXListView fx:id="observationListView" />
+            <ScrollPane fx:id="imageScrollPane" vbarPolicy="ALWAYS">
+               <content>
+                  <JFXListView fx:id="imageReferenceListView" />
+               </content>
+            </ScrollPane>
+            <ScrollPane fx:id="observationScrollPane" vbarPolicy="ALWAYS">
+               <content>
+                  <JFXListView fx:id="observationListView" />
+               </content>
+            </ScrollPane>
          </children>
       </HBox>
    </right>

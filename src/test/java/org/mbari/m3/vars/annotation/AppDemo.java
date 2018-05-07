@@ -14,7 +14,6 @@
 package org.mbari.m3.vars.annotation;
 
 import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.slf4j.Logger;

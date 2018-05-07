@@ -35,12 +35,14 @@ public class RectLabelStageController {
     public RectLabelStageController(UIToolBox toolBox) {
         this.toolBox = toolBox;
         rectLabelController = RectLabelController.newInstance(toolBox);
+        rectLabelController.getRefreshButton()
+                .setOnAction(evt -> show());
     }
 
     public void show() {
         Media media = toolBox.getData().getMedia();
         setMedia(media);
-        JFXUtilities.runOnFXThread(() -> stage.show());
+        JFXUtilities.runOnFXThread(() -> getStage().show());
         if (mediaSubscriber == null) {
             mediaSubscriber = toolBox.getEventBus()
                     .toObserverable()
@@ -55,6 +57,7 @@ public class RectLabelStageController {
             BorderPane root = rectLabelController.getRoot();
             Scene scene = new Scene(root);
             scene.getStylesheets().addAll(toolBox.getStylesheets());
+            stage.setScene(scene);
         }
         return stage;
     }
