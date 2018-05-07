@@ -12,7 +12,7 @@
 *  - If new annotation button is selected
  *      - When clicking on the image, allow user to draw bounding box
  *      - After drawign is complete, show a dialog allowing user to specify concept
- * 
+ *
  *
  * @author Brian Schlining
  * @since 2018-05-04T15:52:00
