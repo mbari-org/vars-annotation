@@ -31,8 +31,9 @@ public class RectLabelStageControllerDemo extends Application {
                 .getMediaService()
                 .findByVideoSequenceName("Doc Ricketts 0953")
                 .thenAccept(ms -> {
-                    System.out.println("Using Media: " + ms.get(0));
-                    controller.setMedia(ms.get(0));
+                    int idx = 5;
+                    System.out.println("Using Media: " + ms.get(idx));
+                    controller.setMedia(ms.get(idx));
                 });
     }
 }

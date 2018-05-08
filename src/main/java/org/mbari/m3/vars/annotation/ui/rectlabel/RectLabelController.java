@@ -7,6 +7,8 @@ import com.google.gson.GsonBuilder;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -14,6 +16,7 @@ import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -51,6 +54,9 @@ import org.mbari.m3.vars.annotation.util.JFXUtilities;
  *                 "image_reference_uuid": "512db2d7-7b57-4463-a44a-3acb36df0513",
  *                 "mime_type": "application/json}
  * </pre>
+ *
+ * TODO kyra wants to be able to select and delete multiple bounding boxes
+ * at one time.
  * @author Brian Schlining
  * @since 2018-05-04T15:04:00
  */
@@ -103,6 +109,9 @@ public class RectLabelController {
 
     private ObservableList<Image> images = FXCollections.observableArrayList();
     private ObservableList<Annotation> imageAnnotations = FXCollections.observableArrayList();
+
+    private Collection<ChangeListener<? extends Number>> resizeListeners
+            = new ArrayList<>();
 
     private Gson gson = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
@@ -237,6 +246,10 @@ public class RectLabelController {
         }
     }
 
+    private void drawAnnotations(List<Annotation> annotations) {
+
+    }
+
     private void drawAssociation(Association association, Color color) {
 
         if (association.getLinkName().equalsIgnoreCase("bounding box")) {
@@ -246,6 +259,7 @@ public class RectLabelController {
                 r.setStroke(color);
                 r.setStrokeWidth(2);
                 r.setFill(null);
+                // TODO remove listeners when new image is selected.
                 imageStackPane.widthProperty().addListener((obs, oldv, newv) ->
                         drawBoundingBox(a, r));
                 imageStackPane.heightProperty().addListener((obs, oldv, newv) ->

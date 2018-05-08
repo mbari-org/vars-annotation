@@ -46,7 +46,6 @@ import org.mbari.m3.vars.annotation.ui.mediadialog.MediaPaneController;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.prefs.PreferencesDialogController;
 import org.mbari.m3.vars.annotation.ui.userdialog.CreateUserDialog;
-import org.mbari.vcr4j.rxtx.RXTX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
