@@ -30,12 +30,12 @@
    <right>
       <HBox fx:id="rightPane" BorderPane.alignment="CENTER">
          <children>
-            <ScrollPane fx:id="imageScrollPane" vbarPolicy="ALWAYS">
+            <ScrollPane fx:id="imageScrollPane">
                <content>
                   <JFXListView fx:id="imageReferenceListView" />
                </content>
             </ScrollPane>
-            <ScrollPane fx:id="observationScrollPane" vbarPolicy="ALWAYS">
+            <ScrollPane fx:id="observationScrollPane">
                <content>
                   <JFXListView fx:id="observationListView" />
                </content>

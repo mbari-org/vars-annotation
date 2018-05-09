@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
+import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
 import org.mbari.m3.vars.annotation.model.Image;
 import org.mbari.m3.vars.annotation.model.Media;
@@ -37,6 +39,20 @@ public class RectLabelStageController {
         rectLabelController = RectLabelController.newInstance(toolBox);
         rectLabelController.getRefreshButton()
                 .setOnAction(evt -> show());
+
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(AnnotationsSelectedEvent.class)
+                .filter(evt -> evt.getEventSource() != rectLabelController)
+                .subscribe(selected -> {
+                    // TODO if more than one image do nothing
+                    // TODO if annotation in annotation list. Select it
+                });
+
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(AnnotationsAddedEvent.class)
+                .subscribe(evt -> show());
     }
 
     public void show() {

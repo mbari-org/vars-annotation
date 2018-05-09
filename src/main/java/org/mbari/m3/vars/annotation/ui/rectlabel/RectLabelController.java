@@ -7,22 +7,18 @@ import com.google.gson.GsonBuilder;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
@@ -33,9 +29,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Image;
@@ -51,8 +49,8 @@ import org.mbari.m3.vars.annotation.util.JFXUtilities;
  *                 "y": 20,
  *                 "width": 50,
  *                 "height": 20,
- *                 "image_reference_uuid": "512db2d7-7b57-4463-a44a-3acb36df0513",
- *                 "mime_type": "application/json}
+ *                 "image_reference_uuid": "512db2d7-7b57-4463-a44a-3acb36df0513"}
+ *      mimeType: application/json
  * </pre>
  *
  * TODO kyra wants to be able to select and delete multiple bounding boxes
@@ -61,6 +59,13 @@ import org.mbari.m3.vars.annotation.util.JFXUtilities;
  * @since 2018-05-04T15:04:00
  */
 public class RectLabelController {
+
+    private static final Color SELECTED_COLOR = Color.ORANGE;
+    private static final Color NOT_SELECTED_COLOR = Color.CYAN;
+    public static final String LINK_NAME = "bounding box";
+    public static final String TO_CONCEPT = Association.VALUE_SELF;
+    public static final String MIME_TYPE = "application/json";
+
 
     @FXML
     private ResourceBundle resources;
@@ -108,20 +113,36 @@ public class RectLabelController {
     private ImageViewExt imageViewExt;
 
     private ObservableList<Image> images = FXCollections.observableArrayList();
-    private ObservableList<Annotation> imageAnnotations = FXCollections.observableArrayList();
+    private ObservableList<Annotation> allAnnotations = FXCollections.observableArrayList();
+    private ObservableList<Annotation> selectedAnnotations = FXCollections.observableArrayList();
 
-    private Collection<ChangeListener<? extends Number>> resizeListeners
-            = new ArrayList<>();
+    private Collection<BoundingBoxNode> boundingBoxNodes = new ArrayList<>();
 
     private Gson gson = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create();
+
+    private BoundingBoxCreator boundingBoxCreator;
 
     private class BoundingBox {
         double x;
         double y;
         double width;
         double height;
+    }
+
+    private class BoundingBoxNode {
+        Shape boundingBox;
+        ChangeListener<? super Number> changeListener;
+        Association association;
+
+        public BoundingBoxNode(Shape boundingBox,
+                               ChangeListener<? super Number> changeListener,
+                               Association association) {
+            this.boundingBox = boundingBox;
+            this.changeListener = changeListener;
+            this.association = association;
+        }
     }
 
     private UIToolBox toolBox;
@@ -136,6 +157,8 @@ public class RectLabelController {
 
         Text deleteIcon = gf.createIcon(MaterialIcon.DELETE, "30px");
         deleteButton.setGraphic(deleteIcon);
+        deleteButton.setDisable(true);
+
         // Set deleteButton
 
         imageView.setPreserveRatio(true);
@@ -143,12 +166,16 @@ public class RectLabelController {
         imageView.fitHeightProperty().bind(imageStackPane.heightProperty());
         imageView.fitWidthProperty().bind(imageStackPane.widthProperty());
         imageViewExt = new ImageViewExt(imageView);
+
+        boxPane.prefHeightProperty().bind(imageStackPane.heightProperty());
+        boxPane.prefWidthProperty().bind(imageStackPane.widthProperty());
+
         rightPane.heightProperty().addListener((obs, oldv, newv) -> {
             imageScrollPane.setPrefHeight(newv.doubleValue());
             observationScrollPane.setPrefHeight(newv.doubleValue());
+            observationListView.setPrefHeight(newv.doubleValue());
+            imageReferenceListView.setPrefHeight(newv.doubleValue());
         });
-
-
 
         imageReferenceListView.setItems(images);
         imageReferenceListView.getSelectionModel()
@@ -158,10 +185,18 @@ public class RectLabelController {
                 .addListener((obs, oldv, newv) -> setSelectedImage(newv));
 
         observationListView.getSelectionModel()
-                .setSelectionMode(SelectionMode.SINGLE);
+                .setSelectionMode(SelectionMode.MULTIPLE);
+        observationListView.setItems(allAnnotations);
         observationListView.getSelectionModel()
                 .selectedItemProperty()
-                .addListener((obs, oldv, newv) -> setSelectedAnnotation(newv));
+                .addListener((obs, oldv, newv) -> {
+                    ArrayList<Annotation> items = new ArrayList<>(observationListView
+                            .getSelectionModel().getSelectedItems());
+                    AnnotationsSelectedEvent selected = new AnnotationsSelectedEvent(RectLabelController.this, items);
+                    toolBox.getEventBus()
+                            .send(selected);
+                    setSelectedAnnotations(items);
+                });
         observationListView.setCellFactory(view ->
              new ListCell<Annotation>() {
                 @Override
@@ -170,8 +205,12 @@ public class RectLabelController {
                     if (item != null) {
                         setText(item.getConcept());
                     }
+                    else {
+                        setText(null);
+                    }
                 }
             });
+
 
         imageReferenceListView.setCellFactory(view ->
             new ListCell<Image>() {
@@ -199,57 +238,94 @@ public class RectLabelController {
         this.toolBox = toolBox;
     }
 
-    //    public Point2D convertToStackPane(Point2D imagePoint) {
-//        double s = imageViewExt.computeActualScale();
-//        Point2D imageViewPoint = imagePoint.multiply(s);
-//    }
 
-    private void setSelectedAnnotation(Annotation annotation) {
-        if (annotation == null) {
-            imageView.setImage(null);
+    private void setSelectedAnnotations(Collection<Annotation> annotations) {
+        removeResizeListeners();
+        deleteButton.setDisable(annotations == null || annotations.isEmpty());
+        if (annotations == null) {
+
         }
         else {
-            // TODO draw bounding box for selected annotation in different color
+
+            // Split select vs non-selected associations
+            FilteredList<Annotation> selected = allAnnotations.filtered(annotations::contains);
+            selectedAnnotations.clear();
+            selectedAnnotations.addAll(selected);
+            FilteredList<Annotation> notSelected = allAnnotations.filtered(a -> !annotations.contains(a));
+            drawAnnotations(selected, SELECTED_COLOR);
+            drawAnnotations(notSelected, NOT_SELECTED_COLOR);
+
+            if (selected.isEmpty()) {
+                boundingBoxCreator.setDisable(false);
+            }
+
         }
+    }
+
+    private void removeResizeListeners() {
+        ArrayList<BoundingBoxNode> nodes = new ArrayList<>(boundingBoxNodes);
+        boundingBoxNodes.clear();
+        nodes.forEach(node -> {
+            imageStackPane.widthProperty().removeListener(node.changeListener);
+            imageStackPane.heightProperty().removeListener(node.changeListener);
+            boxPane.getChildren().remove(node.boundingBox);
+        });
     }
 
     private void setSelectedImage(Image image) {
-        if (image == null) {
-            observationListView.getItems().clear();
-            imageView.setImage(null);
-        }
-        else {
-            javafx.scene.image.Image jfxImage =
-                    new javafx.scene.image.Image(image.getUrl().toExternalForm(),
-                            true);
-            imageView.setImage(jfxImage);
-            // lookup annotations for that image
-            toolBox.getServices()
-                    .getAnnotationService()
-                    .findByImageReference(image.getImageReferenceUuid())
-                    .thenAccept(annotations -> JFXUtilities.runOnFXThread(() -> {
-                        observationListView.getItems().clear();
-                        observationListView.getItems().addAll(annotations);
 
-                        // TODO Draw bounding boxes for any that are present in the annotations
-                    }));
+        JFXUtilities.runOnFXThread(() -> {
+            removeResizeListeners();
+            allAnnotations.clear();
+            if (image == null) {
+                imageView.setImage(null);
+            }
+            else {
+                javafx.scene.image.Image jfxImage =
+                        new javafx.scene.image.Image(image.getUrl().toExternalForm(),
+                                true);
+                imageView.setImage(jfxImage);
+                // lookup allAnnotations for that image
 
-            Association association = new Association("bounding box",
-                    "self",
-                    "{\"x\": 10, \"y\":20, \"width\": 40, \"height\": 50}",
-                    "application/json");
-            drawAssociation(association, Color.CYAN);
+                toolBox.getServices()
+                        .getAnnotationService()
+                        .findByImageReference(image.getImageReferenceUuid())
+                        .thenAccept(annotations -> JFXUtilities.runOnFXThread(() -> {
+                            this.allAnnotations.addAll(annotations);
+                            drawAnnotations(annotations, NOT_SELECTED_COLOR);
+                            // TODO Draw bounding boxes for any that are present in the allAnnotations
+                        }));
 
+                Random r = new Random();
+                int x = r.nextInt(1000);
+                int y = r.nextInt(1000);
+                int width = r.nextInt(100) + 10;
+                int height = r.nextInt(100) + 10;
+                String s = "{\"x\": " + x + ", \"y\": " + y +
+                        ", \"width\": " + width + ", \"height\": " + height + "}";
+                Association association = new Association("bounding box",
+                        "self",
+                        s,
+                        "application/json");
+                drawAssociation(association, Color.CYAN);
 
-
-
-        }
+            }
+        });
     }
 
-    private void drawAnnotations(List<Annotation> annotations) {
-
+    private void drawAnnotations(List<Annotation> annotations, Color color) {
+        annotations.stream()
+                .flatMap(anno -> anno.getAssociations().stream())
+                .forEach(assoc -> drawAssociation(assoc, color));
     }
 
+
+
+    /**
+     * Call on JavaFX Thread
+     * @param association
+     * @param color
+     */
     private void drawAssociation(Association association, Color color) {
 
         if (association.getLinkName().equalsIgnoreCase("bounding box")) {
@@ -260,10 +336,11 @@ public class RectLabelController {
                 r.setStrokeWidth(2);
                 r.setFill(null);
                 // TODO remove listeners when new image is selected.
-                imageStackPane.widthProperty().addListener((obs, oldv, newv) ->
-                        drawBoundingBox(a, r));
-                imageStackPane.heightProperty().addListener((obs, oldv, newv) ->
-                        drawBoundingBox(a, r));
+                ChangeListener<? super Number> listener = (obs, oldv, newv) ->
+                        drawBoundingBox(a, r);
+                boundingBoxNodes.add(new BoundingBoxNode(r, listener, association));
+                imageStackPane.widthProperty().addListener(listener);
+                imageStackPane.heightProperty().addListener(listener);
                 boxPane.getChildren().add(r);
             }
             catch (Exception e) {
@@ -271,7 +348,57 @@ public class RectLabelController {
                 e.printStackTrace();
             }
         }
+    }
 
+    private void handleBoundingBoxEvent(BoundingBoxCreatedEvent event) {
+        Image image = imageReferenceListView.getSelectionModel()
+                .getSelectedItem();
+        if (image != null) {
+            Shape shape = event.getShape();
+
+            if (shape instanceof Rectangle) {
+                handleRectangle(event, image);
+            }
+        }
+
+    }
+
+    private void handleRectangle(BoundingBoxCreatedEvent event,  Image image) {
+
+
+        Rectangle shape = (Rectangle) event.getShape();
+        Bounds bounds = imageView.getBoundsInParent();
+        double scale = imageViewExt.computeActualScale();
+
+        // ImageView coords
+        double viewX = shape.getX() - bounds.getMinX();
+        double viewY = shape.getY() - bounds.getMinY();
+
+        // Annotation coords (in original image coordinate space)
+        double annoX = viewX / scale;
+        double annoY = viewY / scale;
+
+        double width = shape.getWidth() / scale;
+        double height = shape.getHeight() / scale;
+
+        Association association = newAssociation(annoX, annoY, width, height, image.getImageReferenceUuid());
+
+        //new CreateAssociationsCmd(association, );
+
+
+    }
+
+    private Association newAssociation(double x,
+                                       double y,
+                                       double width,
+                                       double height,
+                                       UUID imageReferenceUuid) {
+        String linkValue = "{\"x\": " + x
+                + ", \"y\": " + y +
+                ", \"width\": " + width
+                + ", \"height\": " + height
+                + ", \"image_reference_uuid\": \"" + imageReferenceUuid.toString() + "\"}";
+        return new Association(LINK_NAME, TO_CONCEPT, linkValue, MIME_TYPE);
     }
 
     private Rectangle drawBoundingBox(final Association association, Rectangle r) {
@@ -313,8 +440,10 @@ public class RectLabelController {
     }
 
     public void setImages(List<Image> images) {
-        this.images.clear();
-        this.images.addAll(images);
+        JFXUtilities.runOnFXThread(() -> {
+            this.images.clear();
+            this.images.addAll(images);
+        });
     }
 
     public static RectLabelController newInstance(UIToolBox toolBox) {
@@ -325,6 +454,13 @@ public class RectLabelController {
             loader.load();
             RectLabelController controller = loader.getController();
             controller.setToolBox(toolBox);
+            controller.boundingBoxCreator = new BoundingBoxCreator(controller.boxPane,
+                    toolBox.getEventBus());
+            toolBox.getEventBus()
+                    .toObserverable()
+                    .ofType(BoundingBoxCreatedEvent.class)
+                    .subscribe(controller::handleBoundingBoxEvent);
+
             return controller;
         }
         catch (Exception e) {
