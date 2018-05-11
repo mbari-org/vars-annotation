@@ -19,6 +19,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
@@ -33,6 +34,10 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.commands.Command;
+import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
+import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
+import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
@@ -123,6 +128,7 @@ public class RectLabelController {
             .create();
 
     private BoundingBoxCreator boundingBoxCreator;
+    private SelectConceptDialogController dialogController;
 
     private class BoundingBox {
         double x;
@@ -149,6 +155,7 @@ public class RectLabelController {
 
     @FXML
     void initialize() {
+
 
         GlyphsFactory gf = MaterialIconFactory.get();
         Text refreshIcon = gf.createIcon(MaterialIcon.REFRESH, "30px");
@@ -234,16 +241,55 @@ public class RectLabelController {
             });
     }
 
+    public Map<Association, UUID> getSelectedBoundingBoxAssociations() {
+        ArrayList<Annotation> selectedAnnotations = new ArrayList<>(observationListView.getSelectionModel()
+                .getSelectedItems());
+
+        Map<Association, UUID> map = new HashMap<>();
+        for (Annotation a : selectedAnnotations) {
+            for (Association as : a.getAssociations()) {
+                if (as.getLinkName().equalsIgnoreCase(LINK_NAME)) {
+                    map.put(as, a.getObservationUuid());
+                }
+            }
+        }
+
+        return map;
+    }
+
+    public void handleAnnotationsSelectedEvent(AnnotationsSelectedEvent event) {
+        if (event.getEventSource() != RectLabelController.this) {
+            observationListView.getSelectionModel().clearSelection();
+            imageReferenceListView.getSelectionModel().clearSelection();
+        }
+    }
+
     private void setToolBox(UIToolBox toolBox) {
         this.toolBox = toolBox;
+        dialogController = new SelectConceptDialogController(toolBox);
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(BoundingBoxCreatedEvent.class)
+                .subscribe(this::handleBoundingBoxEvent);
+
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(AnnotationsChangedEvent.class)
+                .subscribe(this::handleAnnotationsChangedEvent);
+
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(AnnotationsRemovedEvent.class)
+                .subscribe(this::handleAnnotationsRemovedEvent);
     }
 
 
     private void setSelectedAnnotations(Collection<Annotation> annotations) {
         removeResizeListeners();
         deleteButton.setDisable(annotations == null || annotations.isEmpty());
-        if (annotations == null) {
-
+        Image image = imageReferenceListView.getSelectionModel().getSelectedItem();
+        if ((annotations == null || annotations.isEmpty()) && image != null) {
+            boundingBoxCreator.setDisable(false);
         }
         else {
 
@@ -255,9 +301,12 @@ public class RectLabelController {
             drawAnnotations(selected, SELECTED_COLOR);
             drawAnnotations(notSelected, NOT_SELECTED_COLOR);
 
-            if (selected.isEmpty()) {
-                boundingBoxCreator.setDisable(false);
-            }
+            //System.out.println("SELECTED " + selected.size() + " --- NOT SELECTED = " + notSelected.size());
+            boolean disable = selected.size() != 1 || selected.get(0)
+                    .getAssociations()
+                    .stream()
+                    .anyMatch(a -> a.getLinkName().equalsIgnoreCase(LINK_NAME));
+            boundingBoxCreator.setDisable(disable);
 
         }
     }
@@ -293,7 +342,9 @@ public class RectLabelController {
                         .thenAccept(annotations -> JFXUtilities.runOnFXThread(() -> {
                             this.allAnnotations.addAll(annotations);
                             drawAnnotations(annotations, NOT_SELECTED_COLOR);
-                            // TODO Draw bounding boxes for any that are present in the allAnnotations
+//                            if (annotations.size() == 1) {
+//                                observationListView.getSelectionModel().select(annotations.get(0));
+//                            }
                         }));
 
                 Random r = new Random();
@@ -334,7 +385,7 @@ public class RectLabelController {
                 Rectangle r = drawBoundingBox(association, null);
                 r.setStroke(color);
                 r.setStrokeWidth(2);
-                r.setFill(null);
+                r.setFill(Color.color(color.getRed(), color.getGreen(), color.getBlue(), 0.1));
                 // TODO remove listeners when new image is selected.
                 ChangeListener<? super Number> listener = (obs, oldv, newv) ->
                         drawBoundingBox(a, r);
@@ -360,13 +411,29 @@ public class RectLabelController {
                 handleRectangle(event, image);
             }
         }
-
     }
 
-    private void handleRectangle(BoundingBoxCreatedEvent event,  Image image) {
+    private void handleAnnotationsChangedEvent(AnnotationsChangedEvent event) {
+        handleAnnotationChange(event.get());
+    }
 
+    private void handleAnnotationsRemovedEvent(AnnotationsRemovedEvent event) {
+        handleAnnotationChange(event.get());
+    }
 
-        Rectangle shape = (Rectangle) event.getShape();
+    private void handleAnnotationChange(Collection<Annotation> annotations) {
+        Image image = imageReferenceListView.getSelectionModel()
+                .getSelectedItem();
+        if (image != null) {
+            boolean needsUpdate = annotations.stream()
+                    .anyMatch(a -> a.getImagedMomentUuid().equals(image.getImagedMomentUuid()));
+            if (needsUpdate) {
+                setSelectedImage(image);
+            }
+        }
+    }
+
+    private Association rectangleToAssociation(Rectangle shape, Image image) {
         Bounds bounds = imageView.getBoundsInParent();
         double scale = imageViewExt.computeActualScale();
 
@@ -381,9 +448,41 @@ public class RectLabelController {
         double width = shape.getWidth() / scale;
         double height = shape.getHeight() / scale;
 
-        Association association = newAssociation(annoX, annoY, width, height, image.getImageReferenceUuid());
+        return newAssociation(annoX, annoY, width, height, image.getImageReferenceUuid());
+    }
 
-        //new CreateAssociationsCmd(association, );
+
+    private void handleRectangle(BoundingBoxCreatedEvent event,  Image image) {
+
+        Annotation selectedItem = observationListView.getSelectionModel()
+                .getSelectedItem();
+
+
+        Association association = rectangleToAssociation((Rectangle) event.shape, image);
+
+        if (selectedItem != null) {
+
+            Command cmd = new CreateAssociationsCmd(association, Collections.singletonList(selectedItem));
+            toolBox.getEventBus().send(cmd);
+            drawAssociation(association, SELECTED_COLOR);
+        }
+        else {
+            // TODO SHOW Dialog to add annotations
+            Dialog<String> dialog = dialogController.getDialog();
+            Optional<String> concept = dialog.showAndWait();
+            concept.ifPresent(c -> {
+                toolBox.getServices()
+                        .getConceptService()
+                        .findConcept(c)
+                        .thenAccept(opt -> opt.ifPresent(primaryConcept -> {
+                            String primaryName = primaryConcept.getName();
+
+                            // TODO Create annotation with the association
+                            // TODO need a new message to do this
+                        }));
+            });
+
+        }
 
 
     }
@@ -456,15 +555,11 @@ public class RectLabelController {
             controller.setToolBox(toolBox);
             controller.boundingBoxCreator = new BoundingBoxCreator(controller.boxPane,
                     toolBox.getEventBus());
-            toolBox.getEventBus()
-                    .toObserverable()
-                    .ofType(BoundingBoxCreatedEvent.class)
-                    .subscribe(controller::handleBoundingBoxEvent);
 
             return controller;
         }
         catch (Exception e) {
-            throw new RuntimeException("Failed to load RectLabel from fxml");
+            throw new RuntimeException("Failed to load RectLabel from fxml", e);
         }
     }
 }

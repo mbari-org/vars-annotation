@@ -33,6 +33,7 @@ public class RectLabelStageControllerDemo extends Application {
                 .thenAccept(ms -> {
                     int idx = 5;
                     System.out.println("Using Media: " + ms.get(idx));
+                    toolBox.getData().setMedia(ms.get(idx));
                     controller.setMedia(ms.get(idx));
                 });
     }

@@ -34,7 +34,7 @@ public class ImageViewExt {
         if (!imageView.isPreserveRatio()) {
             actualScale = Double.NaN;
         }
-        else if (doScaleRecompute) {
+        else if (doScaleRecompute || Double.isNaN(actualScale))  {
             Image localImage = imageView.getImage();
             Rectangle2D localViewport = imageView.getViewport();
 

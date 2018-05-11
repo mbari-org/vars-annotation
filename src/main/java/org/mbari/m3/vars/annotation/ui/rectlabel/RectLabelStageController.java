@@ -7,9 +7,12 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.commands.Command;
+import org.mbari.m3.vars.annotation.commands.DeleteAssociationsCmd;
 import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
+import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Image;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
@@ -18,6 +21,8 @@ import org.reactivestreams.Subscriber;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -39,6 +44,14 @@ public class RectLabelStageController {
         rectLabelController = RectLabelController.newInstance(toolBox);
         rectLabelController.getRefreshButton()
                 .setOnAction(evt -> show());
+        rectLabelController.getDeleteButton()
+                .setOnAction(evt -> {
+                    Map<Association, UUID> map = rectLabelController.getSelectedBoundingBoxAssociations();
+                    if (!map.isEmpty()) {
+                        Command cmd = new DeleteAssociationsCmd(map);
+                        toolBox.getEventBus().send(cmd);
+                    }
+                });
 
         toolBox.getEventBus()
                 .toObserverable()
