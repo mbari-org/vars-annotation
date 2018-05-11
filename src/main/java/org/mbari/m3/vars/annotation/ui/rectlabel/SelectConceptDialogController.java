@@ -43,6 +43,7 @@ public class SelectConceptDialogController {
                 return concept;
             });
         }
+        return dialog;
     }
 
     public JFXComboBox<String> getConceptComboBox() {
