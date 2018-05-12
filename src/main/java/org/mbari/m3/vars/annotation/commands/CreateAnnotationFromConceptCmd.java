@@ -1,19 +1,11 @@
 package org.mbari.m3.vars.annotation.commands;
 
-import org.mbari.m3.vars.annotation.Data;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
-import org.mbari.m3.vars.annotation.model.Media;
-import org.mbari.vcr4j.VideoIndex;
-
-import java.time.Instant;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 
 /**

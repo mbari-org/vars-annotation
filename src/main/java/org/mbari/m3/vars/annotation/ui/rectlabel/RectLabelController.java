@@ -35,6 +35,7 @@ import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.Command;
+import org.mbari.m3.vars.annotation.commands.CreateAnnotationAtIndexCmd;
 import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
 import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
@@ -45,6 +46,7 @@ import org.mbari.m3.vars.annotation.model.Image;
 import org.mbari.m3.vars.annotation.ui.shared.ImageViewExt;
 import org.mbari.m3.vars.annotation.util.FormatUtils;
 import org.mbari.m3.vars.annotation.util.JFXUtilities;
+import org.mbari.vcr4j.VideoIndex;
 
 /**
  * <pre>
@@ -461,30 +463,23 @@ public class RectLabelController {
         Association association = rectangleToAssociation((Rectangle) event.shape, image);
 
         if (selectedItem != null) {
-
             Command cmd = new CreateAssociationsCmd(association, Collections.singletonList(selectedItem));
             toolBox.getEventBus().send(cmd);
-            drawAssociation(association, SELECTED_COLOR);
         }
         else {
-            // TODO SHOW Dialog to add annotations
+            // Show Dialog to add annotations
             Dialog<String> dialog = dialogController.getDialog();
-            Optional<String> concept = dialog.showAndWait();
-            concept.ifPresent(c -> {
-                toolBox.getServices()
-                        .getConceptService()
-                        .findConcept(c)
-                        .thenAccept(opt -> opt.ifPresent(primaryConcept -> {
-                            String primaryName = primaryConcept.getName();
-
-                            // TODO Create annotation with the association
-                            // TODO need a new message to do this
-                        }));
+            Optional<String> opt = dialog.showAndWait();
+            // Create annotation with the association
+            opt.ifPresent(concept -> {
+                VideoIndex videoIndex = new VideoIndex(Optional.ofNullable(image.getRecordedTimestamp()),
+                        Optional.ofNullable(image.getElapsedTime()),
+                        Optional.ofNullable(image.getTimecode()));
+                Command cmd = new CreateAnnotationAtIndexCmd(videoIndex, concept, association);
+                toolBox.getEventBus().send(cmd);
             });
-
         }
-
-
+        drawAssociation(association, SELECTED_COLOR);
     }
 
     private Association newAssociation(double x,

@@ -52,21 +52,6 @@ public class SelectConceptDialogController {
             new FilteredComboBoxDecorator<>(conceptComboBox,
                     FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
             conceptComboBox.setEditable(false);
-            conceptComboBox.setOnKeyReleased(v -> {
-                if (v.getCode() == KeyCode.ENTER) {
-                    String item = conceptComboBox.getValue();
-                    if (item != null && image != null) {
-                        toolBox.getServices()
-                                .getConceptService()
-                                .findConcept(item)
-                                .thenAccept(opt -> opt.ifPresent(concept -> {
-                                    String primaryName = concept.getName();
-
-                                }));
-                    }
-                }
-            });
-
         }
         return conceptComboBox;
     }
