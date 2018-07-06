@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.Command;
 import org.mbari.m3.vars.annotation.commands.DeleteAssociationsCmd;
@@ -37,6 +38,7 @@ public class RectLabelStageController {
     private final RectLabelController rectLabelController;
     private Stage stage;
     private Disposable mediaSubscriber;
+    private boolean visible = false;
 
 
     public RectLabelStageController(UIToolBox toolBox) {
@@ -44,31 +46,38 @@ public class RectLabelStageController {
         rectLabelController = RectLabelController.newInstance(toolBox);
         rectLabelController.getRefreshButton()
                 .setOnAction(evt -> show());
+        EventBus eventBus = toolBox.getEventBus();
         rectLabelController.getDeleteButton()
                 .setOnAction(evt -> {
                     Map<Association, UUID> map = rectLabelController.getSelectedBoundingBoxAssociations();
                     if (!map.isEmpty()) {
                         Command cmd = new DeleteAssociationsCmd(map);
-                        toolBox.getEventBus().send(cmd);
+                        eventBus.send(cmd);
                     }
                 });
 
-        toolBox.getEventBus()
-                .toObserverable()
-                .ofType(AnnotationsSelectedEvent.class)
+//        eventBus.toObserverable()
+//                .ofType(AnnotationsSelectedEvent.class)
+//                .filter(evt -> evt.getEventSource() != rectLabelController)
+//                .subscribe(rectLabelController::handleAnnotationsSelectedEvent);
+
+        eventBus.toObserverable()
+                .ofType(AnnotationsAddedEvent.class)
                 .filter(evt -> evt.getEventSource() != rectLabelController)
-                .subscribe(selected -> {
-                    // TODO if more than one image do nothing
-                    // TODO if annotation in annotation list. Select it
+                .subscribe(evt -> {
+                    if (visible) {
+                        show();
+                    }
                 });
 
-        toolBox.getEventBus()
-                .toObserverable()
-                .ofType(AnnotationsAddedEvent.class)
-                .subscribe(evt -> show());
     }
 
+    /**
+     * Sets the window visible and sets the media to the currently selected media
+     * used in the main annotation window
+     */
     public void show() {
+        visible = true;
         Media media = toolBox.getData().getMedia();
         setMedia(media);
         JFXUtilities.runOnFXThread(() -> getStage().show());
@@ -80,7 +89,7 @@ public class RectLabelStageController {
         }
     }
 
-    private Stage getStage() {
+    public Stage getStage() {
         if (stage == null) {
             stage = new Stage();
             BorderPane root = rectLabelController.getRoot();
@@ -91,7 +100,11 @@ public class RectLabelStageController {
         return stage;
     }
 
+    /**
+     * Hides the stage and disables eventbus and redraws
+     */
     public void hide() {
+        visible = false;
         setMedia(null);
         if (stage != null) {
             stage.hide();

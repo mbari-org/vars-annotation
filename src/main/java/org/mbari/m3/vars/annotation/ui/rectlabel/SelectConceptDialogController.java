@@ -1,10 +1,12 @@
 package org.mbari.m3.vars.annotation.ui.rectlabel;
 
 import com.jfoenix.controls.JFXComboBox;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
-import javafx.scene.input.KeyCode;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Image;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
@@ -52,8 +54,20 @@ public class SelectConceptDialogController {
             new FilteredComboBoxDecorator<>(conceptComboBox,
                     FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
             conceptComboBox.setEditable(false);
+            loadComboBoxData();
         }
         return conceptComboBox;
+    }
+
+    private void loadComboBoxData() {
+
+        toolBox.getServices()
+                .getConceptService()
+                .findAllNames()
+                .thenAccept(names -> {
+                    FilteredList<String> cns = new FilteredList<>(FXCollections.observableArrayList(names));
+                    Platform.runLater(() -> conceptComboBox.setItems(cns));
+                });
     }
 
     public Image getImage() {

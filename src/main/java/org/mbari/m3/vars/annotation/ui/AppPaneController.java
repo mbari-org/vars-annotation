@@ -45,6 +45,7 @@ import org.mbari.m3.vars.annotation.ui.deployeditor.AnnotationViewController;
 import org.mbari.m3.vars.annotation.ui.mediadialog.MediaPaneController;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.prefs.PreferencesDialogController;
+import org.mbari.m3.vars.annotation.ui.rectlabel.RectLabelStageController;
 import org.mbari.m3.vars.annotation.ui.userdialog.CreateUserDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,7 +80,9 @@ public class AppPaneController {
     private MediaPaneController mediaPaneController;
     private BulkEditorPaneController bulkEditorPaneController;
     private AncillaryDataPaneController ancillaryDataPaneController;
+    private RectLabelStageController rectLabelStageController;
     private final AnnotationViewController annotationViewController;
+
     private static final String masterPaneKey =  "master-split-pane";
     private static final String topPaneKey = "top-split-pane";
     private static final String bottomPaneKey = "bottom-split-pane";
@@ -107,6 +110,8 @@ public class AppPaneController {
         bulkEditorPaneController = BulkEditorPaneController.newInstance(toolBox);
         ancillaryDataPaneController = new AncillaryDataPaneController(toolBox);
         annotationViewController = new AnnotationViewController(toolBox);
+        rectLabelStageController = new RectLabelStageController(toolBox);
+        rectLabelStageController.getStage().setOnCloseRequest(evt -> rectLabelStageController.hide());
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             saveDividerPositions(masterPaneKey, getMasterPane());
@@ -281,12 +286,14 @@ public class AppPaneController {
             Text deploymentIcon = gf.createIcon(MaterialIcon.GRID_ON, "30px");
             Button showDeploymentButton = new JFXButton();
             showDeploymentButton.setGraphic(deploymentIcon);
-            showDeploymentButton.setOnAction(e -> {
-                annotationViewController.show();
-            });
+            showDeploymentButton.setOnAction(e -> annotationViewController.show());
             showDeploymentButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.deployment")));
 
-
+            Text rectLabelIcon = gf.createIcon(MaterialIcon.PICTURE_IN_PICTURE, "30px");
+            Button rectLabelButton = new JFXButton();
+            rectLabelButton.setGraphic(rectLabelIcon);
+            rectLabelButton.setOnAction(e -> rectLabelStageController.show());
+            rectLabelButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.rectlabel")));
 
             Label videoLabel = new Label(toolBox.getI18nBundle().getString("apppane.label.media"));
             Label mediaLabel = new Label();
@@ -318,6 +325,7 @@ public class AppPaneController {
                     redoButton,
                     refreshButton,
                     showDeploymentButton,
+                    rectLabelButton,
                     prefsButton,
                     createUserButton,
                     new Label(bundle.getString("apppane.label.user")),

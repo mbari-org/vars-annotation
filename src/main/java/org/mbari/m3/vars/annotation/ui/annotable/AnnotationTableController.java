@@ -261,6 +261,9 @@ public class AnnotationTableController {
                     else if (a.getElapsedTime() != null) {
                         eventBus.send(new SeekMsg<>(a.getElapsedTime()));
                     }
+                    else if (a.getRecordedTimestamp() != null) {
+                        eventBus.send(new SeekMsg<>(a.getRecordedTimestamp()));
+                    }
                 });
                 menu.getItems().add(seekItem);
 

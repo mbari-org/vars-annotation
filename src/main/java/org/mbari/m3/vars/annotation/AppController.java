@@ -251,7 +251,9 @@ public class AppController {
         // Load new data
         data.setMedia(newMedia);
         AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
-        decorator.findAnnotations(newMedia.getVideoReferenceUuid());
+        if (newMedia != null) {
+            decorator.findAnnotations(newMedia.getVideoReferenceUuid());
+        }
 
 
     }
