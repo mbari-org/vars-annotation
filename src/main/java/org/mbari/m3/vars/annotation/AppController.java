@@ -35,6 +35,7 @@ import java.io.*;
 import java.net.URL;
 import java.security.Key;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.function.BiFunction;
@@ -236,6 +237,17 @@ public class AppController {
         }
         else if (idx instanceof Duration) {
             mediaPlayer.seek((Duration) idx);
+        }
+        else if (idx instanceof Instant) {
+            Media media = toolBox.getData().getMedia();
+            if (media != null) {
+                Instant startTime = media.getStartTimestamp();
+                if (startTime != null) {
+                    Instant time = (Instant) idx;
+                    Duration elapsedTime = Duration.between(startTime, time);
+                    mediaPlayer.seek(elapsedTime);
+                }
+            }
         }
     }
 
