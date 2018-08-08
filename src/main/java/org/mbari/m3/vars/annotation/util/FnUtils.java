@@ -16,7 +16,7 @@ public class FnUtils {
      * Attempt to emulate Scala collections distinct by function
      * Usage:
      *   <pre>
-     *       persons.stream().filter(distinctByKey(p -> p.getName());
+     *       persons.stream().filter(distinctBy(p -> p.getName());
      *   </pre>
      * @param keyExtractor
      * @param <T>

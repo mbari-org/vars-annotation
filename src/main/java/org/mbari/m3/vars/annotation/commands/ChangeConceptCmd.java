@@ -17,7 +17,7 @@ public class ChangeConceptCmd extends UpdateAnnotationsCmd {
         super(originalAnnotations, originalAnnotations.stream()
                 .map(Annotation::new)
                 .peek(a -> a.setConcept(concept))
-                .collect(Collectors.toList()), true);
+                .collect(Collectors.toList()), true, true);
         this.concept = concept;
     }
 
