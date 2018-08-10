@@ -46,6 +46,7 @@ import org.mbari.m3.vars.annotation.ui.mediadialog.MediaPaneController;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.prefs.PreferencesDialogController;
 import org.mbari.m3.vars.annotation.ui.rectlabel.RectLabelStageController;
+import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
 import org.mbari.m3.vars.annotation.ui.userdialog.CreateUserDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -395,6 +396,7 @@ public class AppPaneController {
 
             UserService userService = toolBox.getServices().getUserService();
             usersComboBox = new JFXComboBox<>();
+            new FilteredComboBoxDecorator<>(usersComboBox, FilteredComboBoxDecorator.CONTAINS_CHARS_IN_ORDER);
             Comparator<String> sorter = Comparator.comparing(String::toString, String.CASE_INSENSITIVE_ORDER);
 
             // Listen to UserAddedEvent and add it to the combobox
