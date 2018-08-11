@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.ui;
 
+import com.google.common.collect.Lists;
 import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
@@ -15,6 +16,8 @@ import org.mbari.m3.vars.annotation.model.AnnotationCount;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
+import org.mbari.m3.vars.annotation.services.MediaService;
+import org.mbari.m3.vars.annotation.util.AsyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -211,19 +214,28 @@ public class AnnotationServiceDecorator {
 
     /**
      * Refreshes the view for Annotations that already exist but are modified.
-     * @param observationUuid
+     * @param observationUuids
      */
-    public void refreshAnnotationsView(Set<UUID> observationUuid) {
-        CopyOnWriteArrayList<Annotation> annotations = new CopyOnWriteArrayList<>();
-        final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        CompletableFuture[] futures = observationUuid.stream()
-                .map(uuid -> annotationService.findByUuid(uuid)
-                        .thenAccept(annotations::add))
-                .toArray(i -> new CompletableFuture[i]);
-        CompletableFuture<Void> all = CompletableFuture.allOf(futures);
+    public void refreshAnnotationsView(Set<UUID> observationUuids) {
+
         final EventBus eventBus = toolBox.getEventBus();
-        all.thenAccept(v ->
-            eventBus.send(new AnnotationsChangedEvent(annotations)));
+        final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+//        AsyncUtils.collectAll(observationUuids, annotationService::findByUuid)
+//                .thenAccept(annotations -> eventBus.send(new AnnotationsChangedEvent(annotations)));
+
+        AsyncUtils.observeAll(observationUuids, annotationService::findByUuid)
+                .subscribe(annotation -> eventBus.send(new AnnotationsChangedEvent(Arrays.asList(annotation))));
+
+//        CopyOnWriteArrayList<Annotation> annotations = new CopyOnWriteArrayList<>();
+//
+//        CompletableFuture[] futures = observationUuids.stream()
+//                .map(uuid -> annotationService.findByUuid(uuid)
+//                        .thenAccept(annotations::add))
+//                .toArray(i -> new CompletableFuture[i]);
+//        CompletableFuture<Void> all = CompletableFuture.allOf(futures);
+//
+//        all.thenAccept(v ->
+//            eventBus.send(new AnnotationsChangedEvent(annotations)));
     }
 
     public void refreshAnnotationsView(UUID observationUuid) {
@@ -239,20 +251,36 @@ public class AnnotationServiceDecorator {
      */
     public CompletableFuture<List<Association>> findReferenceNumberAssociations(Media media, String associationKey) {
         CompletableFuture<List<Association>> f = new CompletableFuture<>();
-        toolBox.getServices()
-                .getMediaService()
-                .findByVideoSequenceName(media.getVideoSequenceName())
-                .thenAccept(medias -> {
-                    List<Association> associations = new CopyOnWriteArrayList<>();
-                    CompletableFuture[] futures = medias.stream()
-                            .map(m -> toolBox.getServices()
-                                    .getAnnotationService()
-                                    .findByVideoReferenceAndLinkName(m.getVideoReferenceUuid(), associationKey)
-                                    .thenAccept(associations::addAll))
-                            .toArray(i -> new CompletableFuture[i]);
-                    CompletableFuture.allOf(futures)
-                            .thenAccept(v -> f.complete(associations));
+        MediaService mediaService = toolBox.getServices().getMediaService();
+        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+
+        mediaService.findByVideoSequenceName(media.getVideoSequenceName())
+                .thenCompose(medias -> AsyncUtils.collectAll(medias, m ->
+                            annotationService.findByVideoReferenceAndLinkName(m.getVideoReferenceUuid(), associationKey)))
+                .thenAccept(associationLists -> {
+                    List<Association> associations = associationLists.stream()
+                            .flatMap(List::stream)
+                            .collect(Collectors.toList());
+                    f.complete(associations);
                 });
+
+//        toolBox.getServices()
+//                .getMediaService()
+//                .findByVideoSequenceName(media.getVideoSequenceName())
+//                .thenAccept(medias -> {
+//
+//
+//
+//                    List<Association> associations = new CopyOnWriteArrayList<>();
+//                    CompletableFuture[] futures = medias.stream()
+//                            .map(m -> toolBox.getServices()
+//                                    .getAnnotationService()
+//                                    .findByVideoReferenceAndLinkName(m.getVideoReferenceUuid(), associationKey)
+//                                    .thenAccept(associations::addAll))
+//                            .toArray(i -> new CompletableFuture[i]);
+//                    CompletableFuture.allOf(futures)
+//                            .thenAccept(v -> f.complete(associations));
+//                });
         return f;
     }
 
