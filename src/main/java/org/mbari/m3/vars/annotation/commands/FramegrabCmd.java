@@ -107,6 +107,8 @@ public class FramegrabCmd implements Command {
                 createAnnotationInDatastore(toolBox, image)
                         .thenApply(a1 -> {
                             // notify UI
+                            // TODO look up related annotations and refresh them all
+
                             log.debug("Created annotation for framegrab: {}" + a1);
                             eventBus.send(new AnnotationsAddedEvent(a1));
                             eventBus.send(new AnnotationsSelectedEvent(a1));

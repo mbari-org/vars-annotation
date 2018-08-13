@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation.ui;
 
 import com.google.common.collect.Lists;
+import com.sun.xml.internal.ws.util.CompletedFuture;
 import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
@@ -11,10 +12,7 @@ import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.messages.HideProgress;
 import org.mbari.m3.vars.annotation.messages.SetProgress;
 import org.mbari.m3.vars.annotation.messages.ShowProgress;
-import org.mbari.m3.vars.annotation.model.Annotation;
-import org.mbari.m3.vars.annotation.model.AnnotationCount;
-import org.mbari.m3.vars.annotation.model.Association;
-import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.m3.vars.annotation.util.AsyncUtils;
@@ -283,5 +281,6 @@ public class AnnotationServiceDecorator {
 //                });
         return f;
     }
+
 
 }

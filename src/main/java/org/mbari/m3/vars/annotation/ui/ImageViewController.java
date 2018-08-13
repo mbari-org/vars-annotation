@@ -149,7 +149,7 @@ public class ImageViewController {
             comboBox.setConverter(new StringConverter<ImageReference>() {
                 @Override
                 public String toString(ImageReference object) {
-                    return object.getDescription() + " [" + object.getFormat() + "]";
+                    return object == null ? null : object.getDescription() + " [" + object.getFormat() + "]";
                 }
 
                 @Override

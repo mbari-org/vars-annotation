@@ -18,7 +18,6 @@ import org.mbari.m3.vars.annotation.util.AsyncUtils;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
 public class DetachFramegrabCmd implements Command {
 
     private final Collection<Annotation> originalAnnotations;
-    private final Collection<Annotation> modifiedAnnotations = new CopyOnWriteArraySet<>();
     private Collection<Image> originalImages = new CopyOnWriteArrayList<>();
 
     public DetachFramegrabCmd(Collection<Annotation> originalAnnotations) {
@@ -38,6 +36,13 @@ public class DetachFramegrabCmd implements Command {
         this.originalAnnotations = ImmutableList.copyOf(originalAnnotations);
     }
 
+    /**
+     * Looks up all the images that need to be deleted from the annotations.
+     * The results are cached so that we don't need to look them up again through
+     * subseguent apply/unapply cycles.
+     * @param toolBox
+     * @return The images to delete
+     */
     private CompletableFuture<Collection<Image>> findImagesToDelete(UIToolBox toolBox) {
 
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
@@ -105,14 +110,13 @@ public class DetachFramegrabCmd implements Command {
             Set<UUID> observationUuids = annos.stream()
                     .map(Annotation::getObservationUuid)
                     .collect(Collectors.toSet());
-            modifiedAnnotations.addAll(annos);
             decorator.refreshAnnotationsView(observationUuids);
         };
 
         CompletableFuture<Collection<Image>> f = findImagesToDelete(toolBox);
 
         f.whenComplete((images, exception) -> {
-            if (exception != null) {
+            if (exception == null) {
                 Observable<List<Annotation>> observable = AsyncUtils.observeAll(images, deleteImageAndFindAnnotationsFn);
                 observable.subscribe(updateAnnotationsFn, t -> showAlert(t, toolBox));
             }
@@ -128,8 +132,27 @@ public class DetachFramegrabCmd implements Command {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
 
-        Function<Image, CompletableFuture<List<Annotation>>> createImageAndFindAnnotationFn
-        originalImages.forEach(annotationService::createImage);
+        // Create an iamge and
+        Function<Image, CompletableFuture<List<Annotation>>> createImageAndFindAnnotationFn =
+                image -> annotationService.createImage(image)
+                        .thenCompose(image1 -> annotationService.findByImageReference(image1.getImageReferenceUuid()));
+
+
+        AsyncUtils.collectAll(originalImages, createImageAndFindAnnotationFn)
+                .whenComplete((annotationLists, exception) -> {
+                    List<Annotation> annotations = annotationLists.stream()
+                            .flatMap(List::stream)
+                            .collect(Collectors.toList());
+                    if (exception == null) {
+                        Set<UUID> observationUuids = annotations.stream()
+                                .map(Annotation::getObservationUuid)
+                                .collect(Collectors.toSet());
+                        decorator.refreshAnnotationsView(observationUuids);
+                    }
+                    else {
+                        showAlert(exception, toolBox);
+                    }
+                });
     }
 
     @Override
