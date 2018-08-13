@@ -2,225 +2,216 @@ package org.mbari.m3.vars.annotation.commands;
 
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
-import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
+import org.mbari.m3.vars.annotation.messages.ShowAlert;
 import org.mbari.m3.vars.annotation.messages.ShowWarningAlert;
 import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
-import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
-import org.mbari.m3.vars.annotation.ui.ImageArchiveServiceDecorator;
+import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.services.ImageCaptureService;
+import org.mbari.m3.vars.annotation.ui.ImageArchiveServiceDecorator;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
+
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
- * @since 2017-08-31T14:43:00
+ * @since 2018-08-13T11:41:00
  */
 public class FramegrabCmd implements Command {
 
-    private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("uuuuMMdd'T'HHmmss'Z'")
-            .withZone(ZoneOffset.UTC);
 
     private volatile Annotation annotationRef;
-    private volatile Image imageRef;
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private volatile Image pngImageRef;
+    private volatile Image jpgImageRef;
+
+    private class CreatedData {
+        final Annotation annotation;
+        final Image image;
+
+        public CreatedData(Annotation annotation, Image image) {
+            this.annotation = annotation;
+            this.image = image;
+        }
+    }
+
+    private class ArchiveResults {
+        final ImageUploadResults imageUploadResults;
+        final CreatedData createdData;
+
+        public ArchiveResults(ImageUploadResults imageUploadResults, CreatedData createdData) {
+            this.imageUploadResults = imageUploadResults;
+            this.createdData = createdData;
+        }
+    }
 
     @Override
     public void apply(UIToolBox toolBox) {
-
-        if (annotationRef != null && imageRef != null) {
-            skipTheBS(toolBox);
-            return;
+        if (annotationRef != null && pngImageRef != null) {
+            applyFromCachedData(toolBox);
         }
+        else {
+            Media media = toolBox.getData().getMedia();
+            ResourceBundle i18n = toolBox.getI18nBundle();
 
-        ResourceBundle i18n = toolBox.getI18nBundle();
+            if (media == null) {
+                String content = i18n.getString("commands.framecapture.nomedia.content");
+                showWarningAlert(toolBox, content);
+                return;
+            }
 
-        Media media = toolBox.getData().getMedia();
-        if (media == null) {
-            toolBox.getEventBus()
-                    .send(new ShowWarningAlert(i18n.getString("commands.framecapture.title"),
-                            i18n.getString("commands.framecapture.header"),
-                            i18n.getString("commands.framecapture.nomedia.content")));
-            return;
+            MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
+            if (mediaPlayer == null) {
+                String content = i18n.getString("commands.framecapture.nomediaplayer.content");
+                showWarningAlert(toolBox, content);
+                return;
+            }
+
+            lookupDataAndApply(toolBox, media, mediaPlayer);
         }
-
-        MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
-        if (mediaPlayer == null) {
-            toolBox.getEventBus()
-                    .send(new ShowWarningAlert(i18n.getString("commands.framecapture.title"),
-                            i18n.getString("commands.framecapture.header"),
-                            i18n.getString("commands.framecapture.nomediaplayer.content")));
-            return;
-        }
-
-        // -- Capture image
-        File imageFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".png");
-        Optional<Framegrab> framegrabOpt = capture(imageFile, media, mediaPlayer);
-        if (!framegrabOpt.isPresent()) {
-            toolBox.getEventBus()
-                    .send(new ShowWarningAlert(
-                            i18n.getString("commands.framecapture.title"),
-                            i18n.getString("commands.framecapture.header"),
-                            i18n.getString("commands.framecapture.nomedia.content") +
-                                    " " + imageFile.getAbsolutePath()
-                    ));
-            return;
-        }
-        log.debug("Captured framegrab locally to {}", imageFile.getAbsolutePath());
-
-        URL url;
-        try {
-            url = imageFile.toURI().toURL();
-        } catch (MalformedURLException e) {
-            toolBox.getEventBus()
-                    .send(new ShowWarningAlert(
-                            i18n.getString("commands.framecapture.title"),
-                            i18n.getString("commands.framecapture.header"),
-                            i18n.getString("commands.framecapture.badurl.content") +
-                                    " " + imageFile.getAbsolutePath()
-                    ));
-            return;
-        }
-
-        AnnotationService annotationService = toolBox.getServices()
-                .getAnnotationService();
-        AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
-        EventBus eventBus = toolBox.getEventBus();
-        Framegrab framegrab = framegrabOpt.get();
-        ImageArchiveServiceDecorator.createImageInDatastore(toolBox, media, framegrab, url).thenAccept(image ->
-                createAnnotationInDatastore(toolBox, image)
-                        .thenApply(a1 -> {
-                            // notify UI
-                            // TODO look up related annotations and refresh them all
-
-                            log.debug("Created annotation for framegrab: {}" + a1);
-                            eventBus.send(new AnnotationsAddedEvent(a1));
-                            eventBus.send(new AnnotationsSelectedEvent(a1));
-                            return a1;
-                        })
-                        .thenApply(a1 -> {
-                            // upload image
-                            archiveImage(toolBox, media, image, imageFile.toPath()).handle((iur, ex) -> {
-                                if (ex != null) {
-                                    log.debug("Failed to archive framegrab with image service", ex);
-                                    annotationService.deleteImage(image.getImageReferenceUuid());
-                                    asd.refreshAnnotationsView(a1.getObservationUuid());
-                                    imageFile.delete();
-                                } else {
-                                    log.debug("Uploaded framegrab to {}", iur.getUri());
-                                    // update URL used by images in annotations
-                                    updateAnnotationWithArchivedImage(toolBox, image, iur)
-                                            .handle((annos, ex1) -> {
-                                                if (ex1 != null) {
-                                                    log.debug("Failed to update annotation with remote framegrab URI", ex1);
-                                                    annotationService.deleteImage(image.getImageReferenceUuid());
-                                                    asd.refreshAnnotationsView(a1.getObservationUuid());
-                                                    imageFile.delete();
-                                                }
-                                                else {
-                                                    // Notify UI
-                                                    log.debug("Updated annotation with remote framegrab URI");
-                                                    Set<UUID> uuids = toolBox.getData()
-                                                            .getSelectedAnnotations()
-                                                            .stream()
-                                                            .map(Annotation::getObservationUuid)
-                                                            .collect(Collectors.toSet());
-                                                    asd.refreshAnnotationsView(uuids);
-                                                }
-                                                return null;
-                                            })
-                                            .thenAccept(v -> imageFile.delete())
-                                            .thenAccept(v -> {
-                                                log.debug("Compressing framegrab");
-                                                ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
-                                                decorator.compressFramegrab(media, framegrab, iur);
-                                            });
-                                }
-                                return null;
-                            });
-                            return null;
-                        }));
-
-
     }
 
     @Override
     public void unapply(UIToolBox toolBox) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        if (annotationRef != null && imageRef != null) {
-            // Delete annotations
-            // Find ones that share the same image ref
-            // Delete image ref
-            // Republish other annotations so UI updates
-            annotationService.deleteAnnotation(annotationRef.getObservationUuid())
-                    .thenAccept(v -> ImageArchiveServiceDecorator.refreshRelatedAnnotations(toolBox, imageRef.getImageReferenceUuid(), true));
+        ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
+        List<CompletableFuture> futures = new ArrayList<>();
+        if (annotationRef != null) {
+            futures.add(annotationService.deleteAnnotation(annotationRef.getObservationUuid()));
         }
+        if (pngImageRef != null) {
+            futures.add(annotationService.deleteImage(pngImageRef.getImageReferenceUuid()));
+        }
+        if (jpgImageRef != null) {
+            futures.add(annotationService.deleteImage(jpgImageRef.getImageReferenceUuid()));
+        }
+        CompletableFuture[] futuresArray = futures.toArray(new CompletableFuture[futures.size()]);
+        CompletableFuture.allOf(futuresArray)
+                .thenAccept(v -> {
+                    // The png is the first one created so it HAS to be present for the others to exist
+                    // We only need this one to find all the annotations that were affected
+                    if (pngImageRef != null) {
+                        decorator.refreshRelatedAnnotations(pngImageRef.getImageReferenceUuid());
+                    }
+                });
     }
 
     @Override
     public String getDescription() {
-        return "Framegrab";
+        return null;
     }
 
+    private void applyFromCachedData(UIToolBox toolBox) {
 
+        if (annotationRef != null && pngImageRef != null) {
+            AnnotationService annotationService  = toolBox.getServices().getAnnotationService();
+            ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
+            List<CompletableFuture> futures = new ArrayList<>();
+            futures.add(annotationService.createAnnotation(annotationRef));
+            futures.add(annotationService.createImage(pngImageRef));
+            if (jpgImageRef != null) {
+                futures.add(annotationService.createImage(jpgImageRef));
+            }
+            CompletableFuture[] futureArray = futures.toArray(new CompletableFuture[futures.size()]);
+            CompletableFuture.allOf(futureArray)
+                    .thenAccept(v -> decorator.refreshRelatedAnnotations(pngImageRef.getImageReferenceUuid()));
+        }
 
-    private void skipTheBS(UIToolBox toolBox) {
-        AnnotationService annotationService  = toolBox.getServices().getAnnotationService();
-        annotationService.createImage(imageRef)
-                .thenAccept(img -> annotationService.createAnnotation(annotationRef)
-                        .thenAccept(a -> ImageArchiveServiceDecorator.refreshRelatedAnnotations(toolBox, img.getImageReferenceUuid(), false)));
     }
 
-    private CompletableFuture<Annotation> createAnnotationInDatastore(UIToolBox toolBox, Image image) {
-        CompletableFuture<Annotation> f0 = new CompletableFuture<>();
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        VideoIndex videoIndex = image.getVideoIndex();
-        toolBox.getServices()
-                .getConceptService()
-                .findRoot()
-                .thenAccept(root -> {
-                    Annotation a0 = CommandUtil.buildAnnotation(toolBox.getData(),
-                            root.getName(), videoIndex);
-                    annotationService.createAnnotation(a0)
-                            .thenAccept(a -> {
-                                annotationRef = a;
-                                f0.complete(a);
+    private void lookupDataAndApply(UIToolBox toolBox,
+                                    Media media,
+                                    MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer) {
+
+
+        // -- Capture image
+        File imageFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".png");
+        Optional<Framegrab> framegrabOpt = capture(imageFile, media, mediaPlayer);
+
+        if (!framegrabOpt.isPresent()) {
+            ResourceBundle i18n = toolBox.getI18nBundle();
+            String content = i18n.getString("commands.framecapture.nomedia.content") +
+                    imageFile.getAbsolutePath();
+            showWarningAlert(toolBox,  content);
+        }
+        else {
+
+            Framegrab framegrab = framegrabOpt.get();
+            ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
+            // -- 1. Upload image to server and register in annotation service
+            decorator.createImageFromExistingImagePath(media, framegrab, imageFile.toPath())
+                    .thenCompose(pngOpt -> {
+                        if (pngOpt.isPresent()) {
+                            CreatedImageData createdImageData = pngOpt.get();
+                            pngImageRef = createdImageData.getImage();
+                            // -- 2. Create an annotation at the same index as the image
+                            return createAnnotationInDatastore(toolBox, pngImageRef).thenCompose(annotation -> {
+                                annotationRef = annotation;
+                                // -- 3. Create a jpeg
+                                return decorator.createdCompressedFramegrab(media,
+                                        framegrab,
+                                        createdImageData.getImageUploadResults())
+                                        .thenApply(jpgOpt -> {
+                                            jpgOpt.ifPresent(cid -> jpgImageRef = cid.getImage());
+                                            return jpgOpt;
+                                        });
+
                             });
+                        }
+                        else {
+                            throw new RuntimeException("Failed to capture framgrab");
+                        }
+                    })
+                    .whenComplete((opt, throwable) -> {
+                        // refresh whether is succeeds or fails
+                        boolean deleteImage = false;
+                        if (pngImageRef == null) {
+                            showWarningAlert(toolBox, "Framegrab capture failed");
+                        }
+                        else if (pngImageRef != null && annotationRef == null) {
+                            showWarningAlert(toolBox, "Failed to create an annotation for the framegrab");
+                            deleteImage = true;
+                        }
+                        decorator.refreshRelatedAnnotations(pngImageRef.getImageReferenceUuid(), deleteImage);
+                    });
 
-                });
-        return f0;
+
+        }
     }
 
 
-    public Optional<Framegrab> capture(File imageFile, Media media, MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer) {
-        try {
-            ImageCaptureService service = mediaPlayer
-                    .getImageCaptureService();
 
-            Framegrab framegrab0 = service.capture(imageFile);
-            framegrab0.getVideoIndex().ifPresent(videoIndex -> {
+    private void showWarningAlert(UIToolBox toolBox, String content) {
+        ResourceBundle i18n = toolBox.getI18nBundle();
+        String title = i18n.getString("commands.framecapture.title");
+        String header = i18n.getString("commands.framecapture.header");
+        EventBus eventBus = toolBox.getEventBus();
+        ShowAlert alert = new ShowWarningAlert(title, header, content);
+        eventBus.send(alert);
+    }
+
+    private static Optional<Framegrab> capture(File imageFile,
+                                               Media media,
+                                               MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer) {
+        try {
+            ImageCaptureService service = mediaPlayer.getImageCaptureService();
+            Framegrab framegrab = service.capture(imageFile);
+
+            // If there's an elapsed time, make sure the recordedTimestamp is
+            // set and correct
+            framegrab.getVideoIndex().ifPresent(videoIndex ->
                 videoIndex.getElapsedTime().ifPresent(elapsedTime -> {
                     Instant recordedDate = media.getStartTimestamp().plus(elapsedTime);
-                    framegrab0.setVideoIndex(new VideoIndex(elapsedTime, recordedDate));
-                });
-            });
-            return Optional.of(framegrab0);
+                    framegrab.setVideoIndex(new VideoIndex(elapsedTime, recordedDate));
+                }));
+            return Optional.of(framegrab);
         }
         catch (Exception e) {
             // TODO show error
@@ -228,41 +219,22 @@ public class FramegrabCmd implements Command {
         }
     }
 
-    private CompletableFuture<List<Annotation>> updateAnnotationWithArchivedImage(UIToolBox toolBox,
-                                                                                  Image image,
-                                                                                  ImageUploadResults imageUploadResults) {
-        CompletableFuture<List<Annotation>> cf = new CompletableFuture<>();
-        URL url;
-        try {
-            url = imageUploadResults.getUri().toURL();
-        } catch (MalformedURLException e) {
-            cf.completeExceptionally(e);
-            return cf;
-        }
-
+    private CompletableFuture<Annotation> createAnnotationInDatastore(UIToolBox toolBox, Image image) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        annotationService.findImageByUrl(url)
-                .thenAccept(img0 -> {
-                    if (img0 == null) {
-                        image.setUrl(url);
-                        annotationService.updateImage(image)
-                                .thenAccept(img1 -> {
-                                    imageRef = img1;
-                                    annotationService.findByImageReference(image.getImageReferenceUuid())
-                                            .thenAccept(cf::complete);
-                                });
-                    }
-                    else {
-                        cf.completeExceptionally(new RuntimeException("The image at " +
-                                url.toExternalForm() + " already exists"));
-                    }
+        ConceptService conceptService = toolBox.getServices().getConceptService();
+        VideoIndex videoIndex = image.getVideoIndex();
+
+        return conceptService.findRoot()
+                .thenCompose(root -> {
+                    // Insert Annotation in database
+                    Annotation annotation = CommandUtil.buildAnnotation(toolBox.getData(),
+                            root.getName(), videoIndex);
+                   return annotationService.createAnnotation(annotation);
                 });
 
-        return cf;
     }
 
-
-    private CompletableFuture<ImageUploadResults> archiveImage(UIToolBox toolBox, Media media, Image image, Path imagePath) {
+    private static CompletableFuture<ImageUploadResults> archiveImage(UIToolBox toolBox, Media media, Image image, Path imagePath) {
         String name = ImageArchiveServiceDecorator.buildName(image.getVideoReferenceUuid(), image.getVideoIndex(), ".png");
         String deploymentId = CommandUtil.getDeploymentId(media);
         return toolBox.getServices()
@@ -272,8 +244,5 @@ public class FramegrabCmd implements Command {
                         name,
                         imagePath);
     }
-
-
-
 
 }

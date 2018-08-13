@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.ui;
 
+import com.sun.xml.internal.ws.util.CompletedFuture;
 import javafx.collections.ObservableList;
 import org.mbari.awt.image.ImageUtilities;
 import org.mbari.m3.vars.annotation.EventBus;
@@ -10,25 +11,26 @@ import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
-import org.mbari.m3.vars.annotation.model.Annotation;
-import org.mbari.m3.vars.annotation.model.Framegrab;
-import org.mbari.m3.vars.annotation.model.ImageUploadResults;
-import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.ImageArchiveService;
+import org.mbari.m3.vars.annotation.util.AsyncUtils;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.awt.Image;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -37,13 +39,11 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
@@ -59,118 +59,179 @@ public class ImageArchiveServiceDecorator {
     private final ImageArchiveService imageArchiveService;
     private final String copyrightOwner;
     private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Duration timeout;
 
 
     public ImageArchiveServiceDecorator(UIToolBox toolBox) {
         this.toolBox = toolBox;
         this.imageArchiveService = toolBox.getServices().getImageArchiveService();
         copyrightOwner = toolBox.getConfig().getString("app.image.copyright.owner");
+        timeout = toolBox.getConfig().getDuration("annotation.service.timeout");
     }
 
-    public void compressFramegrab(Media media, Framegrab framegrab, ImageUploadResults imageUploadResults) {
+    public CompletableFuture<Optional<CreatedImageData>> createdCompressedFramegrab(Media media,
+                                                                                                            Framegrab framegrab,
+                                                                                                            ImageUploadResults imageUploadResults) {
+
         if (framegrab.getImage().isPresent() && framegrab.getVideoIndex().isPresent()) {
-            Thread thread = new Thread(() -> {
-
-                // -- Write image locally
-                String[] overlayText = createOverlayText(copyrightOwner, framegrab, imageUploadResults);
-                BufferedImage imageWithOverlay = createImageWithOverlay(framegrab.getImage().get(), overlayText);
-                String name = buildName(media.getVideoReferenceUuid(), framegrab.getVideoIndex().get(), ".jpg");
-                File localImageFile = buildLocalImageFile(media, ".jpg");
-                try {
-                    ImageUtilities.saveImage(imageWithOverlay, localImageFile);
-                }
-                catch (IOException e) {
-                    log.error("Failed to save jpg image to " + localImageFile.getAbsolutePath(), e);
-                }
-
-                // Upload
-                String deploymentId = CommandUtil.getDeploymentId(media);
-                imageArchiveService.upload(media.getCameraId(), deploymentId, name, localImageFile.toPath())
-                        .thenAccept(iur -> {
-                            URL url;
-                            try {
-                                url = iur.getUri().toURL();
-                            }
-                            catch (MalformedURLException e) {
-                                throw new RuntimeException("Image URI of " + iur.getUri() +
-                                        " can not be converted to a URL", e);
-                            }
-                            createImageInDatastore(toolBox, media, framegrab, url)
-                                .thenAccept(img ->   refreshRelatedAnnotations(toolBox, img.getImageReferenceUuid(), false))
-                                .thenAccept(v -> localImageFile.delete());
-                        });
-
-            }, "Creating-JPG-" + Instant.now());
-
-            thread.start();
-        }
-    }
-
-    public static void refreshRelatedAnnotations(UIToolBox toolBox, UUID imageReferenceUuid, boolean deleteImage) {
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        EventBus eventBus = toolBox.getEventBus();
-        annotationService.findByImageReference(imageReferenceUuid)
-                .thenAccept(annotations -> {
-                    if (deleteImage) {
-                        annotationService.deleteImage(imageReferenceUuid);
-                    }
-                    if (!annotations.isEmpty()) {
-                        List<Annotation> annotations1 = new CopyOnWriteArrayList<>();
-                        CompletableFuture[] completableFutures = annotations.stream()
-                                .map(a -> annotationService.findByUuid(a.getObservationUuid()).thenApply(annotations1::add))
-                                .toArray(CompletableFuture[]::new);
-                        CompletableFuture.allOf(completableFutures)
-                                .thenAccept(w -> {
-                                    eventBus.send(new AnnotationsChangedEvent(annotations1));
-                                    // Update any annotations that may have been effected by image deletion
-//                                    List<Annotation> selectedAnnotations =
-//                                            new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-//                                    eventBus.send(new AnnotationsRemovedEvent(annotations1));
-//                                    eventBus.send(new AnnotationsAddedEvent(annotations1));
-//                                    eventBus.send(new AnnotationsSelectedEvent(selectedAnnotations));
-                                });
-                    }
-                });
-    }
-
-    public static CompletableFuture<org.mbari.m3.vars.annotation.model.Image> createImageInDatastore(UIToolBox toolBox, Media media, Framegrab framegrab, URL imageUrl) {
-        Optional<java.awt.Image> awtImageOpt = framegrab.getImage();
-        if (!awtImageOpt.isPresent()) {
-            // TODO show alert that framecapture failed
-            throw new RuntimeException("No image was captured");
+            return compressImage(media, framegrab, imageUploadResults)
+                    .thenCompose(path -> createImageFromExistingImagePath(media, framegrab, path));
         }
         else {
-            String ext = parseExtension(imageUrl);
-            String description = null;
-            switch(ext) {
-                case "jpg":
-                    description = "compressed image";
-                    break;
-                case "png":
-                    description = "uncompressed image";
-                    break;
-                default:
-                    description = null;
-            }
-            java.awt.Image awtImage = awtImageOpt.get();
-            BufferedImage bi = ImageUtilities.toBufferedImage(awtImage);
-            org.mbari.m3.vars.annotation.model.Image image = new org.mbari.m3.vars.annotation.model.Image();
-            image.setFormat("image/" + ext);
-            image.setHeight(bi.getHeight());
-            image.setWidth(bi.getWidth());
-            image.setVideoReferenceUuid(media.getVideoReferenceUuid());
-            image.setDescription(description);
-            image.setUrl(imageUrl);
-
-            // If no index use the current timestamp
-            VideoIndex videoIndex = framegrab.getVideoIndex().orElse(new VideoIndex(Instant.now()));
-            videoIndex.getElapsedTime().ifPresent(image::setElapsedTime);
-            videoIndex.getTimecode().ifPresent(image::setTimecode);
-            videoIndex.getTimestamp().ifPresent(image::setRecordedTimestamp);
-
-            AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-            return annotationService.createImage(image);
+            return CompletableFuture.completedFuture(Optional.empty());
         }
+
+    }
+
+    private CompletableFuture<Path> compressImage(Media media, Framegrab framegrab, ImageUploadResults imageUploadResults) {
+        return CompletableFuture.supplyAsync(() -> {
+            // -- Write image locally
+            String[] overlayText = createOverlayText(copyrightOwner, framegrab, imageUploadResults);
+            BufferedImage imageWithOverlay = createImageWithOverlay(framegrab.getImage().get(), overlayText);
+            //String name = buildName(media.getVideoReferenceUuid(), framegrab.getVideoIndex().get(), ".jpg");
+            File localImageFile = buildLocalImageFile(media, ".jpg");
+            try {
+                ImageUtilities.saveImage(imageWithOverlay, localImageFile);
+                return localImageFile.toPath();
+            }
+            catch (IOException e) {
+                log.error("Failed to save jpg image to " + localImageFile.getAbsolutePath(), e);
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public CompletableFuture<Optional<CreatedImageData>> createImageFromExistingImagePath(Media media, Framegrab framegrab, Path imagePath) {
+
+
+        CompletableFuture<Optional<CreatedImageData>> f = new CompletableFuture<>();
+        CreatedImageData createdImageData = new CreatedImageData();
+
+        if (framegrab.getVideoIndex().isPresent()) {
+
+            String name = ImageArchiveServiceDecorator.buildName(media.getVideoReferenceUuid(), framegrab.getVideoIndex().get(), ".png");
+            String deploymentId = CommandUtil.getDeploymentId(media);
+
+            CompletableFuture<org.mbari.m3.vars.annotation.model.Image> future = imageArchiveService.upload(media.getCameraId(), deploymentId, name, imagePath)
+                    .thenCompose(imageUploadResults -> {
+                        createdImageData.setImageUploadResults(imageUploadResults);
+                        return createImageInDatastore(media, framegrab, toUrl(imageUploadResults.getUri()));
+                    });
+
+            future.whenComplete((image, throwable) -> {
+                if (Files.exists(imagePath)) {
+                    try {
+                        Files.delete(imagePath);
+                    } catch (IOException e) {
+                        log.warn("Failed to delete image at " + imagePath.toString(), e);
+                    }
+                }
+            });
+
+            return future.thenApply(image -> {
+                createdImageData.setImage(image);
+                return Optional.of(createdImageData);
+            });
+
+        }
+        else {
+            return CompletableFuture.completedFuture(Optional.empty());
+        }
+
+    }
+
+    private URL toUrl(URI uri) {
+        try {
+            return uri.toURL();
+        }
+        catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void refreshRelatedAnnotations(UUID imageReferenceUuid) {
+        refreshRelatedAnnotations(imageReferenceUuid, false);
+    }
+
+
+    public void refreshRelatedAnnotations(UUID imageReferenceUuid, boolean deleteImage) {
+        final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        final EventBus eventBus = toolBox.getEventBus();
+
+        // We have to block to make this work. So call in separate thread
+        Thread thread = new Thread(() -> {
+            try {
+
+                // Blocking call
+                List<Annotation> affectedAnnotations = annotationService.findByImageReference(imageReferenceUuid)
+                        .get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+
+                if (deleteImage) {
+                    annotationService.deleteImage(imageReferenceUuid)
+                            .thenCompose(b -> {
+                                List<UUID> uuids = affectedAnnotations.stream()
+                                        .map(Annotation::getObservationUuid)
+                                        .collect(Collectors.toList());
+                                return AsyncUtils.collectAll(uuids, annotationService::findByUuid);
+                            })
+                            .thenAccept(annotations -> eventBus.send(new AnnotationsChangedEvent(annotations)));
+                } else {
+                    eventBus.send(new AnnotationsChangedEvent(affectedAnnotations));
+                }
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        thread.start();
+
+    }
+
+    public CompletableFuture<org.mbari.m3.vars.annotation.model.Image> createImageInDatastore(Media media, Framegrab framegrab, URL imageUrl) {
+
+        CompletableFuture<org.mbari.m3.vars.annotation.model.Image> readImageFuture = CompletableFuture.supplyAsync(() -> {
+            Optional<java.awt.Image> awtImageOpt = framegrab.getImage();
+            if (!awtImageOpt.isPresent()) {
+                // TODO show alert that framecapture failed
+                throw new RuntimeException("No image was captured");
+            }
+            else {
+                String ext = parseExtension(imageUrl);
+                String description = null;
+                switch (ext) {
+                    case "jpg":
+                        description = "compressed image";
+                        break;
+                    case "png":
+                        description = "uncompressed image";
+                        break;
+                    default:
+                        description = null;
+                }
+                java.awt.Image awtImage = awtImageOpt.get();
+                BufferedImage bi = ImageUtilities.toBufferedImage(awtImage);
+                org.mbari.m3.vars.annotation.model.Image image = new org.mbari.m3.vars.annotation.model.Image();
+                image.setFormat("image/" + ext);
+                image.setHeight(bi.getHeight());
+                image.setWidth(bi.getWidth());
+                image.setVideoReferenceUuid(media.getVideoReferenceUuid());
+                image.setDescription(description);
+                image.setUrl(imageUrl);
+
+                // If no index use the current timestamp
+                VideoIndex videoIndex = framegrab.getVideoIndex().orElse(new VideoIndex(Instant.now()));
+                videoIndex.getElapsedTime().ifPresent(image::setElapsedTime);
+                videoIndex.getTimecode().ifPresent(image::setTimecode);
+                videoIndex.getTimestamp().ifPresent(image::setRecordedTimestamp);
+                return image;
+            }
+        });
+
+        final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        return readImageFuture.thenCompose(annotationService::createImage);
+
     }
 
     private static String parseExtension(URL url) {
@@ -252,8 +313,6 @@ public class ImageArchiveServiceDecorator {
             Path path = Paths.get(Initializer.getImageDirectory().toString(),
                 filename);
             return path.toFile();
-//            return File.createTempFile(deploymentKey + "-", ext,
-//                    Initializer.getImageDirectory().toFile());
         }
         catch (Exception e) {
             throw new RuntimeException("Failed to build a local image temp file", e);
@@ -274,7 +333,7 @@ public class ImageArchiveServiceDecorator {
         if (timestamp.isPresent()) {
             idx = timeFormat.format(timestamp.get());
         }
-        if (timecode.isPresent()) {
+        else if (timecode.isPresent()) {
             idx = timecode.get().toString().replace(':', '_');
         }
         else if (elapsedTime.isPresent()) {
