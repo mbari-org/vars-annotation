@@ -64,9 +64,11 @@ public class SampleBC extends AbstractBC {
             createAssociation(pair.getKey(), pair.getValue());
         }
         textField.setText(null);
-        String defaultSampleConcept = toolBox.getConfig()
-                .getString("app.annotation.sample.default.concept");
-        comboBox.getSelectionModel().select(defaultSampleConcept);
+
+        String concept = lastSelectedSampler == null ?
+                toolBox.getConfig().getString("app.annotation.sample.default.concept") :
+                lastSelectedSampler;
+        comboBox.getSelectionModel().select(concept);
     }
 
 
@@ -88,8 +90,6 @@ public class SampleBC extends AbstractBC {
                     return new Pair<>(lastSelectedSampler,
                             textField.getText());
                 }
-                // HACK To track selected sampler after combox is hidden: misbehaving Filter
-                lastSelectedSampler = null;
                 return null;
             });
         }
