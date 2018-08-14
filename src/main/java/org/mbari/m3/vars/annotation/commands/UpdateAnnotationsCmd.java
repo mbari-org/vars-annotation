@@ -6,6 +6,7 @@ import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.User;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
+import org.mbari.m3.vars.annotation.util.AsyncUtils;
 import org.mbari.vcr4j.util.Preconditions;
 
 import java.time.Instant;
@@ -73,6 +74,7 @@ public abstract class UpdateAnnotationsCmd implements Command {
         }
         if (checkConceptName) {
             ConceptService conceptService = toolBox.getServices().getConceptService();
+
             CompletableFuture[] futures = changedAnnotations.stream()
                     .map(a -> conceptService.findConcept(a.getConcept())
                                 .thenAccept(opt ->

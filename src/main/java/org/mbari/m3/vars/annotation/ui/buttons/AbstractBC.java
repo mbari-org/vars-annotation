@@ -11,6 +11,7 @@ import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
 import org.mbari.m3.vars.annotation.events.UserChangedEvent;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
+import org.mbari.m3.vars.annotation.util.JFXUtilities;
 
 /**
  * @author Brian Schlining
@@ -43,6 +44,8 @@ public abstract class AbstractBC {
                 .subscribe(m -> checkEnable());
         observable.ofType(UserChangedEvent.class)
                 .subscribe(m -> checkEnable());
+
+        checkEnable();
     }
 
 
@@ -50,7 +53,7 @@ public abstract class AbstractBC {
         Media media = toolBox.getData().getMedia();
         User user = toolBox.getData().getUser();
         boolean enable =  media != null && user != null;
-        button.setDisable(!enable);
+        JFXUtilities.runOnFXThread(() -> button.setDisable(!enable));
     }
 
     protected abstract void apply();

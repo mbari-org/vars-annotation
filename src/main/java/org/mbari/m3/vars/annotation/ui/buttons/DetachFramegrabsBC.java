@@ -12,10 +12,12 @@ import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.events.MediaPlayerChangedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.ImageReference;
+import org.mbari.m3.vars.annotation.model.User;
+import org.mbari.m3.vars.annotation.util.JFXUtilities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Brian Schlining
@@ -31,12 +33,12 @@ public class DetachFramegrabsBC extends AbstractBC {
     protected void init() {
         String tooltip = toolBox.getI18nBundle().getString("buttons.detachimage");
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
-        Text icon = iconFactory.createIcon(MaterialIcon.CLEAR);
+        Text icon = iconFactory.createIcon(MaterialIcon.CLEAR, "30px");
         initializeButton(tooltip, icon);
 
         Observable<Object> observable = toolBox.getEventBus().toObserverable();
         observable.ofType(AnnotationsSelectedEvent.class)
-                .subscribe(m -> checkEnable());
+                .subscribe(m -> checkEnable(m.get()));
         observable.ofType(MediaPlayerChangedEvent.class)
                 .subscribe(m -> checkEnable());
 
@@ -46,21 +48,23 @@ public class DetachFramegrabsBC extends AbstractBC {
 
     }
 
+    private void checkEnable(Collection<Annotation> selectedAnnotations) {
+        User user = toolBox.getData().getUser();
+        boolean enable = user != null && selectedAnnotations
+                .stream()
+                .anyMatch(a -> !a.getImages().isEmpty());
+        JFXUtilities.runOnFXThread(() -> button.setDisable(!enable));
+    }
+
     @Override
     protected void checkEnable() {
-        super.checkEnable();
-        if (!button.isDisabled()) {
-            // Make sure selected annotations have at least one framegrab
-            ObservableList<Annotation> annotations = toolBox.getData().getSelectedAnnotations();
-            if (annotations != null && !annotations.isEmpty()) {
-                boolean enable = annotations.stream().anyMatch(a -> {
-                    List<ImageReference> images = a.getImages();
-                    return images != null && !images.isEmpty();
-                });
+        User user = toolBox.getData().getUser();
+        boolean enable = user != null && toolBox.getData()
+                .getSelectedAnnotations()
+                .stream()
+                .anyMatch(a -> !a.getImages().isEmpty());
+        JFXUtilities.runOnFXThread(() -> button.setDisable(!enable));
 
-                button.setDisable(!enable);
-            }
-        }
     }
 
     @Override

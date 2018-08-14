@@ -100,30 +100,21 @@ public class DetachFramegrabCmd implements Command {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
 
-        // Fn to delete an image, them look up related
-        Function<Image, CompletableFuture<List<Annotation>>> deleteImageAndFindAnnotationsFn =
-                image -> annotationService.deleteImage(image.getImageReferenceUuid())
-                .thenCompose(b -> annotationService.findByImageReference(image.getImageReferenceUuid()));
 
-        // Fn to add refreshed annotations to modifiedAnnotations and refresh view
-        Consumer<List<Annotation>> updateAnnotationsFn = annos -> {
-            Set<UUID> observationUuids = annos.stream()
-                    .map(Annotation::getObservationUuid)
-                    .collect(Collectors.toSet());
-            decorator.refreshAnnotationsView(observationUuids);
-        };
+        Function<Image, CompletableFuture> deleteImageFn = image ->
+                annotationService.deleteImage(image.getImageReferenceUuid());
 
-        CompletableFuture<Collection<Image>> f = findImagesToDelete(toolBox);
+        findImagesToDelete(toolBox)
+                .thenCompose(images -> decorator.findAnnotationsForImages(images)
+                        .thenCompose(annotations -> AsyncUtils.completeAll(images, deleteImageFn).thenApply(v -> annotations))
+                        .thenAccept(annotations -> {
+                            Set<UUID> observationUuids = annotations.stream()
+                                    .map(Annotation::getObservationUuid)
+                                    .collect(Collectors.toSet());
+                            decorator.refreshAnnotationsView(observationUuids);
+                        })
+                );
 
-        f.whenComplete((images, exception) -> {
-            if (exception == null) {
-                Observable<List<Annotation>> observable = AsyncUtils.observeAll(images, deleteImageAndFindAnnotationsFn);
-                observable.subscribe(updateAnnotationsFn, t -> showAlert(t, toolBox));
-            }
-            else {
-                showAlert(exception, toolBox);
-            }
-        });
 
     }
 
@@ -157,6 +148,7 @@ public class DetachFramegrabCmd implements Command {
 
     @Override
     public String getDescription() {
-        return null;
+        int size = originalAnnotations == null ? 0 : originalAnnotations.size();
+        return "Detach images from " + size + " annotations";
     }
 }
