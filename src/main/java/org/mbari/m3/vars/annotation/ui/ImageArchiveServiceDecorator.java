@@ -1,16 +1,12 @@
 package org.mbari.m3.vars.annotation.ui;
 
-import com.sun.xml.internal.ws.util.CompletedFuture;
-import javafx.collections.ObservableList;
+
 import org.mbari.awt.image.ImageUtilities;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.CommandUtil;
-import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
-import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
-import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.ImageArchiveService;
@@ -230,7 +226,7 @@ public class ImageArchiveServiceDecorator {
         });
 
         final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        return readImageFuture.thenCompose(annotationService::createImage);
+        return readImageFuture.thenCompose(annotationService::createImage)
 
     }
 

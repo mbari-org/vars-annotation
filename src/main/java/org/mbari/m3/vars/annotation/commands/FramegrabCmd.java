@@ -2,6 +2,9 @@ package org.mbari.m3.vars.annotation.commands;
 
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
+import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
+import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.messages.ShowAlert;
 import org.mbari.m3.vars.annotation.messages.ShowWarningAlert;
@@ -82,9 +85,12 @@ public class FramegrabCmd implements Command {
     public void unapply(UIToolBox toolBox) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
+        EventBus eventBus = toolBox.getEventBus();
         List<CompletableFuture> futures = new ArrayList<>();
         if (annotationRef != null) {
-            futures.add(annotationService.deleteAnnotation(annotationRef.getObservationUuid()));
+            // Delete annotation and notify UI
+            futures.add(annotationService.deleteAnnotation(annotationRef.getObservationUuid())
+                    .thenAccept(b -> eventBus.send(new AnnotationsRemovedEvent(annotationRef)));
         }
         if (pngImageRef != null) {
             futures.add(annotationService.deleteImage(pngImageRef.getImageReferenceUuid()));
@@ -154,6 +160,9 @@ public class FramegrabCmd implements Command {
                             // -- 2. Create an annotation at the same index as the image
                             return createAnnotationInDatastore(toolBox, pngImageRef).thenCompose(annotation -> {
                                 annotationRef = annotation;
+                                EventBus eventBus = toolBox.getEventBus();
+                                eventBus.send(new AnnotationsAddedEvent(annotationRef));
+                                eventBus.send(new AnnotationsSelectedEvent(annotationRef));
                                 // -- 3. Create a jpeg
                                 return decorator.createdCompressedFramegrab(media,
                                         framegrab,

@@ -1,7 +1,5 @@
 package org.mbari.m3.vars.annotation.ui;
 
-import com.google.common.collect.Lists;
-import com.sun.xml.internal.ws.util.CompletedFuture;
 import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
