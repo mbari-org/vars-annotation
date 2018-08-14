@@ -159,7 +159,7 @@ public class FramegrabCmd implements Command {
                             CreatedImageData createdImageData = pngOpt.get();
                             pngImageRef = createdImageData.getImage();
                             // -- 2. Create an annotation at the same index as the image
-                            return createAnnotationInDatastore(toolBox, pngImageRef).thenCompose(annotation -> {
+                            return createAnnotationInDatastore(toolBox, pngImageRef.getVideoIndex()).thenCompose(annotation -> {
                                 annotationRef = annotation;
                                 EventBus eventBus = toolBox.getEventBus();
                                 eventBus.send(new AnnotationsAddedEvent(annotationRef));
@@ -229,10 +229,9 @@ public class FramegrabCmd implements Command {
         }
     }
 
-    private CompletableFuture<Annotation> createAnnotationInDatastore(UIToolBox toolBox, Image image) {
+    private CompletableFuture<Annotation> createAnnotationInDatastore(UIToolBox toolBox, VideoIndex videoIndex) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         ConceptService conceptService = toolBox.getServices().getConceptService();
-        VideoIndex videoIndex = image.getVideoIndex();
 
         return conceptService.findRoot()
                 .thenCompose(root -> {
@@ -244,15 +243,5 @@ public class FramegrabCmd implements Command {
 
     }
 
-    private static CompletableFuture<ImageUploadResults> archiveImage(UIToolBox toolBox, Media media, Image image, Path imagePath) {
-        String name = ImageArchiveServiceDecorator.buildName(image.getVideoReferenceUuid(), image.getVideoIndex(), ".png");
-        String deploymentId = CommandUtil.getDeploymentId(media);
-        return toolBox.getServices()
-                .getImageArchiveService()
-                .upload(media.getCameraId(),
-                        deploymentId,
-                        name,
-                        imagePath);
-    }
 
 }

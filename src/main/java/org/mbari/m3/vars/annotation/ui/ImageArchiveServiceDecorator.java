@@ -1,7 +1,9 @@
 package org.mbari.m3.vars.annotation.ui;
 
 
+import ch.qos.logback.core.util.FileUtil;
 import org.mbari.awt.image.ImageUtilities;
+import org.mbari.io.FileUtilities;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
@@ -66,8 +68,8 @@ public class ImageArchiveServiceDecorator {
     }
 
     public CompletableFuture<Optional<CreatedImageData>> createdCompressedFramegrab(Media media,
-                                                                                                            Framegrab framegrab,
-                                                                                                            ImageUploadResults imageUploadResults) {
+                Framegrab framegrab,
+                ImageUploadResults imageUploadResults) {
 
         if (framegrab.getImage().isPresent() && framegrab.getVideoIndex().isPresent()) {
             return compressImage(media, framegrab, imageUploadResults)
@@ -84,7 +86,6 @@ public class ImageArchiveServiceDecorator {
             // -- Write image locally
             String[] overlayText = createOverlayText(copyrightOwner, framegrab, imageUploadResults);
             BufferedImage imageWithOverlay = createImageWithOverlay(framegrab.getImage().get(), overlayText);
-            //String name = buildName(media.getVideoReferenceUuid(), framegrab.getVideoIndex().get(), ".jpg");
             File localImageFile = buildLocalImageFile(media, ".jpg");
             try {
                 ImageUtilities.saveImage(imageWithOverlay, localImageFile);
@@ -99,13 +100,12 @@ public class ImageArchiveServiceDecorator {
 
     public CompletableFuture<Optional<CreatedImageData>> createImageFromExistingImagePath(Media media, Framegrab framegrab, Path imagePath) {
 
-
-        CompletableFuture<Optional<CreatedImageData>> f = new CompletableFuture<>();
         CreatedImageData createdImageData = new CreatedImageData();
 
         if (framegrab.getVideoIndex().isPresent()) {
 
-            String name = ImageArchiveServiceDecorator.buildName(media.getVideoReferenceUuid(), framegrab.getVideoIndex().get(), ".png");
+            String extension = FileUtilities.getExtension(imagePath.toFile());
+            String name = ImageArchiveServiceDecorator.buildName(media.getVideoReferenceUuid(), framegrab.getVideoIndex().get(), extension);
             String deploymentId = CommandUtil.getDeploymentId(media);
 
             CompletableFuture<org.mbari.m3.vars.annotation.model.Image> future = imageArchiveService.upload(media.getCameraId(), deploymentId, name, imagePath)
@@ -186,6 +186,13 @@ public class ImageArchiveServiceDecorator {
     }
 
     public CompletableFuture<org.mbari.m3.vars.annotation.model.Image> createImageInDatastore(Media media, Framegrab framegrab, URL imageUrl) {
+
+
+        // FIXME - Taking a framegrab of annotation with existing framegrab will
+        // show user a warning. The new framegrab is actually uploaded to the
+        // server, but when it tries to create a new Image with a URL identical
+        // to one already in the database, the database will throw an error.
+        // Also the image metadata is not getting updated either as the insert fails
 
         CompletableFuture<org.mbari.m3.vars.annotation.model.Image> readImageFuture = CompletableFuture.supplyAsync(() -> {
             Optional<java.awt.Image> awtImageOpt = framegrab.getImage();

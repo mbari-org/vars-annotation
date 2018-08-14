@@ -7,13 +7,17 @@ import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.FramegrabCmd;
+import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.events.MediaPlayerChangedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.messages.FramecaptureMsg;
+import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
+
+import java.util.Collection;
 
 /**
  * @author Brian Schlining
@@ -32,8 +36,11 @@ public class FramecaptureBC extends AbstractBC {
         Text icon = iconFactory.createIcon(MaterialIcon.ADD_A_PHOTO, "30px");
         initializeButton(tooltip, icon);
         Observable<Object> observable = toolBox.getEventBus().toObserverable();
-        observable.ofType((MediaPlayerChangedEvent.class))
+        observable.ofType(MediaPlayerChangedEvent.class)
                 .subscribe(m -> checkEnable());
+
+        // FIXME: Framecapture will fail if the annotation already has an image
+        // as the database will not except duplicate
 
         // Listen for things other than the button to trigger a new annotation
         toolBox.getEventBus()
