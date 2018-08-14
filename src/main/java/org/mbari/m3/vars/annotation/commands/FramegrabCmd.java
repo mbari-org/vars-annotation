@@ -89,8 +89,9 @@ public class FramegrabCmd implements Command {
         List<CompletableFuture> futures = new ArrayList<>();
         if (annotationRef != null) {
             // Delete annotation and notify UI
-            futures.add(annotationService.deleteAnnotation(annotationRef.getObservationUuid())
+            CompletableFuture cf = annotationService.deleteAnnotation(annotationRef.getObservationUuid())
                     .thenAccept(b -> eventBus.send(new AnnotationsRemovedEvent(annotationRef)));
+            futures.add(cf);
         }
         if (pngImageRef != null) {
             futures.add(annotationService.deleteImage(pngImageRef.getImageReferenceUuid()));

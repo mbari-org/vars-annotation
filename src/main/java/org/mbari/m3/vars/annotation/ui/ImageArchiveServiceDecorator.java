@@ -226,7 +226,7 @@ public class ImageArchiveServiceDecorator {
         });
 
         final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        return readImageFuture.thenCompose(annotationService::createImage)
+        return readImageFuture.thenCompose(annotationService::createImage);
 
     }
 
