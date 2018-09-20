@@ -15,9 +15,8 @@ import java.awt.*;
 import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -36,16 +35,27 @@ public class BMImageCaptureService implements SelectableImageCaptureService {
     }
 
     public Collection<String> listDevices() {
-        return Arrays.asList(imageCapture.videoDevicesAsStrings());
+        try {
+            return Arrays.asList(imageCapture.videoDevicesAsStrings());
+        }
+        catch (UnsatisfiedLinkError e) {
+            log.warn("Something is wrong with the BlackMagic libraries", e);
+            return new ArrayList<>();
+        }
     }
 
     public void setDevice(String device) {
         String cd = currentDevice == null ? "" : currentDevice;
-        if (!cd.equals(device)) {
-            imageCapture.stopSession();
+        try {
+            if (!cd.equals(device)) {
+                imageCapture.stopSession();
+            }
+            if (device != null) {
+                imageCapture.startSessionWithNamedDevice(device);
+            }
         }
-        if (device != null) {
-            imageCapture.startSessionWithNamedDevice(device);
+        catch (UnsatisfiedLinkError e) {
+            log.warn("Something is wrong with the BlackMagic libraries", e);
         }
         currentDevice = device;
     }
@@ -54,7 +64,13 @@ public class BMImageCaptureService implements SelectableImageCaptureService {
     public Framegrab capture(File file) {
         Framegrab framegrab = new Framegrab();
         //imageCapture.startSessionWithNamedDevice(currentDevice);
-        Optional<Image> imageOpt = imageCapture.capture(file, Duration.ofSeconds(10));
+        Optional<Image> imageOpt = Optional.empty();
+        try {
+            imageOpt = imageCapture.capture(file, Duration.ofSeconds(10));
+        }
+        catch (UnsatisfiedLinkError e) {
+            log.warn("Something is wrong with the BlackMagic libraries", e);
+        }
         if (imageOpt.isPresent()) {
             framegrab.setImage(imageOpt.get());
 
