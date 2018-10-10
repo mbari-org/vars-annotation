@@ -4,7 +4,6 @@ import org.mbari.m3.blackmagic.BlackmagicImageCapture;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.model.Framegrab;
-import org.mbari.m3.vars.annotation.services.ImageCaptureService;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
@@ -16,7 +15,6 @@ import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
