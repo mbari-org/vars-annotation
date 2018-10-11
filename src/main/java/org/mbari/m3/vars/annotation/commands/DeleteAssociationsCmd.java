@@ -7,6 +7,7 @@ import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
+import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator2;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -41,7 +42,7 @@ public class DeleteAssociationsCmd implements Command {
         service.deleteAssociations(uuids)
                 .thenAccept(v -> {
                     Set<UUID> observationUuids = new HashSet<>(associationMap.values());
-                    AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
+                    AnnotationServiceDecorator2 decorator = new AnnotationServiceDecorator2(toolBox);
                     decorator.refreshAnnotationsView(observationUuids);
                 });
     }
@@ -59,7 +60,7 @@ public class DeleteAssociationsCmd implements Command {
                 .thenAccept(v -> {
                     associationMap = newMap;  // Update stored associations with the new keys
                     Set<UUID> observationUuids = new HashSet<>(associationMap.values());
-                    AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
+                    AnnotationServiceDecorator2 decorator = new AnnotationServiceDecorator2(toolBox);
                     decorator.refreshAnnotationsView(observationUuids);
                 });
     }

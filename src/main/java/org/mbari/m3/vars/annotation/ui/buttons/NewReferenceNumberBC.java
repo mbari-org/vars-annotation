@@ -17,6 +17,7 @@ import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.model.User;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
+import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator2;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 
@@ -35,14 +36,14 @@ import java.util.stream.Collectors;
 public class NewReferenceNumberBC extends AbstractBC {
 
     private final String associationKey;
-    private final AnnotationServiceDecorator decorator;
+    private final AnnotationServiceDecorator2 decorator;
 
 
     public NewReferenceNumberBC(Button button, UIToolBox toolBox) {
         super(button, toolBox);
         this.associationKey = toolBox.getConfig()
                 .getString("app.annotation.identity.reference");
-        this.decorator = new AnnotationServiceDecorator(toolBox);
+        this.decorator = new AnnotationServiceDecorator2(toolBox);
     }
 
     protected void init() {

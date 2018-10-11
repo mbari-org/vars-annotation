@@ -22,6 +22,7 @@ import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.Alerts;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
+import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator2;
 import org.mbari.m3.vars.annotation.ui.AppPaneController;
 import org.mbari.net.URLUtilities;
 import org.mbari.util.SystemUtilities;
@@ -262,7 +263,7 @@ public class AppController {
 
         // Load new data
         data.setMedia(newMedia);
-        AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
+        AnnotationServiceDecorator2 decorator = new AnnotationServiceDecorator2(toolBox);
         if (newMedia != null) {
             decorator.findAnnotations(newMedia.getVideoReferenceUuid());
         }
@@ -271,7 +272,7 @@ public class AppController {
     }
 
     private void showConcurrentMedia(Boolean show) {
-        AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
+        AnnotationServiceDecorator2 decorator = new AnnotationServiceDecorator2(toolBox);
         Media media = toolBox.getData().getMedia();
         if (show) {
             if (media != null) {

@@ -5,6 +5,7 @@ import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
+import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator2;
 
 import java.util.UUID;
 
@@ -48,7 +49,7 @@ public class UpdateAssociationCmd implements Command {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         annotationService.updateAssociation(association)
                 .thenAccept(a -> {
-                    AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
+                    AnnotationServiceDecorator2 decorator = new AnnotationServiceDecorator2(toolBox);
                     decorator.refreshAnnotationsView(observationUuid);
                 });
     }

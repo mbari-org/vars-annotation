@@ -13,6 +13,7 @@ import org.mbari.m3.vars.annotation.model.Image;
 import org.mbari.m3.vars.annotation.model.ImageReference;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
+import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator2;
 import org.mbari.m3.vars.annotation.util.AsyncUtils;
 
 import java.util.*;
@@ -98,7 +99,7 @@ public class DetachFramegrabCmd implements Command {
     @Override
     public void apply(UIToolBox toolBox) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
+        AnnotationServiceDecorator2 decorator = new AnnotationServiceDecorator2(toolBox);
 
 
         Function<Image, CompletableFuture> deleteImageFn = image ->
@@ -121,7 +122,7 @@ public class DetachFramegrabCmd implements Command {
     @Override
     public void unapply(UIToolBox toolBox) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
+        AnnotationServiceDecorator2 decorator = new AnnotationServiceDecorator2(toolBox);
 
         // Create an iamge and
         Function<Image, CompletableFuture<List<Annotation>>> createImageAndFindAnnotationFn =
