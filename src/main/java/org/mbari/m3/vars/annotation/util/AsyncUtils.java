@@ -42,7 +42,7 @@ public class AsyncUtils {
      * @return An rx java Observable
      */
     public static <T> Observable<T> observe(CompletableFuture<T> future) {
-        return Observable.create(subscriber -> {
+        return Observable.create(subscriber ->
             future.whenComplete((value, exception) -> {
                 if (exception != null) {
                     subscriber.onError(exception);
@@ -51,8 +51,7 @@ public class AsyncUtils {
                     subscriber.onNext(value);
                     subscriber.onComplete();
                 }
-            });
-        });
+            }));
     }
 
     /**
