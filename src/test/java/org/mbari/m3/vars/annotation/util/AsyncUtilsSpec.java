@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class AsyncUtilsSpec {
 
-    int multipier = 20;
+    int multipier = 10;
 
     @Test
     public void observeAllTest01() {
@@ -30,7 +30,7 @@ public class AsyncUtilsSpec {
         Observable<?> observable = AsyncUtils.observeAll(items, i ->
                 CompletableFuture.supplyAsync(() -> {
                     try {
-                        System.out.println("Processing " + i);
+                        System.out.println("Future: Processing " + i);
                         Thread.sleep(i * multipier);
                         return "Processed " + i + " seconds";
                     } catch (Exception e) {
@@ -40,10 +40,9 @@ public class AsyncUtilsSpec {
 
         AtomicInteger n = new AtomicInteger(0);
 
-        observable
-            .subscribe(s -> {
+        observable.subscribe(s -> {
                         n.addAndGet(1);
-                        System.out.println(s);
+                        System.out.println("Observable: " + s);
                     },
                 e -> Assert.fail("An error occurred: " + e.getCause()),
                 () -> System.out.println("Completed " + n.get()));

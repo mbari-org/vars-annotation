@@ -60,7 +60,8 @@ public class AsyncUtils {
     /**
      * For each item in a collection, apply a function that returns a future.
      * As the futures complete, the output will be published to observer returned
-     * by this function.
+     * by this function. WARNING!! If any of the futures complete really fast
+     * (< 10 millisecs), then the result might not show up in the observable.
      *
      * @param items The items to process
      * @param fn The function to apply to each item in `items`
@@ -71,17 +72,13 @@ public class AsyncUtils {
     public static <T, R> Observable<R> observeAll(Collection<T> items,
                                                   Function<T, CompletableFuture<R>> fn) {
 
+        int n = items.size();
         PublishSubject<R> subject = PublishSubject.create();
+        subject.count()
+                .subscribe(i -> { if (i == n) subject.onComplete(); });
 
-        int size = items.size();
-        AtomicInteger n =  new AtomicInteger(0);
-
-        items.stream()
-                .map(fn::apply)
-                .map(AsyncUtils::observe)
-                .forEach(obs -> obs.subscribe(subject::onNext,
-                        subject::onError,
-                        () -> { if (n.addAndGet(1) == size) subject.onComplete(); }));
+        items.stream().forEach(i ->
+                observe(fn.apply(i)).subscribe(subject::onNext, subject::onError));
 
         return subject;
 
