@@ -75,21 +75,23 @@ public class AnnotationServiceDecorator2 {
         AnnotationService service = toolBox.getServices().getAnnotationService();
         EventBus eventBus = toolBox.getEventBus();
         AtomicInteger loadedAnnotationCount = new AtomicInteger(0);
-        eventBus.send(new ShowProgress());
         service.countAnnotations(videoReferenceUuid)
+                .whenComplete((v, ex) -> eventBus.send(new ShowProgress()))
                 .thenAccept(ac ->
                         loadAnnotationPages(loadedAnnotationCount,
                                 ac.getCount(),
                                 ac,
                                 true,
                                 null,
-                                executor))
-                .whenComplete((v, ex) -> {
-                    eventBus.send(new HideProgress());
-                    if (ex != null) {
-                        // TODO show error dialog
-                    }
-                });
+                                executor)
+                            .whenComplete((v, ex) -> {
+                                eventBus.send(new HideProgress());
+                                if (ex != null) {
+                                    log.error("Failed to load annotations for video_reference_uuid: " +
+                                            videoReferenceUuid, ex);
+                                    // TODO show error dialog
+                                }
+                            }));
     }
 
 
@@ -205,7 +207,9 @@ public class AnnotationServiceDecorator2 {
     public void findConcurrentAnnotations(Collection<UUID> videoReferenceUuids) {
         AnnotationService service = toolBox.getServices().getAnnotationService();
         List<AnnotationCount> annotationCounts = new CopyOnWriteArrayList<>();
-        Observable<AnnotationCount> observable = AsyncUtils.observeAll(videoReferenceUuids, service::countAnnotations);
+
+        Observable<AnnotationCount> observable = AsyncUtils.observeAll(videoReferenceUuids,
+                service::countAnnotations);
         observable.subscribe(annotationCounts::add,
                 ex -> {},
                 () -> loadConcurrentAnnotations((annotationCounts)));
@@ -213,6 +217,14 @@ public class AnnotationServiceDecorator2 {
     }
 
     private void loadConcurrentAnnotations(Collection<AnnotationCount> annotationCounts) {
+
+        String debugMsg = annotationCounts.stream()
+                .map(ac -> "Found concurrent Video Reference " +
+                        ac.getVideoReferenceUuid() + " with " + ac.getCount() + " annotations")
+                .collect(Collectors.joining("\n"));
+        log.debug(debugMsg);
+
+
         int totalCount = annotationCounts.stream()
                 .mapToInt(AnnotationCount::getCount)
                 .sum();

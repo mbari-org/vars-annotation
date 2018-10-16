@@ -6,12 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * @author Brian Schlining
@@ -48,7 +49,9 @@ public class AsyncUtils {
                     subscriber.onError(exception);
                 }
                 else {
-                    subscriber.onNext(value);
+                    if (value != null) {
+                        subscriber.onNext(value);
+                    }
                     subscriber.onComplete();
                 }
             }));
@@ -70,21 +73,15 @@ public class AsyncUtils {
 
         PublishSubject<R> subject = PublishSubject.create();
 
-        CompletableFuture[] futures = items.stream()
-                .map(fn)                            // Apply function: item -> future
-                .map(AsyncUtils::observe)           // Convert future to observable
-                .map(obs -> obs.subscribe(subject::onNext, subject::onError)) // Pipe results to subject
-                .toArray(CompletableFuture[]::new); // Convert to array for `allOf` consumption
+        int size = items.size();
+        AtomicInteger n =  new AtomicInteger(0);
 
-        // Complete the observer when all futures are finished or an error occurs
-        CompletableFuture.allOf(futures).whenComplete((v, ex) -> {
-            if (ex != null) {
-                subject.onError(ex);
-            }
-            else {
-                subject.onComplete();
-            }
-        });
+        items.stream()
+                .map(fn::apply)
+                .map(AsyncUtils::observe)
+                .forEach(obs -> obs.subscribe(subject::onNext,
+                        subject::onError,
+                        () -> { if (n.addAndGet(1) == size) subject.onComplete(); }));
 
         return subject;
 

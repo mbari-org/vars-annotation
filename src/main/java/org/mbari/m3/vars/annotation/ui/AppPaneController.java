@@ -454,7 +454,10 @@ public class AppPaneController {
             observable.ofType(SetProgress.class)
                     .subscribe(s -> Platform.runLater(() -> utilityPane.setProgress(s.getProgress())));
             observable.ofType(HideProgress.class)
-                    .subscribe(s -> Platform.runLater(() -> utilityPane.setProgress(0.0)));
+                    .subscribe(s -> {
+                        log.warn("HideProgress received");
+                        Platform.runLater(() -> utilityPane.setProgress(0.0));
+                    });
             observable.ofType(SetStatusBarMsg.class)
                     .subscribe(s -> Platform.runLater(() -> utilityPane.setText(s.getMsg())));
 
@@ -467,11 +470,9 @@ public class AppPaneController {
             toolBox.getServices()
                     .getAnnotationService()
                     .findGroups()
-                    .thenAccept(groups -> {
-                        Platform.runLater(() -> {
-                            groupCombobox.getItems().addAll(groups);
-                        });
-                    });
+                    .thenAccept(groups ->
+                        Platform.runLater(() ->
+                            groupCombobox.getItems().addAll(groups)));
             groupCombobox.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldv, newv) -> toolBox.getData().setGroup(newv));
