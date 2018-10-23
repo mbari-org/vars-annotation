@@ -2,8 +2,6 @@ package org.mbari.m3.vars.annotation.commands;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import io.reactivex.Observable;
-import io.reactivex.functions.Consumer;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.messages.ShowFatalErrorAlert;
@@ -13,7 +11,6 @@ import org.mbari.m3.vars.annotation.model.Image;
 import org.mbari.m3.vars.annotation.model.ImageReference;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
-import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator2;
 import org.mbari.m3.vars.annotation.util.AsyncUtils;
 
 import java.util.*;
@@ -99,7 +96,7 @@ public class DetachFramegrabCmd implements Command {
     @Override
     public void apply(UIToolBox toolBox) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        AnnotationServiceDecorator2 decorator = new AnnotationServiceDecorator2(toolBox);
+        AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
 
 
         Function<Image, CompletableFuture> deleteImageFn = image ->
@@ -122,7 +119,7 @@ public class DetachFramegrabCmd implements Command {
     @Override
     public void unapply(UIToolBox toolBox) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        AnnotationServiceDecorator2 decorator = new AnnotationServiceDecorator2(toolBox);
+        AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
 
         // Create an iamge and
         Function<Image, CompletableFuture<List<Annotation>>> createImageAndFindAnnotationFn =

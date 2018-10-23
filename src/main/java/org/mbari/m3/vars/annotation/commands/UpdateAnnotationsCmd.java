@@ -1,13 +1,10 @@
 package org.mbari.m3.vars.annotation.commands;
 
 import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.User;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
-import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator2;
-import org.mbari.m3.vars.annotation.util.AsyncUtils;
 import org.mbari.vcr4j.util.Preconditions;
 
 import java.time.Instant;
@@ -16,7 +13,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Brian Schlining
@@ -104,7 +100,7 @@ public abstract class UpdateAnnotationsCmd implements Command {
                 .getAnnotationService()
                 .updateAnnotations(annotations)
                 .thenAccept(as -> {
-                    AnnotationServiceDecorator2 asd = new AnnotationServiceDecorator2(toolBox);
+                    AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
                     Set<UUID> uuids = originalAnnotations.stream()
                             .map(Annotation::getObservationUuid)
                             .collect(Collectors.toSet());

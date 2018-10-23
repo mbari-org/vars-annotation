@@ -83,9 +83,10 @@ public class MBARIInjectorModule implements Module {
         Duration timeout = config.getDuration("concept.service.timeout");
         KBWebServiceFactory factory = new KBWebServiceFactory(endpoint, timeout, defaultExecutor);
         KBConceptService service = new KBConceptService(factory);
+        // --- Create a service that munges the data from the service for a better UI experience.
+        ModifyingConceptService modService = new ModifyingConceptService(service, config);
         // --- Using a local cache
-        CachedConceptService3 cachedService = new CachedConceptService3(service);
-        //CachedConceptService cachedService = new CachedConceptService(service);
+        CachedConceptService cachedService = new CachedConceptService(modService);
         //List<String> cachedConceptTemplates = config.getStringList("app.annotation.details.cache");
         //cachedService.prefetch(cachedConceptTemplates);
         binder.bind(String.class)

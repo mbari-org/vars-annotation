@@ -44,12 +44,14 @@ public class AsyncUtils {
      */
     public static <T> Observable<T> observe(CompletableFuture<T> future) {
         return Observable.create(subscriber ->
+
             future.whenComplete((value, exception) -> {
                 if (exception != null) {
                     subscriber.onError(exception);
                 }
                 else {
                     if (value != null) {
+                        // TODO messes up things that are counting objects
                         subscriber.onNext(value);
                     }
                     subscriber.onComplete();
@@ -77,8 +79,9 @@ public class AsyncUtils {
         subject.count()
                 .subscribe(i -> { if (i == n) subject.onComplete(); });
 
-        items.stream().forEach(i ->
-                observe(fn.apply(i)).subscribe(subject::onNext, subject::onError));
+        items.forEach(i ->
+                observe(fn.apply(i)).subscribe(subject::onNext,
+                        subject::onError));
 
         return subject;
 

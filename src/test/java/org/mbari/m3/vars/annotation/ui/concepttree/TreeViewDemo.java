@@ -7,10 +7,7 @@ import javafx.scene.control.TreeView;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.model.Concept;
-import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
-import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBConceptService;
-import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBWebServiceFactory;
 import org.mbari.m3.vars.annotation.ui.DemoConstants;
 
 /**

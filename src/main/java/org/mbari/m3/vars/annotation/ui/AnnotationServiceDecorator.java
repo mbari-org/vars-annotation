@@ -1,5 +1,8 @@
 package org.mbari.m3.vars.annotation.ui;
 
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
 import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
@@ -10,7 +13,11 @@ import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.messages.HideProgress;
 import org.mbari.m3.vars.annotation.messages.SetProgress;
 import org.mbari.m3.vars.annotation.messages.ShowProgress;
-import org.mbari.m3.vars.annotation.model.*;
+import org.mbari.m3.vars.annotation.model.Annotation;
+import org.mbari.m3.vars.annotation.model.AnnotationCount;
+import org.mbari.m3.vars.annotation.model.Association;
+import org.mbari.m3.vars.annotation.model.Image;
+import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.m3.vars.annotation.util.AsyncUtils;
@@ -19,17 +26,26 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * This decorator paginates the loading of annotations and sends the
- * appropriate notifications to the UI via the EventBus
  * @author Brian Schlining
- * @since 2017-07-28T13:17:00
+ * @since 2018-10-10T15:59:00
  */
 public class AnnotationServiceDecorator {
 
@@ -38,157 +54,195 @@ public class AnnotationServiceDecorator {
     private final int chunkSize;
     private final Duration chunkTimeout;
 
+    // When loading concurrent annotations we need to avoid swamping the annosaurus
+    private final ExecutorService pagingExecutor = Executors.newSingleThreadExecutor();
+
     public AnnotationServiceDecorator(UIToolBox toolBox) {
         this.toolBox = toolBox;
         this.chunkSize = toolBox.getConfig().getInt("annotation.service.chunk.size");
         this.chunkTimeout = toolBox.getConfig().getDuration("annotation.service.timeout");
     }
 
+    public void findAnnotations(UUID videoReferenceUuid) {
+        findAnnotations(videoReferenceUuid, toolBox.getExecutorService());
+    }
     /**
      * Find all annotations for a given video reference. The calls to retrieve
      * the annotations are
      * @param videoReferenceUuid
      */
-    public void findAnnotations(UUID videoReferenceUuid) {
-        AnnotationService service = toolBox.getServices().getAnnotationService();
-        AtomicInteger loadedAnnotationCount = new AtomicInteger(0);
-        service.countAnnotations(videoReferenceUuid)
-                .thenAccept(ac ->
-                    loadAnnotationPages(loadedAnnotationCount,
-                            ac.getCount(),
-                            ac,
-                            true,
-                            Optional.empty()));
-    }
-
-    private CompletableFuture<Void> loadAnnotationPages(AtomicInteger loadedAnnotationCount,
-                                                           int totalAnnotationCount,
-                                                           AnnotationCount ac,
-                                                           boolean sendNotifcations,
-                                                           Optional<Media> masterMedia) {
-
-        CompletableFuture<Void> cf = new CompletableFuture<>();
+    public void findAnnotations(UUID videoReferenceUuid, ExecutorService executor) {
         AnnotationService service = toolBox.getServices().getAnnotationService();
         EventBus eventBus = toolBox.getEventBus();
+        AtomicInteger loadedAnnotationCount = new AtomicInteger(0);
+        service.countAnnotations(videoReferenceUuid)
+                .whenComplete((v, ex) -> eventBus.send(new ShowProgress()))
+                .thenAccept(ac ->
+                        loadAnnotationPages(loadedAnnotationCount,
+                                ac.getCount(),
+                                ac,
+                                true,
+                                null,
+                                executor)
+                            .whenComplete((v, ex) -> {
+                                eventBus.send(new HideProgress());
+                                if (ex != null) {
+                                    log.error("Failed to load annotations for video_reference_uuid: " +
+                                            videoReferenceUuid, ex);
+                                    // TODO show error dialog
+                                }
+                            }));
+    }
 
-        Optional<Pair<Instant, Instant>> mediaBounds = masterMedia.map(m -> {
-            Instant startTimestamp = m.getStartTimestamp();
-            Instant endTimestamp = m.getDuration() == null ? null : startTimestamp.plus(m.getDuration());
-            return new Pair<>(startTimestamp, endTimestamp);
-        });
 
-        if (sendNotifcations) {
-            eventBus.send(new ShowProgress());
-        }
+    private CompletableFuture<Void> loadAnnotationPages(AtomicInteger loadedAnnotationCount,
+                                                        int totalAnnotationCount,
+                                                        AnnotationCount ac,
+                                                        boolean sendNotifications,
+                                                        Media masterMedia,
+                                                        ExecutorService executor) {
+
+        CompletableFuture<Void> cf = new CompletableFuture<>();
 
         Runnable task = () -> {
             int n = (int) Math.ceil(ac.getCount() / (double) chunkSize);
             for (int i = 0; i < n; i++) {
                 long offset = i * chunkSize;
                 long limit = chunkSize;
-
-                CompletableFuture<Void> future = service.findAnnotations(ac.getVideoReferenceUuid(), limit, offset)
-                        .thenAccept(annotations -> {
-                            if (sendNotifcations && annotations.size() == 0) {
-                                eventBus.send(new HideProgress());
-                            } else {
-
-                                int c = loadedAnnotationCount.addAndGet(annotations.size());
-                                double progress = c / totalAnnotationCount;
-
-                                List<Annotation> annos = annotations;
-                                if (mediaBounds.isPresent()) {
-                                    Pair<Instant, Instant> bounds = mediaBounds.get();
-                                    Instant startTime = bounds.getKey();
-                                    Instant endTime = bounds.getValue();
-                                    if (startTime != null && endTime != null) {
-                                        annos = annotations.stream()
-                                                .filter(a -> {
-                                                    Instant rt = a.getRecordedTimestamp();
-                                                    return rt != null &&
-                                                            (rt.equals(startTime) ||
-                                                                    rt.equals(endTime) ||
-                                                                    (rt.isAfter(startTime) && rt.isBefore(endTime)));
-                                                })
-                                                .collect(Collectors.toList());
-                                    }
-                                }
-                                eventBus.send(new AnnotationsAddedEvent(annos));
-
-                                if (sendNotifcations) {
-                                    if (progress >= 1.0) {
-                                        eventBus.send(new HideProgress());
-                                    } else {
-                                        eventBus.send(new SetProgress(progress));
-                                    }
-                                }
-                            }
-                        });
-
+                CompletableFuture<Void> future = loadAnnotationPage(ac.getVideoReferenceUuid(),
+                        limit,
+                        offset,
+                        sendNotifications,
+                        totalAnnotationCount,
+                        loadedAnnotationCount,
+                        masterMedia);
                 try {
                     future.get(chunkTimeout.toMillis(), TimeUnit.MILLISECONDS);
                 }
                 catch (Exception e) {
+                    cf.completeExceptionally(e);
                     log.warn("Failed to load page chunk (" + offset + " to " +
                             offset + limit + ")", e);
+                    break;
                 }
             }
             cf.complete(null);
-
         };
 
-        toolBox.getExecutorService().submit(task);
+        executor.submit(task);
 
         return cf;
 
     }
 
 
+    private CompletableFuture<Void> loadAnnotationPage(UUID videoReferenceUuid,
+                                                       long limit,
+                                                       long offset,
+                                                       boolean sendNotifications,
+                                                       int totalAnnotationCount,
+                                                       AtomicInteger loadedAnnotationCount,
+                                                       Media media) {
+
+
+        AnnotationService service = toolBox.getServices().getAnnotationService();
+        EventBus eventBus = toolBox.getEventBus();
+
+        return service.findAnnotations(videoReferenceUuid, limit, offset)
+                .thenApply(annotations -> media == null ? annotations : filterWithinMedia(annotations, media))
+                .thenAccept(annotations -> updateUI(eventBus,
+                        annotations,
+                        sendNotifications,
+                        totalAnnotationCount,
+                        loadedAnnotationCount));
+
+    }
+
+    private void updateUI(EventBus eventBus,
+                          List<Annotation> annotations,
+                          boolean sendNotifications,
+                          int totalAnnotationCount,
+                          AtomicInteger loadedAnnotationCount) {
+
+        if (annotations != null) {
+            int loadedCount = loadedAnnotationCount.addAndGet(annotations.size());
+            if (sendNotifications) {
+                double progress = loadedCount / (double) totalAnnotationCount;
+                eventBus.send(new SetProgress(progress));
+            }
+
+            eventBus.send(new AnnotationsAddedEvent(annotations));
+        }
+
+    }
+
+    private List<Annotation> filterWithinMedia(List<Annotation> annotations, Media media) {
+
+        Instant startTime = media.getStartTimestamp();
+        Instant endTime = media.getDuration() == null ? null : startTime.plus(media.getDuration());
+
+        Predicate<Annotation> betweenDates = a -> {
+            Instant rt = a.getRecordedTimestamp();
+            return  rt != null &&
+                    (rt.equals(startTime) ||
+                            rt.equals(endTime) ||
+                            (rt.isAfter(startTime) && rt.isBefore(endTime)));
+        };
+
+        Predicate<Annotation> afterStartDate = a -> {
+            Instant rt = a.getRecordedTimestamp();
+            return  rt != null &&
+                    (rt.equals(startTime) || (rt.isAfter(startTime)));
+        };
+
+        Predicate<Annotation> filter = endTime == null ? afterStartDate : betweenDates;
+
+        return annotations.stream()
+                .filter(filter)
+                .collect(Collectors.toList());
+
+    }
+
 
     public void findConcurrentAnnotations(Collection<UUID> videoReferenceUuids) {
         AnnotationService service = toolBox.getServices().getAnnotationService();
+        List<AnnotationCount> annotationCounts = new CopyOnWriteArrayList<>();
+
+        Observable<AnnotationCount> observable = AsyncUtils.observeAll(videoReferenceUuids,
+                service::countAnnotations);
+        observable.subscribe(annotationCounts::add,
+                ex -> {},
+                () -> loadConcurrentAnnotations((annotationCounts)));
+
+    }
+
+    private void loadConcurrentAnnotations(Collection<AnnotationCount> annotationCounts) {
+
+        String debugMsg = annotationCounts.stream()
+                .map(ac -> "Found concurrent Video Reference " +
+                        ac.getVideoReferenceUuid() + " with " + ac.getCount() + " annotations")
+                .collect(Collectors.joining("\n"));
+        log.debug(debugMsg);
+
+
+        int totalCount = annotationCounts.stream()
+                .mapToInt(AnnotationCount::getCount)
+                .sum();
+        AtomicInteger loadedCount = new AtomicInteger(0);
+        Media masterMedia = toolBox.getData().getMedia();
         EventBus eventBus = toolBox.getEventBus();
-        Optional<Media> media = Optional.ofNullable(toolBox.getData().getMedia());
+        eventBus.send(new ShowProgress());
+        Observable<Void> observable = AsyncUtils.observeAll(annotationCounts,
+                ac -> loadAnnotationPages(loadedCount,
+                        totalCount,
+                        ac,
+                        true,
+                        masterMedia,
+                        pagingExecutor));
+        observable.subscribe(v -> {},
+                ex -> {},
+                () -> eventBus.send(new HideProgress()));
 
-        AtomicInteger loadedAnnotationCount = new AtomicInteger(0);
-
-        CompletableFuture<AnnotationCount>[] futures = videoReferenceUuids.stream()
-                .map(service::countAnnotations)
-                .toArray(size -> new CompletableFuture[size]);
-
-        CompletableFuture.allOf(futures)
-                .thenApply(v -> Arrays.stream(futures)
-                            .map(f -> {
-                                Optional<AnnotationCount> opt = Optional.empty();
-                                if (!f.isCompletedExceptionally()) {
-                                    try {
-                                        AnnotationCount p = f.get();
-                                        loadedAnnotationCount.addAndGet(p.getCount());
-                                        opt = Optional.of(p);
-                                    }
-                                    catch (Exception e) {
-                                        // TODO log error?
-                                    }
-                                }
-                                return opt;
-                            })
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
-                            .collect(Collectors.toList()))
-                .thenAccept(counts -> {
-                    eventBus.send(new ShowProgress());
-                    int totalCount = counts.stream()
-                            .mapToInt(AnnotationCount::getCount)
-                            .sum();
-
-                    for (AnnotationCount ac : counts) {
-                        loadAnnotationPages(loadedAnnotationCount,
-                                totalCount,
-                                ac,
-                                true,
-                                media);
-                    }
-                });
     }
 
     /**
@@ -207,7 +261,6 @@ public class AnnotationServiceDecorator {
         eventBus.send(new AnnotationsSelectedEvent(new ArrayList<>()));
         eventBus.send(new AnnotationsRemovedEvent(removeMe));
     }
-
 
     /**
      * Refreshes the view for Annotations that already exist but are modified.
@@ -240,7 +293,7 @@ public class AnnotationServiceDecorator {
 
         mediaService.findByVideoSequenceName(media.getVideoSequenceName())
                 .thenCompose(medias -> AsyncUtils.collectAll(medias, m ->
-                            annotationService.findByVideoReferenceAndLinkName(m.getVideoReferenceUuid(), associationKey)))
+                        annotationService.findByVideoReferenceAndLinkName(m.getVideoReferenceUuid(), associationKey)))
                 .thenAccept(associationLists -> {
                     List<Association> associations = associationLists.stream()
                             .flatMap(List::stream)
@@ -254,7 +307,7 @@ public class AnnotationServiceDecorator {
     public CompletableFuture<List<Annotation>> findAnnotationsForImages(Collection<Image> images) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         Function<Image, CompletableFuture<List<Annotation>>> findAnnosFn = image ->
-             annotationService.findByImageReference(image.getImageReferenceUuid());
+                annotationService.findByImageReference(image.getImageReferenceUuid());
 
         return AsyncUtils.collectAll(images, findAnnosFn)
                 .thenApply(annotationLists -> annotationLists.stream()

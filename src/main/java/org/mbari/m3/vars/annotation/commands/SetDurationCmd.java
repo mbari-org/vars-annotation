@@ -4,7 +4,6 @@ import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
-import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator2;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
 
@@ -66,7 +65,7 @@ public class SetDurationCmd implements Command {
                 .toArray(i -> new CompletableFuture[i]);
         CompletableFuture.allOf(futures)
                 .thenAccept(v -> {
-                    AnnotationServiceDecorator2 asd = new AnnotationServiceDecorator2(toolBox);
+                    AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
                     Set<UUID> uuids = annotations.stream()
                             .map(Annotation::getObservationUuid)
                             .collect(Collectors.toSet());

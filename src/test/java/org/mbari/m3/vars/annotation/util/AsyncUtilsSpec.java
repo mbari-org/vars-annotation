@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class AsyncUtilsSpec {
 
-    int multipier = 10;
+    int multipier = 20;
 
     @Test
     public void observeAllTest01() {
@@ -32,7 +32,7 @@ public class AsyncUtilsSpec {
                     try {
                         System.out.println("Future: Processing " + i);
                         Thread.sleep(i * multipier);
-                        return "Processed " + i + " seconds";
+                        return "Processed " + i;
                     } catch (Exception e) {
                         return "";
                     }
@@ -55,7 +55,6 @@ public class AsyncUtilsSpec {
         }
 
         Assert.assertEquals(items.size(), n.get());
-
 
     }
 }

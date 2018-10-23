@@ -1,22 +1,10 @@
 package org.mbari.m3.vars.annotation.ui.cbpanel;
 
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.Initializer;
-import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.model.User;
-import org.mbari.m3.vars.annotation.services.CachedConceptService;
-import org.mbari.m3.vars.annotation.ui.DemoConstants;
-import org.mbari.m3.vars.annotation.ui.annotable.AnnotationTableController;
-import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Brian Schlining
@@ -30,9 +18,6 @@ public class FancyDragAndDropDemo extends Application {
                 .getConfig()
                 .getStringList("app.annotation.details.cache");
 
-        ((CachedConceptService) Initializer.getToolBox()
-                .getServices()
-                .getConceptService()).prefetch(concepts);
         Thread.sleep(2000);
         launch(args);
     }

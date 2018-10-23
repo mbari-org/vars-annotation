@@ -7,13 +7,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.EventBus;
-import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.DemoConstants;
 import org.mbari.m3.vars.annotation.ui.concepttree.SearchTreePaneController;
 
 import java.util.ResourceBundle;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Brian Schlining

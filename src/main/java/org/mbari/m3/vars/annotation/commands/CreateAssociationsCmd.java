@@ -6,7 +6,6 @@ import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
-import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator2;
 
 import java.util.Collection;
 import java.util.List;
@@ -45,7 +44,7 @@ public class CreateAssociationsCmd implements Command {
                 .toArray(i -> new CompletableFuture[i]);
         CompletableFuture.allOf(futures)
                 .thenAccept(v -> {
-                    AnnotationServiceDecorator2 asd = new AnnotationServiceDecorator2(toolBox);
+                    AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
                     Set<UUID> uuids = originalAnnotations.stream()
                             .map(Annotation::getObservationUuid)
                             .collect(Collectors.toSet());
@@ -56,7 +55,7 @@ public class CreateAssociationsCmd implements Command {
     @Override
     public void unapply(UIToolBox toolBox) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        AnnotationServiceDecorator2 asd = new AnnotationServiceDecorator2(toolBox);
+        AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
         List<UUID> uuids = addedAssociations.stream()
                 .map(Association::getUuid)
                 .collect(Collectors.toList());

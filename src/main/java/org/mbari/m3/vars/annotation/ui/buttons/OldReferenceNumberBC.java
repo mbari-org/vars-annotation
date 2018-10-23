@@ -12,7 +12,6 @@ import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
-import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator2;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,13 +24,13 @@ public class OldReferenceNumberBC extends AbstractBC {
 
     private ChoiceDialog<String> dialog;
     private final String associationKey;
-    private final AnnotationServiceDecorator2 decorator;
+    private final AnnotationServiceDecorator decorator;
 
     public OldReferenceNumberBC(Button button, UIToolBox toolBox) {
         super(button, toolBox);
         this.associationKey = toolBox.getConfig()
                 .getString("app.annotation.identity.reference");
-        this.decorator = new AnnotationServiceDecorator2(toolBox);
+        this.decorator = new AnnotationServiceDecorator(toolBox);
     }
 
     protected void init() {

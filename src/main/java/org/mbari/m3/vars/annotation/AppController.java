@@ -1,10 +1,8 @@
 package org.mbari.m3.vars.annotation;
 
 import io.reactivex.Observable;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -22,7 +20,6 @@ import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.Alerts;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
-import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator2;
 import org.mbari.m3.vars.annotation.ui.AppPaneController;
 import org.mbari.net.URLUtilities;
 import org.mbari.util.SystemUtilities;
@@ -34,12 +31,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
-import java.security.Key;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -263,7 +258,7 @@ public class AppController {
 
         // Load new data
         data.setMedia(newMedia);
-        AnnotationServiceDecorator2 decorator = new AnnotationServiceDecorator2(toolBox);
+        AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
         if (newMedia != null) {
             decorator.findAnnotations(newMedia.getVideoReferenceUuid());
         }
@@ -272,7 +267,7 @@ public class AppController {
     }
 
     private void showConcurrentMedia(Boolean show) {
-        AnnotationServiceDecorator2 decorator = new AnnotationServiceDecorator2(toolBox);
+        AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
         Media media = toolBox.getData().getMedia();
         if (show) {
             if (media != null) {
