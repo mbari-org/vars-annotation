@@ -1,9 +1,7 @@
 package org.mbari.m3.vars.annotation.ui;
 
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
-import io.reactivex.schedulers.Schedulers;
-import javafx.util.Pair;
+
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
@@ -30,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -206,14 +203,11 @@ public class AnnotationServiceDecorator {
 
     public void findConcurrentAnnotations(Collection<UUID> videoReferenceUuids) {
         AnnotationService service = toolBox.getServices().getAnnotationService();
-        List<AnnotationCount> annotationCounts = new CopyOnWriteArrayList<>();
+        List<AnnotationCount> annotationCounts = videoReferenceUuids.stream()
+                .map(uuid -> service.countAnnotations(uuid).join())
+                .collect(Collectors.toList());
 
-        Observable<AnnotationCount> observable = AsyncUtils.observeAll(videoReferenceUuids,
-                service::countAnnotations);
-        observable.subscribe(annotationCounts::add,
-                ex -> {},
-                () -> loadConcurrentAnnotations((annotationCounts)));
-
+        loadConcurrentAnnotations(annotationCounts);
     }
 
     private void loadConcurrentAnnotations(Collection<AnnotationCount> annotationCounts) {
@@ -232,16 +226,16 @@ public class AnnotationServiceDecorator {
         Media masterMedia = toolBox.getData().getMedia();
         EventBus eventBus = toolBox.getEventBus();
         eventBus.send(new ShowProgress());
-        Observable<Void> observable = AsyncUtils.observeAll(annotationCounts,
-                ac -> loadAnnotationPages(loadedCount,
-                        totalCount,
-                        ac,
-                        true,
-                        masterMedia,
-                        pagingExecutor));
-        observable.subscribe(v -> {},
-                ex -> {},
-                () -> eventBus.send(new HideProgress()));
+
+        for (AnnotationCount ac : annotationCounts) {
+            loadAnnotationPages(loadedCount,
+                    totalCount,
+                    ac,
+                    true,
+                    masterMedia,
+                    pagingExecutor).join();
+        }
+        eventBus.send(new HideProgress());
 
     }
 
