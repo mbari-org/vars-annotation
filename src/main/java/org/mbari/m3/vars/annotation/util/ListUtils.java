@@ -20,7 +20,10 @@ public class ListUtils {
      * @param <T>
      * @return
      */
-    public static <T> Optional<T> search(String key, List<T> items, int startIdx, Function<T, String> fn) {
+    public static <T> Optional<T> search(String key,
+                                         List<T> items,
+                                         int startIdx,
+                                         Function<T, String> fn) {
         if (startIdx >= items.size()) {
             startIdx = 0;
         }
@@ -34,5 +37,7 @@ public class ListUtils {
                 .filter(t -> fn.apply(t).contains(key))
                 .findFirst();
     }
+
+
 
 }
