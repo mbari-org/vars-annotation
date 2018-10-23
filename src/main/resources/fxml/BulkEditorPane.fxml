@@ -11,15 +11,10 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.BulkEditorPaneController">
+<VBox fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.BulkEditorPaneController">
    <children>
       <ToolBar prefHeight="40.0" prefWidth="200.0">
          <items>
-            <JFXButton fx:id="refreshButton">
-               <tooltip>
-                  <Tooltip text="%bulkeditor.refresh.tooltip" />
-               </tooltip>
-            </JFXButton>
             <JFXButton fx:id="moveFramesButton">
                <tooltip>
                   <Tooltip text="%bulkeditor.annotation.rename.tooltip" />
@@ -59,26 +54,31 @@
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <JFXCheckBox fx:id="conceptCheckBox" text="%bulkeditor.concept.checkbox" />
-            <JFXCheckBox fx:id="associationCheckBox" text="%bulkeditor.association.checkbox" GridPane.rowIndex="1" />
-            <JFXComboBox fx:id="conceptCombobox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" />
-            <JFXComboBox fx:id="associationCombobox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
-            <JFXButton fx:id="searchButton" text="%bulkeditor.search.button" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+            <JFXCheckBox fx:id="conceptCheckBox" text="%bulkeditor.concept.checkbox" GridPane.rowIndex="1" />
+            <JFXCheckBox fx:id="associationCheckBox" text="%bulkeditor.association.checkbox" GridPane.rowIndex="2" />
+            <JFXComboBox fx:id="conceptCombobox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+            <JFXComboBox fx:id="associationCombobox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+            <JFXButton fx:id="searchButton" text="%bulkeditor.search.button" GridPane.halignment="LEFT" GridPane.rowIndex="3">
                <tooltip>
                   <Tooltip text="%bulkeditor.search.button" />
                </tooltip>
             </JFXButton>
-            <JFXComboBox fx:id="groupComboBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
-            <JFXComboBox fx:id="activityComboBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
-            <Label fx:id="groupLabel" text="%bulkeditor.activity.label" GridPane.rowIndex="3" />
-            <Label fx:id="activityLabel" text="%bulkeditor.activity.label" GridPane.rowIndex="4" />
+            <JFXComboBox fx:id="groupComboBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" />
+            <JFXComboBox fx:id="activityComboBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" />
+            <Label fx:id="groupLabel" text="%bulkeditor.activity.label" GridPane.rowIndex="6" />
+            <Label fx:id="activityLabel" text="%bulkeditor.activity.label" GridPane.rowIndex="7" />
+            <Label text="%bulkeditor.search.label" GridPane.columnSpan="2147483647" />
+            <Label text="%bulkeditor.update.label" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
          </children>
       </GridPane>
    </children>

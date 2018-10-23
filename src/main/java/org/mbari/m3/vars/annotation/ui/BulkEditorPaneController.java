@@ -1,8 +1,9 @@
 package org.mbari.m3.vars.annotation.ui;
 
+import com.google.common.base.Preconditions;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXComboBox;
+
 import java.net.URL;
 import java.util.*;
 import java.util.function.Predicate;
@@ -13,8 +14,11 @@ import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.Observable;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -33,12 +37,18 @@ import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.shared.ConceptSelectionDialogController;
 import org.mbari.m3.vars.annotation.util.FnUtils;
-import org.mbari.m3.vars.annotation.util.JFXUtilities;
 
 /**
  *
  */
 public class BulkEditorPaneController {
+
+    private ObservableList<Annotation> annotations = FXCollections.emptyObservableList();
+    private ObservableList<Annotation> selectedAnnotations = FXCollections.emptyObservableList();
+
+    private final EventHandler<ActionEvent> noopHandler = (event) -> {};
+    private final EventHandler<ActionEvent> activityHandler = (event) -> changeActivity();
+    private final EventHandler<ActionEvent> groupHandler = (event) -> changeGroups();
 
     private UIToolBox toolBox;
 
@@ -67,8 +77,6 @@ public class BulkEditorPaneController {
     @FXML
     private ComboBox<Association> associationCombobox;
 
-    @FXML
-    private JFXButton refreshButton;
 
     @FXML
     private JFXButton moveFramesButton;
@@ -123,23 +131,17 @@ public class BulkEditorPaneController {
 
         final Observable<Object> obs = toolBox.getEventBus().toObserverable();
         obs.ofType(AnnotationsChangedEvent.class)
-                .subscribe(e -> needsRefresh());
+                .subscribe(e -> refresh());
         obs.ofType(AnnotationsAddedEvent.class)
-                .subscribe(e -> needsRefresh());
+                .subscribe(e -> refresh());
         obs.ofType(AnnotationsRemovedEvent.class)
-                .subscribe(e -> needsRefresh());
+                .subscribe(e -> refresh());
         obs.ofType(MediaChangedEvent.class)
-                .subscribe(e -> needsRefresh());
+                .subscribe(e -> refresh());
 
         // --- Configure buttons
         GlyphsFactory gf = MaterialIconFactory.get();
         ResourceBundle i18n = toolBox.getI18nBundle();
-
-        Text refreshIcon = gf.createIcon(MaterialIcon.REFRESH, "30px");
-        refreshButton.setGraphic(refreshIcon);
-        refreshButton.setDisable(true);
-        refreshButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.refresh.tooltip")));
-        refreshButton.setOnAction(e -> refresh());
 
         Image moveAnnoImg = new Image(getClass()
                 .getResource("/images/buttons/row_replace.png").toExternalForm());
@@ -181,10 +183,10 @@ public class BulkEditorPaneController {
         searchButton.setOnAction(e -> search());
 
         activityLabel.setText(i18n.getString("bulkeditor.activity.label"));
-        activityComboBox.setOnAction(e -> changeActivity());
+        activityComboBox.setOnAction(noopHandler);
 
         groupLabel.setText(i18n.getString("bulkeditor.group.label"));
-        groupComboBox.setOnAction(e -> changeGroups());
+        groupComboBox.setOnAction(noopHandler);
 
     }
 
@@ -192,14 +194,17 @@ public class BulkEditorPaneController {
         return root;
     }
 
-    public static BulkEditorPaneController newInstance(UIToolBox toolBox) {
+    public static BulkEditorPaneController newInstance(UIToolBox toolBox,
+                                                       ObservableList<Annotation> annotations,
+                                                       ObservableList<Annotation> selectedAnnotations) {
         final ResourceBundle bundle = toolBox.getI18nBundle();
         FXMLLoader loader = new FXMLLoader(BulkEditorPaneController.class
                 .getResource("/fxml/BulkEditorPane.fxml"), bundle);
         try {
             loader.load();
             BulkEditorPaneController controller = loader.getController();
-            //controller.toolBox = toolBox;
+            controller.setAnnotations(annotations);
+            controller.setSelectedAnnotations(selectedAnnotations);
             return controller;
         }
         catch (Exception e) {
@@ -207,9 +212,17 @@ public class BulkEditorPaneController {
         }
     }
 
-    private void refresh() {
+    private void setSelectedAnnotations(ObservableList<Annotation> selectedAnnotations) {
+        Preconditions.checkNotNull(selectedAnnotations);
+        this.selectedAnnotations = selectedAnnotations;
+    }
 
-        ObservableList<Annotation> annotations = toolBox.getData().getAnnotations();
+    private void setAnnotations(ObservableList<Annotation> annotations) {
+        Preconditions.checkNotNull(annotations);
+        this.annotations = annotations;
+    }
+
+    private void refresh() {
 
         List<String> concepts = annotations.stream()
                 .map(Annotation::getConcept)
@@ -232,12 +245,20 @@ public class BulkEditorPaneController {
         final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         annotationService
                 .findGroups()
-                .thenAccept(groups -> Platform.runLater(() ->
-                        groupComboBox.setItems(FXCollections.observableArrayList(groups))));
+                .thenAccept(groups -> Platform.runLater(() -> {
+                    // Remove the actionhandler or it gets triggered when we set the items
+                    groupComboBox.setOnAction(noopHandler);
+                    groupComboBox.setItems(FXCollections.observableArrayList(groups));
+                    groupComboBox.setOnAction(groupHandler);
+                }));
         annotationService
                 .findActivities()
-                .thenAccept(activities -> Platform.runLater(() ->
-                        activityComboBox.setItems(FXCollections.observableArrayList(activities))));
+                .thenAccept(activities -> Platform.runLater(() -> {
+                    // Remove the actionhandler or it gets triggered when we set the items
+                    activityComboBox.setOnAction(noopHandler);
+                    activityComboBox.setItems(FXCollections.observableArrayList(activities));
+                    activityComboBox.setOnAction(activityHandler);
+                }));
 
     }
 
@@ -275,57 +296,68 @@ public class BulkEditorPaneController {
                 .send(new AnnotationsSelectedEvent(foundAnnotations));
     }
 
-    private void needsRefresh() {
-        JFXUtilities.runOnFXThread(() -> refreshButton.setDisable(false));
-    }
 
     private void changeGroups() {
         final String group = groupComboBox.getSelectionModel().getSelectedItem();
-        final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
+        final List<Annotation> annosCopy = new ArrayList<>(selectedAnnotations);
 
-        ResourceBundle i18n = toolBox.getI18nBundle();
-        String title = i18n.getString("bulkeditor.group.dialog.title");
-        String header = i18n.getString("bulkeditor.group.dialog.header") + " " + group;
-        String content = i18n.getString("bulkeditor.group.dialog.content1") + " " +
-                group + " " + i18n.getString("bulkeditor.group.dialog.content2") + " " +
-                annotations.size() + " " + i18n.getString("bulkeditor.group.dialog.content3");
-        Runnable action = () -> toolBox.getEventBus()
-                .send(new ChangeGroupCmd(annotations, group));
-        doActionWithAlert(title, header, content, action);
+        Set<String> groups = annosCopy.stream()
+                .map(Annotation::getGroup)
+                .collect(Collectors.toSet());
+
+        if (group != null && (groups.size() > 1 || !groups.contains(group))) {
+
+            ResourceBundle i18n = toolBox.getI18nBundle();
+            String title = i18n.getString("bulkeditor.group.dialog.title");
+            String header = i18n.getString("bulkeditor.group.dialog.header") + " " + group;
+            String content = i18n.getString("bulkeditor.group.dialog.content1") + " " +
+                    group + " " + i18n.getString("bulkeditor.group.dialog.content2") + " " +
+                    annosCopy.size() + " " + i18n.getString("bulkeditor.group.dialog.content3");
+            Runnable action = () -> toolBox.getEventBus()
+                    .send(new ChangeGroupCmd(annosCopy, group));
+            doActionWithAlert(title, header, content, action);
+        }
     }
 
     private void changeActivity() {
         final String activity = activityComboBox.getSelectionModel().getSelectedItem();
-        final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
+        final List<Annotation> annosCopy = new ArrayList<>(selectedAnnotations);
 
-        ResourceBundle i18n = toolBox.getI18nBundle();
-        String title = i18n.getString("bulkeditor.activity.dialog.title");
-        String header = i18n.getString("bulkeditor.activity.dialog.header") + " " + activity;
-        String content = i18n.getString("bulkeditor.activity.dialog.content1") + " " +
-                activity + " " + i18n.getString("bulkeditor.activity.dialog.content2") + " " +
-                annotations.size() + " " + i18n.getString("bulkeditor.activity.dialog.content3");
-        Runnable action = () -> toolBox.getEventBus()
-                .send(new ChangeActivityCmd(annotations, activity));
-        doActionWithAlert(title, header, content, action);
+        Set<String> activities = annosCopy.stream()
+                .map(Annotation::getActivity)
+                .collect(Collectors.toSet());
+
+        if (activity != null && (activities.size() > 1 || !activities.contains(activity))) {
+
+            ResourceBundle i18n = toolBox.getI18nBundle();
+            String title = i18n.getString("bulkeditor.activity.dialog.title");
+            String header = i18n.getString("bulkeditor.activity.dialog.header") + " " + activity;
+            String content = i18n.getString("bulkeditor.activity.dialog.content1") + " " +
+                    activity + " " + i18n.getString("bulkeditor.activity.dialog.content2") + " " +
+                    annosCopy.size() + " " + i18n.getString("bulkeditor.activity.dialog.content3");
+            Runnable action = () -> toolBox.getEventBus()
+                    .send(new ChangeActivityCmd(annosCopy, activity));
+            doActionWithAlert(title, header, content, action);
+        }
     }
 
     private void moveAnnotations() {
         // TODO show selection dialog
-        final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
+        final List<Annotation> annosCopy = new ArrayList<>(selectedAnnotations);
         Optional<Media> opt = selectMediaDialog.showAndWait();
         opt.ifPresent(media -> toolBox.getEventBus()
-                .send(new MoveAnnotationsCmd(annotations, media)));
+                .send(new MoveAnnotationsCmd(annosCopy, media)));
 
     }
 
     private void renameAnnotations() {
-        final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
+        final List<Annotation> annosCopy = new ArrayList<>(selectedAnnotations);
 
         ResourceBundle i18n = toolBox.getI18nBundle();
         String title = i18n.getString("bulkeditor.concept.dialog.title");
         String header = i18n.getString("bulkeditor.concept.dialog.header");
         String content = i18n.getString("bulkeditor.concept.dialog.content1") + " " +
-                annotations.size()  + " " + i18n.getString("bulkeditor.concept.dialog.content2");
+                annosCopy.size()  + " " + i18n.getString("bulkeditor.concept.dialog.content2");
 
         Dialog<String> dialog = conceptDialogController.getDialog();
         dialog.setTitle(title);
@@ -334,19 +366,19 @@ public class BulkEditorPaneController {
         Platform.runLater(() -> conceptDialogController.getComboBox().requestFocus());
         Optional<String> opt = dialog.showAndWait();
         opt.ifPresent(c -> toolBox.getEventBus()
-                .send(new ChangeConceptCmd(annotations, c)));
+                .send(new ChangeConceptCmd(annosCopy, c)));
     }
 
     private void deleteAnnotations() {
-        final List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
+        final List<Annotation> annosCopy = new ArrayList<>(selectedAnnotations);
 
         ResourceBundle i18n = toolBox.getI18nBundle();
         String title = i18n.getString("bulkeditor.delete.anno.dialog.title");
         String header = i18n.getString("bulkeditor.delete.anno.dialog.header");
         String content = i18n.getString("bulkeditor.delete.anno.dialog.content1") + " " +
-                annotations.size()  + " " + i18n.getString("bulkeditor.delete.anno.dialog.content2");
+                annosCopy.size()  + " " + i18n.getString("bulkeditor.delete.anno.dialog.content2");
         Runnable action = () -> toolBox.getEventBus()
-                .send(new DeleteAnnotationsCmd(annotations));
+                .send(new DeleteAnnotationsCmd(annosCopy));
 
         doActionWithAlert(title, header, content, action);
     }
