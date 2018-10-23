@@ -1,20 +1,12 @@
 package org.mbari.m3.vars.annotation.ui.deployeditor;
 
-import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
-import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
-import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
-import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
+
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
-import org.mbari.m3.vars.annotation.services.CombinedMediaAnnotationDecorator;
 import org.mbari.m3.vars.annotation.ui.annotable.AssociationsTableCell;
 import org.mbari.m3.vars.annotation.ui.annotable.FGSTableCell;
 import org.mbari.m3.vars.annotation.ui.annotable.FGSValue;
