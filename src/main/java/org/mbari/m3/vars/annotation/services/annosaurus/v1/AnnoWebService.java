@@ -25,7 +25,8 @@ public interface AnnoWebService {
     @GET("annotations/{uuid}")
     Call<Annotation> findByUuid(@Path("uuid") UUID observationUuid);
 
-    @GET("annotations/videoreference/chunked/{uuid}")
+    //@GET("annotations/videoreference/chunked/{uuid}")
+    @GET("annotations/videoreference/{uuid}")
     Call<List<Annotation>> findByVideoReferenceUuid(@Path("uuid") UUID uuid,
                                                     @Query("limit") Long limit,
                                                     @Query("offset") Long offset);
