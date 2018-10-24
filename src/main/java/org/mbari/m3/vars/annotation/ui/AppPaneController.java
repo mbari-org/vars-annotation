@@ -110,7 +110,8 @@ public class AppPaneController {
         mediaPaneController = MediaPaneController.newInstance();
         bulkEditorPaneController = BulkEditorPaneController.newInstance(toolBox,
                 toolBox.getData().getAnnotations(),
-                toolBox.getData().getSelectedAnnotations());
+                toolBox.getData().getSelectedAnnotations(),
+                toolBox.getEventBus());
         ancillaryDataPaneController = new AncillaryDataPaneController(toolBox);
         annotationViewController = new AnnotationViewController(toolBox);
         rectLabelStageController = new RectLabelStageController(toolBox);

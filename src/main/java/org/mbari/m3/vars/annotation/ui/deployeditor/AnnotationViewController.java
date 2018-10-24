@@ -16,6 +16,7 @@ import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.CombinedMediaAnnotationDecorator;
+import org.mbari.m3.vars.annotation.ui.BulkEditorPaneController;
 import org.mbari.m3.vars.annotation.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +35,19 @@ public class AnnotationViewController {
     private final UIToolBox toolBox;
     private Stage stage;
     private AnnotationTableController tableController;
+    private BulkEditorPaneController bulkEditorPaneController;
     private boolean disabled = true;
     private final List<Disposable> disposables = new ArrayList<>();
+    private ObservableList<Annotation> annotations;
+    private ObservableList<Annotation> selectedAnnotations;
+    private final EventBus eventBus = new EventBus();
 
     public AnnotationViewController(UIToolBox toolBox) {
         this.toolBox = toolBox;
+        annotations = getTableController().getTableView().getItems();
+        selectedAnnotations = getTableController().getTableView()
+                .getSelectionModel()
+                .getSelectedItems();
     }
 
     public void show() {
@@ -55,6 +64,7 @@ public class AnnotationViewController {
         if (stage == null) {
             stage = new Stage();
             BorderPane pane = new BorderPane(getTableController().getTableView());
+            pane.setTop(getBulkEditorPaneController().getRoot());
             Scene scene = new Scene(pane);
             scene.getStylesheets()
                     .addAll(toolBox.getStylesheets());
@@ -74,6 +84,14 @@ public class AnnotationViewController {
                     .addShutdownHook(new Thread(() -> tableController.savePreferences()));
         }
         return tableController;
+    }
+
+    public BulkEditorPaneController getBulkEditorPaneController() {
+        if (bulkEditorPaneController == null) {
+            bulkEditorPaneController = BulkEditorPaneController.newInstance(toolBox,
+                    annotations, selectedAnnotations, eventBus);
+        }
+        return bulkEditorPaneController;
     }
 
     public boolean isDisabled() {

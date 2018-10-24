@@ -26,6 +26,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.*;
@@ -45,6 +46,7 @@ public class BulkEditorPaneController {
 
     private ObservableList<Annotation> annotations = FXCollections.emptyObservableList();
     private ObservableList<Annotation> selectedAnnotations = FXCollections.emptyObservableList();
+    private EventBus eventBus;
 
     private final EventHandler<ActionEvent> noopHandler = (event) -> {};
     private final EventHandler<ActionEvent> activityHandler = (event) -> changeActivity();
@@ -129,16 +131,6 @@ public class BulkEditorPaneController {
                 .getStylesheets()
                 .addAll(toolBox.getStylesheets());
 
-        final Observable<Object> obs = toolBox.getEventBus().toObserverable();
-        obs.ofType(AnnotationsChangedEvent.class)
-                .subscribe(e -> refresh());
-        obs.ofType(AnnotationsAddedEvent.class)
-                .subscribe(e -> refresh());
-        obs.ofType(AnnotationsRemovedEvent.class)
-                .subscribe(e -> refresh());
-        obs.ofType(MediaChangedEvent.class)
-                .subscribe(e -> refresh());
-
         // --- Configure buttons
         GlyphsFactory gf = MaterialIconFactory.get();
         ResourceBundle i18n = toolBox.getI18nBundle();
@@ -196,13 +188,15 @@ public class BulkEditorPaneController {
 
     public static BulkEditorPaneController newInstance(UIToolBox toolBox,
                                                        ObservableList<Annotation> annotations,
-                                                       ObservableList<Annotation> selectedAnnotations) {
+                                                       ObservableList<Annotation> selectedAnnotations,
+                                                       EventBus eventBus) {
         final ResourceBundle bundle = toolBox.getI18nBundle();
         FXMLLoader loader = new FXMLLoader(BulkEditorPaneController.class
                 .getResource("/fxml/BulkEditorPane.fxml"), bundle);
         try {
             loader.load();
             BulkEditorPaneController controller = loader.getController();
+            controller.setEventBus(eventBus);
             controller.setAnnotations(annotations);
             controller.setSelectedAnnotations(selectedAnnotations);
             return controller;
@@ -220,6 +214,20 @@ public class BulkEditorPaneController {
     private void setAnnotations(ObservableList<Annotation> annotations) {
         Preconditions.checkNotNull(annotations);
         this.annotations = annotations;
+    }
+
+    private void setEventBus(EventBus eventBus) {
+        Preconditions.checkNotNull(eventBus);
+        final Observable<Object> obs = eventBus.toObserverable();
+        obs.ofType(AnnotationsChangedEvent.class)
+                .subscribe(e -> refresh());
+        obs.ofType(AnnotationsAddedEvent.class)
+                .subscribe(e -> refresh());
+        obs.ofType(AnnotationsRemovedEvent.class)
+                .subscribe(e -> refresh());
+        obs.ofType(MediaChangedEvent.class)
+                .subscribe(e -> refresh());
+        this.eventBus = eventBus;
     }
 
     private void refresh() {
@@ -292,8 +300,7 @@ public class BulkEditorPaneController {
                 .filter(predicate)
                 .collect(Collectors.toList());
 
-        toolBox.getEventBus()
-                .send(new AnnotationsSelectedEvent(foundAnnotations));
+        eventBus.send(new AnnotationsSelectedEvent(foundAnnotations));
     }
 
 
@@ -313,8 +320,7 @@ public class BulkEditorPaneController {
             String content = i18n.getString("bulkeditor.group.dialog.content1") + " " +
                     group + " " + i18n.getString("bulkeditor.group.dialog.content2") + " " +
                     annosCopy.size() + " " + i18n.getString("bulkeditor.group.dialog.content3");
-            Runnable action = () -> toolBox.getEventBus()
-                    .send(new ChangeGroupCmd(annosCopy, group));
+            Runnable action = () -> eventBus.send(new ChangeGroupCmd(annosCopy, group));
             doActionWithAlert(title, header, content, action);
         }
     }
@@ -335,8 +341,7 @@ public class BulkEditorPaneController {
             String content = i18n.getString("bulkeditor.activity.dialog.content1") + " " +
                     activity + " " + i18n.getString("bulkeditor.activity.dialog.content2") + " " +
                     annosCopy.size() + " " + i18n.getString("bulkeditor.activity.dialog.content3");
-            Runnable action = () -> toolBox.getEventBus()
-                    .send(new ChangeActivityCmd(annosCopy, activity));
+            Runnable action = () -> eventBus.send(new ChangeActivityCmd(annosCopy, activity));
             doActionWithAlert(title, header, content, action);
         }
     }
@@ -345,8 +350,7 @@ public class BulkEditorPaneController {
         // TODO show selection dialog
         final List<Annotation> annosCopy = new ArrayList<>(selectedAnnotations);
         Optional<Media> opt = selectMediaDialog.showAndWait();
-        opt.ifPresent(media -> toolBox.getEventBus()
-                .send(new MoveAnnotationsCmd(annosCopy, media)));
+        opt.ifPresent(media -> eventBus.send(new MoveAnnotationsCmd(annosCopy, media)));
 
     }
 
@@ -365,8 +369,7 @@ public class BulkEditorPaneController {
         dialog.setContentText(content);
         Platform.runLater(() -> conceptDialogController.getComboBox().requestFocus());
         Optional<String> opt = dialog.showAndWait();
-        opt.ifPresent(c -> toolBox.getEventBus()
-                .send(new ChangeConceptCmd(annosCopy, c)));
+        opt.ifPresent(c -> eventBus.send(new ChangeConceptCmd(annosCopy, c)));
     }
 
     private void deleteAnnotations() {
@@ -377,8 +380,7 @@ public class BulkEditorPaneController {
         String header = i18n.getString("bulkeditor.delete.anno.dialog.header");
         String content = i18n.getString("bulkeditor.delete.anno.dialog.content1") + " " +
                 annosCopy.size()  + " " + i18n.getString("bulkeditor.delete.anno.dialog.content2");
-        Runnable action = () -> toolBox.getEventBus()
-                .send(new DeleteAnnotationsCmd(annosCopy));
+        Runnable action = () -> eventBus.send(new DeleteAnnotationsCmd(annosCopy));
 
         doActionWithAlert(title, header, content, action);
     }
