@@ -48,6 +48,10 @@ public class AnnotationViewController {
         selectedAnnotations = getTableController().getTableView()
                 .getSelectionModel()
                 .getSelectedItems();
+
+        toolBox.getEventBus()
+                .toObserverable()
+                .subscribe(eventBus::send);
     }
 
     public void show() {
@@ -79,7 +83,7 @@ public class AnnotationViewController {
 
     public AnnotationTableController getTableController() {
         if (tableController == null) {
-            tableController = new AnnotationTableController(toolBox);
+            tableController = new AnnotationTableController(toolBox, eventBus);
             Runtime.getRuntime()
                     .addShutdownHook(new Thread(() -> tableController.savePreferences()));
         }
@@ -88,6 +92,7 @@ public class AnnotationViewController {
 
     public BulkEditorPaneController getBulkEditorPaneController() {
         if (bulkEditorPaneController == null) {
+
             bulkEditorPaneController = BulkEditorPaneController.newInstance(toolBox,
                     annotations, selectedAnnotations, eventBus);
         }
@@ -122,6 +127,7 @@ public class AnnotationViewController {
                         log.debug("---- FOUND " + as.size() + " annotations");
                         items.addAll(as);
                         tableView.setDisable(false);
+                        getBulkEditorPaneController().refresh();
                     });
         }
     }

@@ -230,7 +230,7 @@ public class BulkEditorPaneController {
         this.eventBus = eventBus;
     }
 
-    private void refresh() {
+    public void refresh() {
 
         List<String> concepts = annotations.stream()
                 .map(Annotation::getConcept)
