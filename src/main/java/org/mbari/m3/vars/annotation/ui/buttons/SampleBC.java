@@ -51,7 +51,7 @@ public class SampleBC extends AbstractBC {
         ResourceBundle i18n = toolBox.getI18nBundle();
         String tooltip = i18n.getString("buttons.sample");
         MaterialIconFactory iconFactory = MaterialIconFactory.get();
-        Text icon = iconFactory.createIcon(MaterialIcon.NATURE_PEOPLE, "30px");
+        Text icon = iconFactory.createIcon(MaterialIcon.ADD_SHOPPING_CART, "30px");
         initializeButton(tooltip, icon);
     }
 
