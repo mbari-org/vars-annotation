@@ -49,9 +49,15 @@ public class AnnotationViewController {
                 .getSelectionModel()
                 .getSelectedItems();
 
-        toolBox.getEventBus()
-                .toObserverable()
+        EventBus mainEventBus = toolBox.getEventBus();
+        mainEventBus.toObserverable()
+                .ofType(AnnotationsAddedEvent.class)
                 .subscribe(eventBus::send);
+
+        mainEventBus.toObserverable()
+                .ofType(AnnotationsRemovedEvent.class)
+                .subscribe(eventBus::send);
+
     }
 
     public void show() {

@@ -275,7 +275,6 @@ public class BulkEditorPaneController {
         boolean searchDetails = associationCheckBox.isSelected();
         String concept = conceptCombobox.getSelectionModel().getSelectedItem();
         Association association = associationCombobox.getSelectionModel().getSelectedItem();
-        List<Annotation> annotations = new ArrayList<>(toolBox.getData().getAnnotations());
         Predicate<Annotation> nullPredicate = a -> false;
         Predicate<Annotation> conceptPredicate = a -> a.getConcept().equals(concept);
         Predicate<Annotation> associationPredicate = a -> a.getAssociations()
