@@ -1,5 +1,7 @@
 package org.mbari.m3.vars.annotation.ui;
 
+import com.google.common.collect.Lists;
+import com.typesafe.config.Config;
 import io.reactivex.Observable;
 
 import org.mbari.m3.vars.annotation.EventBus;
@@ -10,6 +12,7 @@ import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.messages.HideProgress;
 import org.mbari.m3.vars.annotation.messages.SetProgress;
+import org.mbari.m3.vars.annotation.messages.ShowNonfatalErrorAlert;
 import org.mbari.m3.vars.annotation.messages.ShowProgress;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.AnnotationCount;
@@ -24,12 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -83,11 +81,26 @@ public class AnnotationServiceDecorator {
                             .whenComplete((v, ex) -> {
                                 eventBus.send(new HideProgress());
                                 if (ex != null) {
-                                    log.error("Failed to load annotations for video_reference_uuid: " +
-                                            videoReferenceUuid, ex);
-                                    // TODO show error dialog
+                                    // Show error dialog
+                                    showFindAnnotationsError(videoReferenceUuid, ex);
                                 }
                             }));
+    }
+
+    private void showFindAnnotationsError(UUID videoReferenceUuid, Throwable ex) {
+        EventBus eventBus = toolBox.getEventBus();
+        Config config = toolBox.getConfig();
+        String content1 = config.getString("annotationservicedecorator.findannotations.error.content1");
+        String content2 = config.getString("annotationservicedecorator.findannotations.error.content2");
+        String header = config.getString("annotationservicedecorator.findannotations.error.header");
+        String title = config.getString("annotationservicedecorator.findannotations.error.title");
+
+        String msg = String.join(" ",
+                Lists.newArrayList(content1, videoReferenceUuid.toString(), content2));
+        log.error(msg, ex);
+
+        Exception e = ex instanceof Exception ? (Exception) ex : new RuntimeException(msg, ex);
+        eventBus.send(new ShowNonfatalErrorAlert(title, header, msg, e));
     }
 
 
@@ -116,9 +129,10 @@ public class AnnotationServiceDecorator {
                     future.get(chunkTimeout.toMillis(), TimeUnit.MILLISECONDS);
                 }
                 catch (Exception e) {
-                    cf.completeExceptionally(e);
-                    log.warn("Failed to load page chunk (" + offset + " to " +
-                            offset + limit + ")", e);
+                    String msg = "Failed to load page chunk (" + offset + " to " +
+                            offset + limit + ")";
+                    Exception e0 = new RuntimeException(msg, e);
+                    cf.completeExceptionally(e0);
                     break;
                 }
             }
