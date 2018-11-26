@@ -14,7 +14,9 @@ public class EventBus {
     private final Subject<Object> rxSubject = PublishSubject.create().toSerialized();
 
     public void send(Object o) {
-        rxSubject.onNext(o);
+        if (o != null) {
+            rxSubject.onNext(o);
+        }
     }
 
     public Observable<Object> toObserverable() {

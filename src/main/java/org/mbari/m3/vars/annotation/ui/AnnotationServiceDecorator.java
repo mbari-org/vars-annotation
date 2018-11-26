@@ -2,7 +2,6 @@ package org.mbari.m3.vars.annotation.ui;
 
 import com.google.common.collect.Lists;
 import com.typesafe.config.Config;
-import io.reactivex.Observable;
 
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;

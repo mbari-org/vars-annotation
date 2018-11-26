@@ -77,6 +77,8 @@ public class AppController {
             KeyCodeCombination tCombo = new KeyCodeCombination(KeyCode.T, osModifier);
             KeyCodeCombination fCombo = new KeyCodeCombination(KeyCode.F, osModifier);
             KeyCodeCombination deleteCombo = new KeyCodeCombination(KeyCode.DELETE, osModifier);
+            KeyCodeCombination undoCombo = new KeyCodeCombination(KeyCode.Z, osModifier);
+            KeyCodeCombination redoCombo = new KeyCodeCombination(KeyCode.Z, osModifier, KeyCombination.SHIFT_DOWN);
 
             // --- Configure global shortcuts
             scene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
@@ -134,6 +136,12 @@ public class AppController {
                 else if (deleteCombo.match(e)) {
                     toolBox.getEventBus().send(new DeleteAnnotationsMsg());
                     e.consume();
+                }
+                else if (undoCombo.match(e)) {
+                    toolBox.getEventBus().send(new UndoMsg());
+                }
+                else if (redoCombo.match(e)) {
+                    toolBox.getEventBus().send(new RedoMsg());
                 }
             });
         }

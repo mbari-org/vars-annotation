@@ -19,6 +19,8 @@ import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.m3.vars.annotation.ui.shared.AnnotationTableViewFactory;
 import org.mbari.m3.vars.annotation.util.AsyncUtils;
 import org.mbari.m3.vars.annotation.util.JFXUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.*;
@@ -36,6 +38,8 @@ public class AnnotationTableController {
     private final ResourceBundle i18n;
     private final Map<UUID, URI> videoReferenceUriMap  = new ConcurrentHashMap<>();
     private final UIToolBox toolBox;
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public AnnotationTableController(UIToolBox toolBox, EventBus eventBus) {
         this.toolBox = toolBox;
@@ -60,9 +64,15 @@ public class AnnotationTableController {
                 .subscribe(e -> select(e.get()));
 
         observable.ofType(AnnotationsChangedEvent.class)
-                .subscribe(e -> {
+                .subscribe(e ->
                     JFXUtilities.runOnFXThread(() -> {
                         Collection<Annotation> annotations = e.get();
+                        String message = "Redrawing " + annotations.size() +
+                                " annotations:" +
+                                annotations.stream()
+                                    .map(Annotation::getConcept)
+                                    .collect(Collectors.joining(", "));
+                        log.debug(message);
                         ObservableList<Annotation> items = getTableView().getItems();
                         for (Annotation a : annotations) {
                             int idx = items.indexOf(a);
@@ -72,8 +82,7 @@ public class AnnotationTableController {
                         tableView.refresh();
                         tableView.sort();
                         eventBus.send(new AnnotationsSelectedEvent(annotations));
-                    });
-                });
+                    }));
 
         // Forward this tables annotation mutating events to main event bus
         EventBus mainEventBus = toolBox.getEventBus();
@@ -91,7 +100,8 @@ public class AnnotationTableController {
         loadPreferences();
 
         // After annotations are added do lookup of video URI for video URI column
-        getTableView().getItems().addListener((InvalidationListener) obs -> updateVideoReferenceUris());
+        getTableView().getItems()
+                .addListener((InvalidationListener) obs -> updateVideoReferenceUris());
 
     }
 
@@ -178,7 +188,6 @@ public class AnnotationTableController {
 
             // TODO get column order from preferences
             tableView.getColumns().add(vruCol);
-
 
         }
         return tableView;
