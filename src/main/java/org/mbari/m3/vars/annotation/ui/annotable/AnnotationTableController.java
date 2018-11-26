@@ -67,8 +67,8 @@ public class AnnotationTableController {
                             items.remove(idx);
                             items.add(idx, a);
                         }
-                        tableView.refresh();
-                        tableView.sort();
+                        getTableView().refresh();
+                        getTableView().sort();
                         eventBus.send(new AnnotationsSelectedEvent(annotations));
                     });
                 });
