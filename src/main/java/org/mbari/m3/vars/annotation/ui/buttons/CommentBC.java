@@ -12,6 +12,7 @@ import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.User;
+import org.mbari.m3.vars.annotation.util.JFXUtilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,12 +58,15 @@ public class CommentBC extends AbstractBC {
 
     protected void apply() {
         List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-        Optional<String> s = getDialog().showAndWait();
+        TextInputDialog dialog = getDialog();
+        JFXUtilities.runOnFXThread(() -> dialog.getEditor().requestFocus());
+        Optional<String> s = dialog.showAndWait();
         s.ifPresent(comment -> {
             Association a = new Association(commentLinkName, Association.VALUE_SELF, comment);
             toolBox.getEventBus()
                     .send(new CreateAssociationsCmd(a, annotations));
         });
         getDialog().getEditor().setText(null);
+
     }
 }

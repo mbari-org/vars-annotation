@@ -19,6 +19,7 @@ import org.mbari.m3.vars.annotation.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.security.Key;
 import java.util.function.Predicate;
 
@@ -32,7 +33,7 @@ public class FilteredComboBoxDecorator<T>  {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private static final String EMPTY = "";
     private StringProperty filter = new SimpleStringProperty(EMPTY);
-    private AutoCompleteComparator<T> comparator = (typedText, objectToCompare) -> false;
+    private AutoCompleteComparator<T> comparator;
     private volatile FilteredList<T> filteredItems;
     private final ComboBox<T> comboBox;
 
@@ -120,7 +121,7 @@ public class FilteredComboBoxDecorator<T>  {
         }
     }
 
-    public void setComparator(AutoCompleteComparator<T> comparator) {
+    public void setComparator(@Nonnull AutoCompleteComparator<T> comparator) {
         this.comparator = comparator;
         handleFilterChanged(filter.get());
     }

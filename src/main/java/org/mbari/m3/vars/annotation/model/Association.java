@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * @author Brian Schlining
  * @since 2017-05-11T13:29:00
  */
-public class Association implements Cloneable {
+public class Association implements Cloneable, Details {
     private UUID uuid;
     private String linkName;
     private String toConcept;

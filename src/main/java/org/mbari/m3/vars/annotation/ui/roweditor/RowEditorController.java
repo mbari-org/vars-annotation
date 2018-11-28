@@ -41,9 +41,7 @@ public class RowEditorController {
             BorderPane rowPane = rowController.getRoot();
             GridPane associationPane = associationController.getRoot();
             ObservableList<Node> children = this.root.getChildren();
-            if (children.contains(associationPane)) {
-                children.remove(associationPane);
-            }
+            children.remove(associationPane);
             if (!children.contains(rowPane)) {
                 children.add(rowPane);
             }

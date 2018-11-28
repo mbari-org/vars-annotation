@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1" fx:controller="org.mbari.m3.vars.annotation.ui.sharedorg.mbari.m3.vars.annotation.ui.shared.CompactAssociationEditorPaneController">
+  <columnConstraints>
+    <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" />
+    <ColumnConstraints hgrow="SOMETIMES" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <Label text="%roweditor.asseditor.link.labelroweditor.asseditor.link.label" />
+      <Label text="%roweditor.asseditor.to.labelroweditor.asseditor.to.label" GridPane.rowIndex="1" />
+      <Label text="%roweditor.asseditor.value.labelroweditor.asseditor.value.label" GridPane.rowIndex="2" />
+      <JFXTextField fx:id="linkNameTextField" minWidth="400.0" GridPane.columnIndex="1" />
+      <JFXComboBox fx:id="toConceptComboBox" minWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <JFXTextField fx:id="linkValueTextField" minWidth="400.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+   </children>
+</GridPane>
