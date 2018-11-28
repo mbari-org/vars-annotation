@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.roweditor.AnnotationEditorPaneController">
+<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.roweditor.AnnotationEditorPaneController">
    <bottom>
       <HBox BorderPane.alignment="BOTTOM_RIGHT">
          <children>
@@ -22,7 +22,10 @@
       <JFXComboBox fx:id="conceptComboBox" maxWidth="1.7976931348623157E308" BorderPane.alignment="TOP_CENTER">
          <padding>
             <Insets bottom="4.0" />
-         </padding></JFXComboBox>
+         </padding>
+         <BorderPane.margin>
+            <Insets bottom="5.0" />
+         </BorderPane.margin></JFXComboBox>
    </top>
    <center>
       <JFXListView fx:id="associationListView" onMouseClicked="#onAssociationSelected" prefHeight="200.0" prefWidth="500.0" BorderPane.alignment="CENTER" />
