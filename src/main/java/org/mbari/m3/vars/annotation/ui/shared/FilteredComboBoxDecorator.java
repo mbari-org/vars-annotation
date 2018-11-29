@@ -30,7 +30,7 @@ import java.util.function.Predicate;
 public class FilteredComboBoxDecorator<T>  {
 
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    //private final Logger log = LoggerFactory.getLogger(getClass());
     private static final String EMPTY = "";
     private StringProperty filter = new SimpleStringProperty(EMPTY);
     private AutoCompleteComparator<T> comparator;
