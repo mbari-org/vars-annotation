@@ -25,7 +25,6 @@ import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -60,8 +59,8 @@ public class SearchableDetailEditorPaneController {
     @FXML
     void initialize() {
 
-        JavaFxObservable.valuesOf(root.widthProperty())
-                .subscribe(n -> associationComboBox.setPrefWidth(n.doubleValue()));
+//        JavaFxObservable.valuesOf(root.widthProperty())
+//                .subscribe(n -> associationComboBox.setPrefWidth(n.doubleValue() - 10D));
 
         // Set values in fields when an association is selected
         associationComboBox.getSelectionModel()

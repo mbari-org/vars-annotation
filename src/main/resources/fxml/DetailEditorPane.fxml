@@ -8,10 +8,10 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.sharedorg.mbari.m3.vars.annotation.ui.shared.CompactAssociationEditorPaneController">
+<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.shared.DetailEditorPaneController">
   <columnConstraints>
-    <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" />
-    <ColumnConstraints hgrow="SOMETIMES" />
+    <ColumnConstraints fillWidth="false" hgrow="NEVER" />
+    <ColumnConstraints hgrow="ALWAYS" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -19,9 +19,9 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Label text="%roweditor.asseditor.link.labelroweditor.asseditor.link.label" />
-      <Label text="%roweditor.asseditor.to.labelroweditor.asseditor.to.label" GridPane.rowIndex="1" />
-      <Label text="%roweditor.asseditor.value.labelroweditor.asseditor.value.label" GridPane.rowIndex="2" />
+      <Label text="%roweditor.asseditor.link.label" />
+      <Label text="%roweditor.asseditor.to.label" GridPane.rowIndex="1" />
+      <Label text="%roweditor.asseditor.value.label" GridPane.rowIndex="2" />
       <JFXTextField fx:id="linkNameTextField" minWidth="400.0" GridPane.columnIndex="1">
          <GridPane.margin>
             <Insets bottom="5.0" />

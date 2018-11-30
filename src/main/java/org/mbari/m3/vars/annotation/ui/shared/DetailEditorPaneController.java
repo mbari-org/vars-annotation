@@ -2,7 +2,6 @@ package org.mbari.m3.vars.annotation.ui.shared;
 
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
-import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;

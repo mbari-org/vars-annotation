@@ -35,8 +35,8 @@ public class ConceptAssociationTemplate implements Details {
     @Override
     public String toString() {
         String s = linkName + " | "  + toConcept + " | " + linkValue;
-        if (s.length() > 140) {
-            s = s.substring(0, 140) + "...";
+        if (s.length() > 80) {
+            s = s.substring(0, 80) + "...";
         }
         return s;
     }

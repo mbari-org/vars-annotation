@@ -38,6 +38,7 @@ import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.shared.ConceptSelectionDialogController;
+import org.mbari.m3.vars.annotation.ui.shared.DetailsDialog;
 import org.mbari.m3.vars.annotation.ui.shared.SearchableDetailEditorPaneController;
 import org.mbari.m3.vars.annotation.util.AsyncUtils;
 import org.mbari.m3.vars.annotation.util.FnUtils;
@@ -357,11 +358,9 @@ public class BulkEditorPaneController {
     }
 
     private void moveAnnotations() {
-        // TODO show selection dialog
         final List<Annotation> annosCopy = new ArrayList<>(selectedAnnotations);
         Optional<Media> opt = selectMediaDialog.showAndWait();
         opt.ifPresent(media -> eventBus.send(new MoveAnnotationsCmd(annosCopy, media)));
-
     }
 
     private void renameAnnotations() {
@@ -408,25 +407,6 @@ public class BulkEditorPaneController {
         }
     }
 
-    private Pair<Dialog<Details>, SearchableDetailEditorPaneController> newAssociationDialog() {
-        Dialog<Details> dialog = new Dialog<>();
-        dialog.getDialogPane()
-                .getButtonTypes()
-                .addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        SearchableDetailEditorPaneController controller =
-                SearchableDetailEditorPaneController.newInstance(toolBox);
-        dialog.getDialogPane()
-                .setContent(controller.getRoot());
-        dialog.setResultConverter(button -> {
-            if (button == ButtonType.OK) {
-                return controller.getCustomAssociation().orElse(null);
-            }
-            return null;
-        });
-        Platform.runLater(() -> controller.getSearchTextField().requestFocus());
-        return new Pair<>(dialog, controller);
-    }
 
     private void addAssociations() {
         // --- Get templates that are common to all concepts
@@ -438,10 +418,11 @@ public class BulkEditorPaneController {
 
         ConceptService conceptService = toolBox.getServices().getConceptService();
 
-        Pair<Dialog<Details>, SearchableDetailEditorPaneController> pair = newAssociationDialog();
+        DetailsDialog dialog = new DetailsDialog(toolBox);
         List<ConceptAssociationTemplate> cats = new CopyOnWriteArrayList<>();
 
-        // TODO this isn't working.
+        // Find intersection of templates allowed for selected concepts. When
+        // they are finished loading, show the select details dialog
         Observable<List<ConceptAssociationTemplate>> observable = AsyncUtils.observeAll(concepts, conceptService::findTemplates);
         observable.subscribe(cs -> {
                     if (cats.isEmpty()) {
@@ -455,9 +436,14 @@ public class BulkEditorPaneController {
                 },
                 e -> log.error("Failed to load templates", e),
                 () -> {
-                    pair.getValue().setTemplates(cats);
-                    Optional<Details> opt = pair.getKey().showAndWait();
-                    opt.ifPresent(details -> {} );
+                   log.debug("Completed template loading");
+                    dialog.getController().setTemplates(cats);
+                    Platform.runLater(() -> {
+                        dialog.getDialogPane().getScene().getWindow().sizeToScene();
+                        Optional<Details> opt = dialog.showAndWait();
+                        opt.ifPresent(details -> {} );
+                    });
+
                 });
 
 
