@@ -6,6 +6,7 @@ import com.jfoenix.controls.JFXCheckBox;
 
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -26,23 +27,30 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.*;
 import org.mbari.m3.vars.annotation.events.*;
-import org.mbari.m3.vars.annotation.model.Annotation;
-import org.mbari.m3.vars.annotation.model.Association;
-import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
+import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.shared.ConceptSelectionDialogController;
+import org.mbari.m3.vars.annotation.ui.shared.SearchableDetailEditorPaneController;
+import org.mbari.m3.vars.annotation.util.AsyncUtils;
 import org.mbari.m3.vars.annotation.util.FnUtils;
+import org.mbari.m3.vars.annotation.util.ListUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class BulkEditorPaneController {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private ObservableList<Annotation> annotations = FXCollections.emptyObservableList();
     private ObservableList<Annotation> selectedAnnotations = FXCollections.emptyObservableList();
@@ -113,6 +121,8 @@ public class BulkEditorPaneController {
     @FXML
     private Label activityLabel;
 
+
+
     @FXML
     void initialize() {
 
@@ -157,6 +167,7 @@ public class BulkEditorPaneController {
                 .getResource("/images/buttons/branch_add.png").toExternalForm());
         addAssociationButton.setGraphic(new ImageView(addAssImg));
         addAssociationButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.association.add.tooltip")));
+        addAssociationButton.setOnAction(e -> addAssociations());
 
         Image editAssImg = new Image(getClass()
                 .getResource("/images/buttons/branch_edit.png").toExternalForm());
@@ -397,7 +408,61 @@ public class BulkEditorPaneController {
         }
     }
 
-    private void addAssociations() {}
+    private Pair<Dialog<Details>, SearchableDetailEditorPaneController> newAssociationDialog() {
+        Dialog<Details> dialog = new Dialog<>();
+        dialog.getDialogPane()
+                .getButtonTypes()
+                .addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        SearchableDetailEditorPaneController controller =
+                SearchableDetailEditorPaneController.newInstance(toolBox);
+        dialog.getDialogPane()
+                .setContent(controller.getRoot());
+        dialog.setResultConverter(button -> {
+            if (button == ButtonType.OK) {
+                return controller.getCustomAssociation().orElse(null);
+            }
+            return null;
+        });
+        Platform.runLater(() -> controller.getSearchTextField().requestFocus());
+        return new Pair<>(dialog, controller);
+    }
+
+    private void addAssociations() {
+        // --- Get templates that are common to all concepts
+        final List<Annotation> annosCopy = new ArrayList<>(selectedAnnotations);
+        List<String> concepts = selectedAnnotations.stream()
+                .map(Annotation::getConcept)
+                .distinct()
+                .collect(Collectors.toList());
+
+        ConceptService conceptService = toolBox.getServices().getConceptService();
+
+        Pair<Dialog<Details>, SearchableDetailEditorPaneController> pair = newAssociationDialog();
+        List<ConceptAssociationTemplate> cats = new CopyOnWriteArrayList<>();
+
+        // TODO this isn't working.
+        Observable<List<ConceptAssociationTemplate>> observable = AsyncUtils.observeAll(concepts, conceptService::findTemplates);
+        observable.subscribe(cs -> {
+                    if (cats.isEmpty()) {
+                        cats.addAll(cs);
+                    }
+                    else {
+                        List<ConceptAssociationTemplate> intersection = ListUtils.intersection(cats, cs);
+                        cats.clear();
+                        cats.addAll(intersection);
+                    }
+                },
+                e -> log.error("Failed to load templates", e),
+                () -> {
+                    pair.getValue().setTemplates(cats);
+                    Optional<Details> opt = pair.getKey().showAndWait();
+                    opt.ifPresent(details -> {} );
+                });
+
+
+
+    }
     private void changeAssociations() {}
     private void deleteAssociations() {}
 }
