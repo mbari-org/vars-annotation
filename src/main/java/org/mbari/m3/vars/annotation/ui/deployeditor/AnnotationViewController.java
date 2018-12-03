@@ -3,9 +3,11 @@ package org.mbari.m3.vars.annotation.ui.deployeditor;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
@@ -74,7 +76,9 @@ public class AnnotationViewController {
         if (stage == null) {
             stage = new Stage();
             BorderPane pane = new BorderPane(getTableController().getTableView());
-            pane.setTop(getBulkEditorPaneController().getRoot());
+            VBox bulkEditorPane = getBulkEditorPaneController().getRoot();
+            pane.setTop(bulkEditorPane);
+            BorderPane.setAlignment(bulkEditorPane, Pos.CENTER);
             Scene scene = new Scene(pane);
             scene.getStylesheets()
                     .addAll(toolBox.getStylesheets());

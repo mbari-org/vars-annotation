@@ -59,8 +59,8 @@ public class SearchableDetailEditorPaneController {
     @FXML
     void initialize() {
 
-//        JavaFxObservable.valuesOf(root.widthProperty())
-//                .subscribe(n -> associationComboBox.setPrefWidth(n.doubleValue() - 10D));
+        JavaFxObservable.valuesOf(root.widthProperty())
+                .subscribe(n -> associationComboBox.setPrefWidth(n.doubleValue() - 20D));
 
         // Set values in fields when an association is selected
         associationComboBox.getSelectionModel()
@@ -87,7 +87,7 @@ public class SearchableDetailEditorPaneController {
         GridPane editorPane = editorPaneController.getRoot();
         this.root.getChildren().add(editorPane);
         JavaFxObservable.valuesOf(root.widthProperty())
-                .subscribe(n -> editorPane.setPrefWidth(n.doubleValue()));
+                .subscribe(n -> editorPane.setPrefWidth(n.doubleValue() - 20D));
     }
 
     private void setSelectedDetailsTemplate(Details details) {

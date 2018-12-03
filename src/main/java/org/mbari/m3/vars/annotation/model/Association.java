@@ -52,12 +52,22 @@ public class Association implements Cloneable, Details {
         mimeType = a.mimeType;
     }
 
+
     public Association(UUID uuid, Association a) {
         this.uuid = uuid;
         linkName = a.linkName;
         toConcept = a.toConcept;
         linkValue = a.linkValue;
         mimeType = a.mimeType;
+    }
+
+    /**
+     * Create a standard text only Association from a generic details object
+     * @param d
+     * @return
+     */
+    public static Association fromDetails(Details d) {
+        return new Association(d.getLinkName(), d.getToConcept(), d.getLinkValue());
     }
 
     public void resetUuid() {

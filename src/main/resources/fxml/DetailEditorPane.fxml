@@ -19,9 +19,18 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Label text="%roweditor.asseditor.link.label" />
-      <Label text="%roweditor.asseditor.to.label" GridPane.rowIndex="1" />
-      <Label text="%roweditor.asseditor.value.label" GridPane.rowIndex="2" />
+      <Label text="%roweditor.asseditor.link.label">
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin></Label>
+      <Label text="%roweditor.asseditor.to.label" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin></Label>
+      <Label text="%roweditor.asseditor.value.label" GridPane.rowIndex="2">
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin></Label>
       <JFXTextField fx:id="linkNameTextField" minWidth="400.0" GridPane.columnIndex="1">
          <GridPane.margin>
             <Insets bottom="5.0" />

@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.ui.shared;
 
+import com.google.common.collect.Lists;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -7,6 +8,10 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.model.ConceptAssociationTemplate;
+import org.mbari.m3.vars.annotation.model.Details;
+
+import java.util.List;
 
 /**
  * @author Brian Schlining
@@ -28,5 +33,30 @@ public class DetailEditorPaneDemo extends Application {
         scene.getStylesheets().addAll(toolBox.getStylesheets());
         primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.setOnCloseRequest(evt -> System.exit(0));
+        Thread t = new Thread(() -> {
+            List<Details> templates = Lists.newArrayList(ConceptAssociationTemplate.NIL,
+                    new ConceptAssociationTemplate("linkname", "toconcept", "linkvalue"),
+                    new ConceptAssociationTemplate("a really, really, long details/association",
+                            "Nanomia bijuga",
+                            "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
+            int i = 0;
+            while (true) {
+                controller.setDetails(templates.get(i));
+                if (i >= templates.size() - 1) {
+                    i = 0;
+                }
+                else {
+                    i++;
+                }
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    // Do nothing
+                }
+            }
+        });
+        t.setDaemon(true);
+        t.start();
     }
 }

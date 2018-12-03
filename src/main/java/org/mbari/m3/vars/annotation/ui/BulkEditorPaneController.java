@@ -6,6 +6,7 @@ import com.jfoenix.controls.JFXCheckBox;
 
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ import io.reactivex.Observable;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -42,9 +44,12 @@ import org.mbari.m3.vars.annotation.ui.shared.DetailsDialog;
 import org.mbari.m3.vars.annotation.ui.shared.SearchableDetailEditorPaneController;
 import org.mbari.m3.vars.annotation.util.AsyncUtils;
 import org.mbari.m3.vars.annotation.util.FnUtils;
+import org.mbari.m3.vars.annotation.util.JFXUtilities;
 import org.mbari.m3.vars.annotation.util.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
 
 /**
  *
@@ -122,6 +127,8 @@ public class BulkEditorPaneController {
     @FXML
     private Label activityLabel;
 
+    private ListChangeListener<Annotation> selectionChangeListener;
+
 
 
     @FXML
@@ -151,34 +158,40 @@ public class BulkEditorPaneController {
         moveFramesButton.setGraphic(new ImageView(moveAnnoImg));
         moveFramesButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.annotation.move.tooltip")));
         moveFramesButton.setOnAction(e -> moveAnnotations());
+        moveFramesButton.setDisable(true);
 
         Image editAnnoImg = new Image(getClass()
                 .getResource("/images/buttons/row_edit.png").toExternalForm());
         renameObservationsButton.setGraphic(new ImageView(editAnnoImg));
         renameObservationsButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.annotation.rename.tooltip")));
         renameObservationsButton.setOnAction(e -> renameAnnotations());
+        renameObservationsButton.setDisable(true);
 
         Image deleteAnnoImg = new Image(getClass()
                 .getResource("/images/buttons/row_delete.png").toExternalForm());
         deleteObservationsButton.setGraphic(new ImageView(deleteAnnoImg));
         deleteObservationsButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.annotation.delete.tooltip")));
         deleteObservationsButton.setOnAction(e -> deleteAnnotations());
+        deleteObservationsButton.setDisable(true);
 
         Image addAssImg = new Image(getClass()
                 .getResource("/images/buttons/branch_add.png").toExternalForm());
         addAssociationButton.setGraphic(new ImageView(addAssImg));
         addAssociationButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.association.add.tooltip")));
         addAssociationButton.setOnAction(e -> addAssociations());
+        addAssociationButton.setDisable(true);
 
         Image editAssImg = new Image(getClass()
                 .getResource("/images/buttons/branch_edit.png").toExternalForm());
         replaceAssociationButton.setGraphic(new ImageView(editAssImg));
         replaceAssociationButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.association.edit.tooltip")));
+        replaceAssociationButton.setDisable(true);
 
         Image deleteAssImg = new Image(getClass()
                 .getResource("/images/buttons/branch_delete.png").toExternalForm());
         deleteAssociationButton.setGraphic(new ImageView(deleteAssImg));
         deleteAssociationButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.association.delete.tooltip")));
+        deleteAssociationButton.setDisable(true);
 
         Text searchIcon = gf.createIcon(MaterialIcon.SEARCH, "30px");
         searchButton.setText(null);
@@ -192,12 +205,37 @@ public class BulkEditorPaneController {
         groupLabel.setText(i18n.getString("bulkeditor.group.label"));
         groupComboBox.setOnAction(noopHandler);
 
+        associationCombobox.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, oldv, newv) -> {
+                    boolean disable = newv == null ||
+                            selectedAnnotations.size() == 0;
+                    replaceAssociationButton.setDisable(disable);
+                    deleteAssociationButton.setDisable(disable);
+                });
+
+        selectionChangeListener = c -> {
+            boolean disable = selectedAnnotations.size() == 0;
+            moveFramesButton.setDisable(disable);
+            addAssociationButton.setDisable(disable);
+            deleteObservationsButton.setDisable(disable);
+            renameObservationsButton.setDisable(disable);
+        };
+
     }
 
     public VBox getRoot() {
         return root;
     }
 
+    /**
+     *
+     * @param toolBox
+     * @param annotations
+     * @param selectedAnnotations
+     * @param eventBus
+     * @return
+     */
     public static BulkEditorPaneController newInstance(UIToolBox toolBox,
                                                        ObservableList<Annotation> annotations,
                                                        ObservableList<Annotation> selectedAnnotations,
@@ -218,8 +256,12 @@ public class BulkEditorPaneController {
         }
     }
 
-    private void setSelectedAnnotations(ObservableList<Annotation> selectedAnnotations) {
+    private void setSelectedAnnotations(@Nonnull  ObservableList<Annotation> selectedAnnotations) {
         Preconditions.checkNotNull(selectedAnnotations);
+        if (this.selectedAnnotations != null) {
+            selectedAnnotations.removeListener(selectionChangeListener);
+        }
+        selectedAnnotations.addListener(selectionChangeListener);
         this.selectedAnnotations = selectedAnnotations;
     }
 
@@ -416,13 +458,81 @@ public class BulkEditorPaneController {
                 .distinct()
                 .collect(Collectors.toList());
 
-        ConceptService conceptService = toolBox.getServices().getConceptService();
 
-        DetailsDialog dialog = new DetailsDialog(toolBox);
+        lookupTemplates(concepts)
+                .whenComplete((templates, ex) -> {
+                    if (ex != null) {
+                        // TODO show error dialog
+                    }
+                    else {
+                        DetailsDialog dialog = new DetailsDialog(toolBox);
+                        dialog.getController().setTemplates(templates);
+                        Platform.runLater(() -> {
+                            dialog.getDialogPane().getScene().getWindow().sizeToScene();
+                            Optional<Details> opt = dialog.showAndWait();
+                            opt.ifPresent(details -> {
+                                Association a = Association.fromDetails(details);
+                                toolBox.getEventBus()
+                                        .send(new CreateAssociationsCmd(a, annosCopy));
+                            } );
+                        });
+
+                        // Request focus in the search text field. We can't do this
+                        // until the dialog is visible.
+                        toolBox.getExecutorService()
+                                .submit(() -> Platform.runLater(() ->
+                                        dialog.getController()
+                                                .getSearchTextField()
+                                                .requestFocus()));
+                    }
+                });
+
+
+
+
+    }
+    private void changeAssociations() {}
+    private void deleteAssociations() {
+            // Get selected association
+        Association selectedAssociation = associationCombobox.getSelectionModel().getSelectedItem();
+        List<Annotation> annosCopy = new ArrayList<>(selectedAnnotations);
+
+        if (annosCopy.size() > 0 && selectedAssociation != null) {
+            ResourceBundle i18n = toolBox.getI18nBundle();
+            String title = i18n.getString("bulkeditor.delete.association.dialog.title");
+            String header = i18n.getString("bulkeditor.delete.association.dialog.header") +
+                    " " + selectedAssociation;
+            String content = i18n.getString("bulkeditor.delete.association.dialog.content1") +
+                    annosCopy.size() + i18n.getString("bulkeditor.delete.association.dialog.content2");
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle(title);
+            alert.setHeaderText(header);
+            alert.setContentText(content);
+            Optional<ButtonType> opt = alert.showAndWait();
+            if (opt.get() == ButtonType.OK) {
+                Map<Association, UUID> map = new HashMap<>();
+                for (Annotation a : annosCopy) {
+                    for (Association ass: a.getAssociations()) {
+                        if (ass.getLinkName().equals(selectedAssociation.getLinkName())
+                                && ass.getToConcept().equals(selectedAssociation.getToConcept())
+                                && ass.getLinkValue().equals(selectedAssociation.getLinkValue())) {
+                            map.put(ass, a.getObservationUuid());
+                        }
+                    }
+                }
+
+                toolBox.getEventBus()
+                        .send(new DeleteAssociationsCmd(map));
+            }
+
+        }
+    }
+
+    private CompletableFuture<List<ConceptAssociationTemplate>> lookupTemplates(List<String> concepts) {
+        CompletableFuture<List<ConceptAssociationTemplate>> future = new CompletableFuture<>();
         List<ConceptAssociationTemplate> cats = new CopyOnWriteArrayList<>();
-
-        // Find intersection of templates allowed for selected concepts. When
-        // they are finished loading, show the select details dialog
+        ConceptService conceptService = toolBox.getServices().getConceptService();
         Observable<List<ConceptAssociationTemplate>> observable = AsyncUtils.observeAll(concepts, conceptService::findTemplates);
         observable.subscribe(cs -> {
                     if (cats.isEmpty()) {
@@ -434,21 +544,8 @@ public class BulkEditorPaneController {
                         cats.addAll(intersection);
                     }
                 },
-                e -> log.error("Failed to load templates", e),
-                () -> {
-                   log.debug("Completed template loading");
-                    dialog.getController().setTemplates(cats);
-                    Platform.runLater(() -> {
-                        dialog.getDialogPane().getScene().getWindow().sizeToScene();
-                        Optional<Details> opt = dialog.showAndWait();
-                        opt.ifPresent(details -> {} );
-                    });
-
-                });
-
-
-
+                future::completeExceptionally,
+                () -> future.complete(cats));
+        return future;
     }
-    private void changeAssociations() {}
-    private void deleteAssociations() {}
 }
