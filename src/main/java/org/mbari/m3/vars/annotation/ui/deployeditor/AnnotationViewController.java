@@ -26,12 +26,16 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 /**
  * @author Brian Schlining
  * @since 2018-04-05T17:02:00
  */
 public class AnnotationViewController {
+
+    private static final String WIDTH_KEY = "stage-width";
+    private static final String HEIGHT_KEY = "stage-height";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final UIToolBox toolBox;
@@ -83,10 +87,32 @@ public class AnnotationViewController {
             scene.getStylesheets()
                     .addAll(toolBox.getStylesheets());
             stage.setScene(scene);
+
+            // --- Set stage size from user preferences
+            Preferences prefs = Preferences.userNodeForPackage(getClass());
+            double width = prefs.getDouble(WIDTH_KEY, 1000D);
+            double height = prefs.getDouble(HEIGHT_KEY, 800D);
+
+            // ON rare occasions the user sets one of these to 0 and are never
+            // able to see the annotation window again. Make sure this doesn't happen.
+            if (width < 200) {
+                width = 200;
+            }
+            if (height < 200) {
+                height = 200;
+            }
+            stage.setWidth(width);
+            stage.setHeight(height);
+
             stage.setOnCloseRequest(evt -> {
+                prefs.putDouble(WIDTH_KEY, stage.getWidth());
+                prefs.putDouble(HEIGHT_KEY, stage.getHeight());
                 stage.close();
                 setDisabled(true);
             });
+
+
+
         }
         return stage;
     }

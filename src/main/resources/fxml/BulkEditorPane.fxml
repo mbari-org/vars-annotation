@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.BulkEditorPaneController">
+<VBox fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.BulkEditorPaneController">
    <children>
       <ToolBar prefHeight="40.0" prefWidth="200.0">
          <items>
@@ -68,7 +68,7 @@
             <JFXCheckBox fx:id="associationCheckBox" text="%bulkeditor.association.checkbox" GridPane.rowIndex="2" />
             <JFXComboBox fx:id="conceptCombobox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
             <JFXComboBox fx:id="associationCombobox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
-            <JFXButton fx:id="searchButton" text="%bulkeditor.search.button" GridPane.halignment="LEFT" GridPane.rowIndex="3">
+            <JFXButton fx:id="searchButton" styleClass="attention-button" text="%bulkeditor.search.button" GridPane.halignment="LEFT" GridPane.rowIndex="3">
                <tooltip>
                   <Tooltip text="%bulkeditor.search.button" />
                </tooltip>
@@ -79,6 +79,7 @@
             <Label fx:id="activityLabel" text="%bulkeditor.activity.label" GridPane.rowIndex="7" />
             <Label text="%bulkeditor.search.label" GridPane.columnSpan="2147483647" />
             <Label text="%bulkeditor.update.label" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+            <Label fx:id="searchLabel" styleClass="bulkedit-search-label" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3" />
          </children>
       </GridPane>
    </children>

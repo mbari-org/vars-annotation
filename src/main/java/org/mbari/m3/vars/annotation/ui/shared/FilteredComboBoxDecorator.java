@@ -30,7 +30,7 @@ import java.util.function.Predicate;
 public class FilteredComboBoxDecorator<T>  {
 
 
-    //private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private static final String EMPTY = "";
     private StringProperty filter = new SimpleStringProperty(EMPTY);
     private AutoCompleteComparator<T> comparator;
@@ -64,6 +64,7 @@ public class FilteredComboBoxDecorator<T>  {
                 comboBox.setItems(filteredItems);
             }
         });
+
     }
 
 
@@ -97,7 +98,11 @@ public class FilteredComboBoxDecorator<T>  {
     }
 
     private void handleOnHiding(Event e) {
+        T value = comboBox.getValue();
         filter.setValue(EMPTY);
+        if (value != null) {
+            comboBox.getSelectionModel().select(value);
+        }
         comboBox.getTooltip().hide();
         restoreOriginalItems();
     }
@@ -106,7 +111,7 @@ public class FilteredComboBoxDecorator<T>  {
         KeyCode code = keyEvent.getCode();
         if (!keyEvent.isMetaDown()) {
             String filterValue = filter.get();
-            //log.debug("Handling KeyCode = " + code);
+            log.debug("Handling KeyCode = " + code);
             if (code.isLetterKey() || code.isDigitKey() || code == KeyCode.MINUS) {
                 filterValue += keyEvent.getText();
             } else if ((code == KeyCode.BACK_SPACE) && (filterValue.length() > 0)) {

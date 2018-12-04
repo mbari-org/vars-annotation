@@ -1,19 +1,21 @@
 //@default-color: #3D3D3D;
 
 //@default-color: #2D2D2D;
+@attention-color: #FFB74D;
+@concurrent-color: #FDD835;
 @default-color: rgb(43, 57, 64);
-@default-compliment-monochrome: #3b637e;
-@default-compliment-color-light: spin(lighten(@default-color, 25%), 8); /* lightened by 25% and spun by 8 degrees */
 @default-compliment-color-dark: spin(darken(@default-color, 25%), 8); /* darkened by 25% and spun by 8 degrees */
+@default-compliment-color-light: spin(lighten(@default-color, 25%), 8); /* lightened by 25% and spun by 8 degrees */
+@default-compliment-monochrome: #3b637e;
+@default-table-text: #79c9ff;
+@default-text: #B3A9A3;
+@emphasis-color: #5D3D3D;
+@hover-color: #454545;
+@image-color: #1E88E5;
+@sample-color: #00600f;
+@search-color: #388e3c;
 @selected-color: #F0544C;
 @selected-text: #FFFFFF;
-@hover-color: #454545;
-@default-text: #B3A9A3;
-@default-table-text: #79c9ff;
-@emphasis-color: #5D3D3D;
-@image-color: #1E88E5;
-@sample-color: #7CB342;
-@concurrent-color: #FDD835;
 
 .root {
   /*-fx-font-size: 16pt;
@@ -54,6 +56,7 @@
   -fx-hgap: 10;
   -fx-vgap: 10;
 }
+
 
 .button {
   -fx-background-radius: 0 0 0 0;
@@ -491,5 +494,27 @@
   -fx-text-fill: @concurrent-color;
   -fx-fill: @concurrent-color;
 }
+
+// --- Overrides
+
+.bulkedit-search-label {
+  -fx-text-fill: @attention-color;
+}
+
+.attention-button {
+  -fx-background-color: @attention-color;
+  -fx-background-radius: 20;
+  //-fx-background-insets: 0,1,2,3,0;
+  //-fx-padding: 10 20 10 20;
+}
+
+.attention-icon {
+  -fx-fill: @default-color;
+}
+
+
+
+
+
 
 

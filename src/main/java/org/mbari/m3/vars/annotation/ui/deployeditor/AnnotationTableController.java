@@ -110,6 +110,10 @@ public class AnnotationTableController {
             TableView.TableViewSelectionModel<Annotation> selectionModel = getTableView().getSelectionModel();
             selectionModel.clearSelection();
             annos.forEach(selectionModel::select);
+            selectionModel.getSelectedIndices()
+                    .stream()
+                    .min(Comparator.naturalOrder())
+                    .ifPresent(i -> getTableView().scrollTo(i));
         });
     }
 

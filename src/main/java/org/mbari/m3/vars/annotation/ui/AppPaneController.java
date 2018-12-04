@@ -48,6 +48,7 @@ import org.mbari.m3.vars.annotation.ui.prefs.PreferencesDialogController;
 import org.mbari.m3.vars.annotation.ui.rectlabel.RectLabelStageController;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
 import org.mbari.m3.vars.annotation.ui.userdialog.CreateUserDialog;
+import org.mbari.m3.vars.annotation.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -251,6 +252,14 @@ public class AppPaneController {
             openButton.setGraphic(openIcon);
             openButton.setOnAction(e -> getOpenPopOver().show(openButton));
             openButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.open")));
+            JFXUtilities.attractAttention(openButton);
+            toolBox.getData()
+                    .mediaProperty()
+                    .addListener((obs, oldv, newv) -> {
+                        if (newv != null) {
+                            JFXUtilities.removeAttention(openButton);
+                        }
+                    });
 
             Text undoIcon = gf.createIcon(MaterialIcon.UNDO, "30px");
             Button undoButton = new JFXButton();

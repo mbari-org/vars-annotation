@@ -16,7 +16,6 @@ import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.Observable;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -29,7 +28,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
@@ -41,11 +39,8 @@ import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.mediadialog.SelectMediaDialog;
 import org.mbari.m3.vars.annotation.ui.shared.ConceptSelectionDialogController;
 import org.mbari.m3.vars.annotation.ui.shared.DetailsDialog;
-import org.mbari.m3.vars.annotation.ui.shared.SearchableDetailEditorPaneController;
-import org.mbari.m3.vars.annotation.util.AsyncUtils;
-import org.mbari.m3.vars.annotation.util.FnUtils;
-import org.mbari.m3.vars.annotation.util.JFXUtilities;
-import org.mbari.m3.vars.annotation.util.ListUtils;
+import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
+import org.mbari.m3.vars.annotation.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,6 +122,9 @@ public class BulkEditorPaneController {
     @FXML
     private Label activityLabel;
 
+    @FXML
+    private Label searchLabel;
+
     private ListChangeListener<Annotation> selectionChangeListener;
 
 
@@ -149,6 +147,89 @@ public class BulkEditorPaneController {
                 .getStylesheets()
                 .addAll(toolBox.getStylesheets());
 
+        // --- Configure buttons
+        initializeButtons();
+
+        // --- Configure labels
+        ResourceBundle i18n = toolBox.getI18nBundle();
+        activityLabel.setText(i18n.getString("bulkeditor.activity.label"));
+        activityComboBox.setOnAction(noopHandler);
+
+        groupLabel.setText(i18n.getString("bulkeditor.group.label"));
+        groupComboBox.setOnAction(noopHandler);
+
+        // --- Configure comboboxes
+        new FilteredComboBoxDecorator<>(associationCombobox,
+                (txt, assoc) -> StringUtils.containsOrderedChars(txt.toUpperCase(), assoc.toString().toUpperCase()));
+        associationCombobox.setEditable(false);
+
+        new FilteredComboBoxDecorator<>(conceptCombobox,
+                FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
+        conceptCombobox.setEditable(false);
+
+        // --- Enable/Disable buttons as appropriate
+        associationCombobox.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, oldv, newv) -> {
+                    boolean disable = newv == null ||
+                            selectedAnnotations.size() == 0;
+                    replaceAssociationButton.setDisable(disable);
+                    deleteAssociationButton.setDisable(disable);
+                });
+
+        selectionChangeListener = c -> {
+            boolean disable = selectedAnnotations.size() == 0;
+            moveFramesButton.setDisable(disable);
+            addAssociationButton.setDisable(disable);
+            deleteObservationsButton.setDisable(disable);
+            renameObservationsButton.setDisable(disable);
+        };
+
+        selectedAnnotations.addListener(selectionChangeListener);
+
+        // --- Updated search string in UI
+        Runnable updateSearchLabelFn = () -> {
+            StringBuffer sb = new StringBuffer();
+            if (conceptCheckBox.isSelected()
+                    && !conceptCombobox.getSelectionModel().isEmpty()) {
+                String concept = conceptCombobox.getSelectionModel().getSelectedItem();
+                sb.append(concept);
+            }
+
+            if (associationCheckBox.isSelected()
+                    && !associationCombobox.getSelectionModel().isEmpty()) {
+                if (sb.length() > 0) {
+                    sb.append(" with ");
+                }
+                sb.append(associationCombobox.getSelectionModel().getSelectedItem());
+            }
+            if (sb.length() == 0) {
+                String text = toolBox.getI18nBundle().getString("bulkeditor.search.defaultlabel");
+                searchLabel.setText(text);
+                searchButton.setDisable(true);
+            }
+            else {
+                searchLabel.setText(sb.toString());
+                searchButton.setDisable(false);
+            }
+        };
+        updateSearchLabelFn.run(); // Set the defaults
+
+        conceptCheckBox.selectedProperty()
+                .addListener((obs, oldv, newv) -> updateSearchLabelFn.run());
+        conceptCombobox.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, oldv, newv) -> updateSearchLabelFn.run());
+        associationCheckBox.selectedProperty()
+                .addListener((obs, oldv, newv) -> updateSearchLabelFn.run());
+        associationCombobox.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, oldv, newv) -> updateSearchLabelFn.run());
+
+    }
+
+
+    private void initializeButtons() {
         // --- Configure buttons
         GlyphsFactory gf = MaterialIconFactory.get();
         ResourceBundle i18n = toolBox.getI18nBundle();
@@ -192,36 +273,15 @@ public class BulkEditorPaneController {
         deleteAssociationButton.setGraphic(new ImageView(deleteAssImg));
         deleteAssociationButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.association.delete.tooltip")));
         deleteAssociationButton.setDisable(true);
+        deleteAssociationButton.setOnAction(e -> deleteAssociations());
 
         Text searchIcon = gf.createIcon(MaterialIcon.SEARCH, "30px");
         searchButton.setText(null);
         searchButton.setGraphic(searchIcon);
         searchButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.search.button")));
         searchButton.setOnAction(e -> search());
-
-        activityLabel.setText(i18n.getString("bulkeditor.activity.label"));
-        activityComboBox.setOnAction(noopHandler);
-
-        groupLabel.setText(i18n.getString("bulkeditor.group.label"));
-        groupComboBox.setOnAction(noopHandler);
-
-        associationCombobox.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((obs, oldv, newv) -> {
-                    boolean disable = newv == null ||
-                            selectedAnnotations.size() == 0;
-                    replaceAssociationButton.setDisable(disable);
-                    deleteAssociationButton.setDisable(disable);
-                });
-
-        selectionChangeListener = c -> {
-            boolean disable = selectedAnnotations.size() == 0;
-            moveFramesButton.setDisable(disable);
-            addAssociationButton.setDisable(disable);
-            deleteObservationsButton.setDisable(disable);
-            renameObservationsButton.setDisable(disable);
-        };
-
+        searchButton.setDisable(true);
+        searchIcon.getStyleClass().add("attention-icon");
     }
 
     public VBox getRoot() {
@@ -329,11 +389,14 @@ public class BulkEditorPaneController {
         boolean searchDetails = associationCheckBox.isSelected();
         String concept = conceptCombobox.getSelectionModel().getSelectedItem();
         Association association = associationCombobox.getSelectionModel().getSelectedItem();
+        log.info("Selected concept = " + concept + "\nSelected Association = " + association);
         Predicate<Annotation> nullPredicate = a -> false;
         Predicate<Annotation> conceptPredicate = a -> a.getConcept().equals(concept);
         Predicate<Annotation> associationPredicate = a -> a.getAssociations()
                 .stream()
-                .anyMatch(ass -> ass.getLinkName().equals(association.getLinkName()) &&
+                .anyMatch(ass -> ass != null &&
+                        association != null &&
+                        ass.getLinkName().equals(association.getLinkName()) &&
                         ass.getToConcept().equals(association.getToConcept()) &&
                         ass.getLinkValue().equals(association.getLinkValue()));
 
@@ -501,11 +564,15 @@ public class BulkEditorPaneController {
             ResourceBundle i18n = toolBox.getI18nBundle();
             String title = i18n.getString("bulkeditor.delete.association.dialog.title");
             String header = i18n.getString("bulkeditor.delete.association.dialog.header") +
-                    " " + selectedAssociation;
+                    " `" + selectedAssociation + "`";
             String content = i18n.getString("bulkeditor.delete.association.dialog.content1") +
-                    annosCopy.size() + i18n.getString("bulkeditor.delete.association.dialog.content2");
+                    " " + annosCopy.size() + " " +
+                    i18n.getString("bulkeditor.delete.association.dialog.content2");
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.getDialogPane()
+                    .getStylesheets()
+                    .addAll(toolBox.getStylesheets());
             alert.setTitle(title);
             alert.setHeaderText(header);
             alert.setContentText(content);

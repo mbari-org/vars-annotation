@@ -64,7 +64,7 @@ public class AnnotationTableController {
                         ObservableList<Annotation> items = getTableView().getItems();
                         for (Annotation a : annotations) {
                             int idx = items.indexOf(a);
-                            items.remove(idx);
+                            items.remove(idx); // FIXME Got a -1 in the bulk edito. Maybe getting this twice??
                             items.add(idx, a);
                         }
                         getTableView().refresh();
