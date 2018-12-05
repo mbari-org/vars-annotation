@@ -46,7 +46,7 @@ public class ListUtils {
         return new ArrayList<>(set);
     }
 
-    public static <T> List<T> intersection(List<T> list1, List<T> list2) {
+    public static <T> List<T> intersection(Collection<T> list1, Collection<T> list2) {
 //        return list1.stream()
 //                .distinct()
 //                .filter(list2::contains)

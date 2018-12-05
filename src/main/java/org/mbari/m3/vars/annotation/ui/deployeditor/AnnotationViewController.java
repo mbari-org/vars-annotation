@@ -140,7 +140,9 @@ public class AnnotationViewController {
     }
 
     public void setDisabled(boolean disabled) {
+        getTableController().setDisabled(disabled);
         if (this.disabled != disabled) {
+
             if (disabled) {
                 disable();
             }
@@ -171,39 +173,39 @@ public class AnnotationViewController {
     private void enable() {
         EventBus eventBus = toolBox.getEventBus();
         Observable<Object> observable = eventBus.toObserverable();
-        TableView<Annotation> tableView = getTableController().getTableView();
+//        TableView<Annotation> tableView = getTableController().getTableView();
 
         Disposable disposable0 = observable.ofType(MediaChangedEvent.class)
                 .subscribe(e -> loadMedia(e.get()));
         disposables.add(disposable0);
 
-        Disposable disposable1 = observable.ofType(AnnotationsAddedEvent.class)
-                .subscribe(e -> JFXUtilities.runOnFXThread(() -> {
-                    tableView.getItems().addAll(e.get());
-                    tableView.sort();
-                }));
-        disposables.add(disposable1);
-
-        Disposable disposable2 = observable.ofType(AnnotationsRemovedEvent.class)
-                .subscribe(e -> JFXUtilities.runOnFXThread(() ->
-                        tableView.getItems().removeAll(e.get())));
-        disposables.add(disposable2);
-
-        Disposable disposable3 = observable.ofType(AnnotationsChangedEvent.class)
-                .subscribe(e -> {
-                    JFXUtilities.runOnFXThread(() -> {
-                        Collection<Annotation> annotations = e.get();
-                        ObservableList<Annotation> items = tableView.getItems();
-                        for (Annotation a : annotations) {
-                            int idx = items.indexOf(a);
-                            items.remove(idx);
-                            items.add(idx, a);
-                        }
-                        tableView.refresh();
-                        tableView.sort();
-                    });
-                });
-        disposables.add(disposable3);
+//        Disposable disposable1 = observable.ofType(AnnotationsAddedEvent.class)
+//                .subscribe(e -> JFXUtilities.runOnFXThread(() -> {
+//                    tableView.getItems().addAll(e.get());
+//                    tableView.sort();
+//                }));
+//        disposables.add(disposable1);
+//
+//        Disposable disposable2 = observable.ofType(AnnotationsRemovedEvent.class)
+//                .subscribe(e -> JFXUtilities.runOnFXThread(() ->
+//                        tableView.getItems().removeAll(e.get())));
+//        disposables.add(disposable2);
+//
+//        Disposable disposable3 = observable.ofType(AnnotationsChangedEvent.class)
+//                .subscribe(e -> {
+//                    JFXUtilities.runOnFXThread(() -> {
+//                        Collection<Annotation> annotations = e.get();
+//                        ObservableList<Annotation> items = tableView.getItems();
+//                        for (Annotation a : annotations) {
+//                            int idx = items.indexOf(a);
+//                            items.remove(idx);
+//                            items.add(idx, a);
+//                        }
+//                        tableView.refresh();
+//                        tableView.sort();
+//                    });
+//                });
+//        disposables.add(disposable3);
 
         Media media = toolBox.getData().getMedia();
         loadMedia(media);
