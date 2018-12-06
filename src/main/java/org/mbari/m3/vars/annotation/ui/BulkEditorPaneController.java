@@ -168,21 +168,14 @@ public class BulkEditorPaneController {
         conceptCombobox.setEditable(false);
 
         // --- Enable/Disable buttons as appropriate
-        associationCombobox.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((obs, oldv, newv) -> {
-                    boolean disable = newv == null ||
-                            selectedAnnotations.size() == 0;
-                    replaceAssociationButton.setDisable(disable);
-                    deleteAssociationButton.setDisable(disable);
-                });
-
         selectionChangeListener = c -> {
             boolean disable = selectedAnnotations.size() == 0;
             moveFramesButton.setDisable(disable);
             addAssociationButton.setDisable(disable);
             deleteObservationsButton.setDisable(disable);
             renameObservationsButton.setDisable(disable);
+            replaceAssociationButton.setDisable(true);
+            deleteAssociationButton.setDisable(disable);
         };
 
         selectedAnnotations.addListener(selectionChangeListener);
@@ -557,43 +550,43 @@ public class BulkEditorPaneController {
     private void changeAssociations() {}
     private void deleteAssociations() {
             // Get selected association
-        Association selectedAssociation = associationCombobox.getSelectionModel().getSelectedItem();
+        Association association = associationCombobox.getSelectionModel().getSelectedItem();
+        Details selectedDetails = association == null ? null : new ConceptAssociationTemplate(association);
+
+        // --- Get all associations in selected rows;
         List<Annotation> annosCopy = new ArrayList<>(selectedAnnotations);
-
-        if (annosCopy.size() > 0 && selectedAssociation != null) {
-            ResourceBundle i18n = toolBox.getI18nBundle();
-            String title = i18n.getString("bulkeditor.delete.association.dialog.title");
-            String header = i18n.getString("bulkeditor.delete.association.dialog.header") +
-                    " `" + selectedAssociation + "`";
-            String content = i18n.getString("bulkeditor.delete.association.dialog.content1") +
-                    " " + annosCopy.size() + " " +
-                    i18n.getString("bulkeditor.delete.association.dialog.content2");
-
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.getDialogPane()
-                    .getStylesheets()
-                    .addAll(toolBox.getStylesheets());
-            alert.setTitle(title);
-            alert.setHeaderText(header);
-            alert.setContentText(content);
-            Optional<ButtonType> opt = alert.showAndWait();
-            if (opt.get() == ButtonType.OK) {
-                Map<Association, UUID> map = new HashMap<>();
-                for (Annotation a : annosCopy) {
-                    for (Association ass: a.getAssociations()) {
-                        if (ass.getLinkName().equals(selectedAssociation.getLinkName())
-                                && ass.getToConcept().equals(selectedAssociation.getToConcept())
-                                && ass.getLinkValue().equals(selectedAssociation.getLinkValue())) {
-                            map.put(ass, a.getObservationUuid());
-                        }
+        List<Details> details = selectedAnnotations.stream()
+                .flatMap(a -> a.getAssociations().stream())
+                .map(ConceptAssociationTemplate::new)
+                .collect(Collectors.toList());
+        if (!details.contains(selectedDetails)) {
+            selectedDetails = null;
+        }
+        ChoiceDialog<Details> dialog = new ChoiceDialog<>(selectedDetails, details);
+        dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+        ResourceBundle i18n = toolBox.getI18nBundle();
+        dialog.setTitle(i18n.getString("bulkeditor.delete.assoc.dialog.title"));
+        dialog.setHeaderText(i18n.getString("bulkeditor.delete.assoc.dialog.header"));
+        dialog.setContentText(i18n.getString("bulkeditor.delete.assoc.dialog.content"));
+        Optional<Details> detailsToDelete = dialog.showAndWait();
+        detailsToDelete.ifPresent(d -> {
+            Map<Association, UUID> map = new HashMap<>();
+            for (Annotation a : annosCopy) {
+                for (Association ass: a.getAssociations()) {
+                    if (ass.getLinkName().equals(d.getLinkName())
+                            && ass.getToConcept().equals(d.getToConcept())
+                            && ass.getLinkValue().equals(d.getLinkValue())) {
+                        map.put(ass, a.getObservationUuid());
                     }
                 }
+            }
 
+            if (!map.isEmpty()) {
                 toolBox.getEventBus()
                         .send(new DeleteAssociationsCmd(map));
             }
+        });
 
-        }
     }
 
     private CompletableFuture<List<ConceptAssociationTemplate>> lookupTemplates(List<String> concepts) {

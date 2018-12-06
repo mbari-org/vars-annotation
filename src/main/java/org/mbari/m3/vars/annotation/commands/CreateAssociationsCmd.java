@@ -59,12 +59,15 @@ public class CreateAssociationsCmd implements Command {
         List<UUID> uuids = addedAssociations.stream()
                 .map(Association::getUuid)
                 .collect(Collectors.toList());
-        annotationService.deleteAssociations(uuids);
-        addedAssociations.clear();
-        Set<UUID> uuids0 = originalAnnotations.stream()
-                .map(Annotation::getObservationUuid)
-                .collect(Collectors.toSet());
-        asd.refreshAnnotationsView(uuids0);
+        annotationService.deleteAssociations(uuids)
+                .thenAccept(v -> {
+                    addedAssociations.clear();
+                    Set<UUID> uuids0 = originalAnnotations.stream()
+                            .map(Annotation::getObservationUuid)
+                            .collect(Collectors.toSet());
+                    asd.refreshAnnotationsView(uuids0);
+                });
+
     }
 
     @Override

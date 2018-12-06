@@ -42,8 +42,6 @@ public class AnnotationTableController {
     private final EventBus eventBus;
     private boolean disabled = true;
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
     public AnnotationTableController(@Nonnull UIToolBox toolBox,
                                      @Nonnull EventBus eventBus) {
         this.toolBox = toolBox;
@@ -183,14 +181,7 @@ public class AnnotationTableController {
         Disposable disposable3 = observable.ofType(AnnotationsChangedEvent.class)
                 .subscribe(e -> {
                     JFXUtilities.runOnFXThread(() -> {
-
                         Collection<Annotation> annotations = e.get();
-//                        String message = "Redrawing " + annotations.size() +
-//                                " annotations:" +
-//                                annotations.stream()
-//                                    .map(Annotation::getConcept)
-//                                    .collect(Collectors.joining(", "));
-//                        log.debug(message);
                         ObservableList<Annotation> items = getTableView().getItems();
                         List<Annotation> intersection = ListUtils.intersection(annotations, items);
                         for (Annotation a : intersection) {
@@ -202,22 +193,11 @@ public class AnnotationTableController {
                         tableView.sort();
                         eventBus.send(new AnnotationsSelectedEvent(intersection));
 
-//                        Collection<Annotation> annotations = e.get();
-//                        ObservableList<Annotation> items = tableView.getItems();
-//                        for (Annotation a : annotations) {
-//                            int idx = items.indexOf(a);
-//                            items.remove(idx);
-//                            items.add(idx, a);
-//                        }
-//                        tableView.refresh();
-//                        tableView.sort();
                     });
                 });
         disposables.add(disposable3);
 
         Disposable disposable4 = observable.ofType(AnnotationsSelectedEvent.class)
-//                .filter(e -> e.getEventSource() != AnnotationTableController.this )
-//                .filter(e -> !(e.getEventSource() instanceof org.mbari.m3.vars.annotation.ui.annotable.AnnotationTableController))
                 .subscribe(e -> select(e.get()));
         disposables.add(disposable4);
     }

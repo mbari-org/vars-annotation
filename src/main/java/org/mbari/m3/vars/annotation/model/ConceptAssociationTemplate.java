@@ -20,6 +20,10 @@ public class ConceptAssociationTemplate implements Details {
         this.linkValue = linkValue;
     }
 
+    public ConceptAssociationTemplate(@Nonnull Details details) {
+        this(details.getLinkName(), details.getToConcept(), details.getLinkValue());
+    }
+
     public String getLinkName() {
         return linkName;
     }

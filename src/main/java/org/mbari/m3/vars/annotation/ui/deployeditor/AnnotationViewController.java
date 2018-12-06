@@ -2,6 +2,7 @@ package org.mbari.m3.vars.annotation.ui.deployeditor;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -9,12 +10,17 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.controlsfx.control.StatusBar;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
+import org.mbari.m3.vars.annotation.messages.HideProgress;
+import org.mbari.m3.vars.annotation.messages.SetProgress;
+import org.mbari.m3.vars.annotation.messages.SetStatusBarMsg;
+import org.mbari.m3.vars.annotation.messages.ShowProgress;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.CombinedMediaAnnotationDecorator;
@@ -34,14 +40,14 @@ import java.util.prefs.Preferences;
  */
 public class AnnotationViewController {
 
-    private static final String WIDTH_KEY = "stage-width";
-    private static final String HEIGHT_KEY = "stage-height";
+
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final UIToolBox toolBox;
     private Stage stage;
     private AnnotationTableController tableController;
     private BulkEditorPaneController bulkEditorPaneController;
+    private StatusBar statusBar;
     private boolean disabled = true;
     private final List<Disposable> disposables = new ArrayList<>();
     private ObservableList<Annotation> annotations;
@@ -82,6 +88,7 @@ public class AnnotationViewController {
         if (stage == null) {
             stage = new Stage();
             BorderPane pane = new BorderPane(getTableController().getTableView());
+            pane.setBottom(getStatusBar());
             VBox bulkEditorPane = getBulkEditorPaneController().getRoot();
             pane.setTop(bulkEditorPane);
             BorderPane.setAlignment(bulkEditorPane, Pos.CENTER);
@@ -91,36 +98,46 @@ public class AnnotationViewController {
             stage.setScene(scene);
 
             // --- Set stage size from user preferences
-            Preferences prefs = Preferences.userNodeForPackage(getClass());
-            double width = prefs.getDouble(WIDTH_KEY, 1000D);
-            double height = prefs.getDouble(HEIGHT_KEY, 800D);
-
-            // ON rare occasions the user sets one of these to 0 and are never
-            // able to see the annotation window again. Make sure this doesn't happen.
-            if (width < 200) {
-                width = 200;
-            }
-            if (height < 200) {
-                height = 200;
-            }
-            stage.setWidth(width);
-            stage.setHeight(height);
+            final Class clazz = getClass();
+            JFXUtilities.loadStageSize(stage, clazz);
 
             stage.setOnCloseRequest(evt -> {
-                prefs.putDouble(WIDTH_KEY, stage.getWidth());
-                prefs.putDouble(HEIGHT_KEY, stage.getHeight());
+                JFXUtilities.saveStageSize(stage, clazz);
                 hide();
             });
 
             stage.focusedProperty().addListener((obs, oldv, newv) -> {
-                prefs.putDouble(WIDTH_KEY, stage.getWidth());
-                prefs.putDouble(HEIGHT_KEY, stage.getHeight());
+                JFXUtilities.saveStageSize(stage, clazz);
             });
-
 
 
         }
         return stage;
+    }
+
+    public StatusBar getStatusBar() {
+        if (statusBar == null) {
+            statusBar = new StatusBar();
+            statusBar.setText(null);
+
+            // --- Listen for progress bar notifications
+            Observable<Object> observable = eventBus.toObserverable();
+            observable.ofType(ShowProgress.class)
+                    .subscribe(s -> Platform.runLater(() -> statusBar.setProgress(0.00001)));
+            observable.ofType(SetProgress.class)
+                    .subscribe(s -> Platform.runLater(() -> statusBar.setProgress(s.getProgress())));
+            observable.ofType(HideProgress.class)
+                    .subscribe(s -> {
+                        log.warn("HideProgress received");
+                        Platform.runLater(() -> {
+                            statusBar.setText(null);
+                            statusBar.setProgress(0.0);
+                        });
+                    });
+            observable.ofType(SetStatusBarMsg.class)
+                    .subscribe(s -> Platform.runLater(() -> statusBar.setText(s.getMsg())));
+        }
+        return statusBar;
     }
 
     public AnnotationTableController getTableController() {
@@ -165,6 +182,9 @@ public class AnnotationViewController {
         items.clear();
         if (media != null) {
             tableView.setDisable(true);
+            eventBus.send(new ShowProgress());
+            eventBus.send(new SetStatusBarMsg("Loading all annotation for " +
+                    media.getVideoSequenceName()));
             CombinedMediaAnnotationDecorator decorator = new CombinedMediaAnnotationDecorator(toolBox);
             decorator.findAllAnnotationsInDeployment(media.getVideoSequenceName())
                     .thenAccept(as -> {
@@ -172,6 +192,7 @@ public class AnnotationViewController {
                         items.addAll(as);
                         tableView.setDisable(false);
                         getBulkEditorPaneController().refresh();
+                        eventBus.send(new HideProgress());
                     });
         }
     }
@@ -179,39 +200,10 @@ public class AnnotationViewController {
     private void enable() {
         EventBus eventBus = toolBox.getEventBus();
         Observable<Object> observable = eventBus.toObserverable();
-//        TableView<Annotation> tableView = getTableController().getTableView();
 
         Disposable disposable0 = observable.ofType(MediaChangedEvent.class)
                 .subscribe(e -> loadMedia(e.get()));
         disposables.add(disposable0);
-
-//        Disposable disposable1 = observable.ofType(AnnotationsAddedEvent.class)
-//                .subscribe(e -> JFXUtilities.runOnFXThread(() -> {
-//                    tableView.getItems().addAll(e.get());
-//                    tableView.sort();
-//                }));
-//        disposables.add(disposable1);
-//
-//        Disposable disposable2 = observable.ofType(AnnotationsRemovedEvent.class)
-//                .subscribe(e -> JFXUtilities.runOnFXThread(() ->
-//                        tableView.getItems().removeAll(e.get())));
-//        disposables.add(disposable2);
-//
-//        Disposable disposable3 = observable.ofType(AnnotationsChangedEvent.class)
-//                .subscribe(e -> {
-//                    JFXUtilities.runOnFXThread(() -> {
-//                        Collection<Annotation> annotations = e.get();
-//                        ObservableList<Annotation> items = tableView.getItems();
-//                        for (Annotation a : annotations) {
-//                            int idx = items.indexOf(a);
-//                            items.remove(idx);
-//                            items.add(idx, a);
-//                        }
-//                        tableView.refresh();
-//                        tableView.sort();
-//                    });
-//                });
-//        disposables.add(disposable3);
 
         Media media = toolBox.getData().getMedia();
         loadMedia(media);

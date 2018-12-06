@@ -53,7 +53,7 @@ public class AsyncUtils {
      * As the futures complete, the output will be published to observer returned
      * by this function. Note that the returned observable will not emit
      * results until subscribed to (i.e a cold observerable). So even if the
-     * future completes before you subscrribe to it you will be able to get
+     * future completes before you subscribe to it you will be able to get
      * results
      *
      * @param items The items to process
