@@ -56,12 +56,14 @@ public class AnnotationViewController {
                 .getSelectedItems();
 
         EventBus mainEventBus = toolBox.getEventBus();
-        mainEventBus.toObserverable()
-                .ofType(AnnotationsAddedEvent.class)
+        Observable<Object> observable = mainEventBus.toObserverable();
+        observable.ofType(AnnotationsAddedEvent.class)
                 .subscribe(eventBus::send);
 
-        mainEventBus.toObserverable()
-                .ofType(AnnotationsRemovedEvent.class)
+        observable.ofType(AnnotationsRemovedEvent.class)
+                .subscribe(eventBus::send);
+
+        observable.ofType(AnnotationsChangedEvent.class)
                 .subscribe(eventBus::send);
 
     }
@@ -107,8 +109,12 @@ public class AnnotationViewController {
             stage.setOnCloseRequest(evt -> {
                 prefs.putDouble(WIDTH_KEY, stage.getWidth());
                 prefs.putDouble(HEIGHT_KEY, stage.getHeight());
-                stage.close();
-                setDisabled(true);
+                hide();
+            });
+
+            stage.focusedProperty().addListener((obs, oldv, newv) -> {
+                prefs.putDouble(WIDTH_KEY, stage.getWidth());
+                prefs.putDouble(HEIGHT_KEY, stage.getHeight());
             });
 
 

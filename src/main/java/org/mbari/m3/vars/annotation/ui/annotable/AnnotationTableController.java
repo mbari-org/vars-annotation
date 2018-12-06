@@ -16,9 +16,11 @@ import org.mbari.m3.vars.annotation.ui.shared.AnnotationTableViewFactory;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.util.JFXUtilities;
+import org.mbari.m3.vars.annotation.util.ListUtils;
 
 import javax.inject.Inject;
 import java.util.Collection;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
@@ -62,14 +64,15 @@ public class AnnotationTableController {
                     JFXUtilities.runOnFXThread(() -> {
                         Collection<Annotation> annotations = e.get();
                         ObservableList<Annotation> items = getTableView().getItems();
-                        for (Annotation a : annotations) {
+                        List<Annotation> intersection = ListUtils.intersection(annotations, items);
+                        for (Annotation a : intersection) {
                             int idx = items.indexOf(a);
                             items.remove(idx); // FIXME Got a -1 in the bulk edito. Maybe getting this twice??
                             items.add(idx, a);
                         }
                         getTableView().refresh();
                         getTableView().sort();
-                        eventBus.send(new AnnotationsSelectedEvent(annotations));
+                        eventBus.send(new AnnotationsSelectedEvent(intersection));
                     });
                 });
 
