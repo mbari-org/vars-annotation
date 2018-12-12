@@ -11,8 +11,6 @@ import javafx.scene.layout.VBox;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.util.JFXUtilities;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
@@ -25,11 +23,9 @@ import java.util.prefs.Preferences;
 public class ConceptButtonPaneWithHighlightController extends ConceptButtonPaneController {
 
     private Button lastButtonPressed;
-    private final Logger log = LoggerFactory.getLogger(getClass());
     private static final String STYLE_CLASS = "cbpanel-label-overview";
 
     private EventHandler<MouseEvent> eventHandler = event -> {
-        log.info("LastButton = " + lastButtonPressed);
         if (lastButtonPressed != null) {
             JFXUtilities.removeAttention(lastButtonPressed);
         }
@@ -69,7 +65,6 @@ public class ConceptButtonPaneWithHighlightController extends ConceptButtonPaneC
                             .filter(node -> node instanceof Button)
                             .map(node -> (Button) node)
                             .forEach(button -> {
-                                log.info("---- ADDED children");
                                 button.addEventHandler(MouseEvent.MOUSE_CLICKED,
                                         eventHandler);
                             });
