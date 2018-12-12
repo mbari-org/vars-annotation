@@ -9,6 +9,7 @@ import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.ObservableList;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -49,11 +50,13 @@ public class ConceptButtonPanesController {
 
     private Logger log = LoggerFactory.getLogger(getClass());
     private BooleanProperty lockProperty = new SimpleBooleanProperty(false);
+    private final ConceptButtonPanesWithHighlightController overviewController;
 
     public ConceptButtonPanesController(UIToolBox toolBox) {
         Preconditions.checkNotNull(toolBox, "The UIToolbox arg can not be null");
         this.toolBox = toolBox;
         this.i18n = toolBox.getI18nBundle();
+        overviewController = new ConceptButtonPanesWithHighlightController(toolBox);
         // TODO add listener to Data.user. When changed remove all panes and reload
         toolBox.getData()
                 .userProperty()
@@ -113,8 +116,25 @@ public class ConceptButtonPanesController {
             });
             lockProperty.set(true);
 
+            Button overviewButton = new JFXButton();
+            Text overviewIcon = gf.createIcon(MaterialIcon.VIEW_COLUMN, "30px");
+            String overviewLabel = i18n.getString("cppanel.tabpane.overview.label");
+            Tab overviewTab = new Tab(overviewLabel, new ScrollPane(overviewController.getRoot()));
+            overviewButton.setGraphic(overviewIcon);
+            overviewButton.setTooltip(new Tooltip(i18n.getString("cppanel.tabpane.overview.tooltip")));
+            overviewButton.setOnAction(e -> {
+                ObservableList<Tab> tabs = getTabPane().getTabs();
+                if (tabs.contains(overviewTab)) {
+                    tabs.remove(overviewTab);
+                }
+                else {
+                    tabs.add(overviewTab);
+                    getTabPane().getSelectionModel().select(overviewTab);
+                }
+            });
+
             // COntrol Pane
-            controlPane = new VBox(addButton, removeButton, lockButton);
+            controlPane = new VBox(addButton, removeButton, lockButton, overviewButton);
         }
         return controlPane;
     }

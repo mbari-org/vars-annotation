@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
  * @since 2017-06-13T14:13:00
  */
 public class ConceptButtonPaneController {
-    private Pane pane;
+    protected Pane pane;
     private final Preferences panePreferences;
     private final ConceptService conceptService;
     private final EventBus eventBus;
@@ -79,7 +79,7 @@ public class ConceptButtonPaneController {
         return dragPaneDecorator;
     }
 
-    private void loadButtonsFromPreferences() {
+    protected void loadButtonsFromPreferences() {
         // TODO show a loading symbol
         ConceptButtonFactory factory =
                 new ConceptButtonFactory(conceptService, eventBus, i18n);
