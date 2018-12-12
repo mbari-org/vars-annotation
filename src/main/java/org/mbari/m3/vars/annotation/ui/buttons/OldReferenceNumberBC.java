@@ -43,26 +43,33 @@ public class OldReferenceNumberBC extends AbstractBC {
     protected void apply() {
         Media media = toolBox.getData().getMedia();
         List<Annotation> selected = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
+        List<String> concepts = selected.stream()
+                .map(Annotation::getConcept)
+                .distinct()
+                .collect(Collectors.toList());
 
-        decorator.findReferenceNumberAssociations(media, associationKey)
-                .thenAccept(as -> {
-                    List<String> refNums = associationToIdentityRefs(as);
-                    Platform.runLater(() -> {
-                        ChoiceDialog<String> dlg = getDialog();
-                        dlg.getItems().clear();
-                        if (!refNums.isEmpty()) {
-                            dlg.getItems().addAll(refNums);
-                            dlg.setSelectedItem(refNums.iterator().next());
-                            Optional<String> integer = dlg.showAndWait();
-                            integer.ifPresent(i -> {
-                                Association a = new Association(associationKey, Association.VALUE_SELF, i);
-                                toolBox.getEventBus()
-                                        .send(new CreateAssociationsCmd(a, selected));
-                            });
-                        }
+        if (concepts.size() == 1) {
+
+            decorator.findReferenceNumberAssociationsForConcept(media, associationKey, concepts.get(0))
+                    .thenAccept(as -> {
+                        List<String> refNums = associationToIdentityRefs(as);
+                        Platform.runLater(() -> {
+                            ChoiceDialog<String> dlg = getDialog();
+                            dlg.getItems().clear();
+                            if (!refNums.isEmpty()) {
+                                dlg.getItems().addAll(refNums);
+                                dlg.setSelectedItem(refNums.get(refNums.size() - 1));
+                                Optional<String> integer = dlg.showAndWait();
+                                integer.ifPresent(i -> {
+                                    Association a = new Association(associationKey, Association.VALUE_SELF, i);
+                                    toolBox.getEventBus()
+                                            .send(new CreateAssociationsCmd(a, selected));
+                                });
+                            }
+                        });
+
                     });
-
-                });
+        }
     }
 
     private ChoiceDialog<String> getDialog() {
@@ -71,6 +78,7 @@ public class OldReferenceNumberBC extends AbstractBC {
             MaterialIconFactory iconFactory = MaterialIconFactory.get();
             Text icon = iconFactory.createIcon(MaterialIcon.EXPOSURE_NEG_1, "30px");
             dialog = new ChoiceDialog<>();
+            dialog.initOwner(toolBox.getPrimaryStage());
             dialog.setTitle(i18n.getString("buttons.oldnumber.dialog.title"));
             dialog.setHeaderText(i18n.getString("buttons.oldnumber.dialog.header"));
             dialog.setContentText(i18n.getString("buttons.oldnumber.dialog.content"));
@@ -84,7 +92,7 @@ public class OldReferenceNumberBC extends AbstractBC {
         return as.stream()
                 .map(Association::getLinkValue)
                 .distinct()
-                .sorted(Comparator.reverseOrder()) //reverse sort
+                .sorted()
                 .collect(Collectors.toList());
     }
 

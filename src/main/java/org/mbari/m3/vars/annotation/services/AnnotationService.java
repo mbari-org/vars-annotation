@@ -20,6 +20,10 @@ public interface AnnotationService {
     CompletableFuture<List<Association>> findByVideoReferenceAndLinkName(UUID videoReferenceUuid,
                                                                          String linkName);
 
+    CompletableFuture<List<Association>> findByVideoReferenceAndLinkNameAndConcept(UUID videoReferenceUuid,
+                                                                                   String linkName,
+                                                                                   String concept);
+
     CompletableFuture<AncillaryData> findAncillaryData(UUID observationUuid);
 
     CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid);

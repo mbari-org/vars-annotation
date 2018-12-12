@@ -96,13 +96,22 @@ public class AppPaneController {
         selectMediaDialog = new SelectMediaDialog(toolBox.getServices().getAnnotationService(),
                 toolBox.getServices().getMediaService(),
                 toolBox.getI18nBundle());
-        selectMediaDialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+        selectMediaDialog.getDialogPane()
+                .getStylesheets()
+                .addAll(toolBox.getStylesheets());
+        selectMediaDialog.initOwner(toolBox.getPrimaryStage());
 
         realTimeDialog = new OpenRealTimeDialog(toolBox.getI18nBundle());
-        realTimeDialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+        realTimeDialog.getDialogPane()
+                .getStylesheets()
+                .addAll(toolBox.getStylesheets());
+        realTimeDialog.initOwner(toolBox.getPrimaryStage());
 
         tapeDialog = new OpenTapeDialog(toolBox.getI18nBundle());
-        tapeDialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+        tapeDialog.getDialogPane()
+                .getStylesheets()
+                .addAll(toolBox.getStylesheets());
+        tapeDialog.initOwner(toolBox.getPrimaryStage());
 
         annotationTableController = new AnnotationTableController(toolBox);
         preferencesDialogController = new PreferencesDialogController(toolBox);

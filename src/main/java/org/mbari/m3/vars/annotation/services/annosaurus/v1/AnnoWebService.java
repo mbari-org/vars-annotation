@@ -82,6 +82,7 @@ public interface AnnoWebService {
     Call<Collection<Annotation>> update(@Body Collection<Annotation> annotations,
                                         @HeaderMap Map<String, String> headers);
 
+
     @DELETE("observations/{uuid}")
     Call<Boolean> delete(@Path("uuid") UUID observationUuid,
                          @HeaderMap Map<String, String> headers);

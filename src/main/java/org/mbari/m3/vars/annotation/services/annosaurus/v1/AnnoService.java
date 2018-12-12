@@ -48,6 +48,12 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(assService.findByVideoReferenceAndLinkName(videoReferenceUuid, linkName));
     }
 
+    public CompletableFuture<List<Association>> findByVideoReferenceAndLinkNameAndConcept(UUID videoReferenceUuid,
+                                                                                String linkName,
+                                                                                String concept) {
+        return sendRequest(assService.findByVideoReferenceAndLinkNameAndConcept(videoReferenceUuid, linkName, concept));
+    }
+
     @Override
     public CompletableFuture<AncillaryData> findAncillaryData(UUID observationUuid) {
         return sendRequest(annoService.findAncillaryData(observationUuid));

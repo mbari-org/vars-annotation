@@ -4,6 +4,7 @@ package org.mbari.m3.vars.annotation;
 import com.typesafe.config.Config;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
@@ -28,6 +29,7 @@ public class UIToolBox {
     private final Data data;
     private final Services services;
     private final ObjectProperty<MediaPlayer<? extends VideoState, ? extends VideoError>> mediaPlayer = new SimpleObjectProperty<>();
+    private final ObjectProperty<Stage> primaryStage = new SimpleObjectProperty<>();
 
     /** URL to the stylesheet used for the apps */
     private final Collection<String> stylesheets;
@@ -83,5 +85,13 @@ public class UIToolBox {
 
     public ObjectProperty<MediaPlayer<? extends VideoState, ? extends VideoError>> mediaPlayerProperty() {
         return mediaPlayer;
+    }
+
+    public Stage getPrimaryStage() {
+        return primaryStage.get();
+    }
+
+    public ObjectProperty<Stage> primaryStageProperty() {
+        return primaryStage;
     }
 }

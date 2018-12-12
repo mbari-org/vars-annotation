@@ -310,6 +310,30 @@ public class AnnotationServiceDecorator {
         return f;
     }
 
+    public CompletableFuture<List<Association>> findReferenceNumberAssociationsForConcept(Media media,
+                                                                                          String associationKey,
+                                                                                          String concept) {
+
+        CompletableFuture<List<Association>> f = new CompletableFuture<>();
+        MediaService mediaService = toolBox.getServices().getMediaService();
+        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+
+        mediaService.findByVideoSequenceName(media.getVideoSequenceName())
+                .thenCompose(medias ->
+                        AsyncUtils.collectAll(medias,
+                                m -> annotationService.findByVideoReferenceAndLinkNameAndConcept(m.getVideoReferenceUuid(),
+                                        associationKey,
+                                        concept)))
+                .thenAccept(associationLists -> {
+                    List<Association> associations = associationLists.stream()
+                            .flatMap(List::stream)
+                            .collect(Collectors.toList());
+                    f.complete(associations);
+                });
+
+        return f;
+    }
+
     public CompletableFuture<List<Annotation>> findAnnotationsForImages(Collection<Image> images) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         Function<Image, CompletableFuture<List<Annotation>>> findAnnosFn = image ->

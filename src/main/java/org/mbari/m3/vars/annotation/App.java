@@ -78,6 +78,7 @@ public class App extends Application {
         if (ActiveAppPinger.pingAll(BEACON_PORTS, BEACON_MESSAGE)) {
             // TODO alert params should be in i18n prop file
             Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.initOwner(primaryStage);
             alert.setTitle("VARS Information");
             alert.setHeaderText("VARS is already running");
             alert.setContentText("An instance of VARS is already running. Exiting ...");
@@ -89,6 +90,7 @@ public class App extends Application {
         else if (Initializer.getSettingsDirectory() == null) {
             // TODO alert params should be in i18n prop file
             Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initOwner(primaryStage);
             alert.setTitle("VARS Error");
             alert.setHeaderText("Unable to create a settings directory ");
             alert.setContentText("VARS failed to create a directory for writing temporary information.");
@@ -102,6 +104,7 @@ public class App extends Application {
         }
 
         primaryStage.setScene(appController.getScene());
+        toolBox.primaryStageProperty().set(primaryStage);
         final Class clazz = getClass();
 
         // Load size from local prefs

@@ -22,6 +22,11 @@ public interface AssociationWebService {
     Call<List<Association>> findByVideoReferenceAndLinkName(@Path("uuid") UUID videoReferenceUuid,
                                                             @Path("linkName") String linkName);
 
+    @GET("associations/{uuid}/{linkName}")
+    Call<List<Association>> findByVideoReferenceAndLinkNameAndConcept(@Path("uuid") UUID videoReferenceUuid,
+                                                            @Path("linkName") String linkName,
+                                                            @Query("concept") String concept);
+
     @FormUrlEncoded
     @POST("associations")
     Call<Association> create(@Field("observation_uuid") UUID observationUuid,
