@@ -224,10 +224,10 @@ public class AppPaneController {
                         }
                     });
 
-            Tab bulkEditTab = new Tab("Bulk Editor", bulkEditorPaneController.getRoot());
+            Tab bulkEditTab = new Tab("Bulk Editor", new ScrollPane(bulkEditorPaneController.getRoot()));
             bulkEditTab.setClosable(false);
 
-            Tab mediaTab = new Tab("Media", mediaPaneController.getRoot());
+            Tab mediaTab = new Tab("Media", new ScrollPane(mediaPaneController.getRoot()));
             mediaTab.setClosable(false);
             observable.ofType(AnnotationsSelectedEvent.class)
                     .subscribe(e -> showMediaOfSelectedRow(e.get()));

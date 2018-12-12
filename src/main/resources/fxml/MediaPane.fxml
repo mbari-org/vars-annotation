@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="gridpane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.mediadialog.MediaPaneController">
+<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="gridpane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.mediadialog.MediaPaneController">
     <columnConstraints>
-        <ColumnConstraints />
+        <ColumnConstraints fillWidth="false" hgrow="NEVER" />
         <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
     </columnConstraints>
     <rowConstraints>
@@ -24,7 +24,7 @@
         <RowConstraints vgrow="NEVER" />
         <RowConstraints vgrow="NEVER" />
         <RowConstraints vgrow="NEVER" />
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+      <!--<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />-->
     </rowConstraints>
     <children>
         <Label fx:id="cameraIdLabel" styleClass="vars-dialog-label" text="%mediadialog.cameraId" />
@@ -52,7 +52,7 @@
       <Label text="%mediadialog.annotationCount" GridPane.rowIndex="11" />
       <TextField fx:id="annotationCountTextField" GridPane.columnIndex="1" GridPane.rowIndex="11" />
     </children>
-    <stylesheets>
-        <URL value="@../css/common.css" />
-    </stylesheets>
+    <!--<stylesheets>-->
+        <!--<URL value="@../css/common.css" />-->
+    <!--</stylesheets>-->
 </GridPane>
