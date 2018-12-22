@@ -1,58 +1,41 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <prerequisites>
     <maven>3.0</maven>
   </prerequisites>
-
   <groupId>org.mbari.m3.vars</groupId>
   <artifactId>vars-annotation</artifactId>
   <version>[A0.2.3</version>
   <packaging>jar</packaging>
-
   <name>VARS Annotation</name>
   <url>http://maven.apache.org</url>
-
   <!-- FXLauncher stuff https://github.com/edvin/fxldemo/blob/master/pom.xml -->
   <properties>
     <!-- Installer Filename without suffix -->
     <app.filename>VARS Annotation</app.filename>
-
     <!-- The JavaFX Application class name -->
     <app.mainClass>org.mbari.m3.vars.annotation.App</app.mainClass>
-
     <!-- Optional override to specify where the cached files are stored. Default is current working directory -->
     <!--<app.cacheDir>USERLIB/VarsAnnotation</app.cacheDir>-->
-
     <!-- Optional parameters to the application, will be embedded in the launcher and can be overriden on the command line -->
     <app.parameters>--myOption=myValue --myOtherOption=myOtherValue</app.parameters>
-
     <!-- The Application vendor used by javapackager -->
     <app.vendor>Monterey Bay Aquarium Research Institute</app.vendor>
-
     <!-- The Application version used by javapackager -->
     <app.version>${project.version}</app.version>
-
     <!-- Base URL where you will host the application artifacts -->
     <!--<app.url>http://dsg.mbari.org/m3/vars-annotation/</app.url>-->
     <app.url>http://m3.shore.mbari.org/apps/vars-annotation/</app.url>
-
     <!-- Optional scp target for application artifacts hosted at the above url -->
     <app.deploy.target>brian@m3.shore.mbari.org:/var/www/html/apps/vars-annotation</app.deploy.target>
-
     <!-- The app and launcher will be assembled in this folder -->
     <app.dir>${project.build.directory}/app</app.dir>
-
     <!-- Native installers will be built in this folder -->
     <app.installerdir>${project.build.directory}/installer</app.installerdir>
-
     <!-- Should the client downgrade if the server version is older than the local version? -->
     <app.acceptDowngrade>false</app.acceptDowngrade>
-
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
   </properties>
-
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -98,12 +81,12 @@
     <dependency>
       <groupId>com.squareup.retrofit2</groupId>
       <artifactId>retrofit</artifactId>
-      <version>2.4.0</version>
+      <version>2.5.0</version>
     </dependency>
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>logging-interceptor</artifactId>
-      <version>3.11.0</version>
+      <version>3.12.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -139,17 +122,17 @@
     <dependency>
       <groupId>io.reactivex.rxjava2</groupId>
       <artifactId>rxjava</artifactId>
-      <version>2.2.0</version>
+      <version>2.2.4</version>
     </dependency>
     <dependency>
-        <groupId>io.reactivex.rxjava2</groupId>
-        <artifactId>rxjavafx</artifactId>
-        <version>2.2.2</version>
+      <groupId>io.reactivex.rxjava2</groupId>
+      <artifactId>rxjavafx</artifactId>
+      <version>2.2.2</version>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
-      <version>4.2.0</version>
+      <version>4.2.2</version>
     </dependency>
     <dependency>
       <groupId>com.typesafe</groupId>
@@ -165,7 +148,7 @@
     <dependency>
       <groupId>com.auth0</groupId>
       <artifactId>java-jwt</artifactId>
-      <version>3.4.0</version>
+      <version>3.4.1</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -190,17 +173,17 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>26.0-jre</version>
+      <version>27.0.1-jre</version>
     </dependency>
-      <dependency>
-          <groupId>org.glassfish.jersey.core</groupId>
-          <artifactId>jersey-client</artifactId>
-          <version>2.27</version>
-      </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>2.27</version>
+    </dependency>
     <dependency>
       <groupId>org.mbari.vars</groupId>
       <artifactId>vars-avfoundation</artifactId>
-      <version>2.1.0</version>
+      <version>2.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.mbari.m3</groupId>
@@ -213,7 +196,6 @@
       <version>2.2.0</version>
     </dependency>
   </dependencies>
-
   <!-- The build plugins below perform the following steps:
         1. Compile project jar to app.dir
         2. Copy dependencies to app.dir
@@ -359,37 +341,36 @@
            https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javapackager.html
            -->
           <!--<execution>-->
-            <!--<id>installer</id>-->
-            <!--<phase>install</phase>-->
-            <!--<goals>-->
-              <!--<goal>exec</goal>-->
-            <!--</goals>-->
-            <!--<configuration>-->
-              <!--<executable>javapackager</executable>-->
-
-              <!--<arguments>-->
-                <!--<argument>-deploy</argument>-->
-                <!--<argument>-native</argument>-->
-                <!--<argument>-outdir</argument>-->
-                <!--<argument>${app.installerdir}</argument>-->
-                <!--<argument>-outfile</argument>-->
-                <!--<argument>${app.filename}</argument>-->
-                <!--<argument>-srcdir</argument>-->
-                <!--<argument>${app.dir}</argument>-->
-                <!--<argument>-srcfiles</argument>-->
-                <!--<argument>fxlauncher.jar</argument>-->
-                <!--<argument>-appclass</argument>-->
-                <!--<argument>fxlauncher.Launcher</argument>-->
-                <!--<argument>-name</argument>-->
-                <!--<argument>${project.name}</argument>-->
-                <!--<argument>-title</argument>-->
-                <!--<argument>${project.name}</argument>-->
-                <!--<argument>-vendor</argument>-->
-                <!--<argument>${app.vendor}</argument>-->
-                <!--<argument>-BappVersion=${app.version}</argument>-->
-                <!--<argument>-Bidentifier=${project.groupId}.${project.artifactId}</argument>-->
-              <!--</arguments>-->
-            <!--</configuration>-->
+          <!--<id>installer</id>-->
+          <!--<phase>install</phase>-->
+          <!--<goals>-->
+          <!--<goal>exec</goal>-->
+          <!--</goals>-->
+          <!--<configuration>-->
+          <!--<executable>javapackager</executable>-->
+          <!--<arguments>-->
+          <!--<argument>-deploy</argument>-->
+          <!--<argument>-native</argument>-->
+          <!--<argument>-outdir</argument>-->
+          <!--<argument>${app.installerdir}</argument>-->
+          <!--<argument>-outfile</argument>-->
+          <!--<argument>${app.filename}</argument>-->
+          <!--<argument>-srcdir</argument>-->
+          <!--<argument>${app.dir}</argument>-->
+          <!--<argument>-srcfiles</argument>-->
+          <!--<argument>fxlauncher.jar</argument>-->
+          <!--<argument>-appclass</argument>-->
+          <!--<argument>fxlauncher.Launcher</argument>-->
+          <!--<argument>-name</argument>-->
+          <!--<argument>${project.name}</argument>-->
+          <!--<argument>-title</argument>-->
+          <!--<argument>${project.name}</argument>-->
+          <!--<argument>-vendor</argument>-->
+          <!--<argument>${app.vendor}</argument>-->
+          <!--<argument>-BappVersion=${app.version}</argument>-->
+          <!--<argument>-Bidentifier=${project.groupId}.${project.artifactId}</argument>-->
+          <!--</arguments>-->
+          <!--</configuration>-->
           <!--</execution>-->
           <!-- Copy application artifacts to remote site using scp (optional) -->
           <execution>
@@ -420,40 +401,40 @@
           </compilerArgs>
         </configuration>
       </plugin>
-        <plugin>
-            <groupId>com.zenjava</groupId>
-            <artifactId>javafx-maven-plugin</artifactId>
-            <version>8.6.0</version>
-            <configuration>
-                <mainClass>${app.mainClass}</mainClass>
-                <verbose>true</verbose>
-                <identifier>VARSAnnotation</identifier>
-                <vendor>Monterey Bay Aquarium Research Institute</vendor>
-                <appName>${project.name}</appName>
-                <bundleArguments>
-                    <!-- to include "dtjava.js" and other related files, set this to TRUE -->
-                    <jnlp.includeDT>true</jnlp.includeDT>
-                    <jnlp.outfile>${project.name}</jnlp.outfile>
-                </bundleArguments>
-            </configuration>
-            <executions>
-                <execution>
-                    <!-- required before build-native -->
-                    <id>create-jfxjar</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>build-jar</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <id>create-native</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>build-native</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
+      <plugin>
+        <groupId>com.zenjava</groupId>
+        <artifactId>javafx-maven-plugin</artifactId>
+        <version>8.6.0</version>
+        <configuration>
+          <mainClass>${app.mainClass}</mainClass>
+          <verbose>true</verbose>
+          <identifier>VARSAnnotation</identifier>
+          <vendor>Monterey Bay Aquarium Research Institute</vendor>
+          <appName>${project.name}</appName>
+          <bundleArguments>
+            <!-- to include "dtjava.js" and other related files, set this to TRUE -->
+            <jnlp.includeDT>true</jnlp.includeDT>
+            <jnlp.outfile>${project.name}</jnlp.outfile>
+          </bundleArguments>
+        </configuration>
+        <executions>
+          <execution>
+            <!-- required before build-native -->
+            <id>create-jfxjar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>build-jar</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>create-native</id>
+            <phase>package</phase>
+            <goals>
+              <goal>build-native</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <!-- Generate an assembly -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -475,7 +456,6 @@
       </plugin>
     </plugins>
   </build>
-
   <repositories>
     <repository>
       <snapshots>
@@ -494,6 +474,4 @@
       <url>http://dl.bintray.com/hohonuuli/maven</url>
     </repository>
   </repositories>
-
-
 </project>
