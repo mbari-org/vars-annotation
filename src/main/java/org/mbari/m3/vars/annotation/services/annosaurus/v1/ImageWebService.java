@@ -1,11 +1,9 @@
 package org.mbari.m3.vars.annotation.services.annosaurus.v1;
 
 import org.mbari.m3.vars.annotation.model.Image;
-import org.mbari.m3.vars.annotation.model.ImageReference;
 import retrofit2.Call;
 import retrofit2.http.*;
 
-import java.net.URL;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;

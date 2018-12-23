@@ -2,7 +2,6 @@ package org.mbari.m3.vars.annotation.services;
 
 import org.mbari.m3.vars.annotation.model.PreferenceNode;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
