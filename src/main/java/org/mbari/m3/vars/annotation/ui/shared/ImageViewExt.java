@@ -5,6 +5,8 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import javax.annotation.Nonnull;
+
 /**
  * Wrapper around ImageView that adds Utility methods
  * @author Brian Schlining
@@ -15,11 +17,15 @@ public class ImageViewExt {
     private double actualScale = Double.NaN;
     private boolean doScaleRecompute = true;
 
-    public ImageViewExt(ImageView imageView) {
+    public ImageViewExt(@Nonnull ImageView imageView) {
         this.imageView = imageView;
         imageView.imageProperty().addListener(i -> doScaleRecompute = true);
         imageView.fitHeightProperty().addListener(i -> doScaleRecompute = true);
         imageView.fitWidthProperty().addListener(i -> doScaleRecompute = true);
+    }
+
+    public ImageView getImageView() {
+        return imageView;
     }
 
     /**

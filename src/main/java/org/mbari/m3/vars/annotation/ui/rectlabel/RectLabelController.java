@@ -178,7 +178,6 @@ public class RectLabelController {
         deleteButton.setDisable(true);
 
         // Set deleteButton
-
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
         imageView.fitHeightProperty().bind(imageStackPane.heightProperty());
@@ -651,7 +650,7 @@ public class RectLabelController {
     }
 
     public static RectLabelController newInstance(UIToolBox toolBox) {
-        final ResourceBundle i18n = Initializer.getToolBox().getI18nBundle();
+        final ResourceBundle i18n = toolBox.getI18nBundle();
         FXMLLoader loader = new FXMLLoader(RectLabelController.class
                 .getResource("/fxml/RectLabel.fxml"), i18n);
         try {
