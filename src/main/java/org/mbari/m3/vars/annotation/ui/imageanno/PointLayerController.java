@@ -1,32 +1,21 @@
 package org.mbari.m3.vars.annotation.ui.imageanno;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.control.ToolBar;
 
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Shape;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.ui.shared.ImageViewExt;
 import org.mbari.m3.vars.annotation.util.JFXUtilities;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PointLayerController implements  LayerController {
@@ -44,20 +33,33 @@ public class PointLayerController implements  LayerController {
         // Bind size tto the pane that contains this anchor pane
         getRoot().prefHeightProperty().bind(stackPane.heightProperty());
         getRoot().prefWidthProperty().bind(stackPane.widthProperty());
-        points.addListener((ListChangeListener<PointLayerNode>) c -> {
-            clear();
-            List<Circle> removed = c.getRemoved()
-                    .stream()
-                    .map(PointLayerNode::getShape)
-                    .collect(Collectors.toList());
-            List<Circle> added = c.getAddedSubList()
-                    .stream()
-                    .map(PointLayerNode::getShape)
-                    .collect(Collectors.toList());
-            AnchorPane r = getRoot();
-            r.getChildren().removeAll(removed);
-            r.getChildren().addAll(added);
-        });
+        points.addListener(this::handleListChange);
+    }
+
+    private void handleListChange(ListChangeListener.Change<? extends PointLayerNode> c) {
+        AnchorPane r = getRoot();
+        List<Circle> removed = c.getRemoved()
+                .stream()
+                .peek(n -> {
+                    r.widthProperty()
+                            .removeListener(n.getResizeChangeListener());
+                    r.heightProperty()
+                            .removeListener(n.getResizeChangeListener());
+                })
+                .map(PointLayerNode::getShape)
+                .collect(Collectors.toList());
+        List<Circle> added = c.getAddedSubList()
+                .stream()
+                .peek(n -> {
+                    r.widthProperty()
+                            .addListener(n.getResizeChangeListener());
+                    r.heightProperty()
+                            .addListener(n.getResizeChangeListener());
+                })
+                .map(PointLayerNode::getShape)
+                .collect(Collectors.toList());
+        r.getChildren().removeAll(removed);
+        r.getChildren().addAll(added);
     }
 
     @Override
@@ -74,30 +76,14 @@ public class PointLayerController implements  LayerController {
                 .map(a -> PointLayerNode.fromAssociation(imageViewExt, a, LINK_NAME))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .peek(n -> {
-                    n.getShape().setFill(color);
-                    AnchorPane r = getRoot();
-                    r.widthProperty().addListener(n.getResizeChangeListener());
-                    r.heightProperty().addListener(n.getResizeChangeListener());
-                })
+                .peek(n -> n.getShape().setFill(color))
                 .collect(Collectors.toList());
         points.addAll(layerNodes);
     }
 
     @Override
     public void clear() {
-        JFXUtilities.runOnFXThread(() -> {
-            AnchorPane r = getRoot();
-            ObservableList<Node> children = r.getChildren();
-            points.forEach(p -> {
-                r.widthProperty()
-                        .removeListener(p.getResizeChangeListener());
-                r.heightProperty()
-                        .removeListener(p.getResizeChangeListener());
-                children.remove(p.getShape());
-            });
-            points.clear();
-        });
+        JFXUtilities.runOnFXThread(points::clear);
     }
 
     @Override
@@ -109,7 +95,27 @@ public class PointLayerController implements  LayerController {
         return null;
     }
 
+    @Override
+    public void setDisable(boolean disable) {
 
+        if (disable) {
+            // Remove shapes
+            List<Circle> circles = points.stream()
+                    .map(PointLayerNode::getShape)
+                    .collect(Collectors.toList());
+            getRoot().getChildren().removeAll(circles);
+        }
+        else if (this.disable) {
+            // If we toggle from disabled to enabled then add shapes
+            List<Circle> circles = points.stream()
+                    .map(PointLayerNode::getShape)
+                    .collect(Collectors.toList());
+            getRoot().getChildren().addAll(circles);
+        }
+    }
 
-
+    @Override
+    public boolean isDisabled() {
+        return disable;
+    }
 }

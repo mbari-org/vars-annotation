@@ -42,11 +42,14 @@ public class PointLayerNode extends LayerNode<PointLayerNode.PointData, Circle> 
     }
 
     /**
-     *
+     * Converts a point association into a drawable stuff. Expects the mime-type to
+     * be "application/json" with a JSON linkValue of the format:
+     * "{x:int, y:int, image_reference_uuid: UUID, image_with: int, image_height: int}"
      * @param imageViewExt The ImageViewExt we will be drawining into
      * @param association The association we want to parse to a point annotation
-     * @param linkName
-     * @return
+     * @param linkName This is used to filter for point associations. Non point
+     *                 associations won't be parsed (Optional.empty)
+     * @return empty if a non-parseable association.
      */
     public static Optional<PointLayerNode> fromAssociation(@Nonnull ImageViewExt imageViewExt,
                                                            @Nonnull Association association,
@@ -59,9 +62,8 @@ public class PointLayerNode extends LayerNode<PointLayerNode.PointData, Circle> 
                     PointData.class);
             Circle shape = new Circle();
             resize(imageViewExt, data, shape);
-            ChangeListener<? super Number> resizeChangeListener = (obs, oldv, newv) -> {
+            ChangeListener<? super Number> resizeChangeListener = (obs, oldv, newv) ->
                 resize(imageViewExt, data, shape);
-            };
             PointLayerNode layerNode = new PointLayerNode(data,
                     shape,
                     resizeChangeListener,

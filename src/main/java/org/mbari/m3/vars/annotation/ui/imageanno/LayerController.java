@@ -27,4 +27,8 @@ public interface LayerController {
 
     void clear();
 
+    void setDisable(boolean disable);
+
+    boolean isDisabled();
+
 }
