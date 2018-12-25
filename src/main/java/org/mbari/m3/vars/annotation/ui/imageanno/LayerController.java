@@ -2,8 +2,11 @@ package org.mbari.m3.vars.annotation.ui.imageanno;
 
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.AnchorPane;
-import org.mbari.m3.vars.annotation.model.Annotation;
-import org.mbari.m3.vars.annotation.model.Image;
+import javafx.scene.paint.Color;
+import org.mbari.m3.vars.annotation.model.Association;
+import org.mbari.m3.vars.annotation.ui.shared.ImageViewExt;
+
+import java.util.List;
 
 /**
  * 1. Create
@@ -18,9 +21,10 @@ public interface LayerController {
 
     AnchorPane getRoot();
 
-    void select(Annotation annotation, Image image);
+    void draw(ImageViewExt imageViewExt, List<Association> associations, Color color);
 
     ToolBar getToolBar();
 
+    void clear();
 
 }
