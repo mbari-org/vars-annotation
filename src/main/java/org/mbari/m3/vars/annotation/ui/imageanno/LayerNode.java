@@ -7,6 +7,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.scene.shape.Shape;
 import org.mbari.m3.vars.annotation.model.Association;
 
+import javax.annotation.Nonnull;
+
 public class LayerNode<T, S extends Shape> {
     private final T data;
     private final S shape;
@@ -17,10 +19,10 @@ public class LayerNode<T, S extends Shape> {
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create();
 
-    public LayerNode(T data,
-                     S shape,
-                     ChangeListener<? super Number> resizeChangeListener,
-                     Association association) {
+    public LayerNode(@Nonnull T data,
+                     @Nonnull S shape,
+                     @Nonnull ChangeListener<? super Number> resizeChangeListener,
+                     @Nonnull Association association) {
         this.data = data;
         this.shape = shape;
         this.changeListener = resizeChangeListener;

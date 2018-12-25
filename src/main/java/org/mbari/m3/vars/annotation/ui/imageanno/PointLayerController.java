@@ -38,6 +38,7 @@ public class PointLayerController implements  LayerController {
 
     private void handleListChange(ListChangeListener.Change<? extends PointLayerNode> c) {
         AnchorPane r = getRoot();
+
         List<Circle> removed = c.getRemoved()
                 .stream()
                 .peek(n -> {
@@ -48,6 +49,8 @@ public class PointLayerController implements  LayerController {
                 })
                 .map(PointLayerNode::getShape)
                 .collect(Collectors.toList());
+        r.getChildren().removeAll(removed);
+
         List<Circle> added = c.getAddedSubList()
                 .stream()
                 .peek(n -> {
@@ -58,7 +61,6 @@ public class PointLayerController implements  LayerController {
                 })
                 .map(PointLayerNode::getShape)
                 .collect(Collectors.toList());
-        r.getChildren().removeAll(removed);
         r.getChildren().addAll(added);
     }
 
@@ -112,6 +114,7 @@ public class PointLayerController implements  LayerController {
                     .collect(Collectors.toList());
             getRoot().getChildren().addAll(circles);
         }
+
     }
 
     @Override
