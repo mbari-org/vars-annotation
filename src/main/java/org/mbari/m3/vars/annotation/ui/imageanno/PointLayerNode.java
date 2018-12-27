@@ -11,9 +11,9 @@ import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.UUID;
 
-public class PointLayerNode extends LayerNode<PointLayerNode.PointData, Circle> {
+public class PointLayerNode extends LayerNode<PointLayerNode.Data, Circle> {
 
-    public static class PointData {
+    public static class Data {
         int x;
         int y;
         UUID imageReferenceUuid;
@@ -23,7 +23,7 @@ public class PointLayerNode extends LayerNode<PointLayerNode.PointData, Circle> 
     }
 
 
-    public PointLayerNode(PointData data,
+    protected PointLayerNode(Data data,
                           Circle shape,
                           ChangeListener<? super Number> resizeChangeListener,
                           Association association) {
@@ -31,7 +31,7 @@ public class PointLayerNode extends LayerNode<PointLayerNode.PointData, Circle> 
     }
 
     public static void resize(ImageViewExt imageViewExt,
-                                  PointData data,
+                                  Data data,
                                   Circle shape) {
         ImageView imageView = imageViewExt.getImageView();
         Bounds boundsInParent = imageView.getBoundsInParent();
@@ -60,8 +60,8 @@ public class PointLayerNode extends LayerNode<PointLayerNode.PointData, Circle> 
         if (association.getLinkName().equals(linkName) &&
                 association.getMimeType().equalsIgnoreCase("application/json")) {
 
-            final PointData data = GSON.fromJson(association.getLinkValue(),
-                    PointData.class);
+            final Data data = GSON.fromJson(association.getLinkValue(),
+                    Data.class);
             Circle shape = new Circle();
             resize(imageViewExt, data, shape);
             ChangeListener<? super Number> resizeChangeListener = (obs, oldv, newv) ->
