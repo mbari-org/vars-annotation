@@ -8,5 +8,4 @@ MBARI's Video Annotation and Reference System user interface for creating and ed
 
 This system is the main annotation applicaiton used at [MBARI](https://www.mbari.org).
 
-
 ![VARS Annotation](src/site/resources/images/vars-annotation.png)
