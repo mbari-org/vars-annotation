@@ -1,11 +1,16 @@
 package org.mbari.m3.vars.annotation.ui.imageanno;
 
 import javafx.beans.value.ChangeListener;
+import javafx.scene.control.ToolBar;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Image;
+import org.mbari.m3.vars.annotation.ui.shared.ImageViewExt;
+
+import java.util.List;
 
 public class BoundingBoxLayerController implements LayerController {
 
@@ -36,7 +41,29 @@ public class BoundingBoxLayerController implements LayerController {
     }
 
     @Override
-    public void select(Annotation annotation, Image image) {
+    public void draw(ImageViewExt imageViewExt, List<Association> associations, Color color) {
 
     }
+
+    @Override
+    public ToolBar getToolBar() {
+        return null;
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    @Override
+    public void setDisable(boolean disable) {
+
+    }
+
+    @Override
+    public boolean isDisabled() {
+        return false;
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.ui.imageanno;
 
+import com.jfoenix.controls.JFXComboBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 public class PointLayerController implements  LayerController {
 
+    private final StackPane stackPane;
     private AnchorPane anchorPane;
     private boolean disable = true;
     private ToolBar toolBar;
@@ -29,6 +31,7 @@ public class PointLayerController implements  LayerController {
 
     public PointLayerController(UIToolBox toolBox, StackPane stackPane) {
         this.toolBox = toolBox;
+        this.stackPane = stackPane;
         LINK_NAME = toolBox.getConfig().getString("app.annotation.image.point.linkname");
         // Bind size tto the pane that contains this anchor pane
         getRoot().prefHeightProperty().bind(stackPane.heightProperty());
@@ -92,9 +95,11 @@ public class PointLayerController implements  LayerController {
     public ToolBar getToolBar() {
         if (toolBar == null) {
             toolBar = new ToolBar();
+            // Add Concept combobox
+            toolBar.getItems().add(new JFXComboBox<String>());
 
         }
-        return null;
+        return toolBar;
     }
 
     @Override
@@ -106,6 +111,7 @@ public class PointLayerController implements  LayerController {
                     .map(PointLayerNode::getShape)
                     .collect(Collectors.toList());
             getRoot().getChildren().removeAll(circles);
+            stackPane.getChildren().remove(getRoot());
         }
         else if (this.disable) {
             // If we toggle from disabled to enabled then add shapes
@@ -113,6 +119,7 @@ public class PointLayerController implements  LayerController {
                     .map(PointLayerNode::getShape)
                     .collect(Collectors.toList());
             getRoot().getChildren().addAll(circles);
+            stackPane.getChildren().add(getRoot());
         }
 
     }
