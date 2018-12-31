@@ -26,6 +26,22 @@ public class Image implements ImagedMoment, Cloneable {
     private Duration elapsedTime;
     private Instant recordedTimestamp;
 
+    public Image() {
+    }
+
+    public Image(Annotation annotation, ImageReference imageReference) {
+        format = imageReference.getFormat();
+        width = imageReference.getWidth();
+        height = imageReference.getHeight();
+        url = imageReference.getUrl();
+        description = imageReference.getDescription();
+        videoReferenceUuid = annotation.getVideoReferenceUuid();
+        imagedMomentUuid = imageReference.getUuid();
+        timecode = annotation.getTimecode();
+        elapsedTime = annotation.getElapsedTime();
+        recordedTimestamp = annotation.getRecordedTimestamp();
+    }
+
     public UUID getImageReferenceUuid() {
         return imageReferenceUuid;
     }
@@ -120,5 +136,26 @@ public class Image implements ImagedMoment, Cloneable {
                 Optional.ofNullable(timecode));
     }
 
-
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (description != null) {
+            sb.append(description);
+        }
+        else {
+            sb.append("Undescribed Image");
+        }
+        if (format != null) {
+            sb.append(" [")
+                    .append(format)
+                    .append("]");
+        }
+        if (width != null && height != null) {
+            sb.append(" ")
+                    .append(width)
+                    .append("x")
+                    .append(height);
+        }
+        return sb.toString();
+    }
 }

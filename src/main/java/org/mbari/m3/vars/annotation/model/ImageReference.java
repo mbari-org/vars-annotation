@@ -14,6 +14,8 @@ public class ImageReference implements Cloneable {
     private URL url;
     private String format;
     private Instant lastUpdatedTime;
+    private Integer width;
+    private Integer height;
 
     public ImageReference() {
     }
@@ -60,6 +62,22 @@ public class ImageReference implements Cloneable {
 
     public void setFormat(String format) {
         this.format = format;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 
     public Instant getLastUpdatedTime() {

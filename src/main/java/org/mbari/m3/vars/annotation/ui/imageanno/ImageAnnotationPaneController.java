@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.ui.imageanno;
 
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXToggleNode;
 import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
@@ -8,20 +9,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Image;
 import org.mbari.m3.vars.annotation.ui.shared.ImageViewExt;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class ImageAnnotationPaneController {
 
@@ -43,7 +45,10 @@ public class ImageAnnotationPaneController {
     @FXML
     private ImageView imageView;
 
-    private ObservableList<LayerController> layerControllers = FXCollections.observableArrayList();
+    @FXML
+    private JFXComboBox<Image> comboBox;
+
+    protected ObservableList<LayerController> layerControllers = FXCollections.observableArrayList();
     private ImageViewExt imageViewExt;
 
     @FXML
@@ -53,6 +58,34 @@ public class ImageAnnotationPaneController {
         imageView.fitHeightProperty().bind(stackPane.heightProperty());
         imageView.fitWidthProperty().bind(stackPane.widthProperty());
         imageViewExt = new ImageViewExt(imageView);
+
+        comboBox.setCellFactory(new Callback<ListView<Image>, ListCell<Image>>() {
+            @Override
+            public ListCell<Image> call(ListView<Image> param) {
+                return new ListCell<Image>() {
+                    @Override
+                    protected void updateItem(Image item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.toString());
+                        }
+                        else {
+                            setText(null);
+                        }
+                    }
+                };
+            }
+        });
+
+        comboBox.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, oldv, newv) -> setSelectedImage(newv));
+
+
+    }
+
+    public ToolBar getToolbar() {
+        return toolbar;
     }
 
 
@@ -68,25 +101,12 @@ public class ImageAnnotationPaneController {
 
             // Configure point layer controller
             PointLayerController pointLayerController = new PointLayerController(toolBox, controller.stackPane);
-            controller.layerControllers
-                    .addAll(pointLayerController);
-            ToggleButton pointButton = new JFXToggleNode();
-            Text pointIcon = gf.createIcon(MaterialIcon.CONTROL_POINT, "30px");
-            pointButton.setGraphic(pointIcon);
-            //pointButton.setText("ff");
-            pointButton.selectedProperty().addListener((obs, oldv, newv) -> {
-                pointLayerController.setDisable(!newv);
-                if (newv) {
-                    controller.getRoot().setBottom(pointLayerController.getToolBar());
-                }
-                else {
+            pointLayerController.register(controller, toggleGroup);
+            toggleGroup.selectedToggleProperty().addListener((obs, oldv, newv) -> {
+                if (newv == null) {
                     controller.getRoot().setBottom(null);
                 }
             });
-            pointButton.setToggleGroup(toggleGroup);
-            controller.toolbar.getItems().add(pointButton);
-
-
 
 
             return controller;
@@ -104,11 +124,27 @@ public class ImageAnnotationPaneController {
     }
 
 
-    public void setSelectedAnnotation(Annotation annotation) {
-
+    public void setSelectedAnnotation(final Annotation annotation) {
+        comboBox.getItems().clear();
+        List<Image> images = annotation.getImages()
+                .stream()
+                .filter(imageReference -> imageReference.getUrl() != null)
+                .map(imageReference -> new Image(annotation, imageReference))
+                .sorted((a, b) -> a.toString().compareToIgnoreCase(b.toString()))
+                .collect(Collectors.toList());
+        comboBox.getItems().addAll(images);
+        comboBox.getSelectionModel().select(0);
     }
 
     private void setSelectedImage(final Image image) {
+        if (image == null) {
+            imageView.setImage(null);
+        }
+        javafx.scene.image.Image fxImage = new javafx.scene.image.Image(
+                image.getUrl().toExternalForm(),
+                false);
+        imageView.setImage(fxImage);
+
 
     }
 

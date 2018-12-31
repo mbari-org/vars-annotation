@@ -1,6 +1,9 @@
 package org.mbari.m3.vars.annotation.ui.imageanno;
 
 import com.jfoenix.controls.JFXComboBox;
+import de.jensd.fx.glyphs.GlyphsFactory;
+import de.jensd.fx.glyphs.materialicons.MaterialIcon;
+import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -10,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.ui.shared.ImageViewExt;
@@ -21,6 +25,7 @@ import java.util.stream.Collectors;
 
 public class PointLayerController implements  LayerController {
 
+    private final String description;
     private final StackPane stackPane;
     private AnchorPane anchorPane;
     private boolean disable = true;
@@ -33,6 +38,7 @@ public class PointLayerController implements  LayerController {
         this.toolBox = toolBox;
         this.stackPane = stackPane;
         LINK_NAME = toolBox.getConfig().getString("app.annotation.image.point.linkname");
+        description = toolBox.getI18nBundle().getString("imageanno.pointlayer");
         // Bind size tto the pane that contains this anchor pane
         getRoot().prefHeightProperty().bind(stackPane.heightProperty());
         getRoot().prefWidthProperty().bind(stackPane.widthProperty());
@@ -127,5 +133,16 @@ public class PointLayerController implements  LayerController {
     @Override
     public boolean isDisabled() {
         return disable;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public Text getToggleGraphic() {
+        MaterialIconFactory iconFactory = MaterialIconFactory.get();
+        return iconFactory.createIcon(MaterialIcon.CONTROL_POINT, "30px");
     }
 }

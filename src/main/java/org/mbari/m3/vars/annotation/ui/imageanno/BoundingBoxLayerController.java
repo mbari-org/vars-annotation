@@ -5,6 +5,7 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Image;
@@ -65,5 +66,13 @@ public class BoundingBoxLayerController implements LayerController {
         return false;
     }
 
+    @Override
+    public String getDescription() {
+        return null;
+    }
 
+    @Override
+    public Text getToggleGraphic() {
+        return null;
+    }
 }
