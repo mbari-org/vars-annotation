@@ -23,24 +23,62 @@ import java.util.List;
  */
 public interface LayerController {
 
+    /**
+     * This is the pane that this layer's child nodes are drawn on
+     * @return
+     */
     AnchorPane getRoot();
 
+    /**
+     *
+     * @return true if this layer should not be drawn
+     */
     boolean isDisabled();
+
+    /**
+     *
+     * @param disable true to hide this layer, false to draw contents
+     */
     void setDisable(boolean disable);
 
-    String getDescription();
-
+    /**
+     *
+     * @return The graphic to be displayed on the toggle button that
+     *  enables/disables this layer controller
+     */
     Text getToggleGraphic();
 
-
-
+    /**
+     *
+     * @return A toolbar that is used for configuring/controlling the
+     *  behavior of this layer. It will be displayed at the bottom
+     *  of the image pane controller
+     */
     ToolBar getToolBar();
 
+    /**
+     * removes all drawn content from this layer
+     */
     void clear();
 
+    /**
+     * Draws content over the image view using the provided color. The associations
+     * contain the drawing content and are mapped to the shapes drawn. Only
+     * associations that match the criteria (linkname) for a specific layer
+     * will be drawn. Othere sill just be ignored.
+     * @param imageViewExt
+     * @param associations
+     * @param color
+     */
     void draw(ImageViewExt imageViewExt, List<Association> associations, Color color);
 
 
+    /**
+     * Registers this controller with the master {@link ImageAnnotationPaneController}
+     * @param controller The master controller
+     * @param toggleGroup Used to associated the toogle button that enables/disables this
+     *                    layer.
+     */
     default void register(ImageAnnotationPaneController controller, ToggleGroup toggleGroup) {
         controller.layerControllers.add(this);
         ToggleButton toggleButton = new JFXToggleNode();

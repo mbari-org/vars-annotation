@@ -66,10 +66,6 @@ public class BoundingBoxLayerController implements LayerController {
         return false;
     }
 
-    @Override
-    public String getDescription() {
-        return null;
-    }
 
     @Override
     public Text getToggleGraphic() {

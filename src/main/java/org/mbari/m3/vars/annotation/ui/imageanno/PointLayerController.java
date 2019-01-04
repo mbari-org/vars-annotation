@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 
 public class PointLayerController implements  LayerController {
 
-    private final String description;
     private final StackPane stackPane;
     private AnchorPane anchorPane;
     private boolean disable = true;
@@ -38,7 +37,6 @@ public class PointLayerController implements  LayerController {
         this.toolBox = toolBox;
         this.stackPane = stackPane;
         LINK_NAME = toolBox.getConfig().getString("app.annotation.image.point.linkname");
-        description = toolBox.getI18nBundle().getString("imageanno.pointlayer");
         // Bind size tto the pane that contains this anchor pane
         getRoot().prefHeightProperty().bind(stackPane.heightProperty());
         getRoot().prefWidthProperty().bind(stackPane.widthProperty());
@@ -135,10 +133,6 @@ public class PointLayerController implements  LayerController {
         return disable;
     }
 
-    @Override
-    public String getDescription() {
-        return description;
-    }
 
     @Override
     public Text getToggleGraphic() {

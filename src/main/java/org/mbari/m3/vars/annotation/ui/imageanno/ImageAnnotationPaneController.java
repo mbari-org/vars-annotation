@@ -96,17 +96,17 @@ public class ImageAnnotationPaneController {
             loader.load();
             ImageAnnotationPaneController controller = loader.getController();
 
-            GlyphsFactory gf = MaterialIconFactory.get();
             ToggleGroup toggleGroup = new ToggleGroup();
-
-            // Configure point layer controller
-            PointLayerController pointLayerController = new PointLayerController(toolBox, controller.stackPane);
-            pointLayerController.register(controller, toggleGroup);
             toggleGroup.selectedToggleProperty().addListener((obs, oldv, newv) -> {
                 if (newv == null) {
                     controller.getRoot().setBottom(null);
                 }
             });
+
+            // Configure point layer controller
+            PointLayerController pointLayerController = new PointLayerController(toolBox, controller.stackPane);
+            pointLayerController.register(controller, toggleGroup);
+
 
 
             return controller;
