@@ -4,6 +4,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.model.Annotation;
 
 public class ImageAnnotationStageController {
 
@@ -14,6 +15,10 @@ public class ImageAnnotationStageController {
     public ImageAnnotationStageController(UIToolBox toolBox) {
         this.toolBox = toolBox;
         paneController = ImageAnnotationPaneController.newInstance(toolBox);
+    }
+
+    public void setSelectedAnnotation(final Annotation annotation) {
+        paneController.setSelectedAnnotation(annotation);
     }
 
     public Stage getStage() {

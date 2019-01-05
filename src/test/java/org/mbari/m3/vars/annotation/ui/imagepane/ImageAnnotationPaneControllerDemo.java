@@ -12,7 +12,10 @@ import org.mbari.m3.vars.annotation.model.ImageReference;
 import org.mbari.m3.vars.annotation.ui.imageanno.ImageAnnotationStageController;
 import org.mbari.vcr4j.VideoIndex;
 
+import java.net.URL;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class ImageAnnotationPaneControllerDemo extends Application {
@@ -35,6 +38,14 @@ public class ImageAnnotationPaneControllerDemo extends Application {
                 new VideoIndex(Instant.now()),
                 UUID.randomUUID());
         ImageReference ir = new ImageReference();
+        ir.setUrl(new URL("http://dsg.mbari.org/frameGrabs/Tiburon/images/0791/04_58_06_02.jpg"));
+        ir.setFormat("image/jpeg");
+        List<ImageReference> images = new ArrayList<>();
+        images.add(ir);
+        annotation.setImages(images);
+
+        controller.setSelectedAnnotation(annotation);
+
 
 
     }
