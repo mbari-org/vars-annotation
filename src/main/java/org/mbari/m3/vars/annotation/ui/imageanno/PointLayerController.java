@@ -17,7 +17,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.commands.Command;
+import org.mbari.m3.vars.annotation.commands.CreateAnnotationAtIndexCmd;
 import org.mbari.m3.vars.annotation.model.Association;
+import org.mbari.m3.vars.annotation.model.Image;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
 import org.mbari.m3.vars.annotation.ui.shared.ImageViewExt;
 import org.mbari.m3.vars.annotation.util.JFXUtilities;
@@ -35,10 +38,9 @@ public class PointLayerController extends AbstractLayerController {
     private final ObservableList<PointLayerNode> points = FXCollections.observableArrayList();
     private EventHandler<? super MouseEvent> eventHandler = this::handleMouseEvent;
 
-    public PointLayerController(Data data, UIToolBox toolBox) {
-        super(data);
-        LINK_NAME = toolBox.getConfig().getString("app.annotation.image.point.linkname");        // Bind size tto the pane that contains this anchor pane
-
+    public PointLayerController(UIToolBox toolBox, Data data) {
+        super(toolBox, data);
+        LINK_NAME = toolBox.getConfig().getString("app.annotation.image.point.linkname");
         points.addListener(this::handleListChange);
     }
 
@@ -58,8 +60,29 @@ public class PointLayerController extends AbstractLayerController {
     }
 
     private void handleMouseEvent(MouseEvent event) {
+
         Point2D point = LayerController.toImageCoordinates(event, getData().getImageViewExt());
+        Image image = getData().getImage();
+        String concept = getConceptComboBox().getSelectionModel().getSelectedItem();
+        if (image != null && concept != null) {
+            PointLayerNode.Datum datum = new PointLayerNode.Datum(image, point);
+            String linkValue = PointLayerNode.GSON.toJson(datum);
+            Association association = new Association(LINK_NAME,
+                    Association.VALUE_SELF,
+                    linkValue);
+            Command command = new CreateAnnotationAtIndexCmd(image.getVideoIndex(),
+                    concept,
+                    association);
+            getToolBox().getEventBus()
+                    .send(command);
+        }
+
+        // If there is a selected Image in Data do the following
+
         System.out.println(point);
+        // TODO Create Annotations with point association
+
+
     }
 
     private void handleListChange(ListChangeListener.Change<? extends PointLayerNode> c) {
@@ -150,8 +173,6 @@ public class PointLayerController extends AbstractLayerController {
     public boolean isDisabled() {
         return disable;
     }
-
-
 
 
 //    @Override

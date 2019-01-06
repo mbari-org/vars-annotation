@@ -10,7 +10,7 @@ import org.mbari.m3.vars.annotation.model.Association;
 import javax.annotation.Nonnull;
 
 public class LayerNode<T, S extends Shape> {
-    private final T data;
+    private final T datum;
     private final S shape;
     private final ChangeListener<? super Number> changeListener;
     private final Association association;
@@ -19,18 +19,18 @@ public class LayerNode<T, S extends Shape> {
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create();
 
-    public LayerNode(@Nonnull T data,
+    public LayerNode(@Nonnull T datum,
                      @Nonnull S shape,
                      @Nonnull ChangeListener<? super Number> resizeChangeListener,
                      @Nonnull Association association) {
-        this.data = data;
+        this.datum = datum;
         this.shape = shape;
         this.changeListener = resizeChangeListener;
         this.association = association;
     }
 
-    public T getData() {
-        return data;
+    public T getDatum() {
+        return datum;
     }
 
     /**

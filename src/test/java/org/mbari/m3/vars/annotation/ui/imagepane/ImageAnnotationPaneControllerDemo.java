@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation.ui.imagepane;
 
 import com.jfoenix.controls.JFXButton;
+import io.reactivex.Observable;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
@@ -9,6 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.commands.Command;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.ImageReference;
 import org.mbari.m3.vars.annotation.ui.imageanno.ImageAnnotationStageController;
@@ -35,10 +37,17 @@ public class ImageAnnotationPaneControllerDemo extends Application {
                 .collect(Collectors.toList());
 
         UIToolBox toolBox = Initializer.getToolBox();
+        Observable<Object> observable = toolBox.getEventBus().toObserverable();
+
+        observable.subscribe(System.out::println);
+        observable.ofType(Command.class)
+                .subscribe(cmd -> System.out.println(cmd.getDescription()));
+
+
         ImageAnnotationStageController controller = new ImageAnnotationStageController(toolBox);
         List<LayerController> layerControllers = controller.getPaneController()
                 .getLayerControllers();
-        layerControllers.add(new PointLayerController(controller.getPaneController().getData(), toolBox));
+        layerControllers.add(new PointLayerController(toolBox, controller.getPaneController().getData()));
         layerControllers.stream()
                 .filter(c -> c instanceof PointLayerController)
                 .map(c -> (PointLayerController) c)

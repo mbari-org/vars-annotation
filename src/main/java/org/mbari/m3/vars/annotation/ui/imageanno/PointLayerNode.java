@@ -2,42 +2,58 @@ package org.mbari.m3.vars.annotation.ui.imageanno;
 
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 import org.mbari.m3.vars.annotation.model.Association;
+import org.mbari.m3.vars.annotation.model.Image;
 import org.mbari.m3.vars.annotation.ui.shared.ImageViewExt;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.UUID;
 
-public class PointLayerNode extends LayerNode<PointLayerNode.Data, Circle> {
+public class PointLayerNode extends LayerNode<PointLayerNode.Datum, Circle> {
 
-    public static class Data {
+    public static class Datum {
         int x;
         int y;
         UUID imageReferenceUuid;
         int imageWidth;
         int imageHeight;
         String comment;
+
+        public Datum() { }
+
+        public Datum(Image image, Point2D point) {
+            imageReferenceUuid = image.getImageReferenceUuid();
+            if (image.getWidth() != null) {
+                imageWidth = image.getWidth();
+            }
+            if (image.getHeight() != null) {
+                imageHeight = image.getHeight();
+            }
+            x = (int) Math.round(point.getX());
+            y = (int) Math.round(point.getY());
+        }
     }
 
 
-    protected PointLayerNode(Data data,
+    protected PointLayerNode(Datum datum,
                           Circle shape,
                           ChangeListener<? super Number> resizeChangeListener,
                           Association association) {
-        super(data, shape, resizeChangeListener, association);
+        super(datum, shape, resizeChangeListener, association);
     }
 
     public static void resize(ImageViewExt imageViewExt,
-                                  Data data,
+                                  Datum datum,
                                   Circle shape) {
         ImageView imageView = imageViewExt.getImageView();
         Bounds boundsInParent = imageView.getBoundsInParent();
         double scale = imageViewExt.computeActualScale();
-        double x = data.x * scale + boundsInParent.getMinX();
-        double y = data.y * scale + boundsInParent.getMinY();
+        double x = datum.x * scale + boundsInParent.getMinX();
+        double y = datum.y * scale + boundsInParent.getMinY();
         shape.setCenterX(x);
         shape.setCenterX(y);
     }
@@ -60,13 +76,13 @@ public class PointLayerNode extends LayerNode<PointLayerNode.Data, Circle> {
         if (association.getLinkName().equals(linkName) &&
                 association.getMimeType().equalsIgnoreCase("application/json")) {
 
-            final Data data = GSON.fromJson(association.getLinkValue(),
-                    Data.class);
+            final Datum datum = GSON.fromJson(association.getLinkValue(),
+                    Datum.class);
             Circle shape = new Circle();
-            resize(imageViewExt, data, shape);
+            resize(imageViewExt, datum, shape);
             ChangeListener<? super Number> resizeChangeListener = (obs, oldv, newv) ->
-                resize(imageViewExt, data, shape);
-            PointLayerNode layerNode = new PointLayerNode(data,
+                resize(imageViewExt, datum, shape);
+            PointLayerNode layerNode = new PointLayerNode(datum,
                     shape,
                     resizeChangeListener,
                     association);
