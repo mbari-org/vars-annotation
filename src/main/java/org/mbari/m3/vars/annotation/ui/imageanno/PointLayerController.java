@@ -1,21 +1,24 @@
 package org.mbari.m3.vars.annotation.ui.imageanno;
 
 import com.jfoenix.controls.JFXComboBox;
-import de.jensd.fx.glyphs.GlyphsFactory;
 import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ToolBar;
 
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Association;
+import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
 import org.mbari.m3.vars.annotation.ui.shared.ImageViewExt;
 import org.mbari.m3.vars.annotation.util.JFXUtilities;
 
@@ -23,60 +26,73 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class PointLayerController implements  LayerController {
+public class PointLayerController extends AbstractLayerController {
 
-    private final StackPane stackPane;
-    private AnchorPane anchorPane;
     private boolean disable = true;
     private ToolBar toolBar;
-    private final UIToolBox toolBox;
+    private ComboBox<String> conceptComboBox;
     private final String LINK_NAME;
     private final ObservableList<PointLayerNode> points = FXCollections.observableArrayList();
+    private EventHandler<? super MouseEvent> eventHandler = this::handleMouseEvent;
 
-    public PointLayerController(UIToolBox toolBox, StackPane stackPane) {
-        this.toolBox = toolBox;
-        this.stackPane = stackPane;
-        LINK_NAME = toolBox.getConfig().getString("app.annotation.image.point.linkname");
-        // Bind size tto the pane that contains this anchor pane
-        getRoot().prefHeightProperty().bind(stackPane.heightProperty());
-        getRoot().prefWidthProperty().bind(stackPane.widthProperty());
+    public PointLayerController(Data data, UIToolBox toolBox) {
+        super(data);
+        LINK_NAME = toolBox.getConfig().getString("app.annotation.image.point.linkname");        // Bind size tto the pane that contains this anchor pane
+
         points.addListener(this::handleListChange);
+    }
+
+    @Override
+    public Node getEnableButtonGraphic() {
+        MaterialIconFactory iconFactory = MaterialIconFactory.get();
+        return iconFactory.createIcon(MaterialIcon.CONTROL_POINT, "30px");
+    }
+
+    public ComboBox<String> getConceptComboBox() {
+        if (conceptComboBox == null) {
+            conceptComboBox = new JFXComboBox<>();
+            new FilteredComboBoxDecorator<>(conceptComboBox,
+                    FilteredComboBoxDecorator.STARTSWITH_FIRST_THEN_CONTAINS_CHARS_IN_ORDER);
+        }
+        return conceptComboBox;
+    }
+
+    private void handleMouseEvent(MouseEvent event) {
+        Point2D point = LayerController.toImageCoordinates(event, getData().getImageViewExt());
+        System.out.println(point);
     }
 
     private void handleListChange(ListChangeListener.Change<? extends PointLayerNode> c) {
         AnchorPane r = getRoot();
 
-        List<Circle> removed = c.getRemoved()
-                .stream()
-                .peek(n -> {
-                    r.widthProperty()
-                            .removeListener(n.getResizeChangeListener());
-                    r.heightProperty()
-                            .removeListener(n.getResizeChangeListener());
-                })
-                .map(PointLayerNode::getShape)
-                .collect(Collectors.toList());
-        r.getChildren().removeAll(removed);
-
-        List<Circle> added = c.getAddedSubList()
-                .stream()
-                .peek(n -> {
-                    r.widthProperty()
-                            .addListener(n.getResizeChangeListener());
-                    r.heightProperty()
-                            .addListener(n.getResizeChangeListener());
-                })
-                .map(PointLayerNode::getShape)
-                .collect(Collectors.toList());
-        r.getChildren().addAll(added);
-    }
-
-    @Override
-    public AnchorPane getRoot() {
-        if (anchorPane == null) {
-            anchorPane = new AnchorPane();
+        while (c.next()) {
+            if (c.wasRemoved()) {
+                List<Circle> removed = c.getRemoved()
+                        .stream()
+                        .peek(n -> {
+                            r.widthProperty()
+                                    .removeListener(n.getResizeChangeListener());
+                            r.heightProperty()
+                                    .removeListener(n.getResizeChangeListener());
+                        })
+                        .map(PointLayerNode::getShape)
+                        .collect(Collectors.toList());
+                r.getChildren().removeAll(removed);
+            }
+            if (c.wasAdded()) {
+                List<Circle> added = c.getAddedSubList()
+                        .stream()
+                        .peek(n -> {
+                            r.widthProperty()
+                                    .addListener(n.getResizeChangeListener());
+                            r.heightProperty()
+                                    .addListener(n.getResizeChangeListener());
+                        })
+                        .map(PointLayerNode::getShape)
+                        .collect(Collectors.toList());
+                r.getChildren().addAll(added);
+            }
         }
-        return anchorPane;
     }
 
     @Override
@@ -100,7 +116,7 @@ public class PointLayerController implements  LayerController {
         if (toolBar == null) {
             toolBar = new ToolBar();
             // Add Concept combobox
-            toolBar.getItems().add(new JFXComboBox<String>());
+            toolBar.getItems().add(getConceptComboBox());
 
         }
         return toolBar;
@@ -115,7 +131,8 @@ public class PointLayerController implements  LayerController {
                     .map(PointLayerNode::getShape)
                     .collect(Collectors.toList());
             getRoot().getChildren().removeAll(circles);
-            stackPane.getChildren().remove(getRoot());
+            getData().getStackPane().getChildren().remove(getRoot());
+            getRoot().removeEventHandler(MouseEvent.MOUSE_CLICKED, eventHandler);
         }
         else if (this.disable) {
             // If we toggle from disabled to enabled then add shapes
@@ -123,7 +140,8 @@ public class PointLayerController implements  LayerController {
                     .map(PointLayerNode::getShape)
                     .collect(Collectors.toList());
             getRoot().getChildren().addAll(circles);
-            stackPane.getChildren().add(getRoot());
+            getData().getStackPane().getChildren().add(getRoot());
+            getRoot().addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandler);
         }
 
     }
@@ -134,9 +152,17 @@ public class PointLayerController implements  LayerController {
     }
 
 
-    @Override
-    public Text getToggleGraphic() {
-        MaterialIconFactory iconFactory = MaterialIconFactory.get();
-        return iconFactory.createIcon(MaterialIcon.CONTROL_POINT, "30px");
-    }
+
+
+//    @Override
+//    public void postRegister(ImageAnnotationPaneController controller) {
+//        getRoot().addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+//            Point2D point = LayerController.toImageCoordinates(event, controller.getImageViewExt());
+//            System.out.println(point);
+//            String linkValue =
+//            new Association(LINK_NAME,
+//                    Association.VALUE_SELF,
+//                    )
+//        });
+//    }
 }

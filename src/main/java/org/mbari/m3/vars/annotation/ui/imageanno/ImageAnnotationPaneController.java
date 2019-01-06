@@ -1,19 +1,17 @@
 package org.mbari.m3.vars.annotation.ui.imageanno;
 
 import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXToggleNode;
-import de.jensd.fx.glyphs.GlyphsFactory;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 import javafx.util.Callback;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.model.Annotation;
@@ -21,8 +19,7 @@ import org.mbari.m3.vars.annotation.model.Image;
 import org.mbari.m3.vars.annotation.ui.shared.ImageViewExt;
 
 import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ImageAnnotationPaneController {
@@ -48,8 +45,11 @@ public class ImageAnnotationPaneController {
     @FXML
     private JFXComboBox<Image> comboBox;
 
+    private ToggleGroup toggleGroup = new ToggleGroup();
+
     protected ObservableList<LayerController> layerControllers = FXCollections.observableArrayList();
-    private ImageViewExt imageViewExt;
+    private Map<LayerController, ChangeListener<? super Boolean>> changeListenerMap = new HashMap<>();
+    private Data data;
 
     @FXML
     void initialize() {
@@ -57,8 +57,17 @@ public class ImageAnnotationPaneController {
         imageView.setSmooth(true);
         imageView.fitHeightProperty().bind(stackPane.heightProperty());
         imageView.fitWidthProperty().bind(stackPane.widthProperty());
-        imageViewExt = new ImageViewExt(imageView);
+        ImageViewExt imageViewExt = new ImageViewExt(imageView);
+        data = new Data(stackPane, imageViewExt);
 
+        // If not toggle button is selected do not show toolbar on bottom
+        toggleGroup.selectedToggleProperty().addListener((obs, oldv, newv) -> {
+            if (newv == null) {
+                root.setBottom(null);
+            }
+        });
+
+        // Combobox that displays Image as string
         comboBox.setCellFactory(new Callback<ListView<Image>, ListCell<Image>>() {
             @Override
             public ListCell<Image> call(ListView<Image> param) {
@@ -81,7 +90,54 @@ public class ImageAnnotationPaneController {
                 .selectedItemProperty()
                 .addListener((obs, oldv, newv) -> setSelectedImage(newv));
 
+        // Add/remove toggle bottons for layers as they are addeded/removed
+        layerControllers.addListener((ListChangeListener<LayerController>) c -> {
+            ObservableList<Node> items = getToolbar().getItems();
+            while (c.next()) {
+                if (c.wasAdded()) {
+                    c.getAddedSubList()
+                            .forEach(this::addLayerController);
+                }
+                if (c.wasRemoved()) {
+                    c.getRemoved()
+                            .forEach(this::removeLayerController);
+                }
+            }
 
+        });
+
+
+    }
+
+    private void addLayerController(LayerController layerController) {
+        ToggleButton enableButton = layerController.getEnableButton();
+        enableButton.setToggleGroup(toggleGroup);
+        ChangeListener<? super Boolean> changeListener = (obs, oldv, newv) -> {
+            layerController.setDisable(!newv);
+            if (newv) {
+                getRoot().setBottom(layerController.getToolBar());
+                data.setLayerController(layerController);
+            }
+        };
+        enableButton.selectedProperty().addListener(changeListener);
+        changeListenerMap.put(layerController, changeListener);
+        toolbar.getItems().add(enableButton);
+    }
+
+    private void removeLayerController(LayerController layerController) {
+        layerController.setDisable(true);
+        stackPane.getChildren().remove(layerController.getRoot());
+        ToggleButton enableButton = layerController.getEnableButton();
+        toolbar.getItems().remove(enableButton);
+        enableButton.setToggleGroup(null);
+        ChangeListener<? super Boolean> changeListener = changeListenerMap.get(layerController);
+        if (changeListener != null) {
+            enableButton.selectedProperty().removeListener(changeListener);
+            changeListenerMap.remove(layerController);
+        }
+        if (layerController == data.getLayerController()) {
+            data.setLayerController(null);
+        }
     }
 
     public ToolBar getToolbar() {
@@ -94,22 +150,7 @@ public class ImageAnnotationPaneController {
         FXMLLoader loader = new FXMLLoader(ImageAnnotationPaneController.class.getResource("/fxml/ImageAnnotationPane.fxml"), i18n);
         try {
             loader.load();
-            ImageAnnotationPaneController controller = loader.getController();
-
-            ToggleGroup toggleGroup = new ToggleGroup();
-            toggleGroup.selectedToggleProperty().addListener((obs, oldv, newv) -> {
-                if (newv == null) {
-                    controller.getRoot().setBottom(null);
-                }
-            });
-
-            // Configure point layer controller
-            PointLayerController pointLayerController = new PointLayerController(toolBox, controller.stackPane);
-            pointLayerController.register(controller, toggleGroup);
-
-
-
-            return controller;
+            return loader.getController();
         }
         catch (Exception e) {
             throw new RuntimeException("Failed to load ImageAnnotationPane from fxml", e);
@@ -117,12 +158,24 @@ public class ImageAnnotationPaneController {
     }
 
 
-
+    /**
+     * @return A read-only view of the LayerControllers list
+     */
+    public List<LayerController> getLayerControllers() {
+        return layerControllers;
+    }
 
     public BorderPane getRoot() {
         return root;
     }
 
+    /**
+     * The center pane of the root (BorderPane). It's where the image is displayed
+     * @return
+     */
+    public StackPane getStackPane() {
+        return stackPane;
+    }
 
     public void setSelectedAnnotation(final Annotation annotation) {
         comboBox.getItems().clear();
@@ -144,9 +197,10 @@ public class ImageAnnotationPaneController {
                 image.getUrl().toExternalForm(),
                 false);
         imageView.setImage(fxImage);
-
-
+        data.setImage(image);
     }
 
-
+    public Data getData() {
+        return data;
+    }
 }

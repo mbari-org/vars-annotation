@@ -74,4 +74,5 @@ public class PointLayerNode extends LayerNode<PointLayerNode.Data, Circle> {
         }
         return opt;
     }
+
 }

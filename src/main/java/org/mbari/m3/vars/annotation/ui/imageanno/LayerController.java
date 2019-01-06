@@ -1,9 +1,14 @@
 package org.mbari.m3.vars.annotation.ui.imageanno;
 
 import com.jfoenix.controls.JFXToggleNode;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
+import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -41,12 +46,8 @@ public interface LayerController {
      */
     void setDisable(boolean disable);
 
-    /**
-     *
-     * @return The graphic to be displayed on the toggle button that
-     *  enables/disables this layer controller
-     */
-    Text getToggleGraphic();
+
+    ToggleButton getEnableButton();
 
     /**
      *
@@ -73,24 +74,28 @@ public interface LayerController {
     void draw(ImageViewExt imageViewExt, List<Association> associations, Color color);
 
 
+
     /**
-     * Registers this controller with the master {@link ImageAnnotationPaneController}
-     * @param controller The master controller
-     * @param toggleGroup Used to associated the toogle button that enables/disables this
-     *                    layer.
+     * Convert a mouse events coordinates to the actual image coordinates. The mouse event
+     * is assumed to originate in the stackpane or one of it's anchorpane layers
+     * @param event
+     * @param imageViewExt
+     * @return
      */
-    default void register(ImageAnnotationPaneController controller, ToggleGroup toggleGroup) {
-        controller.layerControllers.add(this);
-        ToggleButton toggleButton = new JFXToggleNode();
-        toggleButton.setToggleGroup(toggleGroup);
-        toggleButton.setGraphic(getToggleGraphic());
-        toggleButton.selectedProperty().addListener((obs, oldv, newv) -> {
-            setDisable(!newv);
-            if (newv) {
-                controller.getRoot().setBottom(getToolBar());
-            }
-        });
-        controller.getToolbar().getItems().add(toggleButton);
+    static Point2D toImageCoordinates(MouseEvent event, ImageViewExt imageViewExt) {
+        ImageView imageView = imageViewExt.getImageView();
+        Bounds bounds = imageView.getBoundsInParent();
+        double scale = imageViewExt.computeActualScale();
+        // ImageView coords
+        double viewX = event.getX() - bounds.getMinX();
+        double viewY = event.getY() - bounds.getMinY();
+
+        // Annotation coords (in original image coordinate space)
+        double annoX = viewX / scale;
+        double annoY = viewY / scale;
+
+        return new Point2D(annoX, annoY);
     }
+
 
 }

@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation.ui.imageanno;
 
 import javafx.beans.value.ChangeListener;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -68,7 +69,7 @@ public class BoundingBoxLayerController implements LayerController {
 
 
     @Override
-    public Text getToggleGraphic() {
+    public ToggleButton getEnableButton() {
         return null;
     }
 }
