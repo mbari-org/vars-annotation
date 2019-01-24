@@ -29,6 +29,9 @@ public class AppDemo extends App {
      * @param args
      */
     public static void main(String[] args) {
+
+        System.getProperties().setProperty("user.timezone", "UTC");
+
         Logger log = LoggerFactory.getLogger(AppDemo.class);
         Initializer.getToolBox()
                 .getEventBus()

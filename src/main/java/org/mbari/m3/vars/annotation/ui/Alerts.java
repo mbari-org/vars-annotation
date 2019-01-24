@@ -38,8 +38,7 @@ public class Alerts {
         if (msg instanceof ShowFatalErrorAlert) {
             showFatalErrorAlert((ShowFatalErrorAlert) msg);
         }
-        else if (msg instanceof ShowNonfatalErrorAlert ||
-                msg instanceof ShowExceptionAlert) {
+        else if (msg instanceof ShowExceptionAlert) {
             showExceptionAlert((ShowExceptionAlert) msg);
         }
         else if (msg instanceof ShowWarningAlert) {
