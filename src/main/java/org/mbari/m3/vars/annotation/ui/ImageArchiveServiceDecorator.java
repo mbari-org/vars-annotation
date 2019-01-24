@@ -312,7 +312,8 @@ public class ImageArchiveServiceDecorator {
     public static File buildLocalImageFile(Media media, String ext) {
         try {
             String deploymentKey = media.getVideoName() + "-" + media.getVideoReferenceUuid();
-            String filename = deploymentKey + "-" + Instant.now() + ext;
+            String filename = deploymentKey + "--" + timeFormat.format(Instant.now()) + ext;
+            //String filename = deploymentKey + "-" + Instant.now() + ext;
             Path path = Paths.get(Initializer.getImageDirectory().toString(),
                 filename);
             return path.toFile();

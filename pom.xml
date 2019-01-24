@@ -183,7 +183,7 @@
     <dependency>
       <groupId>org.mbari.vars</groupId>
       <artifactId>vars-avfoundation</artifactId>
-      <version>2.2.1</version>
+      <version>2.2.2</version>
     </dependency>
     <dependency>
       <groupId>org.mbari.m3</groupId>

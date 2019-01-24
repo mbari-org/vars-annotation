@@ -34,6 +34,7 @@ public class AVFImageCaptureService implements SelectableImageCaptureService {
     private AVFImageCapture imageCapture;
     public static AVFImageCaptureService imageCaptureService;
     private String currentDevice = "";
+    private volatile boolean capturing = false;
 
     protected AVFImageCaptureService() {
         imageCapture = new AVFImageCapture();
@@ -43,14 +44,40 @@ public class AVFImageCaptureService implements SelectableImageCaptureService {
         return Arrays.asList(imageCapture.videoDevicesAsStrings());
     }
 
+
     public void setDevice(String device) {
-        currentDevice = device;
+        if (device == null || !device.equals(currentDevice)) {
+            currentDevice = device;
+            stop();
+        }
+        start();
     }
+
+    private void stop() {
+        if (capturing) {
+            try {
+                imageCapture.stopSession();
+            }
+            catch (UnsatisfiedLinkError | Exception e) {
+                log.error("An error occurred while stopping the AVFoundation image capture", e);
+            }
+        }
+        capturing = false;
+    }
+
+    private void start() {
+        if (currentDevice != null && !capturing) {
+            imageCapture.startSessionWithNamedDevice(currentDevice);
+            capturing = true;
+        }
+    }
+
+
 
     @Override
     public Framegrab capture(File file) {
         Framegrab framegrab = new Framegrab();
-        imageCapture.startSessionWithNamedDevice(currentDevice);
+        start();
         Optional<Image> imageOpt = imageCapture.capture(file, Duration.ofSeconds(10));
         if (imageOpt.isPresent()) {
             framegrab.setImage(imageOpt.get());
@@ -82,18 +109,17 @@ public class AVFImageCaptureService implements SelectableImageCaptureService {
             log.warn("Failed to capture image from device named '" +
                     currentDevice + "'");
         }
-        imageCapture.stopSession();
         return framegrab;
     }
 
     @Override
     public void dispose() {
-//        try {
-//            imageCapture.stopSession();
-//        }
-//        catch (UnsatisfiedLinkError | Exception e) {
-//            log.error("An error occurred while stopping the AVFoundation image capture", e);
-//        }
+        try {
+            stop();
+        }
+        catch (UnsatisfiedLinkError | Exception e) {
+            log.error("An error occurred while stopping the AVFoundation image capture", e);
+        }
     }
 
 
