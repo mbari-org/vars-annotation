@@ -48,6 +48,10 @@ public class ImageAnnotationPaneController {
         imageViewExt = new ImageViewExt(imageView);
     }
 
+    public StackPane getStackPane() {
+        return stackPane;
+    }
+
     public static final ImageAnnotationPaneController newInstance(UIToolBox toolBox) {
         final ResourceBundle i18n = toolBox.getI18nBundle();
         FXMLLoader loader = new FXMLLoader(ImageAnnotationPaneController.class.getResource("/fxml/ImageAnnotationPane.fxml"), i18n);
@@ -55,7 +59,7 @@ public class ImageAnnotationPaneController {
             loader.load();
             ImageAnnotationPaneController controller = loader.getController();
             controller.layerControllers
-                    .addAll(new PointLayerController(toolBox));
+                    .addAll(new PointLayerController(toolBox, controller.getStackPane()));
             return controller;
         }
         catch (Exception e) {

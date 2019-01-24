@@ -51,6 +51,7 @@ public class PointLayerController implements  LayerController {
     }
 
     public Shape draw(ImageViewExt imageViewExt) {
-        imageViewExt.getImageView()
+        imageViewExt.getImageView();
+        return null;
     }
 }

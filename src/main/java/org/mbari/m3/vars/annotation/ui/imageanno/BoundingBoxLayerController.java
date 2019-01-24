@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation.ui.imageanno;
 
 import javafx.beans.value.ChangeListener;
+import javafx.scene.control.ToolBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Shape;
 import org.mbari.m3.vars.annotation.model.Annotation;
@@ -38,5 +39,10 @@ public class BoundingBoxLayerController implements LayerController {
     @Override
     public void select(Annotation annotation, Image image) {
 
+    }
+
+    @Override
+    public ToolBar getToolBar() {
+        return null;
     }
 }

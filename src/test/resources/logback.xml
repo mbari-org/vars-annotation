@@ -14,11 +14,12 @@
     </appender>
 
     <logger name="java.util.Date" level="WARN" />
-    <logger name="org.mbari.m3.vars.annotation.services" level="DEBUG" />
+    <logger name="org.mbari.m3.vars.annotation.services" level="INFO" />
     <logger name="org.mbari.m3.vars.annotation.services.varskbserver.v1.KBWebServiceFactory" level="WARN" />
     <logger name="org.mbari.m3.vars.annotation.services.varsuserserver.v1.PrefWebServiceFactory" level="WARN" />
     <logger name="org.mbari.m3.vars.annotation.util.ActiveAppPinger" level="WARN" />
     <logger name="org.mbari.m3.vars.annotation.util.WebPreferences" level="WARN" />
+    <logger name="org.mbari.vcr4j" level="INFO" />
     <logger name="org.mbari.vcr4j.sharktopoda.decorators.FramecaptureDecorator" level="DEBUG" />
     <logger name="org.mbari.vcr4j.sharktopoda.SharktopodaResponseParser" level="WARN" />
     <logger name="org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO" level="WARN" />

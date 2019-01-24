@@ -56,6 +56,7 @@ public class AVFImageCaptureService implements SelectableImageCaptureService {
     private void stop() {
         if (capturing) {
             try {
+                log.info("Stopping capture from " + currentDevice);
                 imageCapture.stopSession();
             }
             catch (UnsatisfiedLinkError | Exception e) {
@@ -67,6 +68,7 @@ public class AVFImageCaptureService implements SelectableImageCaptureService {
 
     private void start() {
         if (currentDevice != null && !capturing) {
+            log.info("Starting capture using " + currentDevice);
             imageCapture.startSessionWithNamedDevice(currentDevice);
             capturing = true;
         }
@@ -114,12 +116,12 @@ public class AVFImageCaptureService implements SelectableImageCaptureService {
 
     @Override
     public void dispose() {
-        try {
-            stop();
-        }
-        catch (UnsatisfiedLinkError | Exception e) {
-            log.error("An error occurred while stopping the AVFoundation image capture", e);
-        }
+//        try {
+//            stop();
+//        }
+//        catch (UnsatisfiedLinkError | Exception e) {
+//            log.error("An error occurred while stopping the AVFoundation image capture", e);
+//        }
     }
 
 
