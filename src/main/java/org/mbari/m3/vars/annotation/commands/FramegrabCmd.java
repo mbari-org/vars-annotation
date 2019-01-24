@@ -36,7 +36,7 @@ public class FramegrabCmd implements Command {
     private volatile Annotation annotationRef;
     private volatile Image pngImageRef;
     private volatile Image jpgImageRef;
-    private static final Logger log = LoggerFactory.getLogger(FramegrabCmd.class);
+    //private static final Logger log = LoggerFactory.getLogger(FramegrabCmd.class);
 
     private class CreatedData {
         final Annotation annotation;
@@ -146,7 +146,7 @@ public class FramegrabCmd implements Command {
         Optional<Framegrab> framegrabOpt = capture(imageFile, media, mediaPlayer);
 
         if (!framegrabOpt.isPresent()) {
-            log.warn("No framegrab was captured for {} at {}", media.getVideoName(), media.getUri());
+            //log.warn("No framegrab was captured for {} at {}", media.getVideoName(), media.getUri());
             ResourceBundle i18n = toolBox.getI18nBundle();
             String content = i18n.getString("commands.framecapture.nomedia.content") +
                     imageFile.getAbsolutePath();
@@ -155,13 +155,12 @@ public class FramegrabCmd implements Command {
         else {
 
             Framegrab framegrab = framegrabOpt.get();
-            log.info("Captured image at {}", framegrab.getVideoIndex());
+            //log.info("Captured image at {}", framegrab.getVideoIndex());
 
             ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
             // -- 1. Upload image to server and register in annotation service
             decorator.createImageFromExistingImagePath(media, framegrab, imageFile.toPath())
                     .thenCompose(pngOpt -> {
-                        log.info("---- created image");
                         if (pngOpt.isPresent()) {
                             CreatedImageData createdImageData = pngOpt.get();
                             pngImageRef = createdImageData.getImage();
