@@ -21,8 +21,11 @@ package org.mbari.m3.vars.annotation;
 import com.google.common.collect.Lists;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 
+import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.mbari.m3.vars.annotation.commands.CommandManager;
 import org.mbari.m3.vars.annotation.util.ActiveAppBeacon;
@@ -76,9 +79,12 @@ public class App extends Application {
     public void start(final Stage primaryStage) throws Exception {
 
         if (ActiveAppPinger.pingAll(BEACON_PORTS, BEACON_MESSAGE)) {
-            // TODO alert params should be in i18n prop file
+            // Must show stage before showing alert
+            primaryStage.setScene(new Scene(new Label("VARS ...")));
+            primaryStage.show();
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.initOwner(primaryStage);
+            // TODO alert params should be in i18n prop file
             alert.setTitle("VARS Information");
             alert.setHeaderText("VARS is already running");
             alert.setContentText("An instance of VARS is already running. Exiting ...");
@@ -88,9 +94,12 @@ public class App extends Application {
             System.exit(0);
         }
         else if (Initializer.getSettingsDirectory() == null) {
-            // TODO alert params should be in i18n prop file
+            // Must show stage before showing alert
+            primaryStage.setScene(new Scene(new Label("VARS ...")));
+            primaryStage.show();
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.initOwner(primaryStage);
+            // TODO alert params should be in i18n prop file
             alert.setTitle("VARS Error");
             alert.setHeaderText("Unable to create a settings directory ");
             alert.setContentText("VARS failed to create a directory for writing temporary information.");

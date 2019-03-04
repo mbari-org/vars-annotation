@@ -48,6 +48,11 @@ public class BoundingBoxLayerController implements LayerController {
     }
 
     @Override
+    public void select(Annotation annotation, Image image) {
+
+    }
+
+    @Override
     public ToolBar getToolBar() {
         return null;
     }

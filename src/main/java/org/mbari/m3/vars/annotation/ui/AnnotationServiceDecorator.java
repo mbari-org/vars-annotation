@@ -42,10 +42,16 @@ import java.util.stream.Collectors;
  */
 public class AnnotationServiceDecorator {
 
+    private enum PagingStyle {
+        PARALLEL,
+        SEQUENTIAL
+    }
+
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final UIToolBox toolBox;
     private final int chunkSize;
     private final Duration chunkTimeout;
+    private PagingStyle pagingStyle;
 
     // When loading concurrent annotations we need to avoid swamping the annosaurus
     private final ExecutorService pagingExecutor = Executors.newSingleThreadExecutor();
@@ -54,6 +60,26 @@ public class AnnotationServiceDecorator {
         this.toolBox = toolBox;
         this.chunkSize = toolBox.getConfig().getInt("annotation.service.chunk.size");
         this.chunkTimeout = toolBox.getConfig().getDuration("annotation.service.timeout");
+
+        /*
+         When deploed on infrastructures with multiple annosaurus servers we
+         can do a load in parallel as we are less likely to overwhelm the servers.
+
+         Otherwise, it's best to load pages sequentially
+         */
+        try {
+            String p = toolBox.getConfig().getString("annotation.service.paging");
+            if (p.startsWith("par")) {
+                pagingStyle = PagingStyle.PARALLEL;
+            }
+            else {
+                pagingStyle = PagingStyle.SEQUENTIAL;
+            }
+        }
+        catch (Exception e) {
+            log.warn("Failed to read 'annotation.service.paging' from config file.", e);
+            pagingStyle = PagingStyle.SEQUENTIAL;
+        }
     }
 
     public void findAnnotations(UUID videoReferenceUuid) {
@@ -110,6 +136,34 @@ public class AnnotationServiceDecorator {
                                                         Media masterMedia,
                                                         ExecutorService executor) {
 
+        CompletableFuture<Void> cf;
+        switch (pagingStyle) {
+            case PARALLEL: cf = loadAnnotationPagesPar(loadedAnnotationCount,
+                    totalAnnotationCount,
+                    ac,
+                    sendNotifications,
+                    masterMedia,
+                    executor);
+                 break;
+            default: cf = loadAnnotationPagesSeq(loadedAnnotationCount,
+                    totalAnnotationCount,
+                    ac,
+                    sendNotifications,
+                    masterMedia,
+                    executor);
+                break;
+        }
+        return cf;
+
+    }
+
+    private CompletableFuture<Void> loadAnnotationPagesSeq(AtomicInteger loadedAnnotationCount,
+                                                        int totalAnnotationCount,
+                                                        AnnotationCount ac,
+                                                        boolean sendNotifications,
+                                                        Media masterMedia,
+                                                        ExecutorService executor) {
+
         CompletableFuture<Void> cf = new CompletableFuture<>();
 
         Runnable task = () -> {
@@ -141,6 +195,33 @@ public class AnnotationServiceDecorator {
         executor.submit(task);
 
         return cf;
+
+    }
+
+    private CompletableFuture<Void> loadAnnotationPagesPar(AtomicInteger loadedAnnotationCount,
+                                                        int totalAnnotationCount,
+                                                        AnnotationCount ac,
+                                                        boolean sendNotifications,
+                                                        Media masterMedia,
+                                                        ExecutorService executor) {
+
+
+        int n = (int) Math.ceil(ac.getCount() / (double) chunkSize);
+        CompletableFuture[] futures = new CompletableFuture[n];
+        for (int i = 0; i < n; i++) {
+            long offset = i * chunkSize;
+            long limit = chunkSize;
+            CompletableFuture<Void> future = loadAnnotationPage(ac.getVideoReferenceUuid(),
+                    limit,
+                    offset,
+                    sendNotifications,
+                    totalAnnotationCount,
+                    loadedAnnotationCount,
+                    masterMedia);
+            futures[i] = future;
+        }
+
+        return CompletableFuture.allOf(futures);
 
     }
 
