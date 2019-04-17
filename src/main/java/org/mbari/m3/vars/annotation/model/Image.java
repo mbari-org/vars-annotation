@@ -26,6 +26,34 @@ public class Image implements ImagedMoment, Cloneable {
     private Duration elapsedTime;
     private Instant recordedTimestamp;
 
+    public Image() {}
+
+    public Image(ImagedMoment im, ImageReference ir) {
+        imageReferenceUuid = ir.getUuid();
+        format = ir.getFormat();
+        url = ir.getUrl();
+        description = ir.getDescription();
+        videoReferenceUuid = im.getVideoReferenceUuid();
+        imagedMomentUuid = im.getImagedMomentUuid();
+        timecode = im.getTimecode();
+        elapsedTime = im.getElapsedTime();
+        recordedTimestamp = im.getRecordedTimestamp();
+    }
+
+    public Image(Image i) {
+        imageReferenceUuid = i.getImageReferenceUuid();
+        format = i.getFormat();
+        width = i.getWidth();
+        height = i.getHeight();
+        url = i.getUrl();
+        description = i.getDescription();
+        videoReferenceUuid = i.getVideoReferenceUuid();
+        imagedMomentUuid = i.getImagedMomentUuid();
+        timecode = i.getTimecode();
+        elapsedTime = i.getElapsedTime();
+        recordedTimestamp = i.getRecordedTimestamp();
+    }
+
     public UUID getImageReferenceUuid() {
         return imageReferenceUuid;
     }

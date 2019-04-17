@@ -13,14 +13,11 @@ import org.mbari.m3.vars.annotation.messages.HideProgress;
 import org.mbari.m3.vars.annotation.messages.SetProgress;
 import org.mbari.m3.vars.annotation.messages.ShowNonfatalErrorAlert;
 import org.mbari.m3.vars.annotation.messages.ShowProgress;
-import org.mbari.m3.vars.annotation.model.Annotation;
-import org.mbari.m3.vars.annotation.model.AnnotationCount;
-import org.mbari.m3.vars.annotation.model.Association;
-import org.mbari.m3.vars.annotation.model.Image;
-import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.m3.vars.annotation.util.AsyncUtils;
+import org.mbari.vcr4j.VideoIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -367,6 +364,24 @@ public class AnnotationServiceDecorator {
         uuids.add(observationUuid);
         refreshAnnotationsView(uuids);
     }
+
+    public void refreshAnnotationsViewByIndices(Set<VideoIndex> videoIndices) {
+        List<Annotation> annotations = new ArrayList<>(toolBox.getData().getAnnotations());
+        Set<VideoIndex> annotationIndices = annotations.stream()
+                .map(ImagedMoment::toVideoIndex)
+                .collect(Collectors.toSet());
+        annotationIndices.retainAll(videoIndices);
+        Set<UUID> observationUuids = annotations.stream()
+                .filter(a -> {
+                    VideoIndex vi = a.toVideoIndex();
+                    return annotationIndices.contains(vi);
+                })
+                .map(Annotation::getObservationUuid)
+                .collect(Collectors.toSet());
+        refreshAnnotationsView(observationUuids);
+    }
+
+
 
     /**
      * Finds all the reference numbers used in a video sequence

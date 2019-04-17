@@ -458,7 +458,8 @@ public class BulkEditorPaneController {
     private void moveAnnotations() {
         final List<Annotation> annosCopy = new ArrayList<>(selectedAnnotations);
         Optional<Media> opt = selectMediaDialog.showAndWait();
-        opt.ifPresent(media -> eventBus.send(new MoveAnnotationsCmd(annosCopy, media)));
+        //opt.ifPresent(media -> eventBus.send(new MoveAnnotationsCmd(annosCopy, media)));
+        opt.ifPresent(media -> eventBus.send(new MoveAnnotationsAndImagesCmd(annosCopy, media)));
     }
 
     private void renameAnnotations() {

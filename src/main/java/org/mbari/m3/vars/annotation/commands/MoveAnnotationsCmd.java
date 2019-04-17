@@ -18,21 +18,26 @@ public class MoveAnnotationsCmd extends UpdateAnnotationsCmd {
 
     public MoveAnnotationsCmd(List<Annotation> originalAnnotations, Media media) {
         super(originalAnnotations, originalAnnotations.stream()
-            .map(Annotation::new)
-            .peek(a -> {
-                if (!a.getVideoReferenceUuid().equals(media.getVideoReferenceUuid())) {
-                    a.setVideoReferenceUuid(media.getVideoReferenceUuid());
-                    // Update recordedTimestamp to match the new media.
-                    if (a.getElapsedTime() != null && media.getStartTimestamp() != null) {
-                        Instant recordedTimestamp = media.getStartTimestamp().plus(a.getElapsedTime());
-                        a.setRecordedTimestamp(recordedTimestamp);
-                    } else {
-                        a.setRecordedTimestamp(null);
-                    }
-                }
-            })
-            .collect(Collectors.toList()));
+                .filter(a -> !a.getVideoReferenceUuid().equals(media.getVideoReferenceUuid()))
+                .map(Annotation::new)
+                .peek(a -> update(a, media))
+                .collect(Collectors.toList()));
         this.media = media;
+    }
+
+    private static Annotation update(Annotation a, Media media) {
+        a.setVideoReferenceUuid(media.getVideoReferenceUuid());
+        // Adjust recordedTimestamp if elapsedTime and media.startTimestamp are present
+        if (a.getElapsedTime() != null) {
+            if (media.getStartTimestamp() != null) {
+                Instant recordedTimestamp = media.getStartTimestamp().plus(a.getElapsedTime());
+                a.setRecordedTimestamp(recordedTimestamp);
+            }
+            else {
+                a.setRecordedTimestamp(null);
+            }
+        }
+        return a;
     }
 
     @Override

@@ -18,8 +18,6 @@ import org.mbari.m3.vars.annotation.ui.shared.AnnotationTableViewFactory;
 import org.mbari.m3.vars.annotation.util.AsyncUtils;
 import org.mbari.m3.vars.annotation.util.JFXUtilities;
 import org.mbari.m3.vars.annotation.util.ListUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.net.URI;
@@ -54,7 +52,8 @@ public class AnnotationTableController {
         EventBus mainEventBus = toolBox.getEventBus();
         ArrayList<Class<? extends Command>> commandsToForward = Lists.newArrayList(ChangeGroupCmd.class,
                 ChangeActivityCmd.class,
-                MoveAnnotationsCmd.class,
+                //MoveAnnotationsCmd.class,
+                MoveAnnotationsAndImagesCmd.class,
                 ChangeConceptCmd.class,
                 DeleteAssociationsCmd.class);
         for (Class<? extends Command> clazz : commandsToForward) {
