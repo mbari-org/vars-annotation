@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -93,11 +94,16 @@ public class MoveAnnotationsAndImagesCmd implements Command {
     }
 
     private void refreshView(UIToolBox toolBox, List<Annotation> annotations) {
-        Set<VideoIndex> indices = annotations.stream()
-                .map(ImagedMoment::toVideoIndex)
-                .collect(Collectors.toSet());
+//        Set<VideoIndex> indices = annotations.stream()
+//                .map(ImagedMoment::toVideoIndex)
+//                .collect(Collectors.toSet());
         AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
-        asd.refreshAnnotationsViewByIndices(indices);
+//        asd.refreshAnnotationsViewByIndices(indices);
+
+        Set<UUID> observationUuids = annotations.stream()
+                .map(Annotation::getObservationUuid)
+                .collect(Collectors.toSet());
+        asd.refreshAnnotationsView(observationUuids);
     }
 
     private void updateAnnotations(UIToolBox toolBox, List<Annotation> annotations)

@@ -57,7 +57,8 @@
     <mbarix4j.version>1.10.0</mbarix4j.version>
     <medusa.version>8.3</medusa.version>
     <nativelib.version>2.3.4</nativelib.version>
-    <okhttp3log.version>3.14.1</okhttp3log.version>
+    <!-- version after 3.12.2 throw exceptions with retrofit version of okhttp3 -->
+    <okhttp3log.version>3.12.2</okhttp3log.version>
     <retrofit.version>2.5.0</retrofit.version>
     <rxjava.version>2.2.8</rxjava.version>
     <rxjavafx.version>2.2.2</rxjavafx.version>
