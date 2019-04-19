@@ -31,7 +31,6 @@ import java.util.prefs.Preferences;
 public class ControlsPaneController {
 
     private SplitPane root;
-    private Pane mediaControlsPane;
     private Pane emptyControlsPane;
     private RowEditorController rowEditorController;
     private AssocButtonPaneController assocBtnPane;
