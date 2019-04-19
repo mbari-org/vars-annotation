@@ -66,84 +66,86 @@ public class AppController {
             scene.getStylesheets()
                     .addAll(toolBox.getStylesheets());
 
-            KeyCombination.Modifier osModifier = SystemUtilities.isMacOS() ?
-                    KeyCombination.META_DOWN : KeyCombination.CONTROL_DOWN;
+            KeyMapping.apply(toolBox, scene, paneController);
 
-            KeyCodeCombination spaceCombo = new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_DOWN);
-            KeyCodeCombination downCombo = new KeyCodeCombination(KeyCode.DOWN, osModifier);
-            KeyCodeCombination upCombo = new KeyCodeCombination(KeyCode.UP, osModifier);
-            KeyCodeCombination nCombo = new KeyCodeCombination(KeyCode.N, osModifier);
-            KeyCodeCombination cCombo = new KeyCodeCombination(KeyCode.G, osModifier);
-            KeyCodeCombination tCombo = new KeyCodeCombination(KeyCode.T, osModifier);
-            KeyCodeCombination fCombo = new KeyCodeCombination(KeyCode.F, osModifier);
-            KeyCodeCombination deleteCombo = new KeyCodeCombination(KeyCode.DELETE, osModifier);
-            KeyCodeCombination undoCombo = new KeyCodeCombination(KeyCode.Z, osModifier);
-            KeyCodeCombination redoCombo = new KeyCodeCombination(KeyCode.Z, osModifier, KeyCombination.SHIFT_DOWN);
-
-            // --- Configure global shortcuts
-            scene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-
-                if (spaceCombo.match(e)) {
-                    MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
-                    if (mediaPlayer != null) {
-                        mediaPlayer.requestIsPlaying()
-                                .thenAccept(playing -> {
-                                    if (playing) {
-                                        mediaPlayer.stop();
-                                    } else {
-                                        mediaPlayer.play();
-                                    }
-                                });
-                    }
-                    e.consume();
-                }
-                else if (downCombo.match(e)) {
-                    TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
-                            .getTableView()
-                            .getSelectionModel();
-
-                    int idx = selectionModel.getSelectedIndex();
-                    selectionModel.clearSelection();
-                    selectionModel.select(idx + 1);
-                    e.consume();
-                }
-                else if (upCombo.match(e)) {
-                    TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
-                            .getTableView()
-                            .getSelectionModel();
-
-                    int idx = selectionModel.getSelectedIndex();
-                    selectionModel.clearSelection();
-                    selectionModel.select(idx - 1);
-                    e.consume();
-                }
-                else if (nCombo.match(e)) {
-                    toolBox.getEventBus().send(new NewAnnotationMsg());
-                    e.consume();
-                }
-                else if(cCombo.match(e)) {
-                    toolBox.getEventBus().send(new CopyAnnotationMsg());
-                    e.consume();
-                }
-                else if (tCombo.match(e)) {
-                    toolBox.getEventBus().send(new DuplicateAnnotationMsg());
-                    e.consume();
-                }
-                else if (fCombo.match(e)) {
-                    toolBox.getEventBus().send(new FramecaptureMsg());
-                    e.consume();
-                }
-                else if (deleteCombo.match(e)) {
-                    toolBox.getEventBus().send(new DeleteAnnotationsMsg());
-                    e.consume();
-                }
-                else if (undoCombo.match(e)) {
-                    toolBox.getEventBus().send(new UndoMsg());
-                }
-                else if (redoCombo.match(e)) {
-                    toolBox.getEventBus().send(new RedoMsg());
-                }
-            });
+//            KeyCombination.Modifier osModifier = SystemUtilities.isMacOS() ?
+//                    KeyCombination.META_DOWN : KeyCombination.CONTROL_DOWN;
+//
+//            KeyCodeCombination spaceCombo = new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_DOWN);
+//            KeyCodeCombination downCombo = new KeyCodeCombination(KeyCode.DOWN, osModifier);
+//            KeyCodeCombination upCombo = new KeyCodeCombination(KeyCode.UP, osModifier);
+//            KeyCodeCombination nCombo = new KeyCodeCombination(KeyCode.N, osModifier);
+//            KeyCodeCombination cCombo = new KeyCodeCombination(KeyCode.G, osModifier);
+//            KeyCodeCombination tCombo = new KeyCodeCombination(KeyCode.T, osModifier);
+//            KeyCodeCombination fCombo = new KeyCodeCombination(KeyCode.F, osModifier);
+//            KeyCodeCombination deleteCombo = new KeyCodeCombination(KeyCode.DELETE, osModifier);
+//            KeyCodeCombination undoCombo = new KeyCodeCombination(KeyCode.Z, osModifier);
+//            KeyCodeCombination redoCombo = new KeyCodeCombination(KeyCode.Z, osModifier, KeyCombination.SHIFT_DOWN);
+//
+//            // --- Configure global shortcuts
+//            scene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+//
+//                if (spaceCombo.match(e)) {
+//                    MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
+//                    if (mediaPlayer != null) {
+//                        mediaPlayer.requestIsPlaying()
+//                                .thenAccept(playing -> {
+//                                    if (playing) {
+//                                        mediaPlayer.stop();
+//                                    } else {
+//                                        mediaPlayer.play();
+//                                    }
+//                                });
+//                    }
+//                    e.consume();
+//                }
+//                else if (downCombo.match(e)) {
+//                    TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
+//                            .getTableView()
+//                            .getSelectionModel();
+//
+//                    int idx = selectionModel.getSelectedIndex();
+//                    selectionModel.clearSelection();
+//                    selectionModel.select(idx + 1);
+//                    e.consume();
+//                }
+//                else if (upCombo.match(e)) {
+//                    TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
+//                            .getTableView()
+//                            .getSelectionModel();
+//
+//                    int idx = selectionModel.getSelectedIndex();
+//                    selectionModel.clearSelection();
+//                    selectionModel.select(idx - 1);
+//                    e.consume();
+//                }
+//                else if (nCombo.match(e)) {
+//                    toolBox.getEventBus().send(new NewAnnotationMsg());
+//                    e.consume();
+//                }
+//                else if(cCombo.match(e)) {
+//                    toolBox.getEventBus().send(new CopyAnnotationMsg());
+//                    e.consume();
+//                }
+//                else if (tCombo.match(e)) {
+//                    toolBox.getEventBus().send(new DuplicateAnnotationMsg());
+//                    e.consume();
+//                }
+//                else if (fCombo.match(e)) {
+//                    toolBox.getEventBus().send(new FramecaptureMsg());
+//                    e.consume();
+//                }
+//                else if (deleteCombo.match(e)) {
+//                    toolBox.getEventBus().send(new DeleteAnnotationsMsg());
+//                    e.consume();
+//                }
+//                else if (undoCombo.match(e)) {
+//                    toolBox.getEventBus().send(new UndoMsg());
+//                }
+//                else if (redoCombo.match(e)) {
+//                    toolBox.getEventBus().send(new RedoMsg());
+//                }
+//            });
         }
         return scene;
 
