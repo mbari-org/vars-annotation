@@ -72,6 +72,7 @@ public class MediaPlayer<S extends VideoState, E extends VideoError> extends org
         return future;
     }
 
+
     public Media getMedia() {
         return media;
     }

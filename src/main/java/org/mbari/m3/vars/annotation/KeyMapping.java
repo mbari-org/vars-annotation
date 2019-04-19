@@ -6,6 +6,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
+import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayerDecorator;
 import org.mbari.m3.vars.annotation.messages.*;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.ui.AppPaneController;
@@ -31,11 +32,13 @@ public class KeyMapping {
     private final AppPaneController paneController;
     private final EventBus eventBus;
     private final Duration jump = Duration.ofSeconds(1);
+    //private final MediaPlayerDecorator mediaPlayerDecorator;
 
-    private final KeyCombination.Modifier osModifier = SystemUtilities.isMacOS() ?
-            KeyCombination.META_DOWN : KeyCombination.CONTROL_DOWN;
+    private final KeyCombination.Modifier osModifier = KeyCombination.SHORTCUT_DOWN;
 
     private final KeyCombination.Modifier altModifier = KeyCombination.ALT_DOWN;
+
+    private final KeyCombination.Modifier shiftModifier = KeyCombination.SHIFT_DOWN;
 
 
     public KeyMapping(UIToolBox toolBox, Scene scene, AppPaneController paneController) {
@@ -43,6 +46,7 @@ public class KeyMapping {
         this.scene = scene;
         this.paneController = paneController;
         eventBus = toolBox.getEventBus();
+//        mediaPlayerDecorator = new MediaPlayerDecorator(toolBox);
         apply();
     }
 
@@ -64,21 +68,8 @@ public class KeyMapping {
     private Map<KeyCodeCombination, Runnable> buildBaseKeyMap() {
 
         Map<KeyCodeCombination, Runnable> map = new HashMap<>();
-        map.put(new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_DOWN), () -> {
-            MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
-            if (mediaPlayer != null) {
-                mediaPlayer.requestIsPlaying()
-                        .thenAccept(playing -> {
-                            if (playing) {
-                                mediaPlayer.stop();
-                            } else {
-                                mediaPlayer.play();
-                            }
-                        });
-            }
-        });
 
-        map.put(new KeyCodeCombination(KeyCode.DOWN, osModifier), () -> {
+        map.put(new KeyCodeCombination(KeyCode.DOWN, osModifier, shiftModifier), () -> {
             TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
                     .getTableView()
                     .getSelectionModel();
@@ -87,7 +78,7 @@ public class KeyMapping {
             selectionModel.select(idx + 1);
         });
 
-        map.put(new KeyCodeCombination(KeyCode.UP, osModifier), () -> {
+        map.put(new KeyCodeCombination(KeyCode.UP, osModifier, shiftModifier), () -> {
             TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
                     .getTableView()
                     .getSelectionModel();
@@ -136,11 +127,10 @@ public class KeyMapping {
                             }
                         }));
         map.put(new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_DOWN), playToggle);
-        map.put(new KeyCodeCombination(KeyCode.K, altModifier), playToggle);
-        map.put(new KeyCodeCombination(KeyCode.DOWN, altModifier), playToggle);
-        map.put(new KeyCodeCombination(KeyCode.M, altModifier), execute(MediaPlayer::stop));
+        map.put(new KeyCodeCombination(KeyCode.K, osModifier), playToggle);
+        map.put(new KeyCodeCombination(KeyCode.DOWN, osModifier), playToggle);
 
-        map.put(new KeyCodeCombination(KeyCode.U, altModifier),
+        map.put(new KeyCodeCombination(KeyCode.COMMA, osModifier),
                 execute(mp -> {
                     mp.stop();
                     mp.requestVideoIndex().thenAccept(videoIndex ->
@@ -148,7 +138,7 @@ public class KeyMapping {
                                     mp.seek(elapsedTime.minus(jump))
                                 ));
                 }));
-        map.put(new KeyCodeCombination(KeyCode.LEFT, altModifier),
+        map.put(new KeyCodeCombination(KeyCode.LEFT, osModifier),
                 execute(mp -> {
                     mp.stop();
                     mp.requestVideoIndex().thenAccept(videoIndex ->
@@ -157,7 +147,7 @@ public class KeyMapping {
                             ));
                 }));
 
-        map.put(new KeyCodeCombination(KeyCode.O, altModifier),
+        map.put(new KeyCodeCombination(KeyCode.PERIOD, osModifier),
                 execute(mp -> {
                     mp.stop();
                     mp.requestVideoIndex().thenAccept(videoIndex ->
@@ -165,45 +155,45 @@ public class KeyMapping {
                                     mp.seek(elapsedTime.plus(jump))
                             ));
                 }));
-        map.put(new KeyCodeCombination(KeyCode.RIGHT, altModifier),
-                execute(mp -> {
-                    mp.stop();
-                    mp.requestVideoIndex().thenAccept(videoIndex ->
-                            videoIndex.getElapsedTime().ifPresent(elapsedTime ->
-                                    mp.seek(elapsedTime.plus(jump))
-                            ));
-                }));
+
 
         double slowRate = 0.03;
-        map.put(new KeyCodeCombination(KeyCode.J, altModifier),
+        map.put(new KeyCodeCombination(KeyCode.J, osModifier),
                 execute((mp) -> mp.shuttle(-slowRate)));
 
-        map.put(new KeyCodeCombination(KeyCode.L, altModifier),
+        map.put(new KeyCodeCombination(KeyCode.L, osModifier),
+                execute((mp) -> mp.shuttle(slowRate)));
+        map.put(new KeyCodeCombination(KeyCode.RIGHT, osModifier),
                 execute((mp) -> mp.shuttle(slowRate)));
 
-        map.put(new KeyCodeCombination(KeyCode.I, altModifier),
+        map.put(new KeyCodeCombination(KeyCode.I, osModifier),
                 execute((mp) -> {
                     mp.stop();
                     mp.getVideoIO().send(SharkCommands.FRAMEADVANCE);
                 }));
-        map.put(new KeyCodeCombination(KeyCode.UP, altModifier),
+        map.put(new KeyCodeCombination(KeyCode.UP, osModifier),
                 execute((mp) -> {
                     mp.stop();
                     mp.getVideoIO().send(SharkCommands.FRAMEADVANCE);
                 }));
 
         double fastRate = 0.06;
-        map.put(new KeyCodeCombination(KeyCode.SEMICOLON, altModifier),
+        map.put(new KeyCodeCombination(KeyCode.SEMICOLON, osModifier),
                 execute((mp) -> mp.shuttle(fastRate)));
 
-        map.put(new KeyCodeCombination(KeyCode.H, altModifier),
-                execute((mp) -> mp.shuttle(-fastRate)));
+//        map.put(new KeyCodeCombination(KeyCode.H, osModifier),
+//                execute((mp) -> mp.shuttle(-fastRate)));
 
-        map.put(new KeyCodeCombination(KeyCode.LESS, altModifier),
-                execute(MediaPlayer::rewind));
+//        map.put(new KeyCodeCombination(KeyCode.LESS, osModifier),
+//                execute(MediaPlayer::rewind));
+//
+//        map.put(new KeyCodeCombination(KeyCode.GREATER, osModifier),
+//                execute(MediaPlayer::fastForward));
 
-        map.put(new KeyCodeCombination(KeyCode.GREATER, altModifier),
-                execute(MediaPlayer::fastForward));
+//        map.put(new KeyCodeCombination(KeyCode.Y, altModifier),
+//                mediaPlayerDecorator::seekPreviousAnnotation);
+//        map.put(new KeyCodeCombination(KeyCode.P, altModifier),
+//                mediaPlayerDecorator::seekPreviousAnnotation);
 
         return map;
 
@@ -212,6 +202,7 @@ public class KeyMapping {
     private Runnable execute(Consumer<MediaPlayer<? extends VideoState, ? extends VideoError>> fn) {
         return () -> Optional.ofNullable(toolBox.getMediaPlayer()).ifPresent(fn);
     }
+
 
 
 }
