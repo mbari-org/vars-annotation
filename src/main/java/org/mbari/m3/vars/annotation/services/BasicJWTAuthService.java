@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
+
 import java.io.IOException;
 import java.util.Optional;
 
@@ -15,7 +15,7 @@ import java.util.Optional;
  * use for authentication.)
  *
  * @author Brian Schlining
- * @since 2017-05-24T09:14:00
+ * @since 2017-05-24T09:14:00 
  */
 public class BasicJWTAuthService implements AuthService {
 

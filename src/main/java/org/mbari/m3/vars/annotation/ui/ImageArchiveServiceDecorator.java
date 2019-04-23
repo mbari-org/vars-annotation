@@ -311,8 +311,9 @@ public class ImageArchiveServiceDecorator {
 
     public static File buildLocalImageFile(Media media, String ext) {
         try {
-            String deploymentKey = media.getVideoName() + "-" + media.getVideoReferenceUuid();
-            String filename = deploymentKey + "-" + Instant.now() + ext;
+            String deploymentKey = media.getVideoName() + "--" + media.getVideoReferenceUuid();
+            String filename = deploymentKey + "--" + timeFormat.format(Instant.now()) + ext;
+            //String filename = deploymentKey + "-" + Instant.now() + ext;
             Path path = Paths.get(Initializer.getImageDirectory().toString(),
                 filename);
             return path.toFile();
@@ -333,19 +334,20 @@ public class ImageArchiveServiceDecorator {
         Optional<Duration> elapsedTime = videoIndex.getElapsedTime();
         Optional<Instant> timestamp = videoIndex.getTimestamp();
         String idx;
-        if (timestamp.isPresent()) {
-            idx = timeFormat.format(timestamp.get());
-        }
-        else if (timecode.isPresent()) {
+
+        if (timecode.isPresent()) {
             idx = timecode.get().toString().replace(':', '_');
         }
         else if (elapsedTime.isPresent()) {
             idx = elapsedTime.get().toMillis() + "";
         }
+        else if (timestamp.isPresent()) {
+            idx = timeFormat.format(timestamp.get());
+        }
         else {
             idx = timeFormat.format(Instant.now());
         }
-        return idx + "-" + videoReferenceUuid + ext;
+        return idx + "--" + videoReferenceUuid + ext;
     }
 
 }

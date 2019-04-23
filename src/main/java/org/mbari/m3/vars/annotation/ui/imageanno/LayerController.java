@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.ui.shared.ImageViewExt;
@@ -95,6 +96,25 @@ public interface LayerController {
         double annoY = viewY / scale;
 
         return new Point2D(annoX, annoY);
+    }
+
+    static Point2D toImageCoordinates(Point2D point, ImageViewExt imageViewExt) {
+        ImageView imageView = imageViewExt.getImageView();
+        Bounds bounds = imageView.getBoundsInParent();
+        double scale = imageViewExt.computeActualScale();
+        // ImageView coords
+        double viewX = point.getX() - bounds.getMinX();
+        double viewY = point.getY() - bounds.getMinY();
+
+        // Annotation coords (in original image coordinate space)
+        double annoX = viewX / scale;
+        double annoY = viewY / scale;
+
+        return new Point2D(annoX, annoY);
+    }
+
+    static Shape toImageCoordinates(Shape shape, ImageViewExt) {
+        Scale
     }
 
 
