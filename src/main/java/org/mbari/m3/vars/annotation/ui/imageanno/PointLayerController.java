@@ -65,6 +65,8 @@ public class PointLayerController extends AbstractLayerController {
         Image image = getData().getImage();
         String concept = getConceptComboBox().getSelectionModel().getSelectedItem();
         if (image != null && concept != null) {
+
+            // TODO show dialog to accept a comment
             PointLayerNode.Datum datum = new PointLayerNode.Datum(image, point);
             String linkValue = PointLayerNode.GSON.toJson(datum);
             Association association = new Association(LINK_NAME,
@@ -76,12 +78,6 @@ public class PointLayerController extends AbstractLayerController {
             getToolBox().getEventBus()
                     .send(command);
         }
-
-        // If there is a selected Image in Data do the following
-
-        System.out.println(point);
-        // TODO Create Annotations with point association
-
 
     }
 
@@ -174,16 +170,4 @@ public class PointLayerController extends AbstractLayerController {
         return disable;
     }
 
-
-//    @Override
-//    public void postRegister(ImageAnnotationPaneController controller) {
-//        getRoot().addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-//            Point2D point = LayerController.toImageCoordinates(event, controller.getImageViewExt());
-//            System.out.println(point);
-//            String linkValue =
-//            new Association(LINK_NAME,
-//                    Association.VALUE_SELF,
-//                    )
-//        });
-//    }
 }
