@@ -177,6 +177,7 @@ public class AnnotationServiceDecorator2 {
                             log.info("Loaded annotations for " + ac.getVideoReferenceUuid());
                             future.complete(null);
                         }) ;
+        runner.run();
 
         return future;
     }
