@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  * @author Brian Schlining
  * @since 2018-10-10T15:59:00
  */
-public class AnnotationServiceDecorator {
+public class AnnotationServiceDecorator2 {
 
     private enum PagingStyle {
         PARALLEL,
@@ -53,7 +53,7 @@ public class AnnotationServiceDecorator {
     // When loading concurrent annotations we need to avoid swamping the annosaurus
     private final ExecutorService pagingExecutor = Executors.newSingleThreadExecutor();
 
-    public AnnotationServiceDecorator(UIToolBox toolBox) {
+    public AnnotationServiceDecorator2(UIToolBox toolBox) {
         this.toolBox = toolBox;
         this.chunkSize = toolBox.getConfig().getInt("annotation.service.chunk.size");
         this.chunkTimeout = toolBox.getConfig().getDuration("annotation.service.timeout");
@@ -100,13 +100,19 @@ public class AnnotationServiceDecorator {
                                 true,
                                 null,
                                 executor)
-                            .whenComplete((v, ex) -> {
-                                eventBus.send(new HideProgress());
-                                if (ex != null) {
-                                    // Show error dialog
-                                    showFindAnnotationsError(videoReferenceUuid, ex);
-                                }
-                            }));
+                                .whenComplete((v, ex) -> {
+                                    eventBus.send(new HideProgress());
+                                    if (ex != null) {
+                                        // Show error dialog
+                                        showFindAnnotationsError(videoReferenceUuid, ex);
+                                    }
+                                }));
+    }
+
+    public void findAnnotations2(UUID videoReferenceUuid, ExecutorService executor) {
+        AnnotationService service = toolBox.getServices().getAnnotationService();
+        EventBus eventBus = toolBox.getEventBus();
+        AtomicInteger loadedAnnotationCount = new AtomicInteger(0);
     }
 
     private void showFindAnnotationsError(UUID videoReferenceUuid, Throwable ex) {
@@ -141,7 +147,7 @@ public class AnnotationServiceDecorator {
                     sendNotifications,
                     masterMedia,
                     executor);
-                 break;
+                break;
             default: cf = loadAnnotationPagesSeq(loadedAnnotationCount,
                     totalAnnotationCount,
                     ac,
@@ -155,11 +161,11 @@ public class AnnotationServiceDecorator {
     }
 
     private CompletableFuture<Void> loadAnnotationPagesSeq(AtomicInteger loadedAnnotationCount,
-                                                        int totalAnnotationCount,
-                                                        AnnotationCount ac,
-                                                        boolean sendNotifications,
-                                                        Media masterMedia,
-                                                        ExecutorService executor) {
+                                                           int totalAnnotationCount,
+                                                           AnnotationCount ac,
+                                                           boolean sendNotifications,
+                                                           Media masterMedia,
+                                                           ExecutorService executor) {
 
         CompletableFuture<Void> cf = new CompletableFuture<>();
 
@@ -196,11 +202,11 @@ public class AnnotationServiceDecorator {
     }
 
     private CompletableFuture<Void> loadAnnotationPagesPar(AtomicInteger loadedAnnotationCount,
-                                                        int totalAnnotationCount,
-                                                        AnnotationCount ac,
-                                                        boolean sendNotifications,
-                                                        Media masterMedia,
-                                                        ExecutorService executor) {
+                                                           int totalAnnotationCount,
+                                                           AnnotationCount ac,
+                                                           boolean sendNotifications,
+                                                           Media masterMedia,
+                                                           ExecutorService executor) {
 
 
         int n = (int) Math.ceil(ac.getCount() / (double) chunkSize);
