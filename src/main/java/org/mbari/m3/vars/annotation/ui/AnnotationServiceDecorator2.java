@@ -3,7 +3,10 @@ package org.mbari.m3.vars.annotation.ui;
 import com.google.common.collect.Lists;
 import com.typesafe.config.Config;
 
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 import org.mbari.m3.vars.annotation.EventBus;
+import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
@@ -16,6 +19,7 @@ import org.mbari.m3.vars.annotation.messages.ShowProgress;
 import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.MediaService;
+import org.mbari.m3.vars.annotation.services.RequestPager;
 import org.mbari.m3.vars.annotation.util.AsyncUtils;
 import org.mbari.vcr4j.VideoIndex;
 import org.slf4j.Logger;
@@ -129,6 +133,52 @@ public class AnnotationServiceDecorator2 {
 
         Exception e = ex instanceof Exception ? (Exception) ex : new RuntimeException(msg, ex);
         eventBus.send(new ShowNonfatalErrorAlert(title, header, msg, e));
+    }
+
+    private CompletableFuture<Void> loadAnnotationPages2(AtomicInteger loadedAnnotationCount,
+                                                        int totalAnnotationCount,
+                                                        AnnotationCount ac,
+                                                        boolean sendNotifications,
+                                                        Media masterMedia,
+                                                        ExecutorService executor) {
+
+        AnnotationService service = toolBox.getServices()
+                .getAnnotationService();
+
+        EventBus eventBus = toolBox.getEventBus();
+
+        Function<RequestPager.Page, List<Annotation>> function = (page) -> {
+            try {
+                return service.findAnnotations(ac.getVideoReferenceUuid(), page.getLimit(), page.getOffset())
+                        .get(chunkTimeout.toMillis(), TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                log.info("A page request failed.", e);
+                throw new RuntimeException(e);
+            }
+        };
+
+        CompletableFuture<Void> future = new CompletableFuture<>();
+
+        RequestPager<List<Annotation>> pager = new RequestPager<>(function, 2, 2);
+        RequestPager.Runner<List<Annotation>> runner = pager.build(ac.getCount(), chunkSize);
+        Observable<List<Annotation>> observable = runner.getObservable();
+        observable.subscribeOn(Schedulers.io())
+                .map(annotations -> masterMedia == null ? annotations : filterWithinMedia(annotations, masterMedia))
+                .subscribe(annotations -> updateUI(eventBus,
+                        annotations,
+                        sendNotifications,
+                        totalAnnotationCount,
+                        loadedAnnotationCount),
+                    e -> {
+                        /* TODO show alert */
+                        future.completeExceptionally(e);
+                    },
+                        () -> {
+                            log.info("Loaded annotations for " + ac.getVideoReferenceUuid());
+                            future.complete(null);
+                        }) ;
+
+        return future;
     }
 
 

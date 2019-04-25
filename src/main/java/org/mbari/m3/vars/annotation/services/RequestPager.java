@@ -6,15 +6,37 @@ import io.reactivex.subjects.Subject;
 import org.mbari.vcr4j.util.Preconditions;
 
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
+ * This class automates paing requests for you. The usage is:
+ * <pre>
+ *  // A function that accepts a page (limit offset) and fetches data using those
+ *  Function<RequestPager.Page, List<Integer> fn = (page) -> //some data list
+ *
+ *  // Instantiate pager with function, number of retries on a fn fail, and number of fetch threads
+ *  RequestPager<List<Integer>> pager = new RequestPager<>(fn, 2, 2)
+ *
+ *  int count = 1000; // The expected number of returns
+ *  int pageSize = 50; // The number of items requested per page
+ *  RequestPager.Runner<List<Annotation>> runner = pager.build(count, pageSize);
+ *
+ *  // Subscribe to the observable to handle page returns
+ *  Observable<List<Integer>> observable = runner.getObservable();
+ *  observable.subscribeOn(Schedulers.io())
+ *      .subscribe(xs -> System.out.println("Got a page of " + xs.size()),
+ *          e -> System.err.println("Got an error"),
+ *          () -> System.out.println("All done"));
+ *
+ *   // Start the fetch
+ *   runner.run();
+ *
+ * </pre>
+ *
  * @author Brian Schlining
  * @since 2019-04-24T14:28:00
  */
@@ -42,26 +64,72 @@ public class RequestPager<B> {
         private boolean hasRun = false;
         private final Subject<B> observable = PublishSubject.create();
         private final ExecutorService executor;
-        private final Deque<RequestWithRetry<B>> queue;
+        private final int numberSimultaneous;
+        private final BlockingQueue<RequestWithRetry<B>> queue;
+        private final int expectedCount;
+        private final AtomicInteger completedCount = new AtomicInteger(0);
 
 
         public Runner(List<RequestWithRetry<B>> requests, int numberSimultaneous) {
-            queue = new LinkedBlockingDeque<>(requests);
+            Preconditions.checkArgument(numberSimultaneous > 0, "Number of threads is less than 1");
+            queue = new LinkedBlockingQueue<>(requests);
+            expectedCount = requests.size();
+            this.numberSimultaneous = numberSimultaneous;
             executor = Executors.newFixedThreadPool(numberSimultaneous);
         }
 
         @Override
         public void run() {
             if (!hasRun) {
+                System.out.println("RUNNING");
                 hasRun = true;
-                // TODO Run queue
-
-
+                int n = Math.min(numberSimultaneous, queue.size());
+                for (int i = 0; i < n; i++) {
+                    next();
+                }
             }
-
         }
 
-        public Subject<B> getObservable() {
+        private void execute(RequestWithRetry<B> request) {
+            System.out.println("Running request");
+            Runnable runnable = () -> request.get()
+                    .subscribe(observable::onNext,
+                            this::doError,
+                            this::doCompleted);
+            executor.execute(runnable);
+        }
+
+        private void doError(Throwable e) {
+            executor.shutdownNow();
+            observable.onError(e);
+        }
+
+        private void doCompleted() {
+            int n = completedCount.incrementAndGet();
+            if (n == expectedCount) {
+                observable.onComplete();
+            }
+            else {
+                if (!queue.isEmpty()) {
+                    next();
+                }
+            }
+        }
+
+        private void next() {
+            System.out.println("NEXT");
+            if (!queue.isEmpty()) {
+                try {
+                    RequestWithRetry<B> request = queue.poll(100, TimeUnit.MILLISECONDS);
+                    execute(request);
+                }
+                catch (InterruptedException e) {
+                    observable.onError(e);
+                }
+            }
+        }
+
+        public Observable<B> getObservable() {
             return observable;
         }
     }
@@ -86,13 +154,14 @@ public class RequestPager<B> {
         this.threadCount = threadCount;
     }
 
-    public Observable<B> apply(int totalCount, int pageSize) {
+    public Runner<B> build(int totalCount, int pageSize) {
         List<RequestWithRetry<B>> requests = buildPageRequests(totalCount, pageSize);
-
+        System.out.println(requests.size() + " Pages");
+        return new Runner<>(requests, threadCount);
     }
 
     private List<RequestWithRetry<B>> buildPageRequests(int totalCount, int pageSize) {
-        int n = (int) Math.ceil(totalCount / pageSize);
+        int n = (int) Math.ceil(totalCount / (double) pageSize);
         long limit = pageSize;
         List<RequestWithRetry<B>> requests = new ArrayList<>();
         for (int i = 0; i < n; i++) {
@@ -103,17 +172,4 @@ public class RequestPager<B> {
         }
         return requests;
     }
-
-    private Observable<B> runPageRequests(List<RequestWithRetry<B>> requests) {
-        Subject<B> subject = PublishSubject.create();
-
-
-
-    }
-
-
-
-
-
-
 }

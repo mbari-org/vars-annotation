@@ -17,7 +17,7 @@ public class RequestWithRetry<T> implements Supplier<Observable<T>> {
 
     final Supplier<T> supplier;
     final int retries;
-    private Logger log  = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public RequestWithRetry(Supplier<T> supplier) {
         this(supplier, 0);
@@ -41,33 +41,26 @@ public class RequestWithRetry<T> implements Supplier<Observable<T>> {
      *  observable will complete with the last error thrown by the supplier.
      */
     public Observable<T> get() {
-        return Observable.defer(() -> Observable.just(execute()));
+        return Observable.defer(() -> Observable.just(execute(retries)));
     }
 
-    private T execute() {
-        T v = null;
-        boolean keepGoing = true;
-        int attempt = 0;
-        while (keepGoing) {
-            try {
-                v = supplier.get();
-                keepGoing = false;
-            } catch (Exception e) {
-                keepGoing = attempt < retries;
-                if (!keepGoing) {
-                    throw new RuntimeException(e);
-                }
-                else {
-                    attempt++;
-                }
+    private T execute(int remainingRetries) {
+        try {
+            T v =  supplier.get();
+            if (v == null) {
+                throw new NullPointerException("Supplier in RequestWithRetry return null.  This is not allowed");
+            }
+            return v;
+        } catch (Exception e) {
+            log.warn("Execution failed.", e);
+            if (remainingRetries == 0) {
+                throw new RuntimeException(e);
+            }
+            else {
+                return execute(remainingRetries - 1);
             }
         }
-
-        if (v == null) {
-            throw new NullPointerException("Request returned null. This is not allowed");
-        }
-
-        return v;
     }
+
 
 }
