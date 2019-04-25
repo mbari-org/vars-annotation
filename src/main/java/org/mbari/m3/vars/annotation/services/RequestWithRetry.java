@@ -15,9 +15,8 @@ import java.util.function.Supplier;
  */
 public class RequestWithRetry<T> implements Supplier<Observable<T>> {
 
-    final Supplier<T> supplier;
-    final int retries;
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Supplier<T> supplier;
+    private final int retries;
 
     public RequestWithRetry(Supplier<T> supplier) {
         this(supplier, 0);
@@ -52,11 +51,15 @@ public class RequestWithRetry<T> implements Supplier<Observable<T>> {
             }
             return v;
         } catch (Exception e) {
-            log.warn("Execution failed.", e);
+            Logger log = LoggerFactory.getLogger(getClass());
             if (remainingRetries == 0) {
+                log.warn("Execution failed. Terminating Request", e);
                 throw new RuntimeException(e);
             }
             else {
+                int attempts = retries - remainingRetries - 1;
+                log.warn("Execution failed. Retrying (" + attempts +
+                        " of " + retries + ")", e);
                 return execute(remainingRetries - 1);
             }
         }

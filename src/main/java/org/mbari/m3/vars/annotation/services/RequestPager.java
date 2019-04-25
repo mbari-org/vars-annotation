@@ -4,6 +4,7 @@ import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 import org.mbari.vcr4j.util.Preconditions;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +82,6 @@ public class RequestPager<B> {
         @Override
         public void run() {
             if (!hasRun) {
-                System.out.println("RUNNING");
                 hasRun = true;
                 int n = Math.min(numberSimultaneous, queue.size());
                 for (int i = 0; i < n; i++) {
@@ -91,7 +91,6 @@ public class RequestPager<B> {
         }
 
         private void execute(RequestWithRetry<B> request) {
-            System.out.println("Running request");
             Runnable runnable = () -> request.get()
                     .subscribe(observable::onNext,
                             this::doError,
@@ -100,7 +99,9 @@ public class RequestPager<B> {
         }
 
         private void doError(Throwable e) {
-            executor.shutdownNow();
+            List<Runnable> rs = executor.shutdownNow();
+            LoggerFactory.getLogger(getClass())
+                    .error("Page requests failed. " + rs.size() + " pages were not fetched");
             observable.onError(e);
         }
 
@@ -117,14 +118,13 @@ public class RequestPager<B> {
         }
 
         private void next() {
-            System.out.println("NEXT");
             if (!queue.isEmpty()) {
                 try {
                     RequestWithRetry<B> request = queue.poll(100, TimeUnit.MILLISECONDS);
                     execute(request);
                 }
                 catch (InterruptedException e) {
-                    observable.onError(e);
+                    doError(e);
                 }
             }
         }
@@ -156,7 +156,6 @@ public class RequestPager<B> {
 
     public Runner<B> build(int totalCount, int pageSize) {
         List<RequestWithRetry<B>> requests = buildPageRequests(totalCount, pageSize);
-        System.out.println(requests.size() + " Pages");
         return new Runner<>(requests, threadCount);
     }
 
