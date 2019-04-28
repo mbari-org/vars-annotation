@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 /**
  * Wrapper around a Supplier (intended to be making remote service request),
- * that will attempt to retry a request if an exception/failure occurs.
+ * that will attempt to retry a request if an exception occurs.
  *
  * @author Brian Schlining
  * @since 2019-04-24T13:54:00
@@ -24,7 +24,8 @@ public class RequestWithRetry<T> implements Supplier<Observable<T>> {
 
     /**
      *
-     * @param supplier Our request function
+     * @param supplier Our request function. If a null is returned it is treated
+     *                 as a failed attempt.
      * @param retries The number of retries to attempt.
      */
     public RequestWithRetry(Supplier<T> supplier, int retries) {

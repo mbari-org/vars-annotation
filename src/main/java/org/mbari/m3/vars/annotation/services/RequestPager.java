@@ -63,20 +63,22 @@ public class RequestPager<B> {
 
     public static class Runner<B> implements Runnable {
         private boolean hasRun = false;
-        private final Subject<B> observable = PublishSubject.create();
+        private final Subject<B> observable;
         private final ExecutorService executor;
         private final int numberSimultaneous;
         private final BlockingQueue<RequestWithRetry<B>> queue;
         private final int expectedCount;
         private final AtomicInteger completedCount = new AtomicInteger(0);
 
-
-        public Runner(List<RequestWithRetry<B>> requests, int numberSimultaneous) {
+        public Runner(List<RequestWithRetry<B>> requests,
+                      int numberSimultaneous) {
             Preconditions.checkArgument(numberSimultaneous > 0, "Number of threads is less than 1");
+            Subject<B> obs = PublishSubject.create();
+            this.observable = obs.toSerialized();
             queue = new LinkedBlockingQueue<>(requests);
             expectedCount = requests.size();
             this.numberSimultaneous = numberSimultaneous;
-            executor = Executors.newFixedThreadPool(numberSimultaneous);
+            this.executor = Executors.newFixedThreadPool(numberSimultaneous);
         }
 
         @Override
@@ -100,8 +102,10 @@ public class RequestPager<B> {
 
         private void doError(Throwable e) {
             List<Runnable> rs = executor.shutdownNow();
+            int unfinished = rs.size() + queue.size();
             LoggerFactory.getLogger(getClass())
-                    .error("Page requests failed. " + rs.size() + " pages were not fetched");
+                    .error("Page requests failed. " + unfinished +
+                            " pages were not fetched");
             observable.onError(e);
         }
 
