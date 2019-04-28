@@ -3,6 +3,8 @@ package org.mbari.m3.vars.annotation.ui;
 import com.google.common.collect.Lists;
 import com.typesafe.config.Config;
 
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
@@ -13,14 +15,12 @@ import org.mbari.m3.vars.annotation.messages.HideProgress;
 import org.mbari.m3.vars.annotation.messages.SetProgress;
 import org.mbari.m3.vars.annotation.messages.ShowNonfatalErrorAlert;
 import org.mbari.m3.vars.annotation.messages.ShowProgress;
-import org.mbari.m3.vars.annotation.model.Annotation;
-import org.mbari.m3.vars.annotation.model.AnnotationCount;
-import org.mbari.m3.vars.annotation.model.Association;
-import org.mbari.m3.vars.annotation.model.Image;
-import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.MediaService;
+import org.mbari.m3.vars.annotation.services.RequestPager;
 import org.mbari.m3.vars.annotation.util.AsyncUtils;
+import org.mbari.vcr4j.VideoIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,8 +128,57 @@ public class AnnotationServiceDecorator {
         eventBus.send(new ShowNonfatalErrorAlert(title, header, msg, e));
     }
 
-
     private CompletableFuture<Void> loadAnnotationPages(AtomicInteger loadedAnnotationCount,
+                                                         int totalAnnotationCount,
+                                                         AnnotationCount ac,
+                                                         boolean sendNotifications,
+                                                         Media masterMedia,
+                                                         ExecutorService executor) {
+
+        AnnotationService service = toolBox.getServices()
+                .getAnnotationService();
+
+        EventBus eventBus = toolBox.getEventBus();
+
+        Function<RequestPager.Page, List<Annotation>> function = (page) -> {
+            try {
+                return service.findAnnotations(ac.getVideoReferenceUuid(), page.getLimit(), page.getOffset())
+                        .get(chunkTimeout.toMillis(), TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                log.info("A page request failed.", e);
+                throw new RuntimeException(e);
+            }
+        };
+
+
+        CompletableFuture<Void> future = new CompletableFuture<>();
+
+        int threadCount = pagingStyle.equals(PagingStyle.PARALLEL) ? 2 : 1;
+        RequestPager<List<Annotation>> pager = new RequestPager<>(function, 2, threadCount);
+        RequestPager.Runner<List<Annotation>> runner = pager.build(ac.getCount(), chunkSize);
+        Observable<List<Annotation>> observable = runner.getObservable();
+        observable.subscribeOn(Schedulers.io())
+                .map(annotations -> masterMedia == null ? annotations : filterWithinMedia(annotations, masterMedia))
+                .subscribe(annotations -> updateUI(eventBus,
+                        annotations,
+                        sendNotifications,
+                        totalAnnotationCount,
+                        loadedAnnotationCount),
+                        e -> {
+                            /* TODO show alert */
+                            future.completeExceptionally(e);
+                        },
+                        () -> {
+                            log.info("Loaded annotations for " + ac.getVideoReferenceUuid());
+                            future.complete(null);
+                        }) ;
+        runner.run();
+
+        return future;
+    }
+
+
+    private CompletableFuture<Void> loadAnnotationPagesOld(AtomicInteger loadedAnnotationCount,
                                                         int totalAnnotationCount,
                                                         AnnotationCount ac,
                                                         boolean sendNotifications,
@@ -224,7 +273,6 @@ public class AnnotationServiceDecorator {
         return CompletableFuture.allOf(futures);
 
     }
-
 
     private CompletableFuture<Void> loadAnnotationPage(UUID videoReferenceUuid,
                                                        long limit,
@@ -368,6 +416,24 @@ public class AnnotationServiceDecorator {
         refreshAnnotationsView(uuids);
     }
 
+    public void refreshAnnotationsViewByIndices(Set<VideoIndex> videoIndices) {
+        List<Annotation> annotations = new ArrayList<>(toolBox.getData().getAnnotations());
+        Set<VideoIndex> annotationIndices = annotations.stream()
+                .map(ImagedMoment::toVideoIndex)
+                .collect(Collectors.toSet());
+        annotationIndices.retainAll(videoIndices);
+        Set<UUID> observationUuids = annotations.stream()
+                .filter(a -> {
+                    VideoIndex vi = a.toVideoIndex();
+                    return annotationIndices.contains(vi);
+                })
+                .map(Annotation::getObservationUuid)
+                .collect(Collectors.toSet());
+        refreshAnnotationsView(observationUuids);
+    }
+
+
+
     /**
      * Finds all the reference numbers used in a video sequence
      * @param media
@@ -428,3 +494,4 @@ public class AnnotationServiceDecorator {
 
 
 }
+

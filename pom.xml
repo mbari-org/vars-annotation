@@ -5,7 +5,7 @@
   </prerequisites>
   <groupId>org.mbari.m3.vars</groupId>
   <artifactId>vars-annotation</artifactId>
-  <version>0.2.4</version>
+  <version>0.28-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>VARS Annotation</name>
   <url>http://maven.apache.org</url>
@@ -35,109 +35,138 @@
     <!-- Should the client downgrade if the server version is older than the local version? -->
     <app.acceptDowngrade>false</app.acceptDowngrade>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- Dependency versions -->
+    <auth0.version>3.8.0</auth0.version>
+    <avfoundation.version>2.2.2</avfoundation.version>
+    <blackmagic.version>0.0.2</blackmagic.version>
+    <caffeine.version>2.7.0</caffeine.version>
+    <config.version>1.3.3</config.version>
+    <controlsfx.version>8.40.14</controlsfx.version>
+    <fontawesomefx.version>8.15</fontawesomefx.version>
+    <fxlauncher.version>1.0.21</fxlauncher.version>
+    <gson.version>2.8.5</gson.version>
+    <guava.version>27.1-jre</guava.version>
+    <guice.version>4.2.2</guice.version>
+    <javatime.version>1.1.1</javatime.version>
+    <jersey.version>2.28</jersey.version>
+    <jfoenix.version>8.0.8</jfoenix.version>
+    <junit.version>4.12</junit.version>
+    <logback.version>1.2.3</logback.version>
+    <materialicons.version>2.2.0-5</materialicons.version>
+    <mbarix4j.version>1.10.0</mbarix4j.version>
+    <medusa.version>8.3</medusa.version>
+    <nativelib.version>2.3.4</nativelib.version>
+    <!-- version after 3.12.2 throw exceptions with retrofit version of okhttp3 -->
+    <okhttp3log.version>3.12.2</okhttp3log.version>
+    <retrofit.version>2.5.0</retrofit.version>
+    <rxjava.version>2.2.8</rxjava.version>
+    <rxjavafx.version>2.2.2</rxjavafx.version>
+    <slf4j.version>1.7.26</slf4j.version>
+    <vcr4j.version>4.0.2</vcr4j.version>
   </properties>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>de.jensd</groupId>
       <artifactId>fontawesomefx-commons</artifactId>
-      <version>8.15</version>
+      <version>${fontawesomefx.version}</version>
     </dependency>
     <dependency>
       <groupId>de.jensd</groupId>
       <artifactId>fontawesomefx-materialicons</artifactId>
-      <version>2.2.0-5</version>
+      <version>${materialicons.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mbari.vcr4j</groupId>
       <artifactId>vcr4j-core</artifactId>
-      <version>4.0.2</version>
+      <version>${vcr4j.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mbari.vcr4j</groupId>
       <artifactId>vcr4j-sharktopoda</artifactId>
-      <version>4.0.2</version>
+      <version>${vcr4j.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mbari.vcr4j</groupId>
       <artifactId>vcr4j-jserialcomm</artifactId>
-      <version>4.0.2</version>
+      <version>${vcr4j.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mbari.vcr4j</groupId>
       <artifactId>vcr4j-rs422</artifactId>
-      <version>4.0.2</version>
+      <version>${vcr4j.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mbari.vcr4j</groupId>
       <artifactId>vcr4j-ui</artifactId>
-      <version>4.0.2</version>
+      <version>${vcr4j.version}</version>
     </dependency>
     <dependency>
       <groupId>com.squareup.retrofit2</groupId>
       <artifactId>retrofit</artifactId>
-      <version>2.5.0</version>
+      <version>${retrofit.version}</version>
     </dependency>
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>logging-interceptor</artifactId>
-      <version>3.12.1</version>
+      <version>${okhttp3log.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.8.5</version>
+      <version>${gson.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fatboyindustrial.gson-javatime-serialisers</groupId>
       <artifactId>gson-javatime-serialisers</artifactId>
-      <version>1.1.1</version>
+      <version>${javatime.version}</version>
     </dependency>
     <dependency>
       <groupId>com.squareup.retrofit2</groupId>
       <artifactId>converter-gson</artifactId>
-      <version>2.5.0</version>
+      <version>${retrofit.version}</version>
     </dependency>
     <dependency>
       <groupId>org.controlsfx</groupId>
       <artifactId>controlsfx</artifactId>
-      <version>8.40.14</version>
+      <version>${controlsfx.version}</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/no.tornado/fxlauncher -->
     <dependency>
       <groupId>no.tornado</groupId>
       <artifactId>fxlauncher</artifactId>
-      <version>1.0.17</version>
+      <version>${fxlauncher.version}</version>
     </dependency>
     <dependency>
       <groupId>com.github.ben-manes.caffeine</groupId>
       <artifactId>caffeine</artifactId>
-      <version>2.6.2</version>
+      <version>${caffeine.version}</version>
     </dependency>
     <dependency>
       <groupId>io.reactivex.rxjava2</groupId>
       <artifactId>rxjava</artifactId>
-      <version>2.2.6</version>
+      <version>${rxjava.version}</version>
     </dependency>
     <dependency>
       <groupId>io.reactivex.rxjava2</groupId>
       <artifactId>rxjavafx</artifactId>
-      <version>2.2.2</version>
+      <version>${rxjavafx.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
-      <version>4.2.2</version>
+      <version>${guice.version}</version>
     </dependency>
     <dependency>
       <groupId>com.typesafe</groupId>
       <artifactId>config</artifactId>
-      <version>1.3.3</version>
+      <version>${config.version}</version>
     </dependency>
     <!-- https://github.com/jfoenixadmin/JFoenix -->
     <dependency>
@@ -148,52 +177,52 @@
     <dependency>
       <groupId>com.auth0</groupId>
       <artifactId>java-jwt</artifactId>
-      <version>3.5.0</version>
+      <version>${auth0.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.25</version>
+      <version>${slf4j.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mbari</groupId>
       <artifactId>mbarix4j</artifactId>
-      <version>1.10.0</version>
+      <version>${mbarix4j.version}</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.2.3</version>
+      <version>${logback.version}</version>
     </dependency>
     <dependency>
       <groupId>eu.hansolo</groupId>
       <artifactId>Medusa</artifactId>
-      <version>8.0</version>
+      <version>${medusa.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>27.0.1-jre</version>
+      <version>${guava.version}</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish.jersey.core</groupId>
       <artifactId>jersey-client</artifactId>
-      <version>2.27</version>
+      <version>${jersey.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mbari.vars</groupId>
       <artifactId>vars-avfoundation</artifactId>
-      <version>2.2.2</version>
+      <version>${avfoundation.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mbari.m3</groupId>
       <artifactId>vars-blackmagic</artifactId>
-      <version>0.0.2</version>
+      <version>${blackmagic.version}</version>
     </dependency>
     <dependency>
       <groupId>org.scijava</groupId>
       <artifactId>native-lib-loader</artifactId>
-      <version>2.3.2</version>
+      <version>${nativelib.version}</version>
     </dependency>
   </dependencies>
   <!-- The build plugins below perform the following steps:

@@ -72,8 +72,9 @@ public class CreateAnnotationFromConceptCmd implements Command {
 
     @Override
     public void apply(UIToolBox toolBox) {
-        Observable<VideoIndex> videoIndexObservable = AsyncUtils.observe(toolBox.getMediaPlayer()
-                .requestVideoIndex());
+        Observable<VideoIndex> videoIndexObservable = Observable.defer(() ->
+                AsyncUtils.observe(toolBox.getMediaPlayer()
+                    .requestVideoIndex()));
         Observable<Optional<ConceptDetails>> conceptObservable = AsyncUtils.observe(toolBox.getServices()
                 .getConceptService()
                 .findDetails(concept));
@@ -87,8 +88,6 @@ public class CreateAnnotationFromConceptCmd implements Command {
                         cd.videoIndex),
                         throwable -> sendAlertMsg(toolBox, throwable));
     }
-
-
 
 
     @Override

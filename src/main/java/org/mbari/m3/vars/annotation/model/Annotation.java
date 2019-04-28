@@ -62,7 +62,6 @@ public class Annotation implements ImagedMoment {
     }
 
 
-
     public Annotation(Annotation a) {
         observationUuid = a.observationUuid;
         concept = a.concept;
