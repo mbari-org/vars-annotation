@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 /**
  * This class automates paing requests for you. The usage is:
  * <pre>
- *  // A function that accepts a page (limit offset) and fetches data using those
+ *  // A function that accepts a page (limit, offset) and fetches data using those
  *  Function<RequestPager.Page, List<Integer> fn = (page) -> //some data list
  *
  *  // Instantiate pager with function, number of retries on a fn fail, and number of fetch threads
