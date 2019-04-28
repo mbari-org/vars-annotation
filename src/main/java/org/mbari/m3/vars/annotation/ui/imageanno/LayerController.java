@@ -113,9 +113,9 @@ public interface LayerController {
         return new Point2D(annoX, annoY);
     }
 
-    static Shape toImageCoordinates(Shape shape, ImageViewExt) {
-        Scale
-    }
+//    static Shape toImageCoordinates(Shape shape, ImageViewExt) {
+//        Scale
+//    }
 
 
 }

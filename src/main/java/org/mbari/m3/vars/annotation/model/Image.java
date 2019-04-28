@@ -26,7 +26,21 @@ public class Image implements ImagedMoment, Cloneable {
     private Duration elapsedTime;
     private Instant recordedTimestamp;
 
-    public Image() {
+    public Image() {}
+
+    public Image(Image i) {
+        imageReferenceUuid = i.getImageReferenceUuid();
+        format = i.getFormat();
+        width = i.getWidth();
+        height = i.getHeight();
+        url = i.getUrl();
+        description = i.getDescription();
+        videoReferenceUuid = i.getVideoReferenceUuid();
+        imagedMomentUuid = i.getImagedMomentUuid();
+        timecode = i.getTimecode();
+        elapsedTime = i.getElapsedTime();
+        recordedTimestamp = i.getRecordedTimestamp();
+    }
 
     public Image(ImagedMoment im, ImageReference ir) {
         imageReferenceUuid = ir.getUuid();
@@ -41,7 +55,7 @@ public class Image implements ImagedMoment, Cloneable {
     }
 
     public Image(Annotation annotation, ImageReference imageReference) {
-        imageReferenceUuid = i.getImageReferenceUuid();
+        imageReferenceUuid = imageReference.getUuid();
         format = imageReference.getFormat();
         width = imageReference.getWidth();
         height = imageReference.getHeight();
