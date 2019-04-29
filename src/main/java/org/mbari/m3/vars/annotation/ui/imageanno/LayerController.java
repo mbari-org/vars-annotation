@@ -13,6 +13,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Scale;
+import javafx.scene.transform.Transform;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.ui.shared.ImageViewExt;
 
@@ -113,9 +115,22 @@ public interface LayerController {
         return new Point2D(annoX, annoY);
     }
 
-//    static Shape toImageCoordinates(Shape shape, ImageViewExt) {
-//        Scale
-//    }
+    static Shape toImageCoordinates(Shape shape, ImageViewExt imageViewExt) {
+        ImageView imageView = imageViewExt.getImageView();
+        Bounds bounds = imageView.getBoundsInParent();
+        Bounds shapeBounds = shape.getBoundsInParent();
+        double scale = imageViewExt.computeActualScale();
+
+        // ImageView coords
+        double viewX = shapeBounds.getMinX() - bounds.getMinX();
+        double viewY = shapeBounds.getMinY() - bounds.getMinY();
+        shape.setScaleX(scale);
+        shape.setScaleY(scale);
+        shape.setTranslateX(viewX);
+        shape.setTranslateY(viewY);
+        return shape;
+
+    }
 
 
 }
