@@ -1,5 +1,6 @@
 package org.mbari.m3.vars.annotation.services;
 
+import org.slf4j.LoggerFactory;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,6 +31,8 @@ public interface RetrofitWebService {
 
             @Override
             public void onFailure(Call<T> call, Throwable throwable) {
+                LoggerFactory.getLogger(getClass())
+                        .warn("Exception thrown when making a REST call", throwable);
                 f.completeExceptionally(throwable);
             }
         });

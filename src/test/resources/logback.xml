@@ -20,6 +20,7 @@
     <logger name="org.mbari.m3.vars.annotation.util.ActiveAppPinger" level="WARN" />
     <logger name="org.mbari.m3.vars.annotation.util.WebPreferences" level="WARN" />
     <logger name="org.mbari.vcr4j" level="INFO" />
+    <logger name="org.mbari.vcr4j.jserialcomm.SerialCommVideoIO" level="OFF" />
     <logger name="org.mbari.vcr4j.sharktopoda.decorators.FramecaptureDecorator" level="DEBUG" />
     <logger name="org.mbari.vcr4j.sharktopoda.SharktopodaResponseParser" level="WARN" />
     <logger name="org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO" level="WARN" />

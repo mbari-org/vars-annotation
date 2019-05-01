@@ -54,14 +54,16 @@ public class RequestWithRetry<T> implements Supplier<Observable<T>> {
         } catch (Exception e) {
             Logger log = LoggerFactory.getLogger(getClass());
             if (remainingRetries == 0) {
-                String msg = "Execution failed after " + retries + " attempts. Terminating Request";
+                int attempts = retries + 1;
+                String msg = "Execution failed after " + attempts + " attempts. Terminating Request";
                 log.warn(msg, e);
                 throw new RuntimeException(msg, e);
             }
             else {
-                int attempts = retries - remainingRetries - 1;
+                int attempts = retries - remainingRetries + 1;
+                int allowedAttempts = retries + 1;
                 log.warn("Execution failed. Retrying (" + attempts +
-                        " of " + retries + ")", e);
+                        " of " + allowedAttempts + ")", e);
                 return execute(remainingRetries - 1);
             }
         }

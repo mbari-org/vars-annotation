@@ -8,6 +8,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.messages.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -29,12 +31,14 @@ import java.io.StringWriter;
 public class Alerts {
 
     private final UIToolBox toolBox;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public Alerts(UIToolBox toolBox) {
         this.toolBox = toolBox;
     }
 
     public void showAlert(ShowAlert msg) {
+        log.debug("Showing alert: '" + msg.getHeaderText() + "' -> " + msg.getContentText());
         if (msg instanceof ShowFatalErrorAlert) {
             showFatalErrorAlert((ShowFatalErrorAlert) msg);
         }

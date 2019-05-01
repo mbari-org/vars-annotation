@@ -30,6 +30,7 @@ public class KeyMapping {
     private final AppPaneController paneController;
     private final EventBus eventBus;
     private final Duration jump = Duration.ofSeconds(1);
+    private final Duration miniJump = Duration.ofMillis(100);
     //private final MediaPlayerDecorator mediaPlayerDecorator;
 
     private final KeyCombination.Modifier osModifier = KeyCombination.SHORTCUT_DOWN;
@@ -128,20 +129,23 @@ public class KeyMapping {
         map.put(new KeyCodeCombination(KeyCode.K, osModifier), playToggle);
         map.put(new KeyCodeCombination(KeyCode.DOWN, osModifier), playToggle);
 
+        Consumer<MediaPlayer<?, ?>> jumpBack = mp -> {
+            mp.stop();
+            mp.requestVideoIndex().thenAccept(videoIndex ->
+                    videoIndex.getElapsedTime().ifPresent(elapsedTime ->
+                            mp.seek(elapsedTime.minus(jump))
+                    ));
+        };
         map.put(new KeyCodeCombination(KeyCode.COMMA, osModifier),
-                execute(mp -> {
-                    mp.stop();
-                    mp.requestVideoIndex().thenAccept(videoIndex ->
-                            videoIndex.getElapsedTime().ifPresent(elapsedTime ->
-                                    mp.seek(elapsedTime.minus(jump))
-                                ));
-                }));
+                execute(jumpBack));
         map.put(new KeyCodeCombination(KeyCode.LEFT, osModifier),
+                execute(jumpBack));
+        map.put(new KeyCodeCombination(KeyCode.M, osModifier),
                 execute(mp -> {
                     mp.stop();
                     mp.requestVideoIndex().thenAccept(videoIndex ->
                             videoIndex.getElapsedTime().ifPresent(elapsedTime ->
-                                    mp.seek(elapsedTime.minus(jump))
+                                    mp.seek(elapsedTime.minus(miniJump))
                             ));
                 }));
 
@@ -164,23 +168,21 @@ public class KeyMapping {
         map.put(new KeyCodeCombination(KeyCode.RIGHT, osModifier),
                 execute((mp) -> mp.shuttle(slowRate)));
 
+        Consumer<MediaPlayer<?, ?>> frameAdvance = mp -> {
+            mp.stop();
+            mp.getVideoIO().send(SharkCommands.FRAMEADVANCE);
+        };
         map.put(new KeyCodeCombination(KeyCode.I, osModifier),
-                execute((mp) -> {
-                    mp.stop();
-                    mp.getVideoIO().send(SharkCommands.FRAMEADVANCE);
-                }));
+                execute(frameAdvance));
         map.put(new KeyCodeCombination(KeyCode.UP, osModifier),
-                execute((mp) -> {
-                    mp.stop();
-                    mp.getVideoIO().send(SharkCommands.FRAMEADVANCE);
-                }));
+                execute(frameAdvance));
 
         double fastRate = 0.06;
         map.put(new KeyCodeCombination(KeyCode.SEMICOLON, osModifier),
                 execute((mp) -> mp.shuttle(fastRate)));
 
-//        map.put(new KeyCodeCombination(KeyCode.H, osModifier),
-//                execute((mp) -> mp.shuttle(-fastRate)));
+        map.put(new KeyCodeCombination(KeyCode.G, osModifier),
+                execute((mp) -> mp.shuttle(-fastRate)));
 
 //        map.put(new KeyCodeCombination(KeyCode.LESS, osModifier),
 //                execute(MediaPlayer::rewind));

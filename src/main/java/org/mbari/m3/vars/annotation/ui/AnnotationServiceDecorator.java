@@ -20,6 +20,7 @@ import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.m3.vars.annotation.services.RequestPager;
 import org.mbari.m3.vars.annotation.util.AsyncUtils;
+import org.mbari.m3.vars.annotation.util.JFXUtilities;
 import org.mbari.vcr4j.VideoIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,7 @@ public class AnnotationServiceDecorator {
     private final int chunkSize;
     private final Duration chunkTimeout;
     private PagingStyle pagingStyle;
+    private final int numberSimultaneousPages;
 
     // When loading concurrent annotations we need to avoid swamping the annosaurus
     private final ExecutorService pagingExecutor = Executors.newSingleThreadExecutor();
@@ -60,6 +62,7 @@ public class AnnotationServiceDecorator {
         this.toolBox = toolBox;
         this.chunkSize = toolBox.getConfig().getInt("annotation.service.chunk.size");
         this.chunkTimeout = toolBox.getConfig().getDuration("annotation.service.timeout");
+        this.numberSimultaneousPages = toolBox.getConfig().getInt("annotation.service.page.count");
 
         /*
          When deploed on infrastructures with multiple annosaurus servers we
@@ -113,19 +116,22 @@ public class AnnotationServiceDecorator {
     }
 
     private void showFindAnnotationsError(UUID videoReferenceUuid, Throwable ex) {
-        EventBus eventBus = toolBox.getEventBus();
-        Config config = toolBox.getConfig();
-        String content1 = config.getString("annotationservicedecorator.findannotations.error.content1");
-        String content2 = config.getString("annotationservicedecorator.findannotations.error.content2");
-        String header = config.getString("annotationservicedecorator.findannotations.error.header");
-        String title = config.getString("annotationservicedecorator.findannotations.error.title");
+        JFXUtilities.runOnFXThread(() -> {
+            EventBus eventBus = toolBox.getEventBus();
+            ResourceBundle i18n = toolBox.getI18nBundle();
+            String content1 = i18n.getString("annotationservicedecorator.findannotations.error.content1");
+            String content2 = i18n.getString("annotationservicedecorator.findannotations.error.content2");
+            String header = i18n.getString("annotationservicedecorator.findannotations.error.header");
+            String title = i18n.getString("annotationservicedecorator.findannotations.error.title");
 
-        String msg = String.join(" ",
-                Lists.newArrayList(content1, videoReferenceUuid.toString(), content2));
-        log.error(msg, ex);
+            String msg = String.join(" ",
+                    Lists.newArrayList(content1, videoReferenceUuid.toString(), content2));
+            log.error(msg, ex);
 
-        Exception e = ex instanceof Exception ? (Exception) ex : new RuntimeException(msg, ex);
-        eventBus.send(new ShowNonfatalErrorAlert(title, header, msg, e));
+            Exception e = ex instanceof Exception ? (Exception) ex : new RuntimeException(msg, ex);
+            eventBus.send(new ShowNonfatalErrorAlert(title, header, msg, e));
+        });
+
     }
 
     private CompletableFuture<Void> loadAnnotationPages(AtomicInteger loadedAnnotationCount,
@@ -153,21 +159,18 @@ public class AnnotationServiceDecorator {
 
         CompletableFuture<Void> future = new CompletableFuture<>();
 
-        int threadCount = pagingStyle.equals(PagingStyle.PARALLEL) ? 2 : 1;
+        int threadCount = pagingStyle.equals(PagingStyle.PARALLEL) ? numberSimultaneousPages : 1;
         RequestPager<List<Annotation>> pager = new RequestPager<>(function, 2, threadCount);
         RequestPager.Runner<List<Annotation>> runner = pager.build(ac.getCount(), chunkSize);
         Observable<List<Annotation>> observable = runner.getObservable();
         observable.subscribeOn(Schedulers.io())
                 .map(annotations -> masterMedia == null ? annotations : filterWithinMedia(annotations, masterMedia))
                 .subscribe(annotations -> updateUI(eventBus,
-                        annotations,
-                        sendNotifications,
-                        totalAnnotationCount,
-                        loadedAnnotationCount),
-                        e -> {
-                            /* TODO show alert */
-                            future.completeExceptionally(e);
-                        },
+                            annotations,
+                            sendNotifications,
+                            totalAnnotationCount,
+                            loadedAnnotationCount),
+                        future::completeExceptionally,
                         () -> {
                             log.info("Loaded annotations for " + ac.getVideoReferenceUuid());
                             future.complete(null);
