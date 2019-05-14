@@ -8,7 +8,6 @@ import org.mbari.m3.vars.annotation.model.Authorization;
 import org.mbari.m3.vars.annotation.services.*;
 import org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoService;
 import org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoWebServiceFactory;
-import org.mbari.m3.vars.annotation.services.annosaurus.v2.AnnoServiceV2;
 import org.mbari.m3.vars.annotation.services.annosaurus.v2.AnnoWebServiceFactoryV2;
 import org.mbari.m3.vars.annotation.services.panoptes.v1.PanoptesService;
 import org.mbari.m3.vars.annotation.services.panoptes.v1.PanoptesWebServiceFactory;
@@ -31,10 +30,12 @@ import java.util.concurrent.ForkJoinPool;
 public class MBARIInjectorModule implements Module {
 
     private final Config config;
+    private final AppConfig appConfig;
     private final Executor defaultExecutor = new ForkJoinPool();
 
     public MBARIInjectorModule() {
         this.config = Initializer.getConfig();
+        this.appConfig = new AppConfig(config);
     }
 
     @Override
@@ -49,15 +50,13 @@ public class MBARIInjectorModule implements Module {
     }
 
     private void configureAnnotationService(Binder binder) {
-        String endpoint = config.getString("annotation.service.url");
-        String clientSecret = config.getString("annotation.service.client.secret");
-        Duration timeout = config.getDuration("annotation.service.timeout");
-        AnnoWebServiceFactory factory = new AnnoWebServiceFactory(endpoint, timeout);
+        AppConfig.ServiceParams params = appConfig.getAnnotationServiceParamsV1();
+        AnnoWebServiceFactory factory = new AnnoWebServiceFactory(params.getEndpoint(), params.getTimeout());
         AuthService authService = new BasicJWTAuthService(factory,
-                new Authorization("APIKEY", clientSecret));
+                new Authorization("APIKEY", params.getClientSecret()));
         binder.bind(String.class)
                 .annotatedWith(Names.named("ANNO_ENDPOINT"))
-                .toInstance(endpoint);
+                .toInstance(params.getEndpoint());
         binder.bind(AuthService.class)
                 .annotatedWith(Names.named("ANNO_AUTH"))
                 .toInstance(authService);
@@ -66,15 +65,14 @@ public class MBARIInjectorModule implements Module {
     }
 
     private void configureAnnotationV2Service(Binder binder) {
-        String endpoint = config.getString("annotation.service.v2.url");
-//        String clientSecret = config.getString("annotation.service.client.secret");
-        Duration timeout = config.getDuration("annotation.service.timeout");
-        AnnoWebServiceFactoryV2 factory = new AnnoWebServiceFactoryV2(endpoint, timeout);
+        AppConfig.ServiceParams params = appConfig.getAnnotationServiceParamsV2();
+        AnnoWebServiceFactoryV2 factory = new AnnoWebServiceFactoryV2(params.getEndpoint(),
+                params.getTimeout());
 //        AuthService authService = new BasicJWTAuthService(factory,
 //                new Authorization("APIKEY", clientSecret));
         binder.bind(String.class)
                 .annotatedWith(Names.named("ANNO_ENDPOINT_V2"))
-                .toInstance(endpoint);
+                .toInstance(params.getEndpoint());
 //        binder.bind(AuthService.class)
 //                .annotatedWith(Names.named("ANNO_AUTH"))
 //                .toInstance(authService);
@@ -83,14 +81,13 @@ public class MBARIInjectorModule implements Module {
     }
 
     private void configureMediaService(Binder binder) {
-        String endpoint = config.getString("media.service.url");
-        String clientSecret = config.getString("media.service.client.secret");
-        VamWebServiceFactory factory = new VamWebServiceFactory(endpoint);
+        AppConfig.ServiceParams params = appConfig.getMediaServiceParamsV1();
+        VamWebServiceFactory factory = new VamWebServiceFactory(params.getEndpoint());
         AuthService authService = new BasicJWTAuthService(factory,
-                new Authorization("APIKEY", clientSecret));
+                new Authorization("APIKEY", params.getClientSecret()));
         binder.bind(String.class)
                 .annotatedWith(Names.named("MEDIA_ENDPOINT"))
-                .toInstance(endpoint);
+                .toInstance(params.getEndpoint());
         binder.bind(AuthService.class)
                 .annotatedWith(Names.named("MEDIA_AUTH"))
                 .toInstance(authService);
@@ -99,9 +96,9 @@ public class MBARIInjectorModule implements Module {
     }
 
     private void configureConceptService(Binder binder) {
-        String endpoint = config.getString("concept.service.url");
-        Duration timeout = config.getDuration("concept.service.timeout");
-        KBWebServiceFactory factory = new KBWebServiceFactory(endpoint, timeout, defaultExecutor);
+        AppConfig.ServiceParams params = appConfig.getConceptServiceParamsV1();
+        KBWebServiceFactory factory = new KBWebServiceFactory(params.getEndpoint(),
+                params.getTimeout(), defaultExecutor);
         KBConceptService service = new KBConceptService(factory);
         // --- Create a service that munges the data from the service for a better UI experience.
         ModifyingConceptService modService = new ModifyingConceptService(service, config);
@@ -111,63 +108,61 @@ public class MBARIInjectorModule implements Module {
         //cachedService.prefetch(cachedConceptTemplates);
         binder.bind(String.class)
                 .annotatedWith(Names.named("CONCEPT_ENDPOINT"))
-                .toInstance(endpoint);
+                .toInstance(params.getEndpoint());
         binder.bind(KBWebServiceFactory.class).toInstance(factory);
         binder.bind(ConceptService.class).toInstance(cachedService);
         //binder.bind(ConceptService.class).toInstance(service);
     }
 
     private void configurePrefsServices(Binder binder) {
-        String endpoint = config.getString("preferences.service.url");
-        String clientSecret = config.getString("preferences.service.client.secret");
-        Duration timeout = config.getDuration("preferences.service.timeout");
-        PrefWebServiceFactory factory = new PrefWebServiceFactory(endpoint, timeout);
-        RetrofitServiceFactory authFactory = new BasicJWTAuthServiceFactorySC(endpoint, timeout);
+        AppConfig.ServiceParams params = appConfig.getPreferencesServiceParamsV1();
+        PrefWebServiceFactory factory = new PrefWebServiceFactory(params.getEndpoint(), params.getTimeout());
+        RetrofitServiceFactory authFactory = new BasicJWTAuthServiceFactorySC(params.getEndpoint(), params.getTimeout());
         AuthService authService = new BasicJWTAuthService(authFactory,
-                new Authorization("APIKEY", clientSecret));
+                new Authorization("APIKEY", params.getClientSecret()));
         KBPrefService preferencesService = new KBPrefService(factory, authService);
         binder.bind(Long.class)
                 .annotatedWith(Names.named("PREFS_TIMEOUT"))
-                .toInstance(timeout.toMillis());
+                .toInstance(params.getTimeout().toMillis());
         binder.bind(PreferencesService.class).toInstance(preferencesService);
         binder.bind(KBPrefService.class).toInstance(preferencesService);
         binder.bind(PreferencesFactory.class).to(WebPreferencesFactory.class);
     }
 
     private void configureUserServices(Binder binder) {
-        String endpoint = config.getString("accounts.service.url");
-        String clientSecret = config.getString("accounts.service.client.secret");
-        Duration timeout = config.getDuration("accounts.service.timeout");
-        UserWebServiceFactory factory = new UserWebServiceFactory(endpoint, timeout);
-        RetrofitServiceFactory authFactory = new BasicJWTAuthServiceFactorySC(endpoint, timeout);
+        AppConfig.ServiceParams params = appConfig.getAccountsServiceParamsV1();
+        UserWebServiceFactory factory = new UserWebServiceFactory(params.getEndpoint(),
+                params.getTimeout());
+        RetrofitServiceFactory authFactory = new BasicJWTAuthServiceFactorySC(params.getEndpoint(),
+                params.getTimeout());
         AuthService authService = new BasicJWTAuthService(authFactory,
-                new Authorization("APIKEY", clientSecret));
+                new Authorization("APIKEY", params.getClientSecret()));
         KBUserService userService = new KBUserService(factory, authService);
         binder.bind(Long.class)
                 .annotatedWith(Names.named("ACCOUNTS_TIMEOUT"))
-                .toInstance(timeout.toMillis());
+                .toInstance(params.getTimeout().toMillis());
         binder.bind(UserService.class).toInstance(userService);
         binder.bind(KBUserService.class).toInstance(userService);
     }
 
     private void configurePanoptes(Binder binder) {
-        String endpoint = config.getString("panoptes.service.url");
-        String clientSecret = config.getString("panoptes.service.client.secret");
-        Duration timeout = config.getDuration("panoptes.service.timeout");
-        PanoptesWebServiceFactory factory = new PanoptesWebServiceFactory(endpoint, timeout);
-        RetrofitServiceFactory authFactory = new BasicJWTAuthServiceFactorySC(endpoint, timeout);
+        AppConfig.ServiceParams params = appConfig.getPanoptesServiceParamsV1();
+        PanoptesWebServiceFactory factory = new PanoptesWebServiceFactory(params.getEndpoint(),
+                params.getTimeout());
+        RetrofitServiceFactory authFactory = new BasicJWTAuthServiceFactorySC(params.getEndpoint(),
+                params.getTimeout());
         AuthService authService = new BasicJWTAuthService(authFactory,
-                new Authorization("APIKEY", clientSecret));
+                new Authorization("APIKEY", params.getClientSecret()));
         binder.bind(String.class)
                 .annotatedWith(Names.named("PANOPTES_ENDPOINT"))
-                .toInstance(endpoint);
+                .toInstance(params.getEndpoint());
         binder.bind(AuthService.class)
                 .annotatedWith(Names.named("PANOPTES_AUTH"))
                 .toInstance(authService);
         PanoptesService service = new PanoptesService(factory, authService);
         binder.bind(Long.class)
                 .annotatedWith(Names.named("PANOPTES_TIMEOUT"))
-                .toInstance(timeout.toMillis());
+                .toInstance(params.getTimeout().toMillis());
         binder.bind(PanoptesWebServiceFactory.class).toInstance(factory);
         binder.bind(ImageArchiveService.class).toInstance(service);
 

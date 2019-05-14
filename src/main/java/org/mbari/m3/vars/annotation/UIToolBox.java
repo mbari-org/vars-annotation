@@ -26,6 +26,7 @@ public class UIToolBox {
     private final EventBus eventBus;
     private final ResourceBundle i18nBundle;
     private final Config config;
+    private final AppConfig appConfig;
     private final Data data;
     private final Services services;
     private final ObjectProperty<MediaPlayer<? extends VideoState, ? extends VideoError>> mediaPlayer = new SimpleObjectProperty<>();
@@ -47,6 +48,7 @@ public class UIToolBox {
         this.eventBus = eventBus;
         this.i18nBundle = i18nBundle;
         this.config = config;
+        this.appConfig = new AppConfig(config);
         this.stylesheets = Collections.unmodifiableCollection(stylesheets);
         this.executorService = executorService;
     }
@@ -65,6 +67,10 @@ public class UIToolBox {
 
     public ResourceBundle getI18nBundle() {
         return i18nBundle;
+    }
+
+    public AppConfig getAppConfig() {
+        return appConfig;
     }
 
     public Config getConfig() {
