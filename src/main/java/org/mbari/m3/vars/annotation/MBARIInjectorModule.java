@@ -8,6 +8,8 @@ import org.mbari.m3.vars.annotation.model.Authorization;
 import org.mbari.m3.vars.annotation.services.*;
 import org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoService;
 import org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoWebServiceFactory;
+import org.mbari.m3.vars.annotation.services.annosaurus.v2.AnnoServiceV2;
+import org.mbari.m3.vars.annotation.services.annosaurus.v2.AnnoWebServiceFactoryV2;
 import org.mbari.m3.vars.annotation.services.panoptes.v1.PanoptesService;
 import org.mbari.m3.vars.annotation.services.panoptes.v1.PanoptesWebServiceFactory;
 import org.mbari.m3.vars.annotation.services.vampiresquid.v1.VamService;
@@ -38,6 +40,7 @@ public class MBARIInjectorModule implements Module {
     @Override
     public void configure(Binder binder) {
         configureAnnotationService(binder);
+        configureAnnotationV2Service(binder);
         configureMediaService(binder);
         configureConceptService(binder);
         configurePrefsServices(binder);
@@ -60,6 +63,23 @@ public class MBARIInjectorModule implements Module {
                 .toInstance(authService);
         binder.bind(AnnoWebServiceFactory.class).toInstance(factory);
         binder.bind(AnnotationService.class).to(AnnoService.class);
+    }
+
+    private void configureAnnotationV2Service(Binder binder) {
+        String endpoint = config.getString("annotation.service.v2.url");
+//        String clientSecret = config.getString("annotation.service.client.secret");
+        Duration timeout = config.getDuration("annotation.service.timeout");
+        AnnoWebServiceFactoryV2 factory = new AnnoWebServiceFactoryV2(endpoint, timeout);
+//        AuthService authService = new BasicJWTAuthService(factory,
+//                new Authorization("APIKEY", clientSecret));
+        binder.bind(String.class)
+                .annotatedWith(Names.named("ANNO_ENDPOINT_V2"))
+                .toInstance(endpoint);
+//        binder.bind(AuthService.class)
+//                .annotatedWith(Names.named("ANNO_AUTH"))
+//                .toInstance(authService);
+        binder.bind(AnnoWebServiceFactoryV2.class).toInstance(factory);
+//        binder.bind(AnnoServiceV2.class).to(AnnoServiceV2.class);
     }
 
     private void configureMediaService(Binder binder) {

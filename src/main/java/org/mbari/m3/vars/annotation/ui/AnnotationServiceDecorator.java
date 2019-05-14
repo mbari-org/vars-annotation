@@ -349,6 +349,7 @@ public class AnnotationServiceDecorator {
         AnnotationService service = toolBox.getServices().getAnnotationService();
         List<AnnotationCount> annotationCounts = videoReferenceUuids.stream()
                 .map(uuid -> service.countAnnotations(uuid).join())
+                .filter(ac -> ac.getCount() > 0)
                 .collect(Collectors.toList());
 
         loadConcurrentAnnotations(annotationCounts);
