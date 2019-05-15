@@ -11,6 +11,7 @@ import org.mbari.m3.vars.annotation.services.AnnotationService;
 import org.mbari.m3.vars.annotation.services.MediaService;
 import org.mbari.m3.vars.annotation.ui.shared.DateTimePickerController;
 import org.mbari.m3.vars.annotation.util.FXMLUtils;
+import org.mbari.m3.vars.annotation.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -165,13 +166,18 @@ public class VideoBrowserPaneController {
             videoListView.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldValue, newValue) -> {
-                        mediaService.findByVideoName(newValue)
-                                .thenAccept(vs -> Platform.runLater(() -> {
-                                    getMediaListView().setItems(FXCollections.observableArrayList(vs));
-                                    if (vs.size() == 1) {
-                                        getMediaListView().getSelectionModel().select(0);
-                                    }
-                                }));
+                        if (newValue != null) {
+                            mediaService.findByVideoName(newValue)
+                                    .thenAccept(vs -> JFXUtilities.runOnFXThread(() -> {
+                                        getMediaListView().setItems(FXCollections.observableArrayList(vs));
+                                        if (vs.size() == 1) {
+                                            getMediaListView().getSelectionModel().select(0);
+                                        }
+                                    }));
+                        }
+                        else {
+                            JFXUtilities.runOnFXThread(() -> getMediaListView().setItems(FXCollections.emptyObservableList()));
+                        }
                     });
 
             videoListView.getSelectionModel()

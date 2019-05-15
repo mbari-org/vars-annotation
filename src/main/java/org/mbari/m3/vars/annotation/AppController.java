@@ -3,11 +3,6 @@ package org.mbari.m3.vars.annotation;
 import io.reactivex.Observable;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.TableView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import org.mbari.io.IOUtilities;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
@@ -20,9 +15,9 @@ import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.Alerts;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
+import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator2;
 import org.mbari.m3.vars.annotation.ui.AppPaneController;
 import org.mbari.net.URLUtilities;
-import org.mbari.util.SystemUtilities;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.time.Timecode;
@@ -34,8 +29,6 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
@@ -203,24 +196,26 @@ public class AppController {
         Media media = toolBox.getData().getMedia();
         if (show) {
             if (media != null) {
-                UUID uuid = media.getVideoReferenceUuid();
+                AnnotationServiceDecorator2 d2 = new AnnotationServiceDecorator2(toolBox);
+                d2.loadConcurrentAnnotations(media);
+//                UUID uuid = media.getVideoReferenceUuid();
 
                 /*
                   1. Find medias for your deployment that overlap the one with
                      the uuid you provided
                   2. Convert those medias to a list of their UUIDs
-                  3. Pass that list to findConcurrentAnnotations. That will
+                  3. Pass that list to loadConcurrentAnnotations. That will
                      get all annotations, from the overlapping media, that
                      overlap with the timebounds of your current media
                  */
-                toolBox.getServices()
-                        .getMediaService()
-                        .findConcurrentByVideoReferenceUuid(uuid)
-                        .thenApply(ms -> ms.stream()
-                                .filter(m -> !m.getVideoReferenceUuid().equals(uuid))
-                                .map(Media::getVideoReferenceUuid)
-                                .collect(Collectors.toList()))
-                        .thenAccept(decorator::findConcurrentAnnotations);
+//                toolBox.getServices()
+//                        .getMediaService()
+//                        .findConcurrentByVideoReferenceUuid(uuid)
+//                        .thenApply(ms -> ms.stream()
+//                                .filter(m -> !m.getVideoReferenceUuid().equals(uuid))
+//                                .map(Media::getVideoReferenceUuid)
+//                                .collect(Collectors.toList()))
+//                        .thenAccept(decorator::loadConcurrentAnnotations);
             }
         }
         else {

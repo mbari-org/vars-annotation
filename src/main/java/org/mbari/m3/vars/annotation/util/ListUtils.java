@@ -63,6 +63,14 @@ public class ListUtils {
         return list;
     }
 
+    public static <T> T head(List<T> list) {
+        return list.get(0);
+    }
+
+    public static <T> List<T> tail(List<T> list) {
+        return list.subList(1, list.size());
+    }
+
 
 
 }

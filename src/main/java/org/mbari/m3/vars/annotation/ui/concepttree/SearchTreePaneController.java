@@ -105,7 +105,7 @@ public class SearchTreePaneController {
                         org.mbari.m3.vars.annotation.ui.shared.FilterableTreeItem<Concept> root = (org.mbari.m3.vars.annotation.ui.shared.FilterableTreeItem<Concept>) newValue;
                         root.predicateProperty().bind(Bindings.createObjectBinding(() -> {
                             if (tf.getText() == null || tf.getText().isEmpty()) {
-                                return null;
+                                return (Concept c) -> true;
                             }
                             else {
                                 return (Concept c) -> {
