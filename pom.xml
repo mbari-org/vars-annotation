@@ -37,7 +37,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- Dependency versions -->
-    <auth0.version>3.8.0</auth0.version>
+    <auth0.version>3.8.1</auth0.version>
     <avfoundation.version>2.2.2</avfoundation.version>
     <blackmagic.version>0.0.2</blackmagic.version>
     <caffeine.version>2.7.0</caffeine.version>
