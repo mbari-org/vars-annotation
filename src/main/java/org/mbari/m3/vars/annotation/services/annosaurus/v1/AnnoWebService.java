@@ -1,8 +1,6 @@
 package org.mbari.m3.vars.annotation.services.annosaurus.v1;
 
-import org.mbari.m3.vars.annotation.model.AncillaryData;
-import org.mbari.m3.vars.annotation.model.Annotation;
-import org.mbari.m3.vars.annotation.model.AnnotationCount;
+import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.vcr4j.time.Timecode;
 import retrofit2.Call;
 import retrofit2.http.*;
@@ -100,5 +98,15 @@ public interface AnnoWebService {
 
     @GET("ancillarydata/observation/{uuid}")
     Call<AncillaryData> findAncillaryData(@Path("uuid") UUID observationUuid);
+
+    @POST("annotations/concurrent")
+    Call<List<Annotation>> findByConcurrentRequest(@Body ConcurrentRequest concurrentRequest,
+                                             @Query("limit") Long limit,
+                                             @Query("offset") Long offset,
+                                             @HeaderMap Map<String, String> headers);
+
+    @POST("annotations/concurrent/count")
+    Call<ConcurrentRequestCount> countByConcurrentRequest(@Body ConcurrentRequest concurrentRequest,
+                                                          @HeaderMap Map<String, String> headers);
 
 }

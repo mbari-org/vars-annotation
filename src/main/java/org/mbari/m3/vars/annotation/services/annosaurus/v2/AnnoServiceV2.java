@@ -6,6 +6,7 @@ import org.mbari.m3.vars.annotation.services.RetrofitWebService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -25,6 +26,14 @@ public class AnnoServiceV2 implements RetrofitWebService {
 
     public CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, Long limit, Long offset) {
         return sendRequest(annoService.findByVideoReferenceUuid(videoReferenceUuid, limit, offset));
+    }
+
+    public CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid,
+                                                               Instant start,
+                                                               Instant end,
+                                                               Long limit,
+                                                               Long offset) {
+        return sendRequest(annoService.findByVideoReferenceUuidAndTimestamps(videoReferenceUuid, start, end, limit, offset));
     }
 
 }

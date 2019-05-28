@@ -91,6 +91,17 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(annoService.countByVideoReferenceUuid(videoReferenceUuid));
     }
 
+
+    public CompletableFuture<List<Annotation>> findByConcurrentRequest(ConcurrentRequest concurrentRequest,
+                                                                       long limit,
+                                                                       long offset) {
+        return sendRequest(annoService.findByConcurrentRequest(concurrentRequest, limit, offset, bulkHeaders));
+    }
+
+    public CompletableFuture<ConcurrentRequestCount> countByConcurrentRequest(ConcurrentRequest concurrentRequest) {
+        return sendRequest(annoService.countByConcurrentRequest(concurrentRequest, bulkHeaders));
+    }
+
     @Override
     public CompletableFuture<List<String>> findGroups() {
         return sendRequest(annoService.findGroups());

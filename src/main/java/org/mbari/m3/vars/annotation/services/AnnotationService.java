@@ -40,6 +40,12 @@ public interface AnnotationService {
 
     CompletableFuture<AnnotationCount> countAnnotations(UUID videoReferenceUuid);
 
+    CompletableFuture<List<Annotation>> findByConcurrentRequest(ConcurrentRequest concurrentRequest,
+                                                                long limit,
+                                                                long offset);
+
+    CompletableFuture<ConcurrentRequestCount> countByConcurrentRequest(ConcurrentRequest concurrentRequest);
+
     CompletableFuture<List<String>> findGroups();
 
     CompletableFuture<List<String>> findActivities();
