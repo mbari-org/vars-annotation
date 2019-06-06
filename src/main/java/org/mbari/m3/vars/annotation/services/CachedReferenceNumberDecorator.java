@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -29,16 +30,8 @@ public class CachedReferenceNumberDecorator {
     private final List<ConceptAssociation> conceptAssociations = new CopyOnWriteArrayList<>();
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final Comparator<Association> comparator = (a, b) -> {
-        try {
-            Integer ai = Integer.parseInt(a.getLinkValue());
-            Integer bi = Integer.parseInt(b.getLinkValue());
-            return ai.compareTo(bi);
-        }
-        catch (Exception e) {
-            return a.getLinkValue().compareTo(b.getLinkValue());
-        }
-    };
+
+
 
 
     public CachedReferenceNumberDecorator(UIToolBox toolBox) {
@@ -102,9 +95,10 @@ public class CachedReferenceNumberDecorator {
                             .collect(Collectors.toCollection(ArrayList::new));
 
                     remoteAssociations.addAll(currentReferences(concept));
-                    return remoteAssociations.stream()
-                            .sorted(comparator)
+                    List<Association> as = remoteAssociations.stream()
+                            .sorted(Association.IDENTITY_REF_NUM_COMPARATOR)
                             .collect(Collectors.toList());
+                    return as;
                 });
 
     }
@@ -119,7 +113,7 @@ public class CachedReferenceNumberDecorator {
                             .collect(Collectors.toCollection(ArrayList::new));
                     remoteAssociations.addAll(currentReferences());
                     return remoteAssociations.stream()
-                            .sorted(comparator)
+                            .sorted(Association.IDENTITY_REF_NUM_COMPARATOR)
                             .collect(Collectors.toList());
                 });
     }

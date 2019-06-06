@@ -15,6 +15,7 @@ import org.mbari.m3.vars.annotation.services.CachedReferenceNumberDecorator;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -26,6 +27,27 @@ public class OldReferenceNumberBC extends AbstractBC {
     private ChoiceDialog<String> dialog;
     private final String associationKey;
     private final CachedReferenceNumberDecorator decorator;
+
+    private final Function<String, Optional<Integer>> toIntMaybe = (a) -> {
+        try {
+            return Optional.of(Integer.parseInt(a));
+        }
+        catch (Exception e) {
+            return Optional.empty();
+        }
+    };
+
+    private final Comparator<String> intMaybeComparator = (a, b) -> {
+        Optional<Integer> as = toIntMaybe.apply(a);
+        Optional<Integer> bs = toIntMaybe.apply(b);
+        if (as.isPresent() && bs.isPresent()) {
+            return as.get().compareTo(bs.get());
+        }
+        else {
+            return a.compareTo(b);
+        }
+    };
+
 
     public OldReferenceNumberBC(Button button,
                                 UIToolBox toolBox,
@@ -94,7 +116,7 @@ public class OldReferenceNumberBC extends AbstractBC {
         return as.stream()
                 .map(Association::getLinkValue)
                 .distinct()
-                .sorted()
+                .sorted(intMaybeComparator)
                 .collect(Collectors.toList());
     }
 

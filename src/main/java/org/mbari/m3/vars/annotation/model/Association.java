@@ -1,10 +1,8 @@
 package org.mbari.m3.vars.annotation.model;
 
 import javax.swing.text.html.Option;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -115,4 +113,33 @@ public class Association implements Cloneable, Details {
         }
         return a;
     }
+
+    /**
+     * Function to convert an association containing an identity reference to
+     * a integer. Note that this handles cases where the identity ref
+     * isn't an integer as sometimes happens.
+     */
+    public static final Function<Association, Optional<Integer>> ASSOCATION_TO_IDENTITY_REF_NUM = (a) -> {
+        try {
+            return Optional.of(Integer.parseInt(a.getLinkValue()));
+        }
+        catch (Exception e) {
+            return Optional.empty();
+        }
+    };
+
+    /**
+     * Comparator for identity reference associations. Typically the linkvalue
+     * is an integer, but we have to handle the cases where it's not an int.
+     */
+    public static final Comparator<Association> IDENTITY_REF_NUM_COMPARATOR = (a, b) -> {
+        Optional<Integer> as = ASSOCATION_TO_IDENTITY_REF_NUM.apply(a);
+        Optional<Integer> bs = ASSOCATION_TO_IDENTITY_REF_NUM.apply(b);
+        if (as.isPresent() && bs.isPresent()) {
+            return as.get().compareTo(bs.get());
+        }
+        else {
+            return a.getLinkValue().compareTo(b.getLinkValue());
+        }
+    };
 }
