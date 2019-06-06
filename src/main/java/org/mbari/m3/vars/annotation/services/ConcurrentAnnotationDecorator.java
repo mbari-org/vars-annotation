@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.ui;
+package org.mbari.m3.vars.annotation.services;
 
 import com.google.common.collect.Lists;
 import io.reactivex.Observable;
@@ -30,10 +30,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
+ * Decorates annotation and media services to load concurrent annotations. That
+ * is annotations from media from the same video sequence that overlap in time
+ * with the currently annotated media.
+ *
  * @author Brian Schlining
  * @since 2019-05-14T14:45:00
  */
-public class AnnotationServiceConcurrentDecorator {
+public class ConcurrentAnnotationDecorator {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final UIToolBox toolBox;
@@ -42,7 +46,7 @@ public class AnnotationServiceConcurrentDecorator {
     private final int numberSimultaneousPages;
     private final EventBus eventBus;
 
-    public AnnotationServiceConcurrentDecorator(UIToolBox toolBox) {
+    public ConcurrentAnnotationDecorator(UIToolBox toolBox) {
         this.toolBox = toolBox;
         eventBus = toolBox.getEventBus();
         AppConfig appConfig = toolBox.getAppConfig();

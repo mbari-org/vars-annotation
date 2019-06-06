@@ -3,6 +3,7 @@ package org.mbari.m3.vars.annotation.ui;
 import org.mbari.m3.vars.annotation.AppDemo;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.services.ConcurrentAnnotationDecorator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,7 @@ public class LoadConcurrentAnnotationsDemo {
 //                        .collect(Collectors.toList()))
 //                .thenAccept(decorator::findConcurrentAnnotations);
 
-        AnnotationServiceConcurrentDecorator decorator2 = new AnnotationServiceConcurrentDecorator(toolBox);
+        ConcurrentAnnotationDecorator decorator2 = new ConcurrentAnnotationDecorator(toolBox);
         toolBox.getServices()
                 .getMediaService()
                 .findConcurrentByVideoReferenceUuid(uuid)

@@ -15,7 +15,7 @@ import org.mbari.m3.vars.annotation.services.CachedConceptService;
 import org.mbari.m3.vars.annotation.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.Alerts;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
-import org.mbari.m3.vars.annotation.ui.AnnotationServiceConcurrentDecorator;
+import org.mbari.m3.vars.annotation.services.ConcurrentAnnotationDecorator;
 import org.mbari.m3.vars.annotation.ui.AppPaneController;
 import org.mbari.net.URLUtilities;
 import org.mbari.vcr4j.VideoError;
@@ -196,7 +196,7 @@ public class AppController {
         Media media = toolBox.getData().getMedia();
         if (show) {
             if (media != null) {
-                AnnotationServiceConcurrentDecorator d2 = new AnnotationServiceConcurrentDecorator(toolBox);
+                ConcurrentAnnotationDecorator d2 = new ConcurrentAnnotationDecorator(toolBox);
                 d2.loadConcurrentAnnotations(media);
 //                UUID uuid = media.getVideoReferenceUuid();
 

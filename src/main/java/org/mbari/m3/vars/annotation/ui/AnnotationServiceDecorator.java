@@ -345,6 +345,11 @@ public class AnnotationServiceDecorator {
     }
 
 
+    /**
+     *
+     * @param videoReferenceUuids
+     * @deprecated Use {@link org.mbari.m3.vars.annotation.services.ConcurrentAnnotationDecorator} instead
+     */
     public void findConcurrentAnnotations(Collection<UUID> videoReferenceUuids) {
         AnnotationService service = toolBox.getServices().getAnnotationService();
         List<AnnotationCount> annotationCounts = videoReferenceUuids.stream()
@@ -442,6 +447,7 @@ public class AnnotationServiceDecorator {
      * Finds all the reference numbers used in a video sequence
      * @param media
      * @return
+     * @deprecated Use {@link org.mbari.m3.vars.annotation.services.CachedReferenceNumberDecorator} instead
      */
     public CompletableFuture<List<Association>> findReferenceNumberAssociations(Media media, String associationKey) {
         CompletableFuture<List<Association>> f = new CompletableFuture<>();
@@ -461,6 +467,14 @@ public class AnnotationServiceDecorator {
         return f;
     }
 
+    /**
+     *
+     * @param media
+     * @param associationKey
+     * @param concept
+     * @return
+     * @deprecated Use {@link org.mbari.m3.vars.annotation.services.CachedReferenceNumberDecorator} instead
+     */
     public CompletableFuture<List<Association>> findReferenceNumberAssociationsForConcept(Media media,
                                                                                           String associationKey,
                                                                                           String concept) {

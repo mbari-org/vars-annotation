@@ -9,6 +9,7 @@ import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.services.CachedReferenceNumberDecorator;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
 
 import java.util.ArrayList;
@@ -21,14 +22,16 @@ import java.util.List;
 public class NewReferenceNumberBC extends AbstractBC {
 
     private final String associationKey;
-    private final AnnotationServiceDecorator decorator;
+    private final CachedReferenceNumberDecorator decorator;
 
 
-    public NewReferenceNumberBC(Button button, UIToolBox toolBox) {
+    public NewReferenceNumberBC(Button button,
+                                UIToolBox toolBox,
+                                CachedReferenceNumberDecorator decorator) {
         super(button, toolBox);
         this.associationKey = toolBox.getConfig()
                 .getString("app.annotation.identity.reference");
-        this.decorator = new AnnotationServiceDecorator(toolBox);
+        this.decorator = decorator;
     }
 
     protected void init() {
@@ -41,13 +44,14 @@ public class NewReferenceNumberBC extends AbstractBC {
     public void apply() {
         Media media = toolBox.getData().getMedia();
         List<Annotation> selected = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-        decorator.findReferenceNumberAssociations(media, associationKey)
+        decorator.findNewReferenceNumbers(media)
                 .thenAccept(as -> {
-                            int i = associationsToMaxNumber(as) + 1;
-                            Association a = new Association(associationKey, Association.VALUE_SELF, i + "");
-                            toolBox.getEventBus()
-                                    .send(new CreateAssociationsCmd(a, selected));
-                        });
+                    int i = associationsToMaxNumber(as) + 1;
+                    Association a = new Association(associationKey, Association.VALUE_SELF, i + "");
+                    toolBox.getEventBus()
+                            .send(new CreateAssociationsCmd(a, selected));
+                });
+
     }
 
     private int associationsToMaxNumber(List<Association> as) {

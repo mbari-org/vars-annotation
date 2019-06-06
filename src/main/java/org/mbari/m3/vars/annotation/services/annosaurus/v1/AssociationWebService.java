@@ -1,6 +1,8 @@
 package org.mbari.m3.vars.annotation.services.annosaurus.v1;
 
 import org.mbari.m3.vars.annotation.model.Association;
+import org.mbari.m3.vars.annotation.model.ConceptAssociationRequest;
+import org.mbari.m3.vars.annotation.model.ConceptAssociationResponse;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -51,5 +53,9 @@ public interface AssociationWebService {
     @POST("associations/delete")
     Call<Void> delete(@Body Collection<UUID> associationUuids,
                       @HeaderMap Map<String, String> headers);
+
+    @POST("associations/conceptassociations")
+    Call<ConceptAssociationResponse> findByConceptAssociationRequest(@Body ConceptAssociationRequest request,
+                                                                     @HeaderMap Map<String, String> headers);
 
 }

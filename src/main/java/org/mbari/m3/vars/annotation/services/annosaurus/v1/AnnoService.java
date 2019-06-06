@@ -102,6 +102,10 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(annoService.countByConcurrentRequest(concurrentRequest, bulkHeaders));
     }
 
+    public CompletableFuture<ConceptAssociationResponse> findByConceptAssociationRequest(ConceptAssociationRequest request) {
+        return sendRequest(assService.findByConceptAssociationRequest(request, bulkHeaders));
+    }
+
     @Override
     public CompletableFuture<List<String>> findGroups() {
         return sendRequest(annoService.findGroups());

@@ -11,6 +11,7 @@ import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Association;
 import org.mbari.m3.vars.annotation.model.Media;
+import org.mbari.m3.vars.annotation.services.CachedReferenceNumberDecorator;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
 
 import java.util.*;
@@ -24,13 +25,15 @@ public class OldReferenceNumberBC extends AbstractBC {
 
     private ChoiceDialog<String> dialog;
     private final String associationKey;
-    private final AnnotationServiceDecorator decorator;
+    private final CachedReferenceNumberDecorator decorator;
 
-    public OldReferenceNumberBC(Button button, UIToolBox toolBox) {
+    public OldReferenceNumberBC(Button button,
+                                UIToolBox toolBox,
+                                CachedReferenceNumberDecorator decorator) {
         super(button, toolBox);
         this.associationKey = toolBox.getConfig()
                 .getString("app.annotation.identity.reference");
-        this.decorator = new AnnotationServiceDecorator(toolBox);
+        this.decorator = decorator;
     }
 
     protected void init() {
@@ -49,27 +52,26 @@ public class OldReferenceNumberBC extends AbstractBC {
                 .collect(Collectors.toList());
 
         if (concepts.size() == 1) {
-
-            decorator.findReferenceNumberAssociationsForConcept(media, associationKey, concepts.get(0))
-                    .thenAccept(as -> {
-                        List<String> refNums = associationToIdentityRefs(as);
-                        Platform.runLater(() -> {
-                            ChoiceDialog<String> dlg = getDialog();
-                            dlg.getItems().clear();
-                            if (!refNums.isEmpty()) {
-                                dlg.getItems().addAll(refNums);
-                                dlg.setSelectedItem(refNums.get(refNums.size() - 1));
-                                Optional<String> integer = dlg.showAndWait();
-                                integer.ifPresent(i -> {
-                                    Association a = new Association(associationKey, Association.VALUE_SELF, i);
-                                    toolBox.getEventBus()
-                                            .send(new CreateAssociationsCmd(a, selected));
-                                });
-                            }
-                        });
-
-                    });
+            decorator.findOldReferenceNumbers(media, concepts.get(0))
+                    .thenAccept(as -> updateUI(selected, associationToIdentityRefs(as)));
         }
+    }
+
+    private void updateUI(List<Annotation> selected, List<String> refNums) {
+        Platform.runLater(() -> {
+            ChoiceDialog<String> dlg = getDialog();
+            dlg.getItems().clear();
+            if (!refNums.isEmpty()) {
+                dlg.getItems().addAll(refNums);
+                dlg.setSelectedItem(refNums.get(refNums.size() - 1));
+                Optional<String> integer = dlg.showAndWait();
+                integer.ifPresent(i -> {
+                    Association a = new Association(associationKey, Association.VALUE_SELF, i);
+                    toolBox.getEventBus()
+                            .send(new CreateAssociationsCmd(a, selected));
+                });
+            }
+        });
     }
 
     private ChoiceDialog<String> getDialog() {

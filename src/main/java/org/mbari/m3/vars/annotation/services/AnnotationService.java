@@ -46,6 +46,8 @@ public interface AnnotationService {
 
     CompletableFuture<ConcurrentRequestCount> countByConcurrentRequest(ConcurrentRequest concurrentRequest);
 
+    CompletableFuture<ConceptAssociationResponse> findByConceptAssociationRequest(ConceptAssociationRequest request);
+
     CompletableFuture<List<String>> findGroups();
 
     CompletableFuture<List<String>> findActivities();

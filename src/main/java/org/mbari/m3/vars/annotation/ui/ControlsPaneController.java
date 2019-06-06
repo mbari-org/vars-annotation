@@ -16,6 +16,7 @@ import org.mbari.m3.vars.annotation.events.MediaControlsChangedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaControls;
 import org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.SharktoptodaControlPane;
 import org.mbari.m3.vars.annotation.model.Annotation;
+import org.mbari.m3.vars.annotation.services.CachedReferenceNumberDecorator;
 import org.mbari.m3.vars.annotation.ui.abpanel.AssocButtonPaneController;
 import org.mbari.m3.vars.annotation.ui.buttons.*;
 import org.mbari.m3.vars.annotation.ui.roweditor.RowEditorController;
@@ -113,11 +114,13 @@ public class ControlsPaneController {
             Button commentBtn = new JFXButton();
             new CommentBC(commentBtn, toolBox);
 
+            CachedReferenceNumberDecorator decorator = new CachedReferenceNumberDecorator(toolBox);
+
             Button newRefBtn = new JFXButton();
-            new NewReferenceNumberBC(newRefBtn, toolBox);
+            new NewReferenceNumberBC(newRefBtn, toolBox, decorator);
 
             Button oldRefBtn = new JFXButton();
-            new OldReferenceNumberBC(oldRefBtn, toolBox);
+            new OldReferenceNumberBC(oldRefBtn, toolBox, decorator);
 
             Button uponBtn = new JFXButton();
             new UponBC(uponBtn, toolBox);
