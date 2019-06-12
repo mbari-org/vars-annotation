@@ -42,8 +42,10 @@ import java.util.Optional;
 public class SharktoptodaControlPane extends Pane {
 
     private final UIToolBox toolBox;
-    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.FULL)
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS'Z'")
             .withZone(ZoneId.of("UTC"));
+//    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.FULL)
+//            .withZone(ZoneId.of("UTC"));
     JFXSlider speedSlider;
     JFXSlider scrubber;
     Button rewindButton;
