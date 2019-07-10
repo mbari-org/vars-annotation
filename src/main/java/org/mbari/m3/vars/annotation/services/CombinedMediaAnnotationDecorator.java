@@ -29,6 +29,8 @@ public class CombinedMediaAnnotationDecorator {
         this.chunkTimeout = toolBox.getConfig().getDuration("annotation.service.timeout");
     }
 
+
+
     /**
      * Retrieve all annotations in a video sequence
      * @param videoSequenceName The name of the video sequence to lookup
