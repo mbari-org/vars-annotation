@@ -109,4 +109,16 @@ public interface AnnoWebService {
     Call<ConcurrentRequestCount> countByConcurrentRequest(@Body ConcurrentRequest concurrentRequest,
                                                           @HeaderMap Map<String, String> headers);
 
+    @POST("annotations/multi")
+    Call<List<Annotation>> findByMultiRequest(@Body MultiRequest multiRequest,
+                                              @Query("limit") Long limit,
+                                              @Query("offset") Long offset,
+                                              @HeaderMap Map<String, String> headers);
+
+    @POST("annotations/multi/count")
+    Call<MultiRequestCount> countByMultiRequest(@Body MultiRequest multiRequest,
+                                                          @HeaderMap Map<String, String> headers);
+
+
+
 }

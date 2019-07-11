@@ -24,6 +24,7 @@ import org.mbari.m3.vars.annotation.messages.ShowProgress;
 import org.mbari.m3.vars.annotation.model.Annotation;
 import org.mbari.m3.vars.annotation.model.Media;
 import org.mbari.m3.vars.annotation.services.CombinedMediaAnnotationDecorator;
+import org.mbari.m3.vars.annotation.services.MultiAnnotationDecorator;
 import org.mbari.m3.vars.annotation.ui.BulkEditorPaneController;
 import org.mbari.m3.vars.annotation.util.JFXUtilities;
 import org.slf4j.Logger;
@@ -185,15 +186,32 @@ public class AnnotationViewController {
             eventBus.send(new ShowProgress());
             eventBus.send(new SetStatusBarMsg("Loading all annotation for " +
                     media.getVideoSequenceName()));
-            CombinedMediaAnnotationDecorator decorator = new CombinedMediaAnnotationDecorator(toolBox);
-            decorator.findAllAnnotationsInDeployment(media.getVideoSequenceName())
-                    .thenAccept(as -> {
-                        log.debug("---- FOUND " + as.size() + " annotations");
-                        items.addAll(as);
-                        tableView.setDisable(false);
-                        getBulkEditorPaneController().refresh();
-                        eventBus.send(new HideProgress());
-                    });
+
+            EventBus transientEventBus = new EventBus();
+            transientEventBus.toObserverable()
+                    .ofType(List.class)
+                    .map(xs -> (List<Annotation>) xs)
+                    .subscribe(items::addAll,
+                            ex -> {}, // TODO handle?
+                            () -> {
+                                tableView.setDisable(false);
+                                getBulkEditorPaneController().refresh();
+                            });
+
+            MultiAnnotationDecorator decorator = new MultiAnnotationDecorator(toolBox,
+                    eventBus,
+                    transientEventBus);
+            decorator.loadMultiAnnotations(media);
+
+//            CombinedMediaAnnotationDecorator decorator = new CombinedMediaAnnotationDecorator(toolBox);
+//            decorator.findAllAnnotationsInDeployment(media.getVideoSequenceName())
+//                    .thenAccept(as -> {
+//                        log.debug("---- FOUND " + as.size() + " annotations");
+//                        items.addAll(as);
+//                        tableView.setDisable(false);
+//                        getBulkEditorPaneController().refresh();
+//                        eventBus.send(new HideProgress());
+//                    });
         }
     }
 
