@@ -187,21 +187,16 @@ public class AnnotationViewController {
             eventBus.send(new SetStatusBarMsg("Loading all annotation for " +
                     media.getVideoSequenceName()));
 
-            EventBus transientEventBus = new EventBus();
-            transientEventBus.toObserverable()
-                    .ofType(List.class)
-                    .map(xs -> (List<Annotation>) xs)
-                    .subscribe(items::addAll,
-                            ex -> {}, // TODO handle?
-                            () -> {
-                                tableView.setDisable(false);
-                                getBulkEditorPaneController().refresh();
-                            });
 
             MultiAnnotationDecorator decorator = new MultiAnnotationDecorator(toolBox,
-                    eventBus,
-                    transientEventBus);
-            decorator.loadMultiAnnotations(media);
+                    eventBus);
+            Observable<List<Annotation>> observable = decorator.loadMultiAnnotations(media);
+            observable.subscribe(items::addAll,
+                    ex -> {},
+                    () -> {
+                        tableView.setDisable(false);
+                        getBulkEditorPaneController().refresh();
+                    });
 
 //            CombinedMediaAnnotationDecorator decorator = new CombinedMediaAnnotationDecorator(toolBox);
 //            decorator.findAllAnnotationsInDeployment(media.getVideoSequenceName())
