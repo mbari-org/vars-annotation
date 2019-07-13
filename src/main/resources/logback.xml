@@ -27,11 +27,12 @@
     </appender>
 
     <logger name="java.util.Date" level="WARN" />
-    <logger name="org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoWebServiceFactory" level="INFO" />
+    <logger name="org.mbari.m3.vars.annotation.services.annosaurus.v1.AnnoWebServiceFactory" level="DEBUG" />
     <logger name="org.mbari.m3.vars.annotation.util.ActiveAppPinger" level="WARN" />
     <logger name="org.mbari.vcr4j.jserialcomm.SerialCommVideoIO" level="INFO" />
+    <logger name="org.mbari.vcr4j" level="INFO" />
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="FILE" />
         <appender-ref ref="CONSOLE" />
     </root>
