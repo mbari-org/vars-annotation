@@ -1,6 +1,5 @@
 package org.mbari.vars.services.util;
 
-import javax.xml.bind.DatatypeConverter;
 import java.time.Duration;
 
 /**
@@ -47,10 +46,10 @@ public class FormatUtils {
     }
 
     public static String toHexString(byte[] bytes) {
-        return DatatypeConverter.printHexBinary(bytes);
+        return HexUtils.printHexBinary(bytes);
     }
 
     public static byte[] fromHexString(String hex) {
-        return DatatypeConverter.parseHexBinary(hex);
+        return HexUtils.parseHexBinary(hex);
     }
 }

@@ -1,11 +1,11 @@
 language: java
 jdk:
-  - oraclejdk8
+  - openjdk11
 branches:
   only:
-    - master
+    - java11
 install: true
-script: mvn clean compile -DskipTests=true
+script: gradle check
 notifications:
   email:
     - bschlining@gmail.com

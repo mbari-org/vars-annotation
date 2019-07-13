@@ -8,7 +8,6 @@ module org.mbari.vars.services {
   requires java.jwt;
   requires java.prefs;
   requires java.scripting;
-  requires java.xml.bind;
   requires javax.inject;
   requires jsr305;
   requires okhttp3.logging;

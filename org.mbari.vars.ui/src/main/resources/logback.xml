@@ -4,6 +4,9 @@
 -->
 <configuration scan="true">
 
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
+
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>debug</level>
@@ -31,6 +34,7 @@
     <logger name="org.mbari.vars.services.util.ActiveAppPinger" level="WARN" />
     <logger name="org.mbari.vcr4j.jserialcomm.SerialCommVideoIO" level="INFO" />
     <logger name="org.mbari.vcr4j" level="INFO" />
+    <logger name="org.gradle" level="WARN" />
 
     <root level="DEBUG">
         <appender-ref ref="FILE" />
