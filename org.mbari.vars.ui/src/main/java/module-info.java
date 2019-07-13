@@ -29,5 +29,6 @@ module org.mbari.vars.ui {
   requires vcr4j.sharktopoda;
   requires vcr4j.ui;
 
+  opens org.mbari.m3.vars.annotation to javafx.graphics;
   opens org.mbari.vars.ui to javafx.graphics;
 }

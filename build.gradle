@@ -49,6 +49,7 @@ subprojects {
             implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
             implementation 'io.reactivex.rxjava2:rxjavafx:2.11.0-RC16'
             implementation 'javax.inject:javax.inject:1'
+            implementation 'javax.servlet:javax.servlet-api:4.0.1'
             implementation 'javax.xml.bind:jaxb-api:2.3.0'
             implementation 'org.controlsfx:controlsfx:11.0.0'
             implementation 'org.glassfish.jersey.core:jersey-client:2.29'
@@ -72,3 +73,4 @@ subprojects {
     task tree(type: DependencyReportTask) {}
 
 }
+

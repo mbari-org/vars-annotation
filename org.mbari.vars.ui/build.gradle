@@ -33,6 +33,9 @@ dependencies {
     implementation('org.mbari.vcr4j:vcr4j-ui') {
         exclude group: 'org.mbari.vcr4j', module: 'vcr4j-v2-adapter'
     }
+
+    runtimeOnly 'ch.qos.logback:logback-classic'
+    runtimeOnly 'javax.servlet:javax.servlet-api'
 }
 
 javafx {
@@ -44,7 +47,7 @@ javafx {
     ]
 }
 
-mainClassName = "org.mbari.vars.ui/org.mbari.vars.ui.App"
+mainClassName = "org.mbari.vars.ui/org.mbari.m3.vars.annotation.App"
 jlink {
     imageZip = file("$buildDir/image-zip/vars-annotation.zip")
     options = ['--bind-services', '--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
