@@ -1,0 +1,94 @@
+.root {
+    -dock-color: rgb(43, 57, 64);
+}
+
+.docknode-title-bar {
+    -fx-background-color: rgb(43, 57, 64);
+}
+
+.docknode-title-text{
+    -fx-text-fill: derive(#B3A9A3, -50%);
+}
+
+.docknode-content-panel{
+    -fx-background-color: rgb(43, 57, 64);
+    -fx-padding: 0
+}
+
+.docknode-floating-stack-container-panel {
+    -fx-background-color: rgb(43, 57, 64);
+    -fx-padding: 4
+}
+
+.docknode-split-pane {
+    -fx-padding: 0;
+}
+
+.docknode-split-pane *.split-pane-divider {
+    -fx-padding: 2;
+    -fx-border-color:transparent;
+    -fx-color: -dock-color;
+}
+
+.docknode-tab-panel{
+    -fx-padding: 0;
+}
+
+.docknode-command-button{
+    -fx-background-color:transparent;
+    -fx-background-radius: 0,0,0;
+}
+
+.docknode-command-button:hover{
+    -fx-background-color: #F0544C;
+}
+
+.docknode-command-button:pressed{
+    -fx-background-color: #F0544C;
+}
+
+.docknode-command-button:focused{
+    -fx-background-color:transparent;
+}
+
+.docknode-command-button-close{
+    -fx-background-color:transparent;
+    -fx-background-radius: 0,0,0;
+}
+
+.docknode-command-button-close:pressed{
+    -fx-background-color: rgb(43, 57, 64);
+}
+
+.docknode-command-button-close:hover{
+    -fx-background-color: rgb(43, 57, 64);
+}
+
+.docknode-command-button-close:focused{
+    -fx-background-color:transparent;
+}
+
+.station {
+    -fx-background-color: rgb(0,0,0);
+    -fx-padding: 0
+}
+
+.substation-title-bar {
+    -fx-background-color: rgb(0,0,0);
+}
+
+.substation-title-text{
+    -fx-text-fill: #B3A9A3;
+}
+
+.dockzone-circle-container-selectors {
+    -fx-fill: rgba(0,0,0,0.7);
+}
+
+.dockzone-circle-selector {
+    -fx-fill: rgba(0,0,0,0.8);
+}
+
+.dockzone-rectangle-preview {
+    -fx-fill: rgba(63,138,163,0.8);
+}

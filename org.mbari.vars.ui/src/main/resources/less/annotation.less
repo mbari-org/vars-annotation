@@ -1,0 +1,545 @@
+//@default-color: #3D3D3D;
+
+//@default-color: #2D2D2D;
+@attention-color: #FFB74D;
+@concurrent-color: #FDD835;
+@default-color: rgb(43, 57, 64);
+@default-compliment-color-dark: spin(darken(@default-color, 25%), 8); /* darkened by 25% and spun by 8 degrees */
+@default-compliment-color-light: spin(lighten(@default-color, 25%), 8); /* lightened by 25% and spun by 8 degrees */
+@default-compliment-monochrome: #3b637e;
+@default-table-text: #79c9ff;
+@default-text: #B3A9A3;
+@emphasis-color: #5D3D3D;
+@hover-color: #454545;
+@image-color: #1E88E5;
+@sample-color: #00600f;
+@search-color: #388e3c;
+@selected-color: #F0544C;
+@selected-text: #FFFFFF;
+
+.root {
+  /*-fx-font-size: 16pt;
+  -fx-font-family: "Courier New"; */
+  -fx-base: @default-color;
+  -fx-background: @default-color;
+  -icons-color: @default-text;
+}
+
+/*
+  All Other CSS in alphabetical order by selector
+ */
+
+/* --- Annotation Table --- */
+.annotable-association-cell {
+
+}
+
+.annotable-association-cell:empty {
+  -fx-opacity: 0;
+}
+
+/* Hide the scroll bars in the association list in the annotation table */
+.annotable-association-cell .scroll-bar:vertical .increment-arrow,
+.annotable-association-cell .scroll-bar:vertical .decrement-arrow,
+.annotable-association-cell .scroll-bar:vertical .increment-button,
+.annotable-association-cell .scroll-bar:vertical .decrement-button,
+.annotable-association-cell .scroll-bar:horizontal .increment-arrow,
+.annotable-association-cell .scroll-bar:horizontal .decrement-arrow,
+.annotable-association-cell .scroll-bar:horizontal .increment-button,
+.annotable-association-cell .scroll-bar:horizontal .decrement-button {
+  -fx-padding:0;
+}
+
+
+#association-editor-grid {
+  -fx-padding: 10;
+  -fx-hgap: 10;
+  -fx-vgap: 10;
+}
+
+
+.button {
+  -fx-background-radius: 0 0 0 0;
+  -fx-background-color: @default-color;
+  -fx-text-fill: @default-text;
+}
+
+.button:hover {
+  -fx-background-color: @selected-color;
+  -fx-text-fill: @selected-text;
+}
+
+.button-invalid .text {
+  -fx-strikethrough: true;
+}
+
+/* --- Concept Button Panel --- */
+.cbpanel-button {
+  -fx-font-size: 14px;
+  -fx-background-color: @default-color;
+}
+
+.cbpanel-button:hover {
+  -fx-font-style: italic;
+  -fx-background-color: @selected-color;
+  -fx-text-fill: @selected-text;
+}
+
+.cbpanel-label-overview {
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+}
+
+.cell {
+  -fx-background-color: @default-color;
+  -fx-text-fill: @default-text;
+}
+
+.cell:odd {
+  -fx-background-color: @default-color;
+}
+
+.cell:hover {
+  -fx-background-color: @hover-color;
+}
+
+.cell:selected {
+  -fx-background-color: @selected-color;
+  -fx-text-fill: @selected-text;
+}
+
+.close, .minimize {
+  -fx-border-color: @default-color;
+  -fx-border-radius: 1;
+}
+
+.combo-box {
+  -fx-background-color: @default-color;
+  -fx-text-fill: @default-text;
+  -fx-border-radius: 0;
+  -fx-background-radius: 0;
+}
+
+.combo-box .list-cell {
+  -fx-background-color: @default-color;
+}
+
+//.combo-box .combo-box-popup .list-view, .combo-box .combo-box-popup .list-cell {
+//  -fx-background-color: @default-color;
+//  -fx-text-fill: @default-text ;
+//}
+
+.combo-box .combo-box-popup .list-cell:hover {
+  -fx-text-fill: @selected-text ;
+  -fx-background-color: @selected-color ;
+}
+
+.combo-box .combo-box-popup .list-cell:selected {
+  -fx-text-fill: @selected-text ;
+  -fx-background-color: @selected-color ;
+}
+
+
+.combo-box-popup .list-view {
+  -fx-text-fill: @selected-text ;
+}
+
+/* --- Concept Tree --- */
+.concepttree-treecell {
+  -fx-background-color: @default-color;
+}
+
+
+.concepttree-treecell-media {
+  -fx-background-color: @emphasis-color;
+}
+
+.concepttree-treecell-media:selected {
+  -fx-background-color: @selected-color;
+}
+
+.concepttree-treecell:selected {
+  -fx-text-fill: @selected-text;
+}
+
+.concepttree-treeview {
+  -fx-padding: 10 5 5 5;
+  -fx-background-color: @default-color;
+}
+
+.concepttree-textfield {
+  -fx-padding: 5 10 5 10;
+}
+
+.context-menu {
+  -fx-background-color: @default-color;
+}
+
+.dialog-pane > .content {
+
+}
+
+.dialog-pane:header .header-panel {
+
+}
+
+// http://hg.openjdk.java.net/openjfx/8u40/rt/file/6cc08ec1ea82/modules/controls/src/main/resources/com/sun/javafx/scene/control/skin/modena/modena.css
+.dialog-pane > .button-bar > .container {
+
+}
+
+.focus-indicator {
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+.glyph-icon {
+  -fx-text-fill: @default-text;
+  -fx-fill: @default-text;
+}
+
+.glyph-icon:hover {
+  -fx-text-fill: @selected-text;
+  -fx-fill: @selected-text;
+}
+
+.gridpane {
+  -fx-hgap: 5;
+  -fx-vgap: 5;
+  -fx-padding: 10 10 10 10;
+}
+
+.headers-region, .tab-header-background {
+  -fx-background-color: @default-color;
+}
+.jfx-check-box {
+  -jfx-checked-color: @selected-color;
+  -fx-text-fill: @default-text;
+}
+
+.jfx-combo-box {
+  -jfx-focus-color: @selected-color;
+  -jfx-unfocus-color: @default-text;
+}
+
+.jfx-tab-pane {
+
+}
+
+.jfx-text-field {
+  -jfx-focus-color: @selected-color;
+}
+
+.label {
+  -fx-text-fill: @default-text;
+}
+
+.list-cell:hover {
+  -fx-background-color: @selected-color;
+}
+
+.list-view {
+  -fx-background-color: @default-color;
+}
+
+.list-view:vertical, .list-cell {
+  -fx-background-color: @default-color;
+  -fx-text-fill: @default-text;
+  -fx-border-radius: 0;
+  -fx-background-insets: 0;
+}
+
+.mediaplayer-ship-label {
+  -fx-font-size: 14;
+  //-fx-text-alignment: center;
+}
+
+.menu-button:hover {
+  -fx-background-color: @selected-color;
+}
+
+.menu-button:showing {
+  -fx-background-color: @selected-color;
+}
+
+.menu > .label {
+  -fx-text-fill: @default-text;
+}
+
+.menu-item {
+  -fx-background-color: @default-color;
+}
+
+.menu-item:hover {
+  -fx-background-color: @selected-color;
+}
+
+
+.menu-item .label {
+  -fx-text-fill: white;
+}
+
+.monospace {
+  -fx-font-family: 'DejaVu Sans Mono', monospace;
+}
+
+
+.pane, .hbox, .vbox, .content, .text-area {
+  -fx-background-color: @default-color;
+  -fx-background-radius: 0;
+}
+
+.pane > .label, .text-area, .hbox > .label, .vbox > .label {
+  -fx-text-fill: @default-text;
+}
+
+
+.popover > .border {
+  -fx-stroke-width: 0;
+  -fx-fill: @emphasis-color !important;
+  -fx-effect: dropshadow(gaussian, @selected-color, 6, 0.0, 100, 100);
+}
+
+.scroll-bar {
+  -fx-background-color: @default-color;
+  -fx-color: @default-color;
+  -fx-background-radius: 0;
+}
+
+.scroll-bar .thumb {
+  -fx-background-color: @default-compliment-color-light;
+}
+
+.scroll-bar:hover .thumb {
+  -fx-background-color: @selected-color;
+}
+
+.scroll-pane > .viewport {
+  -fx-background-color: transparent;
+}
+
+.scroll-pane:focused {
+  -fx-border-color: @selected-color;
+}
+
+//.scroll-bar .slider {
+//  -fx-background-color: @default-compliment-color-light;
+//}
+//
+//.scroll-bar:hover .slider {
+//  -fx-background-color: @emphasis-color;
+//}
+
+.spinner, .increment-arrow-button, .decrement-arrow-button {
+  -fx-background-color: @default-color;
+  -fx-text-fill: @default-text;
+  -fx-background-radius: 0;
+}
+
+.spinner > .text-field {
+  -fx-background-color: @default-color;
+  -fx-text-fill: @default-text;
+  -fx-background-radius: 0;
+}
+
+.tab {
+  -fx-background-insets: 0;
+  -fx-background-radius: 0;
+  -fx-background-color: @default-color;
+  -fx-border-width: 2px;
+}
+
+.tab:hover {
+  -fx-background-color: @hover-color;
+}
+
+.tab:selected {
+  -fx-focus-color: transparent;
+  -fx-background-color: @default-color;
+  -fx-border-color: @selected-color @selected-color @default-color @selected-color;
+  -fx-border-radius: 2;
+}
+
+.tab-close-button {
+  -fx-background-color: @default-text;
+}
+
+.tab-label {
+  -fx-text-fill: @default-text;
+  -fx-padding-right: 20;
+}
+
+.tab-pane:top, .tab-header-area {
+  -fx-padding: 0 0 0 0;
+}
+
+.tab-selected-line {
+  -fx-background-color: @selected-color;
+}
+
+.table-concurrent-row {
+  -fx-text-fill: @default-compliment-color-dark;
+}
+
+
+.table-view {
+  -fx-font-size:14px;
+  -fx-text-fill: @selected-text;
+  -fx-background-color: @default-color;
+  -fx-border-color: @default-color;
+  -fx-table-cell-border-color: @default-text;
+}
+
+//.table-row-cell {
+//  -fx-border-color: @default-text;
+//  -fx-table-cell-border-color: @default-text
+//}
+
+.table-view .table-cell{
+  -fx-font-family: 'DejaVu Sans Mono', monospace;
+  -fx-text-fill: @default-table-text;
+  -fx-font-size: 15px;           //the font size you asked in the comments below
+}
+
+.table-view :selected {
+  -fx-border-color: @emphasis-color;
+  -fx-table-cell-border-color: @emphasis-color;
+  -fx-background-color: @emphasis-color;
+  -fx-text-fill: @selected-text;
+  -fx-font-weight: bold;
+}
+
+.table-row-cell:selected .table-cell {
+  -fx-background-color: @emphasis-color;
+  -fx-text-fill: @selected-text;
+}
+
+.table-view .arrow {
+  -fx-text-fill: @selected-color;
+  -fx-background-color: @selected-color;
+}
+
+.table-view .column-header .label {
+  -fx-text-fill: @default-text;
+}
+
+.table-view > .column-header-background {
+  -fx-color: @default-color;
+  -fx-background-color: @default-color;
+  -fx-text-fill: @default-color;
+  -fx-border-color: @default-color;
+
+}
+
+.table-view > .column-header-background > .column-drag-header {
+  -fx-background-color: @default-color;
+}
+
+.table-view > .column-header-background > .nested-column-header > .column-header {
+  -fx-background-color: @default-color;
+  -fx-text-fill: @default-text;
+  -fx-border-color: @default-text;
+}
+
+.text-field {
+  -fx-background-color: @default-color;
+  -fx-text-fill: @default-text;
+  -fx-background-radius: 0;
+}
+
+.title-pane, .title-pane > .label, .menubar {
+  -fx-background-color: @default-color;
+  -fx-text-fill: @default-text;
+}
+
+.tree-cell > .tree-disclosure-node > .arrow  {
+  -fx-background-color: @default-text;
+}
+
+.tree-cell:expanded > .tree-disclosure-node > .arrow {
+  -fx-background-color: @default-text;
+}
+
+.tree-cell:selected > .tree-disclosure-node > .arrow  {
+  -fx-background-color: @selected-text;
+}
+
+.utility-label {
+  -fx-padding: 5 10 5 5;
+}
+
+/* --- Pref panes --- */
+.gridpane-pref {
+  -fx-hgap: 10;
+  -fx-vgap: 20;
+}
+
+.radiobutton-pref {
+  -fx-padding: 7;
+}
+
+/* --- Roweditor -- */
+.tooltip-combobox {
+  -fx-background-color: @default-compliment-color-light;
+  -fx-font-size: 20pt;
+  -fx-opacity: 0.5;
+}
+
+#association-buttonbar {
+  -fx-opacity: 0.5;
+}
+
+.association-buttonbar-btn {
+
+}
+
+/* --- FGSTableCell -- */
+.icon-inactive {
+  -fx-text-fill: @default-color;
+  -fx-fill: @default-color;
+}
+
+.icon-active-image {
+  -fx-text-fill: @image-color;
+  -fx-fill: @image-color;
+}
+
+.icon-active-sample {
+  -fx-text-fill: @sample-color;
+  -fx-fill: @sample-color;
+}
+
+.icon-active-concurrent {
+  -fx-text-fill: @concurrent-color;
+  -fx-fill: @concurrent-color;
+}
+
+// --- Overrides
+
+.bulkedit-search-label {
+  -fx-text-fill: @attention-color;
+}
+
+.attention-button {
+  -fx-background-color: @attention-color;
+  -fx-background-radius: 20;
+  //-fx-background-insets: 0,1,2,3,0;
+  //-fx-padding: 10 20 10 20;
+  -fx-text-fill: @default-color;
+}
+
+.attention-button:hover {
+  -fx-background-color: @selected-color;
+  -fx-effect: dropshadow(three-pass-box, fadeout(@attention-color, 10%), 5, 0, 0, 0);
+}
+
+.attention-icon {
+  -fx-fill: @default-color;
+}
+
+
+
+
+
+
+

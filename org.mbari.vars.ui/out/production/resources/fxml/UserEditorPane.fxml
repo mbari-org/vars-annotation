@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane id="userdialog" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.userdialog.UserEditorPaneController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <JFXTextField fx:id="usernameTextfield" promptText="%userdialog.username" />
+      <JFXPasswordField fx:id="pwd1Textfield" promptText="%userdialog.password0" GridPane.rowIndex="1" />
+      <JFXPasswordField fx:id="pwd2Textfield" promptText="%userdialog.password1" GridPane.rowIndex="2" />
+      <JFXTextField fx:id="firstnameTextfield" promptText="%userdialog.firstname" GridPane.rowIndex="3" />
+      <JFXTextField fx:id="lastnameTextfield" promptText="%userdialog.lastname" GridPane.rowIndex="4" />
+      <JFXTextField fx:id="affiliationTextfield" promptText="%userdialog.affiliation" GridPane.rowIndex="5" />
+      <JFXTextField fx:id="emailTextfield" promptText="%userdialog.email" GridPane.rowIndex="6" />
+   </children>
+</GridPane>

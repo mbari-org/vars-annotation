@@ -1,0 +1,64 @@
+
+plugins {
+    id "application"
+    id "org.openjfx.javafxplugin" version "0.0.7"
+    id "org.beryx.jlink" version "2.11.2"
+}
+
+dependencies {
+    compile project(':org.mbari.vars.javafx')
+    compile project(':org.mbari.vars.services')
+
+    implementation 'com.google.guava:guava'
+    implementation 'com.google.inject:guice'
+    implementation 'com.jfoenix:jfoenix'
+    implementation 'com.typesafe:config'
+    implementation 'de.jensd:fontawesomefx-commons'
+    implementation 'de.jensd:fontawesomefx-materialicons'
+    implementation 'eu.hansolo:Medusa'
+    implementation 'io.reactivex.rxjava2:rxjava'
+    implementation 'io.reactivex.rxjava2:rxjavafx'
+    implementation 'org.controlsfx:controlsfx'
+    implementation 'org.mbari:mbarix4j'
+    implementation 'org.mbari.vars:vars-avfoundation'
+    implementation 'org.mbari.vcr4j:vcr4j-core'
+    implementation 'org.mbari.vcr4j:vcr4j-jserialcomm'
+    implementation 'org.mbari.vcr4j:vcr4j-sharktopoda'
+    implementation 'org.slf4j:slf4j-api'
+
+    implementation('org.mbari.m3:vars-blackmagic') {
+        exclude group: 'org.slf4j', module: 'slf4j-simple'
+    }
+
+    implementation('org.mbari.vcr4j:vcr4j-ui') {
+        exclude group: 'org.mbari.vcr4j', module: 'vcr4j-v2-adapter'
+    }
+}
+
+javafx {
+    version = "11.0.2"
+    modules = [
+            'javafx.controls',
+            'javafx.fxml',
+            'javafx.graphics'
+    ]
+}
+
+mainClassName = "org.mbari.vars.ui/org.mbari.vars.ui.App"
+jlink {
+    imageZip = file("$buildDir/image-zip/vars-annotation.zip")
+    options = ['--bind-services', '--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+
+    if(System.getenv("CI")) {
+        ["win", "linux", "mac"].each { name ->
+            targetPlatform(name) {
+                jdkHome = System.getenv("JDK_HOME_${name.toUpperCase()}")
+                addExtraModulePath(System.getenv("OPENJFX_MODS_${name.toUpperCase()}"))
+            }
+        }
+    }
+
+    launcher {
+        name = 'vars-annotation'
+    }
+}

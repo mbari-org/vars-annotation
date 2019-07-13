@@ -1,0 +1,27 @@
+
+.concepttree-treecell {
+    -fx-background-color: #3D3D3D;
+}
+
+
+.concepttree-treecell-media {
+    -fx-background-color: #5D3D3D;
+}
+
+.concepttree-treecell-media:selected {
+    -fx-background-color: #F0544C;
+}
+
+.concepttree-treecell:selected {
+    -fx-text-fill: black;
+}
+
+.concepttree-treeview {
+    -fx-padding: 10 5 5 5;
+    -fx-background-color: #3D3D3D;
+}
+
+.concepttree-textfield {
+    -fx-padding: 5 10 5 10;
+    /*-fx-background-color: cornsilk;*/
+}

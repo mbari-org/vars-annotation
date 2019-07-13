@@ -1,0 +1,20 @@
+
+.annotable-association-cell {
+
+}
+
+.annotable-association-cell:empty {
+    -fx-opacity: 0;
+}
+
+/* Hide the scroll bars in the association list in the annotation table */
+.annotable-association-cell .scroll-bar:vertical .increment-arrow,
+.annotable-association-cell .scroll-bar:vertical .decrement-arrow,
+.annotable-association-cell .scroll-bar:vertical .increment-button,
+.annotable-association-cell .scroll-bar:vertical .decrement-button,
+.annotable-association-cell .scroll-bar:horizontal .increment-arrow,
+.annotable-association-cell .scroll-bar:horizontal .decrement-arrow,
+.annotable-association-cell .scroll-bar:horizontal .increment-button,
+.annotable-association-cell .scroll-bar:horizontal .decrement-button {
+    -fx-padding:0;
+}

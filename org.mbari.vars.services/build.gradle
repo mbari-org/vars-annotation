@@ -1,0 +1,19 @@
+dependencies {
+    implementation 'com.auth0:java-jwt'
+    implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers'
+    implementation 'com.google.code.gson:gson'
+    implementation 'com.google.inject:guice'
+    implementation 'com.squareup.okhttp3:logging-interceptor'
+    implementation 'com.squareup.retrofit2:converter-gson'
+    implementation 'com.squareup.retrofit2:retrofit'
+    implementation 'com.sun.activation:javax.activation'
+    implementation 'com.sun.xml.bind:jaxb-impl'
+    implementation 'com.typesafe:config'
+    implementation 'javax.inject:javax.inject'
+    implementation 'javax.xml.bind:jaxb-api'
+    implementation 'org.mbari.vcr4j:vcr4j-core'
+
+    implementation('com.github.ben-manes.caffeine:caffeine') {
+        exclude group: 'org.checkerframework', module: 'checker-qual'
+    }
+}

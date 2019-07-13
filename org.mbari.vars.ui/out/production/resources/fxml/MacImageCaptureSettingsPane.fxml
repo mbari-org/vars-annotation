@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="gridpane-pref" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.mediaplayers.macos.MacImageCaptureSettingsPaneController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
+    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints vgrow="NEVER" />
+    <RowConstraints vgrow="NEVER" />
+  </rowConstraints>
+   <children>
+      <Label text="%mediaplayer.macos.name" />
+      <Label text="%mediaplayer.macos.label" GridPane.rowIndex="1" />
+      <HBox GridPane.columnIndex="1">
+         <children>
+            <JFXRadioButton fx:id="noneRadioButton" styleClass="radiobutton-pref" text="%mediaplayer.macos.capture.none" HBox.hgrow="ALWAYS" />
+            <JFXRadioButton fx:id="avfRadioButton" styleClass="radiobutton-pref" text="%mediaplayer.macos.capture.avfoundation" />
+            <JFXRadioButton fx:id="bmRadioButton" styleClass="radiobutton-pref" text="%mediaplayer.macos.capture.blackmagic" />
+         </children>
+      </HBox>
+      <JFXComboBox fx:id="deviceComboBox" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+   </children>
+</GridPane>

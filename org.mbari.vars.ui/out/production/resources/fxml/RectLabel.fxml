@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+
+<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.rectlabel.RectLabelController">
+   <center>
+      <StackPane fx:id="imageStackPane" minHeight="0.0" minWidth="0.0" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="369.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER" />
+            <AnchorPane fx:id="boxPane" prefHeight="200.0" prefWidth="200.0" />
+         </children>
+      </StackPane>
+   </center>
+   <top>
+      <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+            <JFXButton fx:id="refreshButton" />
+            <JFXButton fx:id="deleteButton" />
+        </items>
+      </ToolBar>
+   </top>
+   <right>
+      <HBox fx:id="rightPane" BorderPane.alignment="CENTER">
+         <children>
+            <ScrollPane fx:id="imageScrollPane">
+               <content>
+                  <JFXListView fx:id="imageReferenceListView" />
+               </content>
+            </ScrollPane>
+            <ScrollPane fx:id="observationScrollPane">
+               <content>
+                  <JFXListView fx:id="observationListView" />
+               </content>
+            </ScrollPane>
+         </children>
+      </HBox>
+   </right>
+</BorderPane>
