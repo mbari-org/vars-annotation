@@ -26,13 +26,13 @@ import java.util.concurrent.ForkJoinPool;
  * @author Brian Schlining
  * @since 2017-05-11T16:00:00
  */
-public class MBARIInjectorModule implements Module {
+public class GuiceInjectorModule implements Module {
 
     private final Config config;
     private final AppConfig appConfig;
     private final Executor defaultExecutor = new ForkJoinPool();
 
-    public MBARIInjectorModule() {
+    public GuiceInjectorModule() {
         this.config = Initializer.getConfig();
         this.appConfig = new AppConfig(config);
     }
@@ -81,7 +81,7 @@ public class MBARIInjectorModule implements Module {
 
     private void configureMediaService(Binder binder) {
         AppConfig.ServiceParams params = appConfig.getMediaServiceParamsV1();
-        VamWebServiceFactory factory = new VamWebServiceFactory(params.getEndpoint());
+        VamWebServiceFactory factory = new VamWebServiceFactory(params.getEndpoint(), params.getTimeout());
         AuthService authService = new BasicJWTAuthService(factory,
                 new Authorization("APIKEY", params.getClientSecret()));
         binder.bind(String.class)

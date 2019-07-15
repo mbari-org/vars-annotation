@@ -21,8 +21,8 @@ import java.time.Duration;
 public class VamWebServiceFactory extends RetrofitServiceFactory {
 
     @Inject
-    public VamWebServiceFactory(@Named("MEDIA_ENDPOINT") String endpoint) {
-        super(endpoint);
+    public VamWebServiceFactory(@Named("MEDIA_ENDPOINT") String endpoint, Duration timeout) {
+        super(endpoint, timeout);
     }
 
     public Gson getGson() {
