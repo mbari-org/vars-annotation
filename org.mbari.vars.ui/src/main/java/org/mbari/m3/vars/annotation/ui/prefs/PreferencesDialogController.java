@@ -1,12 +1,11 @@
 package org.mbari.m3.vars.annotation.ui.prefs;
 
 
-import de.jensd.fx.glyphs.GlyphsFactory;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.text.Text;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material.Material;
 import org.mbari.m3.vars.annotation.UIToolBox;
 
 import java.util.Optional;
@@ -32,8 +31,9 @@ public class PreferencesDialogController {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle(i18n.getString("prefsdialog.title"));
         dialog.setHeaderText(i18n.getString("prefsdialog.header"));
-        GlyphsFactory gf = MaterialIconFactory.get();
-        Text settingsIcon = gf.createIcon(MaterialIcon.SETTINGS, "30px");
+//        Text settingsIcon = gf.createIcon(MaterialIcon.SETTINGS, "30px");
+        FontIcon settingsIcon = new FontIcon(Material.SETTINGS);
+        settingsIcon.setIconSize(30);
         dialog.setGraphic(settingsIcon);
         dialog.getDialogPane()
                 .getButtonTypes()

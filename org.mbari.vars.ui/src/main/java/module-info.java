@@ -2,8 +2,8 @@ module org.mbari.vars.ui {
   requires com.google.common;
   requires com.google.guice;
   requires com.jfoenix;
-  requires de.jensd.fx.fontawesomefx.commons;
-  requires de.jensd.fx.fontawesomefx.materialicons;
+//  requires de.jensd.fx.fontawesomefx.commons;
+//  requires de.jensd.fx.fontawesomefx.materialicons;
   requires gson;
   requires io.reactivex.rxjava2;
   requires java.desktop;
@@ -15,6 +15,9 @@ module org.mbari.vars.ui {
   requires jsr305;
   requires mbarix4j;
   requires org.controlsfx.controls;
+  requires org.kordamp.iconli.core;
+  requires org.kordamp.ikonli.javafx;
+  requires org.kordamp.ikonli.material;
   requires org.mbari.vars.javafx;
   requires org.mbari.vars.services;
   requires org.reactivestreams;
@@ -29,6 +32,14 @@ module org.mbari.vars.ui {
   requires vcr4j.sharktopoda;
   requires vcr4j.ui;
 
+  uses org.mbari.m3.vars.annotation.mediaplayers.MediaControlsFactory;
+
   opens org.mbari.m3.vars.annotation to javafx.graphics;
+  opens org.mbari.m3.vars.annotation.mediaplayers.ships to javafx.fxml;
+  opens org.mbari.m3.vars.annotation.mediaplayers.vcr to javafx.fxml;
+  opens org.mbari.m3.vars.annotation.ui to javafx.fxml;
+  opens org.mbari.m3.vars.annotation.ui.mediadialog to javafx.fxml;
+  opens org.mbari.m3.vars.annotation.ui.rectlabel to javafx.fxml;
+  opens org.mbari.m3.vars.annotation.ui.roweditor to javafx.fxml;
   opens org.mbari.vars.ui to javafx.graphics;
 }

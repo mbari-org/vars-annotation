@@ -14,7 +14,7 @@ import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.messages.ShowNonfatalErrorAlert;
 import org.mbari.m3.vars.annotation.ui.prefs.IPrefs;
-import org.mbari.vars.javafx.util.FXMLUtils;
+import org.mbari.vars.ui.util.FXMLUtils;
 
 /**
  * @author Brian Schlining

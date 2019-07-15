@@ -22,7 +22,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.javafx.util.FXMLUtils;
+import org.mbari.vars.ui.util.FXMLUtils;
 import org.mbari.vars.services.util.FormatUtils;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.javafx.util.JFXUtilities;

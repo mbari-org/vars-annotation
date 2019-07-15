@@ -1,12 +1,14 @@
 package org.mbari.m3.vars.annotation.ui.buttons;
 
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.text.Text;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material.Material;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.javafx.util.JFXUtilities;
@@ -32,8 +34,9 @@ public class CommentBC extends AbstractBC {
 
     protected void init() {
         String tooltip = toolBox.getI18nBundle().getString("buttons.comment");
-        MaterialIconFactory iconFactory = MaterialIconFactory.get();
-        Text icon = iconFactory.createIcon(MaterialIcon.INSERT_COMMENT, "30px");
+//        Text icon = iconFactory.createIcon(MaterialIcon.INSERT_COMMENT, "30px");
+        FontIcon icon = new FontIcon(Material.INSERT_COMMENT);
+        icon.setIconSize(30);
         initializeButton(tooltip, icon);
 
     }
@@ -41,8 +44,8 @@ public class CommentBC extends AbstractBC {
     private TextInputDialog getDialog() {
         if (dialog == null) {
             ResourceBundle i18n = toolBox.getI18nBundle();
-            MaterialIconFactory iconFactory = MaterialIconFactory.get();
-            Text icon = iconFactory.createIcon(MaterialIcon.INSERT_COMMENT, "30px");
+//            Text icon = iconFactory.createIcon(MaterialIcon.INSERT_COMMENT, "30px");
+            Text icon = Icons.INSERT_COMMENT.size(30);
             dialog = new TextInputDialog();
             dialog.setTitle(i18n.getString("buttons.comment.dialog.title"));
             dialog.setHeaderText(i18n.getString("buttons.comment.dialog.header"));

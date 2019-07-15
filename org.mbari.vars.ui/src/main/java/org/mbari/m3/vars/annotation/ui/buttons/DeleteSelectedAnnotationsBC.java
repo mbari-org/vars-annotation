@@ -1,7 +1,5 @@
 package org.mbari.m3.vars.annotation.ui.buttons;
 
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
@@ -13,6 +11,7 @@ import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.DeleteAnnotationsCmd;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.messages.DeleteAnnotationsMsg;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.User;
 
@@ -48,8 +47,8 @@ public class DeleteSelectedAnnotationsBC {
 
     public void init() {
         button.setTooltip(new Tooltip(toolBox.getI18nBundle().getString("buttons.delete")));
-        MaterialIconFactory iconFactory = MaterialIconFactory.get();
-        Text deleteIcon = iconFactory.createIcon(MaterialIcon.DELETE, "30px");
+//        Text deleteIcon = iconFactory.createIcon(MaterialIcon.DELETE, "30px");
+        Text deleteIcon = Icons.DELETE.size(30);
         button.setText(null);
         button.setGraphic(deleteIcon);
         button.setDisable(true);

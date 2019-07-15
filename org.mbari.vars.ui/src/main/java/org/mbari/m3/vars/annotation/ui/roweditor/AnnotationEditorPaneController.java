@@ -6,9 +6,6 @@ import com.jfoenix.controls.JFXListView;
 import java.net.URL;
 import java.util.*;
 
-import de.jensd.fx.glyphs.GlyphsFactory;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -22,7 +19,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Text;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material.Material;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
@@ -109,18 +107,25 @@ public class AnnotationEditorPaneController {
     void initialize() {
 
         // -- Make buttons pretty
-        GlyphsFactory gf = MaterialIconFactory.get();
-        Text deleteIcon = gf.createIcon(MaterialIcon.DELETE, "30px");
+        FontIcon deleteIcon = new FontIcon(Material.DELETE);
+        deleteIcon.setIconSize(30);
+//        Text deleteIcon = gf.createIcon(MaterialIcon.DELETE, "30px");
         removeButton.setText(null);
         removeButton.setGraphic(deleteIcon);
         removeButton.setDisable(true);
         removeButton.defaultButtonProperty().bind(removeButton.focusedProperty()); // Enter triggers button
-        Text editIcon = gf.createIcon(MaterialIcon.EDIT, "30px");
+
+        FontIcon editIcon = new FontIcon(Material.EDIT);
+        editIcon.setIconSize(30);
+//        Text editIcon = gf.createIcon(MaterialIcon.EDIT, "30px");
         editButton.setText(null);
         editButton.setGraphic(editIcon);
         editButton.setDisable(true);
         editButton.defaultButtonProperty().bind(editButton.focusedProperty()); // Enter triggers button
-        Text addIcon = gf.createIcon(MaterialIcon.ADD, "30px");
+
+        FontIcon addIcon = new FontIcon(Material.ADD);
+        addIcon.setIconSize(30);
+//        Text addIcon = gf.createIcon(MaterialIcon.ADD, "30px");
         addButton.setText(null);
         addButton.setGraphic(addIcon);
         addButton.setDisable(true);

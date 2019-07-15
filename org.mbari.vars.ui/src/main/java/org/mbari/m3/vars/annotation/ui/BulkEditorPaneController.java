@@ -11,9 +11,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import de.jensd.fx.glyphs.GlyphsFactory;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+//import de.jensd.fx.glyphs.GlyphsFactory;
+//import de.jensd.fx.glyphs.materialicons.MaterialIcon;
+//import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.Observable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -28,6 +28,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material.Material;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
@@ -224,7 +226,7 @@ public class BulkEditorPaneController {
 
     private void initializeButtons() {
         // --- Configure buttons
-        GlyphsFactory gf = MaterialIconFactory.get();
+
         ResourceBundle i18n = toolBox.getI18nBundle();
 
         Image moveAnnoImg = new Image(getClass()
@@ -268,7 +270,9 @@ public class BulkEditorPaneController {
         deleteAssociationButton.setDisable(true);
         deleteAssociationButton.setOnAction(e -> deleteAssociations());
 
-        Text searchIcon = gf.createIcon(MaterialIcon.SEARCH, "30px");
+        FontIcon searchIcon = new FontIcon(Material.SEARCH);
+        searchIcon.setIconSize(30);
+//        Text searchIcon = gf.createIcon(MaterialIcon.SEARCH, "30px");
         searchButton.setText(null);
         searchButton.setGraphic(searchIcon);
         searchButton.setTooltip(new Tooltip(i18n.getString("bulkeditor.search.button")));

@@ -14,7 +14,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import org.mbari.m3.vars.annotation.Initializer;
-import org.mbari.vars.javafx.util.FXMLUtils;
+import org.mbari.vars.ui.util.FXMLUtils;
 import org.mbari.vars.javafx.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

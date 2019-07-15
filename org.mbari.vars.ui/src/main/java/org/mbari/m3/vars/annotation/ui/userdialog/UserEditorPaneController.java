@@ -13,7 +13,7 @@ import org.mbari.m3.vars.annotation.events.UserAddedEvent;
 import org.mbari.m3.vars.annotation.messages.ShowInfoAlert;
 import org.mbari.vars.services.model.User;
 import org.mbari.vars.services.UserService;
-import org.mbari.vars.javafx.util.FXMLUtils;
+import org.mbari.vars.ui.util.FXMLUtils;
 
 /**
  * @author Brian Schlining

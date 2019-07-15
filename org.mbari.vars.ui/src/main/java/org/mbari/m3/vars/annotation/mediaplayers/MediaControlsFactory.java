@@ -25,7 +25,7 @@ public interface MediaControlsFactory {
      */
     boolean canOpen(Media media);
 
-    /**
+    /**V
      * Open a media. Should not be called directly. Use safeOpen instead.
      * @param media
      * @return

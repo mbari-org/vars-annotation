@@ -10,9 +10,6 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import de.jensd.fx.glyphs.GlyphsFactory;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,6 +30,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material.Material;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.Command;
 import org.mbari.m3.vars.annotation.commands.CreateAnnotationAtIndexCmd;
@@ -165,12 +164,16 @@ public class RectLabelController {
     void initialize() {
 
 
-        GlyphsFactory gf = MaterialIconFactory.get();
-        Text refreshIcon = gf.createIcon(MaterialIcon.REFRESH, "30px");
+        FontIcon refreshIcon = new FontIcon(Material.REFRESH);
+        refreshIcon.setIconSize(30);
+//        Text refreshIcon = gf.createIcon(MaterialIcon.REFRESH, "30px");
         refreshButton.setGraphic(refreshIcon);
         // Set refreshButton action in the stage controller
 
-        Text deleteIcon = gf.createIcon(MaterialIcon.DELETE, "30px");
+        FontIcon deleteIcon = new FontIcon(Material.DELETE);
+        deleteIcon.setIconSize(30);
+
+//        Text deleteIcon = gf.createIcon(MaterialIcon.DELETE, "30px");
         deleteButton.setGraphic(deleteIcon);
         deleteButton.setDisable(true);
 

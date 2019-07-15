@@ -54,6 +54,8 @@ subprojects {
             implementation 'javax.servlet:javax.servlet-api:4.0.1'
             implementation 'org.controlsfx:controlsfx:11.0.0'
             implementation 'org.glassfish.jersey.core:jersey-client:2.29'
+            implementation 'org.kordamp.ikonli:ikonli-javafx:11.3.4'
+            implementation 'org.kordamp.ikonli:ikonli-material-pack:11.3.4'
             implementation 'org.mbari.m3:vars-blackmagic:0.0.2'
             implementation 'org.mbari.vars:vars-avfoundation:2.2.2'
             implementation 'org.mbari.vcr4j:vcr4j-core:4.0.2'

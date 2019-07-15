@@ -1,15 +1,16 @@
 package org.mbari.m3.vars.annotation.ui.buttons;
 
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material.Material;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.CopyAnnotationsCmd;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.messages.CopyAnnotationMsg;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.model.User;
@@ -30,8 +31,8 @@ public class CopyAnnotationBC extends AbstractBC {
 
     public void init() {
         String tooltip = toolBox.getI18nBundle().getString("buttons.copy");
-        MaterialIconFactory iconFactory = MaterialIconFactory.get();
-        Text icon = iconFactory.createIcon(MaterialIcon.FLIP_TO_FRONT, "30px");
+        Text icon = Icons.FLIP_TO_FRONT.size(30)
+//        Text icon = iconFactory.createIcon(MaterialIcon.FLIP_TO_FRONT, "30px");
         initializeButton(tooltip, icon);
 
         toolBox.getEventBus()

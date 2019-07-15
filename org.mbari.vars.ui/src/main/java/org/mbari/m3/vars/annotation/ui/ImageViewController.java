@@ -2,8 +2,7 @@ package org.mbari.m3.vars.annotation.ui;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -14,6 +13,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material.Material;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.messages.SaveImageMsg;
 import org.mbari.vars.services.model.Annotation;
@@ -108,8 +109,9 @@ public class ImageViewController {
 
     private ToolBar getToolBar() {
         if (toolBar == null) {
-            MaterialIconFactory iconFactory = MaterialIconFactory.get();
-            Text icon = iconFactory.createIcon(MaterialIcon.SAVE, "30px");
+//            Text icon = iconFactory.createIcon(MaterialIcon.SAVE, "30px");
+            FontIcon icon = new FontIcon(Material.SAVE);
+            icon.setIconSize(30);
             String tooltip = toolBox.getI18nBundle().getString("imageview.button.save");
             Button saveBtn = new JFXButton();
             saveBtn.setTooltip(new Tooltip(tooltip));

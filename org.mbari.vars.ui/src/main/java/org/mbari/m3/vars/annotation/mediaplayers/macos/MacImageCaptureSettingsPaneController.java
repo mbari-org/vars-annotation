@@ -14,7 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.mediaplayers.SettingsPane;
-import org.mbari.vars.javafx.util.FXMLUtils;
+import org.mbari.vars.ui.util.FXMLUtils;
 import org.mbari.vars.javafx.util.JFXUtilities;
 
 /**
