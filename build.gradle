@@ -9,6 +9,9 @@ subprojects {
     apply plugin: 'org.javamodularity.moduleplugin'
     apply plugin: 'com.adarshr.test-logger'
 
+    sourceCompatibility = 11
+    targetCompatibility = 11
+
     repositories {
         jcenter()
         mavenCentral()

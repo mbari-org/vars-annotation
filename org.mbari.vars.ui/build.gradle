@@ -48,9 +48,16 @@ javafx {
 }
 
 mainClassName = "org.mbari.vars.ui/org.mbari.m3.vars.annotation.App"
+applicationDefaultJvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED']
 jlink {
     imageZip = file("$buildDir/image-zip/vars-annotation.zip")
-    options = ['--bind-services', '--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+    options = [
+            '--bind-services',
+            '--strip-debug',
+            '--compress', '2',
+            '--no-header-files',
+            '--no-man-pages',
+    ]
 
     if(System.getenv("CI")) {
         ["win", "linux", "mac"].each { name ->
