@@ -3,6 +3,7 @@ package org.mbari.m3.vars.annotation.services;
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
 import org.mbari.m3.vars.annotation.model.*;
 import org.mbari.m3.vars.annotation.util.AsyncUtils;
 import org.slf4j.Logger;
@@ -40,6 +41,10 @@ public class CachedReferenceNumberDecorator {
         this.mediaService = toolBox.getServices().getMediaService();
         associationKey = toolBox.getConfig()
                 .getString("app.annotation.identity.reference");
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(MediaChangedEvent.class)
+                .subscribe(evt -> clear());
     }
 
     public synchronized void clear() {
