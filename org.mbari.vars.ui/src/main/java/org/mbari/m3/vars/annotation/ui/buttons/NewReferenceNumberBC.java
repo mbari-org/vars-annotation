@@ -1,11 +1,10 @@
 package org.mbari.m3.vars.annotation.ui.buttons;
 
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.Media;
@@ -35,8 +34,8 @@ public class NewReferenceNumberBC extends AbstractBC {
 
     protected void init() {
         String tooltip = toolBox.getI18nBundle().getString("buttons.newnumber");
-        MaterialIconFactory iconFactory = MaterialIconFactory.get();
-        Text icon = iconFactory.createIcon(MaterialIcon.EXPOSURE_PLUS_1, "30px");
+//        Text icon = iconFactory.createIcon(MaterialIcon.EXPOSURE_PLUS_1, "30px");
+        Text icon = Icons.EXPOSURE_PLUS_1.standardSize();
         initializeButton(tooltip, icon);
     }
 

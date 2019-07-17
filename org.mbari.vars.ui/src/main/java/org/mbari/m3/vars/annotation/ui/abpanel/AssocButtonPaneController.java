@@ -1,8 +1,6 @@
 package org.mbari.m3.vars.annotation.ui.abpanel;
 
 import com.jfoenix.controls.JFXButton;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -15,6 +13,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.messages.ShowNonfatalErrorAlert;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.User;
 import org.slf4j.Logger;
@@ -92,8 +91,7 @@ public class AssocButtonPaneController {
         if (addButton == null) {
             addButton = new JFXButton();
             String tooltip = toolBox.getI18nBundle().getString("abpane.addbutton");
-            MaterialIconFactory iconFactory = MaterialIconFactory.get();
-            Text icon = iconFactory.createIcon(MaterialIcon.ADD, "30px");
+            Text icon = Icons.ADD.standardSize();
             addButton.setTooltip(new Tooltip(tooltip));
             addButton.setGraphic(icon);
             addButton.setOnAction(v -> {

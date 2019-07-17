@@ -1,11 +1,9 @@
 package org.mbari.m3.vars.annotation.ui.annotable;
 
-import de.jensd.fx.glyphs.GlyphsFactory;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.scene.control.TableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.javafx.util.JFXUtilities;
 
@@ -16,10 +14,10 @@ import org.mbari.vars.javafx.util.JFXUtilities;
  */
 public class FGSTableCell extends TableCell<Annotation, FGSValue> {
 
-    private GlyphsFactory glyphsFactory = MaterialIconFactory.get();
-    private Text imageIcon = glyphsFactory.createIcon(MaterialIcon.IMAGE, "20px");
-    private Text sampleIcon = glyphsFactory.createIcon(MaterialIcon.NATURE_PEOPLE, "20px");
-    private Text concurrentIcon = glyphsFactory.createIcon(MaterialIcon.TIMELINE, "20px");
+
+    private Text imageIcon = Icons.IMAGE.size(20);
+    private Text sampleIcon = Icons.NATURE_PEOPLE.size(20);
+    private Text concurrentIcon = Icons.TIMELINE.size(20);
     private final HBox graphic = new HBox();
 
 

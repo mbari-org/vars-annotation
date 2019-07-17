@@ -48,7 +48,7 @@ public class DeleteSelectedAnnotationsBC {
     public void init() {
         button.setTooltip(new Tooltip(toolBox.getI18nBundle().getString("buttons.delete")));
 //        Text deleteIcon = iconFactory.createIcon(MaterialIcon.DELETE, "30px");
-        Text deleteIcon = Icons.DELETE.size(30);
+        Text deleteIcon = Icons.DELETE.standardSize();
         button.setText(null);
         button.setGraphic(deleteIcon);
         button.setDisable(true);

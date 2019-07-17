@@ -4,10 +4,9 @@ package org.mbari.m3.vars.annotation.ui.buttons;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.text.Text;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material.Material;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.*;
 import org.mbari.m3.vars.annotation.ui.shared.ConceptSelectionDialogController;
 import org.slf4j.Logger;
@@ -41,13 +40,8 @@ public class UponBC extends AbstractBC {
     protected void init() {
 
         String tooltip = toolBox.getI18nBundle().getString("buttons.upon");
-//        Text icon = iconFactory.createIcon(MaterialIcon.VERTICAL_ALIGN_BOTTOM, "30px");
-//        Text icon2 = iconFactory.createIcon(MaterialIcon.VERTICAL_ALIGN_BOTTOM, "30px");
-
-        FontIcon icon = new FontIcon(Material.VERTICAL_ALIGN_BOTTOM);
-        icon.setIconSize(30);
-        FontIcon icon2 = new FontIcon(Material.VERTICAL_ALIGN_BOTTOM);
-        icon2.setIconSize(30);
+        Text icon = Icons.VERTICAL_ALIGN_BOTTOM.standardSize();
+        Text icon2 = Icons.VERTICAL_ALIGN_BOTTOM.standardSize();
         initializeButton(tooltip, icon);
 
         ResourceBundle i18n = toolBox.getI18nBundle();

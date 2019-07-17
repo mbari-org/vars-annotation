@@ -2,9 +2,6 @@ package org.mbari.m3.vars.annotation.mediaplayers.sharktopoda;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSlider;
-import de.jensd.fx.glyphs.GlyphsFactory;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import javafx.application.Platform;
@@ -19,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
@@ -55,14 +53,17 @@ public class SharktoptodaControlPane extends Pane {
     Label elapsedTimeLabel = new Label("00:00");
     Label durationLabel = new Label("00:00");
     Label recordedTimestampLabel = new Label("--:--:--");
-    private GlyphsFactory glyphsFactory = MaterialIconFactory.get();
     private Color color = Color.LIGHTGRAY;
-    Text speedUpIcon = glyphsFactory.createIcon(MaterialIcon.ADD, "20px");
-    Text speedDownIcon = glyphsFactory.createIcon(MaterialIcon.REMOVE, "20px");
+//    Text speedUpIcon = glyphsFactory.createIcon(MaterialIcon.ADD, "20px");
+//    Text speedDownIcon = glyphsFactory.createIcon(MaterialIcon.REMOVE, "20px");
+    private Text speedUpIcon = Icons.ADD.size(20);
+    private Text speedDownIcon = Icons.REMOVE.size(20);
     private volatile MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer;
     private final List<Disposable> disposables = new ArrayList<>();
-    private Text playIcon = glyphsFactory.createIcon(MaterialIcon.PLAY_ARROW, "50px");
-    private Text pauseIcon = glyphsFactory.createIcon(MaterialIcon.PAUSE, "50px");
+//    private Text playIcon = glyphsFactory.createIcon(MaterialIcon.PLAY_ARROW, "50px");
+//    private Text pauseIcon = glyphsFactory.createIcon(MaterialIcon.PAUSE, "50px");
+    private Text playIcon = Icons.PLAY_ARROW.size(50);
+    private Text pauseIcon = Icons.PAUSE.size(50);
     private volatile VideoState videoState;
     //private final Observer
 
@@ -129,7 +130,8 @@ public class SharktoptodaControlPane extends Pane {
 
     protected Button getFrameAdvanceButton() {
         if (frameAdvanceButton == null) {
-            Text icon = glyphsFactory.createIcon(MaterialIcon.KEYBOARD_ARROW_RIGHT, "30px");
+//            Text icon = glyphsFactory.createIcon(MaterialIcon.KEYBOARD_ARROW_RIGHT, "30px");
+            Text icon = Icons.KEYBOARD_ARROW_RIGHT.standardSize();
             icon.setFill(color);
             frameAdvanceButton = new JFXButton();
             frameAdvanceButton.setGraphic(icon);
@@ -145,7 +147,8 @@ public class SharktoptodaControlPane extends Pane {
 
     protected Button getFastForwardButton() {
         if (fastForwardButton == null) {
-            Text icon = glyphsFactory.createIcon(MaterialIcon.FAST_FORWARD, "30px");
+//            Text icon = glyphsFactory.createIcon(MaterialIcon.FAST_FORWARD, "30px");
+            Text icon = Icons.FAST_FORWARD.standardSize();
             icon.setFill(color);
             fastForwardButton = new JFXButton();
             fastForwardButton.setGraphic(icon);
@@ -162,7 +165,8 @@ public class SharktoptodaControlPane extends Pane {
 
     protected Button getRewindButton() {
         if (rewindButton == null) {
-            Text icon = glyphsFactory.createIcon(MaterialIcon.FAST_REWIND, "30px");
+//            Text icon = glyphsFactory.createIcon(MaterialIcon.FAST_REWIND, "30px");
+            Text icon = Icons.FAST_REWIND.standardSize();
             icon.setFill(color);
             rewindButton = new JFXButton();
             rewindButton.setGraphic(icon);

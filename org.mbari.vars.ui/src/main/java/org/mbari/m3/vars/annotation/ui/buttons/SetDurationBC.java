@@ -1,11 +1,11 @@
 package org.mbari.m3.vars.annotation.ui.buttons;
 
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.SetDurationCmd;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.Annotation;
 
 import java.util.ArrayList;
@@ -33,8 +33,8 @@ public class SetDurationBC extends AbstractBC {
     @Override
     protected void init() {
         String tooltip = toolBox.getI18nBundle().getString("buttons.duration");
-        MaterialIconFactory iconFactory = MaterialIconFactory.get();
-        Text icon = iconFactory.createIcon(MaterialIcon.AV_TIMER, "30px");
+//        Text icon = iconFactory.createIcon(MaterialIcon.AV_TIMER, "30px");
+        Text icon = Icons.AV_TIMER.standardSize();
         initializeButton(tooltip, icon);
     }
 }

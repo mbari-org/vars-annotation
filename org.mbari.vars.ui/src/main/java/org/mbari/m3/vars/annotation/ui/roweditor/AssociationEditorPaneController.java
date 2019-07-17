@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import de.jensd.fx.glyphs.GlyphsFactory;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -28,6 +25,7 @@ import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.*;
 import org.mbari.vars.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
@@ -115,12 +113,11 @@ public class AssociationEditorPaneController {
         JavaFxObservable.valuesOf(root.widthProperty())
                 .subscribe(n -> associationComboBox.setPrefWidth(n.doubleValue()));
 
-        GlyphsFactory gf = MaterialIconFactory.get();
-        Text addIcon = gf.createIcon(MaterialIcon.ADD, "30px");
+        Text addIcon = Icons.ADD.standardSize();
         addButton.setText(null);
         addButton.setGraphic(addIcon);
         //addButton.defaultButtonProperty().bind(addButton.focusedProperty()); // Enter triggers button
-        Text cancelIcon = gf.createIcon(MaterialIcon.CANCEL, "30px");
+        Text cancelIcon = Icons.CANCEL.standardSize();
         cancelButton.setText(null);
         cancelButton.setGraphic(cancelIcon);
         //cancelButton.defaultButtonProperty().bind(cancelButton.focusedProperty()); // Enter triggers button

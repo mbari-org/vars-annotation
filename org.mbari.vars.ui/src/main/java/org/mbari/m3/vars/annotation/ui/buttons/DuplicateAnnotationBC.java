@@ -1,7 +1,6 @@
 package org.mbari.m3.vars.annotation.ui.buttons;
 
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
@@ -9,6 +8,7 @@ import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.DuplicateAnnotationsCmd;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
 import org.mbari.m3.vars.annotation.messages.DuplicateAnnotationMsg;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.User;
 
@@ -25,8 +25,8 @@ public class DuplicateAnnotationBC extends AbstractBC {
 
     protected void init() {
         String tooltip = toolBox.getI18nBundle().getString("buttons.duplicate");
-        MaterialIconFactory iconFactory = MaterialIconFactory.get();
-        Text icon = iconFactory.createIcon(MaterialIcon.FLIP_TO_BACK, "30px");
+//        Text icon = iconFactory.createIcon(MaterialIcon.FLIP_TO_BACK, "30px");
+        Text icon = Icons.FLIP_TO_BACK.standardSize();
         initializeButton(tooltip, icon);
 
         toolBox.getEventBus()

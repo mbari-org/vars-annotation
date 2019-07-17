@@ -1,13 +1,13 @@
 package org.mbari.m3.vars.annotation.ui.buttons;
 
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.Media;
@@ -59,8 +59,7 @@ public class OldReferenceNumberBC extends AbstractBC {
 
     protected void init() {
         String tooltip = toolBox.getI18nBundle().getString("buttons.oldnumber");
-        MaterialIconFactory iconFactory = MaterialIconFactory.get();
-        Text icon = iconFactory.createIcon(MaterialIcon.EXPOSURE_NEG_1, "30px");
+        Text icon = Icons.EXPOSURE_NEG_1.standardSize();
         initializeButton(tooltip, icon);
     }
 
@@ -98,8 +97,8 @@ public class OldReferenceNumberBC extends AbstractBC {
     private ChoiceDialog<String> getDialog() {
         if (dialog == null) {
             ResourceBundle i18n = toolBox.getI18nBundle();
-            MaterialIconFactory iconFactory = MaterialIconFactory.get();
-            Text icon = iconFactory.createIcon(MaterialIcon.EXPOSURE_NEG_1, "30px");
+//            Text icon = iconFactory.createIcon(MaterialIcon.EXPOSURE_NEG_1, "30px");
+            Text icon = Icons.EXPOSURE_NEG_1.standardSize();
             dialog = new ChoiceDialog<>();
             dialog.initOwner(toolBox.getPrimaryStage());
             dialog.setTitle(i18n.getString("buttons.oldnumber.dialog.title"));

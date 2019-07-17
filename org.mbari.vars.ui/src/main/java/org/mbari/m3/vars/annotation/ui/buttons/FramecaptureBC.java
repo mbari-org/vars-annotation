@@ -1,7 +1,6 @@
 package org.mbari.m3.vars.annotation.ui.buttons;
 
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+
 import io.reactivex.Observable;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
@@ -10,6 +9,7 @@ import org.mbari.m3.vars.annotation.commands.FramegrabCmd;
 import org.mbari.m3.vars.annotation.events.MediaPlayerChangedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.messages.FramecaptureMsg;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.model.User;
 import org.mbari.vcr4j.VideoError;
@@ -28,8 +28,8 @@ public class FramecaptureBC extends AbstractBC {
 
     protected void init() {
         String tooltip = toolBox.getI18nBundle().getString("buttons.framegrab");
-        MaterialIconFactory iconFactory = MaterialIconFactory.get();
-        Text icon = iconFactory.createIcon(MaterialIcon.ADD_A_PHOTO, "30px");
+//        Text icon = iconFactory.createIcon(MaterialIcon.ADD_A_PHOTO, "30px");
+        Text icon = Icons.ADD_A_PHOTO.standardSize();
         initializeButton(tooltip, icon);
         Observable<Object> observable = toolBox.getEventBus().toObserverable();
         observable.ofType(MediaPlayerChangedEvent.class)

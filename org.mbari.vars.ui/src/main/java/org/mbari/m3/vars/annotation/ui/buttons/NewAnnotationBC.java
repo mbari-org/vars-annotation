@@ -1,7 +1,6 @@
 package org.mbari.m3.vars.annotation.ui.buttons;
 
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+
 import io.reactivex.Observable;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
@@ -11,6 +10,7 @@ import org.mbari.m3.vars.annotation.events.MediaPlayerChangedEvent;
 import org.mbari.m3.vars.annotation.mediaplayers.MediaPlayer;
 import org.mbari.m3.vars.annotation.messages.ClearCacheMsg;
 import org.mbari.m3.vars.annotation.messages.NewAnnotationMsg;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.model.User;
 import org.mbari.vcr4j.VideoError;
@@ -53,8 +53,8 @@ public class NewAnnotationBC extends AbstractBC {
     protected void init() {
 
         String tooltip = toolBox.getI18nBundle().getString("buttons.newnumber");
-        MaterialIconFactory iconFactory = MaterialIconFactory.get();
-        Text icon = iconFactory.createIcon(MaterialIcon.FIBER_NEW, "30px");
+//        Text icon = iconFactory.createIcon(MaterialIcon.FIBER_NEW, "30px");
+        Text icon = Icons.FIBER_NEW.standardSize();
         initializeButton(tooltip, icon);
 
         Observable<Object> observable = toolBox.getEventBus().toObserverable();

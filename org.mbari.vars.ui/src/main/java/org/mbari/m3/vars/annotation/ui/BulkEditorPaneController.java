@@ -28,8 +28,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material.Material;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
@@ -270,8 +268,7 @@ public class BulkEditorPaneController {
         deleteAssociationButton.setDisable(true);
         deleteAssociationButton.setOnAction(e -> deleteAssociations());
 
-        FontIcon searchIcon = new FontIcon(Material.SEARCH);
-        searchIcon.setIconSize(30);
+        Text searchIcon = Icons.SEARCH.standardSize();
 //        Text searchIcon = gf.createIcon(MaterialIcon.SEARCH, "30px");
         searchButton.setText(null);
         searchButton.setGraphic(searchIcon);

@@ -4,9 +4,8 @@ package org.mbari.m3.vars.annotation.ui.prefs;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.text.Text;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material.Material;
 import org.mbari.m3.vars.annotation.UIToolBox;
+import org.mbari.m3.vars.annotation.ui.Icons;
 
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -32,8 +31,7 @@ public class PreferencesDialogController {
         dialog.setTitle(i18n.getString("prefsdialog.title"));
         dialog.setHeaderText(i18n.getString("prefsdialog.header"));
 //        Text settingsIcon = gf.createIcon(MaterialIcon.SETTINGS, "30px");
-        FontIcon settingsIcon = new FontIcon(Material.SETTINGS);
-        settingsIcon.setIconSize(30);
+        Text settingsIcon = Icons.SETTINGS.standardSize();
         dialog.setGraphic(settingsIcon);
         dialog.getDialogPane()
                 .getButtonTypes()

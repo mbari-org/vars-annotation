@@ -1,8 +1,7 @@
 package org.mbari.m3.vars.annotation.ui;
 
 import com.jfoenix.controls.JFXButton;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
@@ -213,8 +212,7 @@ public class ControlsPaneController {
         @Override
         protected void init() {
             String tooltip = toolBox.getI18nBundle().getString("buttons.association");
-            MaterialIconFactory iconFactory = MaterialIconFactory.get();
-            Text icon = iconFactory.createIcon(MaterialIcon.CREATE, "30px");
+            Text icon = Icons.CREATE.standardSize();
             initializeButton(tooltip, icon);
 
             // TODO show dialog for adding and annotation to the pane

@@ -2,8 +2,6 @@ module org.mbari.vars.ui {
   requires com.google.common;
   requires com.google.guice;
   requires com.jfoenix;
-//  requires de.jensd.fx.fontawesomefx.commons;
-//  requires de.jensd.fx.fontawesomefx.materialicons;
   requires gson;
   requires io.reactivex.rxjava2;
   requires java.desktop;

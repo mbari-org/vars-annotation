@@ -2,8 +2,6 @@ package org.mbari.m3.vars.annotation.ui.buttons;
 
 import com.jfoenix.controls.JFXComboBox;
 import com.typesafe.config.Config;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -14,6 +12,7 @@ import javafx.util.Pair;
 import org.mbari.m3.vars.annotation.EventBus;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
@@ -47,8 +46,8 @@ public class SampleBC extends AbstractBC {
     public void init() {
         ResourceBundle i18n = toolBox.getI18nBundle();
         String tooltip = i18n.getString("buttons.sample");
-        MaterialIconFactory iconFactory = MaterialIconFactory.get();
-        Text icon = iconFactory.createIcon(MaterialIcon.ADD_SHOPPING_CART, "30px");
+//        Text icon = iconFactory.createIcon(MaterialIcon.ADD_SHOPPING_CART, "30px");
+        Text icon = Icons.ADD_SHOPPING_CART.standardSize();
         initializeButton(tooltip, icon);
     }
 
@@ -72,8 +71,7 @@ public class SampleBC extends AbstractBC {
     private Dialog<Pair<String, String>> getDialog() {
         if (dialog == null) {
             ResourceBundle i18n = toolBox.getI18nBundle();
-            MaterialIconFactory iconFactory = MaterialIconFactory.get();
-            Text icon = iconFactory.createIcon(MaterialIcon.NATURE_PEOPLE, "30px");
+            Text icon = Icons.NATURE_PEOPLE.standardSize();
             dialog = new Dialog<>();
             dialog.setTitle(i18n.getString("buttons.sample.dialog.title"));
             dialog.setHeaderText(i18n.getString("buttons.sample.dialog.header"));

@@ -4,9 +4,6 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTabPane;
-import de.jensd.fx.glyphs.GlyphsFactory;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import io.reactivex.Observable;
 import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Platform;
@@ -254,9 +251,8 @@ public class AppPaneController {
     public ToolBar getToolBar() {
         if (toolBar == null) {
             ResourceBundle bundle = toolBox.getI18nBundle();
-            GlyphsFactory gf = MaterialIconFactory.get();
 
-            Text openIcon = gf.createIcon(MaterialIcon.VIDEO_LIBRARY, "30px");
+            Text openIcon = Icons.VIDEO_LIBRARY.standardSize();
             Button openButton = new JFXButton();
             openButton.setGraphic(openIcon);
             openButton.setOnAction(e -> getOpenPopOver().show(openButton));
@@ -270,31 +266,31 @@ public class AppPaneController {
                         }
                     });
 
-            Text undoIcon = gf.createIcon(MaterialIcon.UNDO, "30px");
+            Text undoIcon = Icons.UNDO.standardSize();
             Button undoButton = new JFXButton();
             undoButton.setGraphic(undoIcon);
             undoButton.setOnAction(e -> toolBox.getEventBus().send(new UndoMsg()));
             undoButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.undo")));
 
-            Text redoIcon = gf.createIcon(MaterialIcon.REDO, "30px");
+            Text redoIcon = Icons.REDO.standardSize();
             Button redoButton = new JFXButton();
             redoButton.setGraphic(redoIcon);
             redoButton.setOnAction(e -> toolBox.getEventBus().send(new RedoMsg()));
             redoButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.redo")));
 
-            Text refreshIcon = gf.createIcon(MaterialIcon.CACHED, "30px");
+            Text refreshIcon = Icons.CACHED.standardSize();
             Button refreshButton = new JFXButton();
             refreshButton.setGraphic(refreshIcon);
             refreshButton.setOnAction(e -> toolBox.getEventBus().send(new ClearCacheMsg()));
             refreshButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.refresh")));
 
-            Text prefsIcon = gf.createIcon(MaterialIcon.SETTINGS, "30px");
+            Text prefsIcon = Icons.SETTINGS.standardSize();
             Button prefsButton = new JFXButton();
             prefsButton.setGraphic(prefsIcon);
             prefsButton.setOnAction(e -> preferencesDialogController.show());
             prefsButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.prefs")));
 
-            Text usersIcon = gf.createIcon(MaterialIcon.PERSON_ADD, "30px");
+            Text usersIcon = Icons.PERSON_ADD.standardSize();
             Button createUserButton = new JFXButton();
             createUserButton.setGraphic(usersIcon);
             createUserButton.setOnAction(e -> {
@@ -305,13 +301,13 @@ public class AppPaneController {
             });
             createUserButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.user")));
 
-            Text deploymentIcon = gf.createIcon(MaterialIcon.GRID_ON, "30px");
+            Text deploymentIcon = Icons.GRID_ON.standardSize();
             Button showDeploymentButton = new JFXButton();
             showDeploymentButton.setGraphic(deploymentIcon);
             showDeploymentButton.setOnAction(e -> annotationViewController.show());
             showDeploymentButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.deployment")));
 
-            Text rectLabelIcon = gf.createIcon(MaterialIcon.PICTURE_IN_PICTURE, "30px");
+            Text rectLabelIcon = Icons.PICTURE_IN_PICTURE.standardSize();
             Button rectLabelButton = new JFXButton();
             rectLabelButton.setGraphic(rectLabelIcon);
             rectLabelButton.setOnAction(e -> rectLabelStageController.show());
@@ -361,10 +357,9 @@ public class AppPaneController {
     public PopOver getOpenPopOver() {
         if (openPopOver == null) {
 
-            GlyphsFactory gf = MaterialIconFactory.get();
             ResourceBundle i18n = toolBox.getI18nBundle();
 
-            Text remoteIcon = gf.createIcon(MaterialIcon.VIDEO_LIBRARY, "30px");
+            Text remoteIcon = Icons.VIDEO_LIBRARY.standardSize();
             Button remoteButton = new JFXButton(null, remoteIcon);
             remoteButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.remote")));
             remoteButton.setOnAction(e -> {
@@ -372,14 +367,14 @@ public class AppPaneController {
                 media.ifPresent(m -> toolBox.getEventBus().send(new MediaChangedEvent(null, m)));
             });
 
-            Text localIcon = gf.createIcon(MaterialIcon.FOLDER, "30px");
+            Text localIcon = Icons.FOLDER.standardSize();
             Button localButton = new JFXButton(null, localIcon);
             localButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.local")));
             FileBrowsingDecorator decorator = new FileBrowsingDecorator(toolBox);
             localButton.setOnAction(e ->
                 decorator.apply(AppPaneController.this.getRoot().getScene().getWindow()));
 
-            Text tapeIcon = gf.createIcon(MaterialIcon.LIVE_TV, "30px");
+            Text tapeIcon = Icons.LIVE_TV.standardSize();
             Button tapeButton = new JFXButton(null, tapeIcon);
             tapeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.tape")));
             tapeButton.setOnAction(e -> {
@@ -391,7 +386,7 @@ public class AppPaneController {
                 });
             });
 
-            Text realtimeIcon = gf.createIcon(MaterialIcon.DIRECTIONS_BOAT, "30px");
+            Text realtimeIcon = Icons.DIRECTIONS_BOAT.standardSize();
             Button realtimeButton = new JFXButton(null, realtimeIcon);
             realtimeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.realtime")));
             realtimeButton.setOnAction(e -> {

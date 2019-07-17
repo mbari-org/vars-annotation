@@ -4,8 +4,6 @@ package org.mbari.m3.vars.annotation.ui.buttons;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.text.Text;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material.Material;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
 import org.mbari.m3.vars.annotation.ui.Icons;
@@ -35,8 +33,7 @@ public class CommentBC extends AbstractBC {
     protected void init() {
         String tooltip = toolBox.getI18nBundle().getString("buttons.comment");
 //        Text icon = iconFactory.createIcon(MaterialIcon.INSERT_COMMENT, "30px");
-        FontIcon icon = new FontIcon(Material.INSERT_COMMENT);
-        icon.setIconSize(30);
+        Text icon = Icons.INSERT_COMMENT.standardSize();
         initializeButton(tooltip, icon);
 
     }
@@ -45,7 +42,7 @@ public class CommentBC extends AbstractBC {
         if (dialog == null) {
             ResourceBundle i18n = toolBox.getI18nBundle();
 //            Text icon = iconFactory.createIcon(MaterialIcon.INSERT_COMMENT, "30px");
-            Text icon = Icons.INSERT_COMMENT.size(30);
+            Text icon = Icons.INSERT_COMMENT.standardSize();
             dialog = new TextInputDialog();
             dialog.setTitle(i18n.getString("buttons.comment.dialog.title"));
             dialog.setHeaderText(i18n.getString("buttons.comment.dialog.header"));

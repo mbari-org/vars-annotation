@@ -30,8 +30,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material.Material;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.commands.Command;
 import org.mbari.m3.vars.annotation.commands.CreateAnnotationAtIndexCmd;
@@ -39,6 +37,7 @@ import org.mbari.m3.vars.annotation.commands.CreateAssociationsCmd;
 import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsRemovedEvent;
 import org.mbari.m3.vars.annotation.events.AnnotationsSelectedEvent;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.Image;
@@ -164,16 +163,11 @@ public class RectLabelController {
     void initialize() {
 
 
-        FontIcon refreshIcon = new FontIcon(Material.REFRESH);
-        refreshIcon.setIconSize(30);
-//        Text refreshIcon = gf.createIcon(MaterialIcon.REFRESH, "30px");
+        Text refreshIcon = Icons.REFRESH.standardSize();
         refreshButton.setGraphic(refreshIcon);
         // Set refreshButton action in the stage controller
 
-        FontIcon deleteIcon = new FontIcon(Material.DELETE);
-        deleteIcon.setIconSize(30);
-
-//        Text deleteIcon = gf.createIcon(MaterialIcon.DELETE, "30px");
+        Text deleteIcon = Icons.DELETE.standardSize();
         deleteButton.setGraphic(deleteIcon);
         deleteButton.setDisable(true);
 

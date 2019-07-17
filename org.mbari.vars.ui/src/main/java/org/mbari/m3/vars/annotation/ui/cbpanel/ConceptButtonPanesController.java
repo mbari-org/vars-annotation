@@ -3,9 +3,6 @@ package org.mbari.m3.vars.annotation.ui.cbpanel;
 import com.google.common.base.Preconditions;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTabPane;
-import de.jensd.fx.glyphs.GlyphsFactory;
-import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -18,6 +15,7 @@ import javafx.scene.text.Text;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.messages.ShowInfoAlert;
 import org.mbari.m3.vars.annotation.messages.ShowNonfatalErrorAlert;
+import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.User;
 import org.mbari.vars.services.util.PreferenceUtils;
 import org.slf4j.Logger;
@@ -75,18 +73,19 @@ public class ConceptButtonPanesController {
     private VBox getControlPane() {
         if (controlPane == null) {
 
-            GlyphsFactory gf = MaterialIconFactory.get();
 
             // Add
             Button addButton = new JFXButton();
-            Text addIcon = gf.createIcon(MaterialIcon.ADD, "30px");
+//            Text addIcon = gf.createIcon(MaterialIcon.ADD, "30px");
+            Text addIcon = Icons.ADD.standardSize();
             addButton.setGraphic(addIcon);
             addButton.setTooltip(new Tooltip(toolBox.getI18nBundle().getString("cppanel.tabpane.add.tooltip")));
             addButton.setOnAction(e -> addTab());
 
             // Remove - Each tab is also individually closeable
             Button removeButton = new JFXButton();
-            Text removeIcon = gf.createIcon(MaterialIcon.REMOVE, "30px");
+//            Text removeIcon = gf.createIcon(MaterialIcon.REMOVE, "30px");
+            Text removeIcon = Icons.REMOVE.standardSize();
             removeButton.setGraphic(removeIcon);
             removeButton.setTooltip(new Tooltip(i18n.getString("cppanel.tabpane.remove.tooltip")));
             removeButton.setOnAction(e -> {
@@ -96,8 +95,8 @@ public class ConceptButtonPanesController {
 
             // Lock
             Button lockButton = new JFXButton();
-            Text lockIcon = gf.createIcon(MaterialIcon.LOCK, "30px");
-            Text unlockIcon = gf.createIcon(MaterialIcon.LOCK_OPEN, "30px");
+            Text lockIcon = Icons.LOCK.standardSize();
+            Text unlockIcon = Icons.LOCK_OPEN.standardSize();
             lockButton.setGraphic(lockIcon);
             lockButton.setOnAction(e -> {
                 boolean v = lockProperty.get();
@@ -117,7 +116,7 @@ public class ConceptButtonPanesController {
             lockProperty.set(true);
 
             Button overviewButton = new JFXButton();
-            Text overviewIcon = gf.createIcon(MaterialIcon.VIEW_COLUMN, "30px");
+            Text overviewIcon = Icons.VIEW_COLUMN.standardSize();
             String overviewLabel = i18n.getString("cppanel.tabpane.overview.label");
             Tab overviewTab = new Tab(overviewLabel, new ScrollPane(overviewController.getRoot()));
             overviewButton.setGraphic(overviewIcon);

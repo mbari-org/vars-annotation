@@ -351,6 +351,7 @@ public class AnnotationServiceDecorator {
      * @param videoReferenceUuids
      * @deprecated Use {@link ConcurrentAnnotationDecorator} instead
      */
+    @Deprecated(forRemoval = true)
     public void findConcurrentAnnotations(Collection<UUID> videoReferenceUuids) {
         AnnotationService service = toolBox.getServices().getAnnotationService();
         List<AnnotationCount> annotationCounts = videoReferenceUuids.stream()
@@ -450,6 +451,7 @@ public class AnnotationServiceDecorator {
      * @return
      * @deprecated Use {@link CachedReferenceNumberDecorator} instead
      */
+    @Deprecated(forRemoval = true)
     public CompletableFuture<List<Association>> findReferenceNumberAssociations(Media media, String associationKey) {
         CompletableFuture<List<Association>> f = new CompletableFuture<>();
         MediaService mediaService = toolBox.getServices().getMediaService();
@@ -476,6 +478,7 @@ public class AnnotationServiceDecorator {
      * @return
      * @deprecated Use {@link CachedReferenceNumberDecorator} instead
      */
+    @Deprecated(forRemoval = true)
     public CompletableFuture<List<Association>> findReferenceNumberAssociationsForConcept(Media media,
                                                                                           String associationKey,
                                                                                           String concept) {
