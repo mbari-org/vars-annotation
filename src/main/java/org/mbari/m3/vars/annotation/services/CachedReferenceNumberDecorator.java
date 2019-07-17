@@ -31,10 +31,6 @@ public class CachedReferenceNumberDecorator {
     private final List<ConceptAssociation> conceptAssociations = new CopyOnWriteArrayList<>();
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-
-
-
-
     public CachedReferenceNumberDecorator(UIToolBox toolBox) {
         this.toolBox = toolBox;
         this.annotationService = toolBox.getServices().getAnnotationService();
