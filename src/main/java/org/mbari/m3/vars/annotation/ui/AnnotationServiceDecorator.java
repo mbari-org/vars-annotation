@@ -60,7 +60,7 @@ public class AnnotationServiceDecorator {
 
     public AnnotationServiceDecorator(UIToolBox toolBox) {
         this.toolBox = toolBox;
-        this.chunkSize = toolBox.getConfig().getInt("annotation.service.chunk.size");
+        this.chunkSize = toolBox.getConfig().getInt("annotation.service.page.size");
         this.chunkTimeout = toolBox.getConfig().getDuration("annotation.service.timeout");
         this.numberSimultaneousPages = toolBox.getConfig().getInt("annotation.service.page.count");
 

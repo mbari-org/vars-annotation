@@ -25,7 +25,7 @@
     <logger name="org.mbari.vcr4j.sharktopoda.SharktopodaResponseParser" level="WARN" />
     <logger name="org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO" level="WARN" />
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="CONSOLE"/>
     </root>
 
