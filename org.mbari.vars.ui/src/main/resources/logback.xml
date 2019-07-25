@@ -36,7 +36,7 @@
     <logger name="org.mbari.vcr4j" level="INFO" />
     <logger name="org.gradle" level="WARN" />
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="FILE" />
         <appender-ref ref="CONSOLE" />
     </root>

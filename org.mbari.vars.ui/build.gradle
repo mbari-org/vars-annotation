@@ -1,4 +1,3 @@
-
 plugins {
     id "application"
     id "org.openjfx.javafxplugin" version "0.0.7"
@@ -47,8 +46,20 @@ javafx {
     ]
 }
 
-mainClassName = "org.mbari.vars.ui/org.mbari.m3.vars.annotation.App"
-applicationDefaultJvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED']
+def runtimeJvmArgs = [
+        '-Xms1g',
+        '--add-exports', 'javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix',
+        '--add-exports', 'javafx.controls/com.sun.javafx.scene.control=com.jfoenix',
+        '--add-exports', 'javafx.base/com.sun.javafx.binding=com.jfoenix',
+        '--add-exports', 'javafx.graphics/com.sun.javafx.stage=com.jfoenix',
+        '--add-exports', 'javafx.base/com.sun.javafx.event=com.jfoenix'
+]
+
+application {
+    mainClassName = "org.mbari.vars.ui/org.mbari.m3.vars.annotation.App"
+    applicationDefaultJvmArgs = runtimeJvmArgs
+}
+//applicationDefaultJvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED']
 jlink {
     imageZip = file("$buildDir/image-zip/vars-annotation.zip")
     options = [
@@ -70,5 +81,7 @@ jlink {
 
     launcher {
         name = 'vars-annotation'
+        jvmArgs = jvmArgs
     }
+
 }

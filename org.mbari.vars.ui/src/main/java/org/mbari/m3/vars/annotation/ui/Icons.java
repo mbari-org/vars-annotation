@@ -63,6 +63,7 @@ public enum Icons {
     public Text size(int size) {
         FontIcon icon = new FontIcon(ikon);
         icon.setIconSize(size);
+        icon.getStyleClass().add("glyph-icon");
         return icon;
     }
 
