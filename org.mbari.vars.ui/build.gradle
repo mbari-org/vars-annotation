@@ -29,10 +29,6 @@ dependencies {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
     }
 
-    implementation('org.mbari.vcr4j:vcr4j-ui') {
-        exclude group: 'org.mbari.vcr4j', module: 'vcr4j-v2-adapter'
-    }
-
     runtimeOnly 'ch.qos.logback:logback-classic'
     runtimeOnly 'javax.servlet:javax.servlet-api'
 }

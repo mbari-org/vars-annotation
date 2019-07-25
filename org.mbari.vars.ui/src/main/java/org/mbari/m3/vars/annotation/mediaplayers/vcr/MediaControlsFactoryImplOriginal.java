@@ -20,7 +20,6 @@ import org.mbari.vcr4j.rs422.RS422Error;
 import org.mbari.vcr4j.rs422.RS422State;
 import org.mbari.vcr4j.rs422.decorators.UserbitsAsTimeDecorator;
 
-import org.mbari.vcr4j.ui.javafx.VcrControlPaneController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

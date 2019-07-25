@@ -28,7 +28,6 @@ module org.mbari.vars.ui {
   requires vcr4j.jserialcomm;
   requires vcr4j.rs422;
   requires vcr4j.sharktopoda;
-  requires vcr4j.ui;
 
   uses org.mbari.m3.vars.annotation.mediaplayers.MediaControlsFactory;
 

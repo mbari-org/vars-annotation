@@ -64,7 +64,6 @@ subprojects {
             implementation 'org.mbari.vcr4j:vcr4j-jserialcomm:4.0.2'
             implementation 'org.mbari.vcr4j:vcr4j-rs422:4.0.2'
             implementation 'org.mbari.vcr4j:vcr4j-sharktopoda:4.0.2'
-            implementation 'org.mbari.vcr4j:vcr4j-ui:4.0.2'
             implementation 'org.mbari:mbarix4j:1.10.0'
             implementation 'org.scijava:native-lib-loader:2.3.4'
             implementation 'org.slf4j:slf4j-api:1.7.26'
