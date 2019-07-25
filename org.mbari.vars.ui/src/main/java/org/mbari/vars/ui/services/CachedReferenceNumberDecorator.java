@@ -2,16 +2,19 @@ package org.mbari.vars.ui.services;
 
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
-import org.mbari.m3.vars.annotation.model.*;
-import org.mbari.m3.vars.annotation.util.AsyncUtils;
+
+import org.mbari.vars.services.AnnotationService;
+import org.mbari.vars.services.MediaService;
+import org.mbari.vars.services.model.Association;
+import org.mbari.vars.services.model.ConceptAssociation;
+import org.mbari.vars.services.model.ConceptAssociationRequest;
+import org.mbari.vars.services.model.Media;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
