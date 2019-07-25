@@ -32,7 +32,15 @@ module org.mbari.vars.ui {
 
   uses org.mbari.m3.vars.annotation.mediaplayers.MediaControlsFactory;
 
+  provides org.mbari.m3.vars.annotation.mediaplayers.MediaControlsFactory with
+          org.mbari.m3.vars.annotation.mediaplayers.macos.MediaControlsFactoryImpl,
+          org.mbari.m3.vars.annotation.mediaplayers.sharktopoda.MediaControlsFactoryImpl,
+          org.mbari.m3.vars.annotation.mediaplayers.ships.MediaControlsFactoryImpl,
+          org.mbari.m3.vars.annotation.mediaplayers.vcr.MediaControlsFactoryImpl;
+
   opens org.mbari.m3.vars.annotation to javafx.graphics;
+  opens org.mbari.m3.vars.annotation.mediaplayers.macos to javafx.fxml;
+  opens org.mbari.m3.vars.annotation.mediaplayers.sharktopoda to javafx.fxml;
   opens org.mbari.m3.vars.annotation.mediaplayers.ships to javafx.fxml;
   opens org.mbari.m3.vars.annotation.mediaplayers.vcr to javafx.fxml;
   opens org.mbari.m3.vars.annotation.ui to javafx.fxml;

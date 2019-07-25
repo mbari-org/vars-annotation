@@ -81,7 +81,7 @@ jlink {
 
     launcher {
         name = 'vars-annotation'
-        jvmArgs = jvmArgs
+        jvmArgs = runtimeJvmArgs
     }
 
 }
