@@ -1,6 +1,7 @@
 plugins {
     id 'com.adarshr.test-logger' version '1.7.0' apply false
     id "org.javamodularity.moduleplugin" version "1.5.0" apply false
+    id "com.github.ben-manes.versions" version "0.21.0" apply false
 }
 
 
@@ -8,6 +9,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'org.javamodularity.moduleplugin'
     apply plugin: 'com.adarshr.test-logger'
+    apply plugin: 'com.github.ben-manes.versions'
 
     sourceCompatibility = 11
     targetCompatibility = 11
@@ -49,7 +51,7 @@ subprojects {
             implementation 'de.jensd:fontawesomefx-materialicons:2.2.0-11'
             implementation 'eu.hansolo:Medusa:11.1'
             implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
-            implementation 'io.reactivex.rxjava2:rxjavafx:2.11.0-RC16'
+            implementation 'io.reactivex.rxjava2:rxjavafx:2.11.0-RC34'
             implementation 'javax.inject:javax.inject:1'
             implementation 'javax.servlet:javax.servlet-api:4.0.1'
             implementation 'org.controlsfx:controlsfx:11.0.0'
@@ -70,9 +72,9 @@ subprojects {
         }
 
         testCompileOnly 'junit:junit:4.12'
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-        testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.3.1'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
+        testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.5.1'
     }
 
     task tree(type: DependencyReportTask) {}
