@@ -22,7 +22,8 @@ public interface AnnoWebService {
     Call<Annotation> findByUuid(@Path("uuid") UUID observationUuid);
 
     //@GET("annotations/videoreference/{uuid}")
-    @GET("annotations/videoreference/chunked/{uuid}")
+//    @GET("annotations/videoreference/chunked/{uuid}")
+    @GET("fast/videoreference/{uuid}")
     Call<List<Annotation>> findByVideoReferenceUuid(@Path("uuid") UUID uuid,
                                                     @Query("limit") Long limit,
                                                     @Query("offset") Long offset);
@@ -99,7 +100,8 @@ public interface AnnoWebService {
     @GET("ancillarydata/observation/{uuid}")
     Call<AncillaryData> findAncillaryData(@Path("uuid") UUID observationUuid);
 
-    @POST("annotations/concurrent")
+//    @POST("annotations/concurrent")
+    @POST("fast/concurrent")
     Call<List<Annotation>> findByConcurrentRequest(@Body ConcurrentRequest concurrentRequest,
                                                    @Query("limit") Long limit,
                                                    @Query("offset") Long offset,
@@ -109,7 +111,8 @@ public interface AnnoWebService {
     Call<ConcurrentRequestCount> countByConcurrentRequest(@Body ConcurrentRequest concurrentRequest,
                                                           @HeaderMap Map<String, String> headers);
 
-    @POST("annotations/multi")
+//    @POST("annotations/multi")
+    @POST("fast/multi")
     Call<List<Annotation>> findByMultiRequest(@Body MultiRequest multiRequest,
                                               @Query("limit") Long limit,
                                               @Query("offset") Long offset,

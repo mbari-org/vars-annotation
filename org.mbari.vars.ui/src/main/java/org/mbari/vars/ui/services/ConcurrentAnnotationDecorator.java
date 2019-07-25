@@ -68,9 +68,15 @@ public class ConcurrentAnnotationDecorator {
                                 .filter(m -> !m.getVideoReferenceUuid().equals(uuid))
                                 .map(Media::getVideoReferenceUuid)
                                 .collect(Collectors.toList());
-                        ConcurrentRequest cr = new ConcurrentRequest(start, end, otherMedia);
-                        return annotationService.countByConcurrentRequest(cr)
-                                .thenApply(Optional::ofNullable);
+                        if (otherMedia.isEmpty()) {
+                            return CompletableFuture.completedFuture(Optional.empty());
+                        }
+                        else {
+                            ConcurrentRequest cr = new ConcurrentRequest(start, end, otherMedia);
+                            return annotationService.countByConcurrentRequest(cr)
+                                    .thenApply(Optional::ofNullable);
+                        }
+
                     });
         }
         else {
