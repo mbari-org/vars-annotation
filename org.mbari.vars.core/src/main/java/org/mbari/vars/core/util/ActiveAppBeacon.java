@@ -1,7 +1,6 @@
-package org.mbari.vars.services.util;
+package org.mbari.vars.core.util;
 
 
-import com.google.common.base.Joiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +11,8 @@ import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * ActiveAppBeacon is a beacon that can be attached to a port and will ping a message when any
@@ -79,8 +80,10 @@ public class ActiveAppBeacon {
 
         if (serverSocket == null) {
             ok = false;
-            Joiner joiner = Joiner.on(", ").skipNulls();
-            String portMsg = joiner.join(ports);
+            String portMsg = ports.stream()
+                    .filter(Objects::nonNull)
+                    .map(Object::toString)
+                    .collect(Collectors.joining(", "));
             beaconThread = null;
             log.warn("Failed to activate a ServerSocket for ActiveAppBeacon on any of the following ports: " + portMsg);
         }

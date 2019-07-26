@@ -3,7 +3,7 @@ package org.mbari.m3.vars.annotation.util;
 import io.reactivex.Observable;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mbari.vars.services.util.AsyncUtils;
+import org.mbari.vars.core.util.AsyncUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;

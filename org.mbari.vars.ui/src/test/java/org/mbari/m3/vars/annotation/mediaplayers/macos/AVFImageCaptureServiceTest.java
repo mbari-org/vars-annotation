@@ -3,8 +3,8 @@ package org.mbari.m3.vars.annotation.mediaplayers.macos;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.mbari.m3.vars.annotation.model.Framegrab;
 import org.mbari.vars.avfoundation.AVFImageCapture;
+import org.mbari.vars.services.model.Framegrab;
 
 import java.awt.*;
 import java.io.File;

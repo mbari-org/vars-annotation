@@ -34,7 +34,7 @@ import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.ConceptAssociationTemplate;
 import org.mbari.vars.services.model.Details;
 import org.mbari.vars.ui.util.FXMLUtils;
-import org.mbari.vars.services.util.ListUtils;
+import org.mbari.vars.core.util.ListUtils;
 
 /**
  * @author Brian Schlining

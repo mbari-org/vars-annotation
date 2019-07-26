@@ -1,4 +1,4 @@
-open module org.mbari.vars.services {
+module org.mbari.vars.services {
   requires com.github.benmanes.caffeine;
   requires com.google.common;
   requires com.google.guice;
@@ -8,18 +8,18 @@ open module org.mbari.vars.services {
   requires java.desktop;
   requires java.jwt;
   requires java.prefs;
-  requires java.scripting;
+//  requires java.scripting;
   requires java.sql;
   requires javax.inject;
   requires jsr305;
   requires okhttp3.logging;
   requires okhttp3;
+  requires org.mbari.vars.core;
   requires retrofit2.converter.gson;
   requires retrofit2;
   requires slf4j.api;
   requires typesafe.config;
   requires vcr4j.core;
-
 
   exports org.mbari.vars.services.gson;
   exports org.mbari.vars.services.impl.annosaurus.v1;

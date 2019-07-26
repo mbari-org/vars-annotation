@@ -1,12 +1,10 @@
 package org.mbari.m3.vars.annotation;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.mbari.vars.services.ServicesBuilder;
 import org.mbari.vars.services.Services;
-import org.mbari.vars.services.util.LessCSSLoader;
+import org.mbari.vars.core.util.LessCSSLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +23,6 @@ public class Initializer {
 
     private static Path settingsDirectory;
     private static Path imageDirectory;
-    private static Injector injector;
 
     private static UIToolBox toolBox;
 
@@ -57,7 +54,7 @@ public class Initializer {
     public static UIToolBox getToolBox() {
         if (toolBox == null) {
 //            Services services = getInjector().getInstance(Services.class);
-            Services services = new ManualInjectorModule().buildServices();
+            Services services = ServicesBuilder.build(Initializer.getConfig());
             ResourceBundle bundle = ResourceBundle.getBundle("i18n",
                     Locale.getDefault());
 
@@ -128,22 +125,5 @@ public class Initializer {
         }
         return createdPath;
     }
-
-//    public static Injector getInjector() {
-//        if (injector == null) {
-//            String moduleName = getConfig().getString("app.injector.module.class");
-//            try {
-//                Class clazz = Class.forName(moduleName);
-//                // TODO in java 9 use clazz.getDeclaredConstructor().newInstance()
-//                // You'll have to find one where constructor.getParameterCount == 0
-//                Module module = (Module) clazz.newInstance();
-//                injector = Guice.createInjector(module);
-//            } catch (Exception e) {
-//                throw new RuntimeException("Failed to create dependency injector", e);
-//            }
-//        }
-//        return injector;
-//    }
-
 
 }

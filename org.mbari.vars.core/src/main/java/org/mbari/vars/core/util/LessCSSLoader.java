@@ -8,7 +8,7 @@
  * Contributors:
  *     Tom Schindl <tom.schindl@bestsolution.at> - initial API and implementation
  *******************************************************************************/
-package org.mbari.vars.services.util;
+package org.mbari.vars.core.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -69,7 +69,6 @@ public class LessCSSLoader {
             while( (l = in.read(buf)) != -1 ) {
                 b.append(new String(buf,0,l));
             }
-            in.close();
         } catch (Exception e) {
             // TODO: handle exception
         }

@@ -6,6 +6,9 @@ sourceSets {
 }
 
 dependencies {
+
+    compile project(':org.mbari.vars.core')
+
     implementation 'com.auth0:java-jwt'
     implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers'
     implementation 'com.google.code.gson:gson'
@@ -44,7 +47,6 @@ task integrationTest(type: Test) {
     classpath = sourceSets.integrationTest.runtimeClasspath
 
     binResultsDir = file("$buildDir/integration-test-results/binary/integTest")
-
 //    reports {
 //        html.destination = "$buildDir/reports/integration-test"
 //        junitXml.destination = "$buildDir/integration-test-results"

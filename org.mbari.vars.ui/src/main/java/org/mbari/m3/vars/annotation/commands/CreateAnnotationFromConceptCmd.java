@@ -10,7 +10,7 @@ import org.mbari.m3.vars.annotation.messages.ShowAlert;
 import org.mbari.m3.vars.annotation.messages.ShowExceptionAlert;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.ConceptDetails;
-import org.mbari.vars.services.util.AsyncUtils;
+import org.mbari.vars.core.util.AsyncUtils;
 import org.mbari.vcr4j.VideoIndex;
 
 import java.util.Objects;

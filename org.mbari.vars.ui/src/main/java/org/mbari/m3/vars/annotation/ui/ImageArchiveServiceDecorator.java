@@ -11,7 +11,7 @@ import org.mbari.m3.vars.annotation.events.AnnotationsChangedEvent;
 import org.mbari.vars.services.model.*;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.ImageArchiveService;
-import org.mbari.vars.services.util.AsyncUtils;
+import org.mbari.vars.core.util.AsyncUtils;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
 import org.slf4j.Logger;

@@ -16,6 +16,7 @@ module org.mbari.vars.ui {
   requires org.kordamp.iconli.core;
   requires org.kordamp.ikonli.javafx;
   requires org.kordamp.ikonli.material;
+  requires org.mbari.vars.core;
   requires org.mbari.vars.javafx;
   requires org.mbari.vars.services;
   requires org.reactivestreams;

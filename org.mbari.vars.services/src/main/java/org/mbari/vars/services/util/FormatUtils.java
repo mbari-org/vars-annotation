@@ -1,5 +1,7 @@
 package org.mbari.vars.services.util;
 
+import org.mbari.vars.core.util.HexUtils;
+
 import java.time.Duration;
 
 /**

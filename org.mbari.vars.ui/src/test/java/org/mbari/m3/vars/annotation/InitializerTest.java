@@ -2,10 +2,10 @@ package org.mbari.m3.vars.annotation;
 
 import static org.junit.Assert.*;
 
-import com.google.inject.Injector;
 import org.junit.Test;
-import org.mbari.m3.vars.annotation.model.User;
-import org.mbari.m3.vars.annotation.services.UserService;
+import org.mbari.vars.services.Services;
+import org.mbari.vars.services.UserService;
+import org.mbari.vars.services.model.User;
 
 
 import java.nio.file.Files;
@@ -28,11 +28,7 @@ public class InitializerTest {
         assertTrue("The settings directory does not exist", Files.exists(path));
     }
 
-    @Test
-    public void getInjectorTest() {
-        Injector injector = Initializer.getInjector();
-        assertNotNull("Injector was null", injector);
-    }
+
 
     @Test
     public void getToolBoxTest() throws Exception {

@@ -15,9 +15,9 @@ import org.mbari.m3.vars.annotation.events.*;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.MediaService;
 import org.mbari.m3.vars.annotation.ui.shared.AnnotationTableViewFactory;
-import org.mbari.vars.services.util.AsyncUtils;
+import org.mbari.vars.core.util.AsyncUtils;
 import org.mbari.vars.javafx.util.JFXUtilities;
-import org.mbari.vars.services.util.ListUtils;
+import org.mbari.vars.core.util.ListUtils;
 
 import javax.annotation.Nonnull;
 import java.net.URI;

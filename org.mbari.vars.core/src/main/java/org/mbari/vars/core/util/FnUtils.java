@@ -1,4 +1,4 @@
-package org.mbari.vars.services.util;
+package org.mbari.vars.core.util;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

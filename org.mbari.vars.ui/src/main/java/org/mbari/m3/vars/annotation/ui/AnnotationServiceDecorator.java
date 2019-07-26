@@ -18,7 +18,7 @@ import org.mbari.vars.services.model.*;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.MediaService;
 import org.mbari.vars.services.RequestPager;
-import org.mbari.vars.services.util.AsyncUtils;
+import org.mbari.vars.core.util.AsyncUtils;
 import org.mbari.vars.javafx.util.JFXUtilities;
 import org.mbari.vars.ui.services.CachedReferenceNumberDecorator;
 import org.mbari.vars.ui.services.ConcurrentAnnotationDecorator;

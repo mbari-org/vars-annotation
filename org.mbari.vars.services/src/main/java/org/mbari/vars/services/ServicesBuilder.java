@@ -1,8 +1,7 @@
-package org.mbari.m3.vars.annotation;
+package org.mbari.vars.services;
 
 
 import com.typesafe.config.Config;
-import org.mbari.vars.services.*;
 import org.mbari.vars.services.impl.annosaurus.v1.AnnoService;
 import org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory;
 import org.mbari.vars.services.impl.annosaurus.v2.AnnoServiceV2;
@@ -24,10 +23,10 @@ import org.mbari.vars.services.util.WebPreferencesFactory;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 
-public class ManualInjectorModule {
+public class ServicesBuilder {
 
     private final Config config;
-    private final AppConfig appConfig;
+    private final ServiceConfig appConfig;
     private final Executor defaultExecutor = new ForkJoinPool();
 
     private static class Prefs {
@@ -48,12 +47,16 @@ public class ManualInjectorModule {
         }
     }
 
-    public ManualInjectorModule() {
-        this.config = Initializer.getConfig();
-        this.appConfig = new AppConfig(config);
+    private ServicesBuilder(Config config) {
+        this.config = config;
+        this.appConfig = new ServiceConfig(config);
     }
 
-    public Services buildServices() {
+    public static Services build(Config config) {
+        return new ServicesBuilder(config).build();
+    }
+
+    private Services build() {
         Prefs prefs = buildPrefs();
         return new Services(buildAnnotationService(),
                 buildAnnotationV2Service(),
@@ -66,7 +69,7 @@ public class ManualInjectorModule {
     }
 
     private AnnoService buildAnnotationService() {
-        AppConfig.ServiceParams params = appConfig.getAnnotationServiceParamsV1();
+        ServiceConfig.ServiceParams params = appConfig.getAnnotationServiceParamsV1();
         AnnoWebServiceFactory factory = new AnnoWebServiceFactory(params.getEndpoint(), params.getTimeout());
         AuthService authService = new BasicJWTAuthService(factory,
                 new Authorization("APIKEY", params.getClientSecret()));
@@ -76,7 +79,7 @@ public class ManualInjectorModule {
     }
 
     private AnnoServiceV2 buildAnnotationV2Service() {
-        AppConfig.ServiceParams params = appConfig.getAnnotationServiceParamsV2();
+        ServiceConfig.ServiceParams params = appConfig.getAnnotationServiceParamsV2();
         AnnoWebServiceFactoryV2 factory = new AnnoWebServiceFactoryV2(params.getEndpoint(),
                 params.getTimeout());
         AuthService authService = new BasicJWTAuthService(factory,
@@ -85,7 +88,7 @@ public class ManualInjectorModule {
     }
 
     private MediaService buildMediaService() {
-        AppConfig.ServiceParams params = appConfig.getMediaServiceParamsV1();
+        ServiceConfig.ServiceParams params = appConfig.getMediaServiceParamsV1();
         VamWebServiceFactory factory = new VamWebServiceFactory(params.getEndpoint(), params.getTimeout());
         AuthService authService = new BasicJWTAuthService(factory,
                 new Authorization("APIKEY", params.getClientSecret()));
@@ -93,7 +96,7 @@ public class ManualInjectorModule {
     }
 
     private ConceptService buildConceptService() {
-        AppConfig.ServiceParams params = appConfig.getConceptServiceParamsV1();
+        ServiceConfig.ServiceParams params = appConfig.getConceptServiceParamsV1();
         KBWebServiceFactory factory = new KBWebServiceFactory(params.getEndpoint(),
                 params.getTimeout(), defaultExecutor);
         KBConceptService service = new KBConceptService(factory);
@@ -104,7 +107,7 @@ public class ManualInjectorModule {
     }
 
     private Prefs buildPrefs() {
-        AppConfig.ServiceParams params = appConfig.getPreferencesServiceParamsV1();
+        ServiceConfig.ServiceParams params = appConfig.getPreferencesServiceParamsV1();
         PrefWebServiceFactory factory = new PrefWebServiceFactory(params.getEndpoint(), params.getTimeout());
         RetrofitServiceFactory authFactory = new BasicJWTAuthServiceFactorySC(params.getEndpoint(), params.getTimeout());
         AuthService authService = new BasicJWTAuthService(authFactory,
@@ -115,7 +118,7 @@ public class ManualInjectorModule {
     }
 
     private UserService buildUserService() {
-        AppConfig.ServiceParams params = appConfig.getAccountsServiceParamsV1();
+        ServiceConfig.ServiceParams params = appConfig.getAccountsServiceParamsV1();
         UserWebServiceFactory factory = new UserWebServiceFactory(params.getEndpoint(),
                 params.getTimeout());
         RetrofitServiceFactory authFactory = new BasicJWTAuthServiceFactorySC(params.getEndpoint(),
@@ -126,7 +129,7 @@ public class ManualInjectorModule {
     }
 
     private ImageArchiveService buildImageArchiveService() {
-        AppConfig.ServiceParams params = appConfig.getPanoptesServiceParamsV1();
+        ServiceConfig.ServiceParams params = appConfig.getPanoptesServiceParamsV1();
         PanoptesWebServiceFactory factory = new PanoptesWebServiceFactory(params.getEndpoint(),
                 params.getTimeout());
         RetrofitServiceFactory authFactory = new BasicJWTAuthServiceFactorySC(params.getEndpoint(),

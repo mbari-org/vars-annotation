@@ -14,7 +14,6 @@ import java.time.Duration;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Brian Schlining
@@ -44,10 +43,6 @@ public class DemoConstants {
         return getToolBox().getServices().getAnnotationService();
     }
 
-    public static AnnoWebServiceFactory newAnnoWebServiceFactory() {
-        Initializer.getToolBox().getServices().
-        return Initializer.getInjector().getInstance(AnnoWebServiceFactory.class);
-    }
 
     public static Annotation newTestAnnotation() {
         AnnoWebServiceFactory factory = new AnnoWebServiceFactory("http://deadend.org", Duration.ofMillis(10));

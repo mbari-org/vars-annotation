@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import org.mbari.vars.services.util.LessCSSLoader;
+import org.mbari.vars.core.util.LessCSSLoader;
 
 /**
  * @author Brian Schlining

@@ -1,16 +1,13 @@
-package org.mbari.m3.vars.annotation.services.vampiresquid.v1;
+package org.mbari.vars.services.vampiresquid.v1;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mbari.m3.vars.annotation.Initializer;
-import org.mbari.m3.vars.annotation.mediaplayers.ships.MediaParams;
-import org.mbari.m3.vars.annotation.model.Media;
-import org.mbari.m3.vars.annotation.services.MediaService;
+
+
+import org.mbari.vars.services.model.Media;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -22,7 +19,7 @@ import java.util.concurrent.TimeoutException;
  * @since 2018-01-03T11:56:00
  */
 public class MediaServiceTest {
-    MediaService mediaService = Initializer.getInjector().getInstance(VamService.class);
+    //MediaService mediaService =
 
     // THis passes but we're turning it off so that we don't put
     // bogus values in the database
