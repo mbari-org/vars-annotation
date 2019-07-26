@@ -1,4 +1,4 @@
-package org.mbari.vars.services;
+package org.mbari.vars.services.tests;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

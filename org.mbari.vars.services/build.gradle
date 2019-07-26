@@ -1,3 +1,10 @@
+sourceSets {
+    integrationTest {
+        java.srcDir 'src/integration-test/java'
+        resources.srcDir 'src/integration-test/resources'
+    }
+}
+
 dependencies {
     implementation 'com.auth0:java-jwt'
     implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers'
@@ -14,4 +21,36 @@ dependencies {
     implementation('com.github.ben-manes.caffeine:caffeine') {
         exclude group: 'org.checkerframework', module: 'checker-qual'
     }
+
+    integrationTestCompile sourceSets.main.output
+    integrationTestCompile sourceSets.test.output
+
+    integrationTestCompile configurations.compile
+    integrationTestCompile configurations.testCompile
+
+    integrationTestRuntime configurations.runtime
+    integrationTestRuntime configurations.testRuntime
 }
+
+
+
+task integrationTest(type: Test) {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = 'Runs integration tests.'
+
+    maxHeapSize = '1024m'
+
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+
+    binResultsDir = file("$buildDir/integration-test-results/binary/integTest")
+
+//    reports {
+//        html.destination = "$buildDir/reports/integration-test"
+//        junitXml.destination = "$buildDir/integration-test-results"
+//    }
+
+    mustRunAfter tasks.test
+}
+
+check.dependsOn integrationTest
