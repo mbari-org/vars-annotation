@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation;
 
 import com.typesafe.config.Config;
+import org.mbari.vars.services.ServiceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +16,7 @@ import java.util.function.Function;
  * @author Brian Schlining
  * @since 2019-05-14T14:47:00
  */
-public class AppConfig {
+public class AppConfig extends ServiceConfig  {
 
     public enum PagingStyle {
         PARALLEL,

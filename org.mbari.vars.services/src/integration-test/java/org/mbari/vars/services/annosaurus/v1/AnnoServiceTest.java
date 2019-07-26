@@ -3,9 +3,8 @@ package org.mbari.m3.vars.annotation.services.annosaurus.v1;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.mbari.m3.vars.annotation.Initializer;
-import org.mbari.m3.vars.annotation.model.*;
-import org.mbari.m3.vars.annotation.services.AnnotationService;
+import org.mbari.vars.services.AnnotationService;
+
 import static org.mbari.m3.vars.annotation.util.AsyncUtils.await;
 
 import java.io.UnsupportedEncodingException;

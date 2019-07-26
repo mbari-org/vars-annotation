@@ -55,4 +55,11 @@ task integrationTest(type: Test) {
     mustRunAfter tasks.test
 }
 
+integrationTest {
+    useJUnitPlatform()
+    moduleOptions {
+        runOnClasspath = true
+    }
+}
+
 check.dependsOn integrationTest
