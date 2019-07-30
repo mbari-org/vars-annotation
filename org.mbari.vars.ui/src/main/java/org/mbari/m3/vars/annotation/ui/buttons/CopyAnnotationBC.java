@@ -12,7 +12,7 @@ import org.mbari.m3.vars.annotation.ui.Icons;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.model.User;
-import org.mbari.vars.services.util.AsyncUtils;
+import org.mbari.vars.core.util.AsyncUtils;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 

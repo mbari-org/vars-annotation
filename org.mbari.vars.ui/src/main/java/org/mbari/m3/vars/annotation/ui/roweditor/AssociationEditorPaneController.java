@@ -31,7 +31,7 @@ import org.mbari.vars.services.ConceptService;
 import org.mbari.m3.vars.annotation.ui.shared.FilteredComboBoxDecorator;
 import org.mbari.m3.vars.annotation.ui.shared.HierarchicalConceptComboBoxDecorator;
 import org.mbari.vars.ui.util.FXMLUtils;
-import org.mbari.vars.services.util.ListUtils;
+import org.mbari.vars.core.util.ListUtils;
 
 public class AssociationEditorPaneController {
 

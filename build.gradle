@@ -27,6 +27,9 @@ subprojects {
 
     test {
         useJUnitPlatform()
+        moduleOptions {
+            runOnClasspath = true
+        }
         testlogger {
             theme 'mocha' // task level
         }

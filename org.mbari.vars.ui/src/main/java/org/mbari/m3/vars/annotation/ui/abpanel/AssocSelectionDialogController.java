@@ -13,7 +13,7 @@ import org.mbari.m3.vars.annotation.Initializer;
 import org.mbari.m3.vars.annotation.UIToolBox;
 import org.mbari.m3.vars.annotation.messages.ClearCacheMsg;
 import org.mbari.vars.services.model.ConceptAssociationTemplate;
-import org.mbari.vars.services.util.ListUtils;
+import org.mbari.vars.core.util.ListUtils;
 
 import java.util.List;
 import java.util.Optional;

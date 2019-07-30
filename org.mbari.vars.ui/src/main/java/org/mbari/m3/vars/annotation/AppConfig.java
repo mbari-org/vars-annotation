@@ -1,6 +1,7 @@
 package org.mbari.m3.vars.annotation;
 
 import com.typesafe.config.Config;
+import org.mbari.vars.services.ServiceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,12 +16,9 @@ import java.util.function.Function;
  * @author Brian Schlining
  * @since 2019-05-14T14:47:00
  */
-public class AppConfig {
+public class AppConfig extends ServiceConfig  {
 
-    public enum PagingStyle {
-        PARALLEL,
-        SEQUENTIAL
-    }
+
 
     public static class ServiceParams {
         private final String endpoint;
@@ -46,64 +44,13 @@ public class AppConfig {
         }
     }
 
-    private final Config config;
-    private final Logger log = LoggerFactory.getLogger(getClass());
-    private URL defaultUrl;
-    private Duration defaultTimeout = Duration.ofSeconds(20);
 
 
     public AppConfig(Config config) {
-        this.config = config;
-        try {
-            defaultUrl = new URL("http://localhost");
-        }
-        catch (MalformedURLException e) {
-            log.error("Unable to create a default URL for config values");
-        }
+        super(config);
     }
 
-    private <T> T read(String path, Function<String, T> fn, T defaultValue) {
-        try {
-            return fn.apply(path);
-        }
-        catch (Exception e) {
-            log.warn("Unable to find a config value at path {}", path);
-            return defaultValue;
-        }
-    }
 
-    private URL readUrl(String path) {
-        String url = null;
-        try {
-            url = config.getString(path);
-            return new URL(url);
-        }
-        catch (MalformedURLException e) {
-            log.warn("The URL {} defined in the config at {} is malformed", url, path);
-            return defaultUrl;
-        }
-        catch (Exception e) {
-            log.warn("Unable to find a config value at path {}", path);
-            return defaultUrl;
-        }
-    }
-
-    private ServiceParams readServiceParams(String basePath) {
-        String endpoint = read(basePath + ".url", config::getString, null);
-        Duration timeout = read(basePath + ".timeout", config::getDuration, defaultTimeout);
-        String clientSecret = read(basePath + ".client.secret", config::getString, "");
-        return new ServiceParams(endpoint, timeout, clientSecret);
-    }
-
-    public int getAnnotationServiceV1PageSize() {
-        return read("annotation.service.page.size", config::getInt, 20);
-    }
-
-    public int getAnnotationsServiceV1PageCount() {
-        PagingStyle pagingStyle = getAnnotationServiceV1Paging();
-        return pagingStyle.equals(PagingStyle.SEQUENTIAL) ?
-                1 :  read("annotation.service.page.count", config::getInt, 1);
-    }
 
     public int getSharktopodaDefaultsControlPort() {
         return read("sharktopoda.defaults.control.port", config::getInt, 8800);
@@ -122,39 +69,6 @@ public class AppConfig {
                 PagingStyle.PARALLEL : PagingStyle.SEQUENTIAL, PagingStyle.SEQUENTIAL);
     }
 
-    public ServiceParams getAccountsServiceParamsV1() {
-        return readServiceParams("accounts.service");
-    }
-
-    public ServiceParams getAnnotationServiceParamsV1() {
-        return readServiceParams("annotation.service");
-    }
-
-    public ServiceParams getAnnotationServiceParamsV2() {
-        ServiceParams serviceParams = readServiceParams("annotation.service");
-        String endpoint = read("annotation.service.v2.url", config::getString, null);
-        return new ServiceParams(endpoint, serviceParams.timeout, serviceParams.clientSecret);
-    }
-
-    public ServiceParams getConceptServiceParamsV1() {
-        return readServiceParams("concept.service");
-    }
-
-    public List<String> getConceptServiceTemplateFilters() {
-        return read("concept.service.template.filters", config::getStringList, Collections.emptyList());
-    }
-
-    public ServiceParams getMediaServiceParamsV1() {
-        return readServiceParams("media.service");
-    }
-
-    public ServiceParams getPanoptesServiceParamsV1() {
-        return readServiceParams("panoptes.service");
-    }
-
-    public ServiceParams getPreferencesServiceParamsV1() {
-        return readServiceParams("preferences.service");
-    }
 
     public String getAppDefaultsActivity() {
         return read("app.defaults.activity", config::getString, null);

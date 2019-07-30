@@ -11,7 +11,7 @@ import org.mbari.vars.services.model.Image;
 import org.mbari.vars.services.model.ImageReference;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.m3.vars.annotation.ui.AnnotationServiceDecorator;
-import org.mbari.vars.services.util.AsyncUtils;
+import org.mbari.vars.core.util.AsyncUtils;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;

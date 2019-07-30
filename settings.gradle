@@ -1,6 +1,7 @@
 rootProject.name = 'vars-annotation'
 
 String[] modules = [
+        'org.mbari.vars.core',
         'org.mbari.vars.javafx', 
         'org.mbari.vars.services',
         'org.mbari.vars.ui'
