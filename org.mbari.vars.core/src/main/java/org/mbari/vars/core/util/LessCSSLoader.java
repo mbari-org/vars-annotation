@@ -44,7 +44,6 @@ public class LessCSSLoader {
             f.deleteOnExit();
             try(FileOutputStream out = new FileOutputStream(f) ) {
                 out.write(rv.toString().getBytes());
-                out.close();
             }
             return f.toURI().toURL();
         } catch (Exception e) {
