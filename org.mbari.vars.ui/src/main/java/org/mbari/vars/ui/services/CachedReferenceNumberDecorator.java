@@ -1,7 +1,7 @@
 package org.mbari.vars.ui.services;
 
-import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
+import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.events.MediaChangedEvent;
 
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.MediaService;

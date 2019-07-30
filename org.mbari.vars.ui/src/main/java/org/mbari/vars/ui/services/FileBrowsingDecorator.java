@@ -2,9 +2,9 @@ package org.mbari.vars.ui.services;
 
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.events.MediaChangedEvent;
-import org.mbari.m3.vars.annotation.messages.ShowInfoAlert;
+import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.events.MediaChangedEvent;
+import org.mbari.vars.ui.messages.ShowInfoAlert;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.util.FormatUtils;
 import org.slf4j.Logger;

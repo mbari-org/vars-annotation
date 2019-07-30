@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.mbari.m3.vars.annotation.model.Authorization;
 import org.mbari.m3.vars.annotation.services.AuthService;
 import org.mbari.m3.vars.annotation.services.BasicJWTAuthService;
-import org.mbari.m3.vars.annotation.ui.DemoConstants;
+import org.mbari.vars.ui.javafx.DemoConstants;
 
 import java.util.Optional;
 

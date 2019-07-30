@@ -5,7 +5,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="root" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.m3.vars.annotation.ui.shared.SearchableDetailEditorPaneController">
+<VBox fx:id="root" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.javafx.shared.SearchableDetailEditorPaneController">
    <children>
       <JFXTextField fx:id="searchTextField" prefColumnCount="50" promptText="%roweditor.asseditor.search.label">
          <VBox.margin>

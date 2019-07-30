@@ -2,7 +2,7 @@ package org.mbari.m3.vars.annotation.util;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.mbari.m3.vars.annotation.Initializer;
+import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.services.util.WebPreferencesFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

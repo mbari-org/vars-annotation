@@ -1,13 +1,13 @@
 package org.mbari.vars.ui.services;
 
 import com.google.common.collect.Lists;
-import org.mbari.m3.vars.annotation.AppConfig;
-import org.mbari.m3.vars.annotation.EventBus;
-import org.mbari.m3.vars.annotation.UIToolBox;
-import org.mbari.m3.vars.annotation.events.AnnotationsAddedEvent;
-import org.mbari.m3.vars.annotation.messages.HideProgress;
-import org.mbari.m3.vars.annotation.messages.SetProgress;
-import org.mbari.m3.vars.annotation.messages.ShowNonfatalErrorAlert;
+import org.mbari.vars.ui.AppConfig;
+import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.events.AnnotationsAddedEvent;
+import org.mbari.vars.ui.messages.HideProgress;
+import org.mbari.vars.ui.messages.SetProgress;
+import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.services.model.*;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.MediaService;
