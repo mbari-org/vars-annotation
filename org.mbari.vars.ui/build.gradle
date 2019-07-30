@@ -29,6 +29,10 @@ dependencies {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
     }
 
+    implementation('eu.hansolo:Medusa') {
+        exclude group: 'org.openjfx'
+    }
+
     runtimeOnly 'ch.qos.logback:logback-classic'
     runtimeOnly 'javax.servlet:javax.servlet-api'
 }
