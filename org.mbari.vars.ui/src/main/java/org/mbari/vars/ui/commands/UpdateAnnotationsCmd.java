@@ -4,7 +4,7 @@ import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.User;
 import org.mbari.vars.services.ConceptService;
-import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.ui.demos.javafx.AnnotationServiceDecorator;
 import org.mbari.vcr4j.util.Preconditions;
 
 import java.time.Instant;

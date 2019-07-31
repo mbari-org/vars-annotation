@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    compile project(':org.mbari.vars.services')
     compile project(':org.mbari.vars.ui')
 
     implementation 'com.google.guava:guava'

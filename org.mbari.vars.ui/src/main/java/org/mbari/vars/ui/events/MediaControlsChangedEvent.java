@@ -1,6 +1,6 @@
 package org.mbari.vars.ui.events;
 
-import org.mbari.vars.ui.mediaplayers.MediaControls;
+import org.mbari.vars.ui.demos.mediaplayers.MediaControls;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 
