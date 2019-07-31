@@ -8,8 +8,9 @@ import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import org.mbari.vars.ui.EventBus;
 import org.mbari.vars.ui.demos.javafx.DemoConstants;
-import org.mbari.vars.ui.demos.javafx.concepttree.SearchTreePaneController;
+import org.mbari.vars.ui.javafx.concepttree.SearchTreePaneController;
 import org.mbari.vars.services.ConceptService;
+import org.mbari.vars.ui.javafx.cbpanel.DragPaneDecorator;
 
 import java.util.ResourceBundle;
 

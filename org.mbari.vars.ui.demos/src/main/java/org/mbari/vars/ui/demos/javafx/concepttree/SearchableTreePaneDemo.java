@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.demos.javafx.DemoConstants;
 import org.mbari.vars.services.ConceptService;
+import org.mbari.vars.ui.javafx.concepttree.SearchTreePaneController;
 
 
 import java.util.ResourceBundle;

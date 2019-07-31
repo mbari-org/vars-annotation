@@ -9,6 +9,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.mbari.vars.ui.Initializer;
+import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
 
 /**
  * @author Brian Schlining

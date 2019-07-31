@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.ui.javafx.roweditor.AnnotationEditorPaneController;
 
 /**
  * @author Brian Schlining

@@ -2,6 +2,7 @@ package org.mbari.vars.ui;
 
 import static org.junit.Assert.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mbari.vars.services.Services;
 import org.mbari.vars.services.UserService;
@@ -28,6 +29,7 @@ public class InitializerTest {
         assertTrue("The settings directory does not exist", Files.exists(path));
     }
 
+    @Ignore
     @Test
     public void getToolBoxTest() throws Exception {
         UIToolBox toolBox = Initializer.getToolBox();

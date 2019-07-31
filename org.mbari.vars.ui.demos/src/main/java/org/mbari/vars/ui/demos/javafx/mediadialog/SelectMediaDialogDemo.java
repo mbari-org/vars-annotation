@@ -13,6 +13,7 @@ import org.mbari.vars.ui.demos.javafx.DemoConstants;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.MediaService;
 import org.mbari.vars.services.model.Media;
+import org.mbari.vars.ui.javafx.mediadialog.SelectMediaDialog;
 
 import java.util.Optional;
 import java.util.ResourceBundle;

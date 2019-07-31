@@ -30,23 +30,37 @@ module org.mbari.vars.ui {
   requires vcr4j.rs422;
   requires vcr4j.sharktopoda;
 
-  uses org.mbari.vars.ui.demos.mediaplayers.MediaControlsFactory;
+  uses org.mbari.vars.ui.mediaplayers.MediaControlsFactory;
 
-  provides org.mbari.vars.ui.demos.mediaplayers.MediaControlsFactory with
-          org.mbari.vars.ui.demos.mediaplayers.macos.MediaControlsFactoryImpl,
-          org.mbari.vars.ui.demos.mediaplayers.sharktopoda.MediaControlsFactoryImpl,
-          org.mbari.vars.ui.demos.mediaplayers.ships.MediaControlsFactoryImpl,
-          org.mbari.vars.ui.demos.mediaplayers.vcr.MediaControlsFactoryImpl;
+  provides org.mbari.vars.ui.mediaplayers.MediaControlsFactory with
+          org.mbari.vars.ui.mediaplayers.macos.MediaControlsFactoryImpl,
+          org.mbari.vars.ui.mediaplayers.sharktopoda.MediaControlsFactoryImpl,
+          org.mbari.vars.ui.mediaplayers.ships.MediaControlsFactoryImpl,
+          org.mbari.vars.ui.mediaplayers.vcr.MediaControlsFactoryImpl;
 
   opens org.mbari.vars.ui to javafx.graphics;
-  opens org.mbari.vars.ui.demos.javafx to javafx.fxml;
-  opens org.mbari.vars.ui.demos.javafx.mediadialog to javafx.fxml;
-  opens org.mbari.vars.ui.demos.javafx.rectlabel to javafx.fxml;
-  opens org.mbari.vars.ui.demos.javafx.roweditor to javafx.fxml;
-  opens org.mbari.vars.ui.demos.mediaplayers.macos to javafx.fxml;
-  opens org.mbari.vars.ui.demos.mediaplayers.sharktopoda to javafx.fxml;
-  opens org.mbari.vars.ui.demos.mediaplayers.ships to javafx.fxml;
-  opens org.mbari.vars.ui.demos.mediaplayers.vcr to javafx.fxml;
+  opens org.mbari.vars.ui.javafx to javafx.fxml;
+  opens org.mbari.vars.ui.javafx.mediadialog to javafx.fxml;
+  opens org.mbari.vars.ui.javafx.rectlabel to javafx.fxml;
+  opens org.mbari.vars.ui.javafx.roweditor to javafx.fxml;
+  opens org.mbari.vars.ui.mediaplayers.macos to javafx.fxml;
+  opens org.mbari.vars.ui.mediaplayers.sharktopoda to javafx.fxml;
+  opens org.mbari.vars.ui.mediaplayers.ships to javafx.fxml;
+  opens org.mbari.vars.ui.mediaplayers.vcr to javafx.fxml;
 
   exports org.mbari.vars.ui;
+  exports org.mbari.vars.ui.commands;
+  exports org.mbari.vars.ui.events;
+  exports org.mbari.vars.ui.javafx;
+  exports org.mbari.vars.ui.javafx.annotable;
+  exports org.mbari.vars.ui.javafx.cbpanel;
+  exports org.mbari.vars.ui.javafx.concepttree;
+  exports org.mbari.vars.ui.javafx.mediadialog;
+  exports org.mbari.vars.ui.javafx.rectlabel;
+  exports org.mbari.vars.ui.javafx.roweditor;
+  exports org.mbari.vars.ui.javafx.shared;
+  exports org.mbari.vars.ui.messages;
+  exports org.mbari.vars.ui.services;
+  exports org.mbari.vars.ui.mediaplayers.sharktopoda;
+  exports org.mbari.vars.ui.mediaplayers.ships;
 }

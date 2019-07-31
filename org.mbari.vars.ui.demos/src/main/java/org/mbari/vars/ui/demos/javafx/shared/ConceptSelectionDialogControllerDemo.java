@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.javafx.shared.ConceptSelectionDialogController;
 
 /**
  * @author Brian Schlining

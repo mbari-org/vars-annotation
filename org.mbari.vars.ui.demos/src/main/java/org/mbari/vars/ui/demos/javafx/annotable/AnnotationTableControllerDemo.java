@@ -11,6 +11,7 @@ import org.mbari.vars.ui.demos.javafx.DemoConstants;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.ImageReference;
+import org.mbari.vars.ui.javafx.annotable.AnnotationTableController;
 import org.mbari.vcr4j.time.Timecode;
 
 import java.net.MalformedURLException;

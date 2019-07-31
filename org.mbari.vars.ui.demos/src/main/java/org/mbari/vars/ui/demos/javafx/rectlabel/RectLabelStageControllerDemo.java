@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 import org.mbari.vars.ui.demos.AppDemo;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.javafx.rectlabel.RectLabelStageController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

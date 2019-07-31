@@ -10,7 +10,7 @@ import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Image;
 import org.mbari.vars.services.model.ImageReference;
 import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.ui.demos.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
 import org.mbari.vars.core.util.AsyncUtils;
 
 import java.util.*;

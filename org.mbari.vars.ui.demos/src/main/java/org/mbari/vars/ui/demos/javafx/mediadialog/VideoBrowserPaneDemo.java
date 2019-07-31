@@ -7,6 +7,7 @@ import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.demos.javafx.DemoConstants;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.MediaService;
+import org.mbari.vars.ui.javafx.mediadialog.VideoBrowserPaneController;
 
 import java.util.ResourceBundle;
 

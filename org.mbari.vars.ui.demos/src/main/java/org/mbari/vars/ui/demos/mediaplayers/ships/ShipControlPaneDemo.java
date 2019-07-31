@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.mediaplayers.ships.ShipControlPane;
 
 /**
  * @author Brian Schlining

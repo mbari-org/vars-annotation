@@ -12,6 +12,7 @@ import org.mbari.vars.ui.commands.CreateAssociationsCmd;
 import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
+import org.mbari.vars.ui.javafx.roweditor.RowEditorController;
 
 import java.time.Instant;
 import java.util.Arrays;

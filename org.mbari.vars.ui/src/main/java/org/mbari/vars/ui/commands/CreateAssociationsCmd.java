@@ -5,7 +5,7 @@ import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.ui.demos.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
 
 import java.util.Collection;
 import java.util.List;

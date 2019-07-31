@@ -9,6 +9,7 @@ import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.demos.javafx.DemoConstants;
 import org.mbari.vars.services.ConceptService;
 import org.mbari.vars.services.model.Concept;
+import org.mbari.vars.ui.javafx.concepttree.TreeViewController;
 
 /**
  * @author Brian Schlining

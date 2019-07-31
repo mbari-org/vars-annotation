@@ -4,7 +4,7 @@ import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.services.model.Image;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.ui.demos.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.util.Preconditions;
 import org.slf4j.Logger;

@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.ui.javafx.ImageViewController;
 
 /**
  * @author Brian Schlining

@@ -10,6 +10,7 @@ import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.services.model.ConceptAssociationTemplate;
 import org.mbari.vars.services.model.Details;
+import org.mbari.vars.ui.javafx.shared.DetailEditorPaneController;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.mediaplayers.sharktopoda;
+package org.mbari.vars.ui.demos.mediaplayers.sharktopoda;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.mbari.vars.ui.Initializer;
+import org.mbari.vars.ui.mediaplayers.sharktopoda.SharktoptodaControlPane;
 
 /**
  * @author Brian Schlining
