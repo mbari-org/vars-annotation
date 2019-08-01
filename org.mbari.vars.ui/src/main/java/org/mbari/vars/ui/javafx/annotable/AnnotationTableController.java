@@ -15,7 +15,7 @@ import org.mbari.vars.ui.messages.SeekMsg;
 import org.mbari.vars.ui.javafx.shared.AnnotationTableViewFactory;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.javafx.util.JFXUtilities;
+import org.mbari.vars.ui.util.JFXUtilities;
 import org.mbari.vars.core.util.ListUtils;
 
 import javax.inject.Inject;

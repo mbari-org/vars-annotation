@@ -44,7 +44,7 @@ import org.mbari.vars.services.model.Image;
 import org.mbari.vars.ui.javafx.shared.ConceptSelectionDialogController;
 import org.mbari.vars.ui.javafx.shared.ImageViewExt;
 import org.mbari.vars.services.util.FormatUtils;
-import org.mbari.vars.javafx.util.JFXUtilities;
+import org.mbari.vars.ui.util.JFXUtilities;
 import org.mbari.vcr4j.VideoIndex;
 
 /**

@@ -10,7 +10,7 @@ import org.mbari.vars.ui.events.MediaPlayerChangedEvent;
 import org.mbari.vars.ui.javafx.Icons;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.User;
-import org.mbari.vars.javafx.util.JFXUtilities;
+import org.mbari.vars.ui.util.JFXUtilities;
 
 import java.util.ArrayList;
 import java.util.Collection;

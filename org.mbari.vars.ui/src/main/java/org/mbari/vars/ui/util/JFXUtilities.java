@@ -1,4 +1,4 @@
-package org.mbari.vars.javafx.util;
+package org.mbari.vars.ui.util;
 
 import javafx.application.Platform;
 import javafx.scene.Node;

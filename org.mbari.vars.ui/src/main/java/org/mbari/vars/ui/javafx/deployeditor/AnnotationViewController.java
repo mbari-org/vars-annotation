@@ -25,7 +25,7 @@ import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.services.MultiAnnotationDecorator;
 import org.mbari.vars.ui.javafx.BulkEditorPaneController;
-import org.mbari.vars.javafx.util.JFXUtilities;
+import org.mbari.vars.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

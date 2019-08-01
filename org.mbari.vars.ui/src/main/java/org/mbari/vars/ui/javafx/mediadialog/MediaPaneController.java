@@ -25,7 +25,7 @@ import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.ui.util.FXMLUtils;
 import org.mbari.vars.services.util.FormatUtils;
 import org.mbari.vars.services.model.Media;
-import org.mbari.vars.javafx.util.JFXUtilities;
+import org.mbari.vars.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

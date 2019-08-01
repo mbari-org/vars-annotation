@@ -15,7 +15,7 @@ import javafx.scene.layout.Pane;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.mediaplayers.SettingsPane;
 import org.mbari.vars.ui.util.FXMLUtils;
-import org.mbari.vars.javafx.util.JFXUtilities;
+import org.mbari.vars.ui.util.JFXUtilities;
 
 /**
  * @author Brian Schlining

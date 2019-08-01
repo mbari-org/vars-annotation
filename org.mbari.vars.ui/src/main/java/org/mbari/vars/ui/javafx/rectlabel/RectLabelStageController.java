@@ -15,7 +15,7 @@ import org.mbari.vars.ui.events.MediaChangedEvent;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.javafx.util.JFXUtilities;
+import org.mbari.vars.ui.util.JFXUtilities;
 
 import java.util.Collections;
 import java.util.Map;

@@ -10,7 +10,7 @@ import org.mbari.vars.ui.events.MediaChangedEvent;
 import org.mbari.vars.ui.events.UserChangedEvent;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.model.User;
-import org.mbari.vars.javafx.util.JFXUtilities;
+import org.mbari.vars.ui.util.JFXUtilities;
 
 /**
  * @author Brian Schlining

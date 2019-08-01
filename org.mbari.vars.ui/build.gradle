@@ -1,12 +1,12 @@
 plugins {
     id "application"
     id "org.openjfx.javafxplugin" version "0.0.8"
-    id "org.beryx.jlink" version "2.12.0"
+    id "org.beryx.jlink" version "2.14.0"
 }
 
 dependencies {
     compile project(':org.mbari.vars.core')
-    compile project(':org.mbari.vars.javafx')
+//    compile project(':org.mbari.vars.javafx')
     compile project(':org.mbari.vars.services')
 
     implementation 'com.google.guava:guava'
@@ -29,9 +29,9 @@ dependencies {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
     }
 
-    implementation('eu.hansolo:Medusa') {
-        exclude group: 'org.openjfx'
-    }
+//    implementation('eu.hansolo:Medusa') {
+//        exclude group: 'org.openjfx'
+//    }
 
     runtimeOnly 'ch.qos.logback:logback-classic'
     runtimeOnly 'javax.servlet:javax.servlet-api'
@@ -60,7 +60,12 @@ application {
     mainClassName = "org.mbari.vars.ui/org.mbari.vars.ui.App"
     applicationDefaultJvmArgs = runtimeJvmArgs
 }
-//applicationDefaultJvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED']
+
+createMergedModule {
+
+}
+
+
 jlink {
     imageZip = file("$buildDir/image-zip/vars-annotation.zip")
     options = [
@@ -83,6 +88,10 @@ jlink {
     launcher {
         name = 'vars-annotation'
         jvmArgs = runtimeJvmArgs
+    }
+
+    jpackage {
+        jpackageHome = System.getenv("JPACKAGE_HOME")
     }
 
 }

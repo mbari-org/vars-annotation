@@ -19,7 +19,7 @@ import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.MediaService;
 import org.mbari.vars.services.RequestPager;
 import org.mbari.vars.core.util.AsyncUtils;
-import org.mbari.vars.javafx.util.JFXUtilities;
+import org.mbari.vars.ui.util.JFXUtilities;
 import org.mbari.vars.ui.services.CachedReferenceNumberDecorator;
 import org.mbari.vars.ui.services.ConcurrentAnnotationDecorator;
 import org.mbari.vcr4j.VideoIndex;

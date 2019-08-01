@@ -45,7 +45,7 @@ import org.mbari.vars.ui.javafx.prefs.PreferencesDialogController;
 import org.mbari.vars.ui.javafx.rectlabel.RectLabelStageController;
 import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
 import org.mbari.vars.ui.javafx.userdialog.CreateUserDialog;
-import org.mbari.vars.javafx.util.JFXUtilities;
+import org.mbari.vars.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

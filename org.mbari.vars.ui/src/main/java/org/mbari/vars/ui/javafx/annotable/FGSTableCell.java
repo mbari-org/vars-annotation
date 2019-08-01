@@ -5,7 +5,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import org.mbari.vars.ui.javafx.Icons;
 import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.javafx.util.JFXUtilities;
+import org.mbari.vars.ui.util.JFXUtilities;
 
 
 /**
