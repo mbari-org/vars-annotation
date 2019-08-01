@@ -57,7 +57,7 @@ def runtimeJvmArgs = [
 ]
 
 application {
-    mainClassName = "org.mbari.vars.ui/org.mbari.m3.vars.annotation.App"
+    mainClassName = "org.mbari.vars.ui/org.mbari.vars.ui.App"
     applicationDefaultJvmArgs = runtimeJvmArgs
 }
 //applicationDefaultJvmArgs = ['--add-opens', 'java.base/java.lang=ALL-UNNAMED']

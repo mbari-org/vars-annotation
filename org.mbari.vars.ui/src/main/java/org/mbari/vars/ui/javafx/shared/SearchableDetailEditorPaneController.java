@@ -33,7 +33,7 @@ import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.ConceptAssociationTemplate;
 import org.mbari.vars.services.model.Details;
-import org.mbari.vars.javafx.util.FXMLUtils;
+import org.mbari.vars.ui.util.FXMLUtils;
 import org.mbari.vars.core.util.ListUtils;
 
 /**

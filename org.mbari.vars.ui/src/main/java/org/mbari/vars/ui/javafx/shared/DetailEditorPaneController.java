@@ -9,7 +9,7 @@ import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.Details;
-import org.mbari.vars.javafx.util.FXMLUtils;
+import org.mbari.vars.ui.util.FXMLUtils;
 
 import javax.annotation.Nullable;
 import java.net.URL;
