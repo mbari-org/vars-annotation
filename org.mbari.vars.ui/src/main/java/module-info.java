@@ -39,14 +39,14 @@ module org.mbari.vars.ui {
           org.mbari.vars.ui.mediaplayers.vcr.MediaControlsFactoryImpl;
 
   opens org.mbari.vars.ui to javafx.graphics;
-  opens org.mbari.vars.ui.javafx to javafx.fxml, org.mbari.vars.core;
-  opens org.mbari.vars.ui.javafx.mediadialog to javafx.fxml, org.mbari.vars.core;
-  opens org.mbari.vars.ui.javafx.rectlabel to javafx.fxml, org.mbari.vars.core;
-  opens org.mbari.vars.ui.javafx.roweditor to javafx.fxml, org.mbari.vars.core;
-  opens org.mbari.vars.ui.mediaplayers.macos to javafx.fxml, org.mbari.vars.core;
-  opens org.mbari.vars.ui.mediaplayers.sharktopoda to javafx.fxml, org.mbari.vars.core;
-  opens org.mbari.vars.ui.mediaplayers.ships to javafx.fxml, org.mbari.vars.core;
-  opens org.mbari.vars.ui.mediaplayers.vcr to javafx.fxml, org.mbari.vars.core;
+  opens org.mbari.vars.ui.javafx to javafx.fxml;
+  opens org.mbari.vars.ui.javafx.mediadialog to javafx.fxml;
+  opens org.mbari.vars.ui.javafx.rectlabel to javafx.fxml;
+  opens org.mbari.vars.ui.javafx.roweditor to javafx.fxml;
+  opens org.mbari.vars.ui.mediaplayers.macos to javafx.fxml;
+  opens org.mbari.vars.ui.mediaplayers.sharktopoda to javafx.fxml;
+  opens org.mbari.vars.ui.mediaplayers.ships to javafx.fxml;
+  opens org.mbari.vars.ui.mediaplayers.vcr to javafx.fxml;
 
   exports org.mbari.vars.ui;
   exports org.mbari.vars.ui.commands;
