@@ -57,6 +57,7 @@ public class ShipControlPane extends HBox {
         }), new KeyFrame(Duration.seconds(1)));
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
+        getChildren().add(label);
 
     }
 }

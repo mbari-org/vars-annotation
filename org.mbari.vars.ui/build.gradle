@@ -1,7 +1,7 @@
 plugins {
-    id "application"
-    id "org.openjfx.javafxplugin" version "0.0.8"
-    id "org.beryx.jlink" version "2.14.0"
+    id 'application'
+    id 'org.openjfx.javafxplugin' version "0.0.8"
+    id 'org.beryx.jlink' version "2.14.0"
 }
 
 dependencies {
@@ -14,8 +14,6 @@ dependencies {
     implementation 'com.jfoenix:jfoenix'
     implementation 'com.typesafe:config'
     implementation 'io.reactivex.rxjava2:rxjava'
-    implementation 'io.reactivex.rxjava2:rxjavafx'
-    implementation 'org.controlsfx:controlsfx'
     implementation 'org.kordamp.ikonli:ikonli-javafx'
     implementation 'org.kordamp.ikonli:ikonli-material-pack'
     implementation 'org.mbari.vars:vars-avfoundation'
@@ -25,13 +23,21 @@ dependencies {
     implementation 'org.mbari:mbarix4j'
     implementation 'org.slf4j:slf4j-api'
 
+    implementation('io.reactivex.rxjava2:rxjavafx') {
+        exclude group: 'org.openjfx', module: 'javafx-base'
+        exclude group: 'org.openjfx', module: 'javafx-controls'
+        exclude group: 'org.openjfx', module: 'javafx-graphics'
+    }
+
+    implementation('org.controlsfx:controlsfx') {
+        exclude group: 'org.openjfx', module: 'javafx-base'
+        exclude group: 'org.openjfx', module: 'javafx-controls'
+        exclude group: 'org.openjfx', module: 'javafx-graphics'
+    }
+
     implementation('org.mbari.m3:vars-blackmagic') {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
     }
-
-//    implementation('eu.hansolo:Medusa') {
-//        exclude group: 'org.openjfx'
-//    }
 
     runtimeOnly 'ch.qos.logback:logback-classic'
     runtimeOnly 'javax.servlet:javax.servlet-api'
@@ -47,6 +53,7 @@ javafx {
     ]
 }
 
+// These runtime args are shared by several tasks
 def runtimeJvmArgs = [
         '-Xms1g',
         '--add-exports', 'javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix',
@@ -61,11 +68,11 @@ application {
     applicationDefaultJvmArgs = runtimeJvmArgs
 }
 
-createMergedModule {
-
-}
 
 
+/* *****************************************************************************
+ Use the jlink plugin to build a dist with a JVM
+ */
 jlink {
     imageZip = file("$buildDir/image-zip/vars-annotation.zip")
     options = [

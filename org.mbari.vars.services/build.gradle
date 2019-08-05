@@ -1,16 +1,14 @@
-sourceSets {
-    integrationTest {
-        compileClasspath += sourceSets.main.output
-        runtimeClasspath += sourceSets.main.output
-        java.srcDir 'src/integration-test/java'
-        resources.srcDir 'src/integration-test/resources'
-    }
+plugins {
+    // https://github.com/nebula-plugins/nebula-project-plugin
+    id 'nebula.facet' version '6.0.3'
 }
 
-configurations {
-    integrationTestImplementation.extendsFrom implementation
-    integrationTestRuntimeOnly.extendsFrom runtimeOnly
-    integrationTestRuntime.extendsFrom runtime
+facets {
+    integTest {
+        parentSourceSet = 'test'
+        testTaskName = 'integrationTest'
+        includeInCheckLifecycle = false
+    }
 }
 
 dependencies {
@@ -34,32 +32,3 @@ dependencies {
     }
 
 }
-
-
-
-task integrationTest(type: Test) {
-    group = LifecycleBasePlugin.VERIFICATION_GROUP
-    description = 'Runs integration tests.'
-
-    maxHeapSize = '1024m'
-
-    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-    classpath = sourceSets.integrationTest.runtimeClasspath
-
-    binResultsDir = file("$buildDir/integration-test-results/binary/integTest")
-//    reports {
-//        html.destination = "$buildDir/reports/integration-test"
-//        junitXml.destination = "$buildDir/integration-test-results"
-//    }
-    // ensure that integration tests are run every time
-    outputs.upToDateWhen { false }
-
-
-//    mustRunAfter tasks.test
-}
-
-integrationTest {
-    useJUnitPlatform()
-}
-
-//check.dependsOn integrationTest
