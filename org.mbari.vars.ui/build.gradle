@@ -27,16 +27,19 @@ dependencies {
         exclude group: 'org.openjfx', module: 'javafx-base'
         exclude group: 'org.openjfx', module: 'javafx-controls'
         exclude group: 'org.openjfx', module: 'javafx-graphics'
+        because("If not excluded we end up with both mac and linux javafx jars which cause jlink to fail")
     }
 
     implementation('org.controlsfx:controlsfx') {
         exclude group: 'org.openjfx', module: 'javafx-base'
         exclude group: 'org.openjfx', module: 'javafx-controls'
         exclude group: 'org.openjfx', module: 'javafx-graphics'
+        because("If not excluded we end up with both mac and linux javafx jars which cause jlink to fail")
     }
 
     implementation('org.mbari.m3:vars-blackmagic') {
         exclude group: 'org.slf4j', module: 'slf4j-simple'
+        because("Do not want this slf4j provider included on classpath")
     }
 
     runtimeOnly 'ch.qos.logback:logback-classic'
@@ -53,7 +56,13 @@ javafx {
     ]
 }
 
-// These runtime args are shared by several tasks
+/*
+  These runtime args are shared by several tasks. We add many env params that
+  configure values defined in reference.conf. Note that the conf params will
+  only be added to the launchers IF they are defined in the system env at
+  build time
+ */
+
 def runtimeJvmArgs = [
         '-Xms1g',
         '--add-exports', 'javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix',
@@ -63,16 +72,49 @@ def runtimeJvmArgs = [
         '--add-exports', 'javafx.base/com.sun.javafx.event=com.jfoenix'
 ]
 
+def confEnvParams = [
+        "ACCOUNTS_SERVICE_URL",
+        "DACCOUNTS_SERVICE_TIMEOUT",
+        "ACCOUNTS_SERVICE_CLIENT_SECRET",
+        "ANNOTATION_SERVICE_URL",
+        "ANNOTATION_SERVICE_TIMEOUT",
+        "ANNOTATION_SERVICE_CLIENT_SECRET",
+        "ANNOTATION_SERVICE_PAGING",
+        "ANNOTATION_SERVICE_PAGE_COUNT",
+        "ANNOTATION_SERVICE_V2_URL",
+        "APP_IMAGE_COPYRIGHT_OWNER",
+        "CONCEPT_SERVICE_URL",
+        "CONCEPT_SERVICE_TIMEOUT",
+        "CONCEPT_SERVICE_TEMPLATE_FILTERS",
+        "MEDIA_SERVICE_URL",
+        "MEDIA_SERVICE_TIMEOUT",
+        "MEDIA_SERVICE_CLIENT_SECRET",
+        "PANOPTES_SERVICE_URL",
+        "PANOPTES_SERVICE_TIMEOUT",
+        "PANOPTES_SERVICE_CLIENT_SECRET",
+        "PREFERENCES_SERVICE_URL",
+        "PREFERENCES_SERVICE_TIMEOUT",
+        "PREFERENCES_SERVICE_CLIENT_SECRET",
+        "SHARKTOPODA_DEFAULTS_CONTROL_PORT",
+        "SHARKTOPODA_DEFAULTS_FRAMEGRAB_PORT"
+]
+confEnvParams.each { k ->
+    def v = System.getenv(k)
+    if (v) {
+        runtimeJvmArgs.addAll(["-D${k}", v])
+    }
+}
+
 application {
     mainClassName = "org.mbari.vars.ui/org.mbari.vars.ui.App"
     applicationDefaultJvmArgs = runtimeJvmArgs
 }
 
 
-
 /* *****************************************************************************
  Use the jlink plugin to build a dist with a JVM
  */
+
 jlink {
     imageZip = file("$buildDir/image-zip/vars-annotation.zip")
     options = [
@@ -93,12 +135,19 @@ jlink {
     }
 
     launcher {
-        name = 'vars-annotation'
+        name = 'VARS Annotation'
         jvmArgs = runtimeJvmArgs
     }
 
+
+
     jpackage {
         jpackageHome = System.getenv("JPACKAGE_HOME")
+        installerType = "dmg"
+        installerOptions = [
+                "--identifier", project.name,
+                "--mac-bundle-name", "VARS Annotation"
+        ]
     }
 
 }

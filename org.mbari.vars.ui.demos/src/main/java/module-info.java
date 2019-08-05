@@ -1,4 +1,4 @@
-module org.mbari.vars.ui.demos {
+open module org.mbari.vars.ui.demos {
 
   requires transitive org.mbari.vars.ui;
 
