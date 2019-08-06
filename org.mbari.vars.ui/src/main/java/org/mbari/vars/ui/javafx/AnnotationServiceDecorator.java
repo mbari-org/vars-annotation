@@ -160,23 +160,28 @@ public class AnnotationServiceDecorator {
 
         CompletableFuture<Void> future = new CompletableFuture<>();
 
-        int threadCount = pagingStyle.equals(PagingStyle.PARALLEL) ? numberSimultaneousPages : 1;
-        RequestPager<List<Annotation>> pager = new RequestPager<>(function, 2, threadCount);
-        RequestPager.Runner<List<Annotation>> runner = pager.build(ac.getCount(), chunkSize);
-        Observable<List<Annotation>> observable = runner.getObservable();
-        observable.subscribeOn(Schedulers.io())
-                .map(annotations -> masterMedia == null ? annotations : filterWithinMedia(annotations, masterMedia))
-                .subscribe(annotations -> updateUI(eventBus,
+        if (ac.getCount() > 0) {
+            int threadCount = pagingStyle.equals(PagingStyle.PARALLEL) ? numberSimultaneousPages : 1;
+            RequestPager<List<Annotation>> pager = new RequestPager<>(function, 2, threadCount);
+            RequestPager.Runner<List<Annotation>> runner = pager.build(ac.getCount(), chunkSize);
+            Observable<List<Annotation>> observable = runner.getObservable();
+            observable.subscribeOn(Schedulers.io())
+                    .map(annotations -> masterMedia == null ? annotations : filterWithinMedia(annotations, masterMedia))
+                    .subscribe(annotations -> updateUI(eventBus,
                             annotations,
                             sendNotifications,
                             totalAnnotationCount,
                             loadedAnnotationCount),
-                        future::completeExceptionally,
-                        () -> {
-                            log.info("Loaded annotations for " + ac.getVideoReferenceUuid());
-                            future.complete(null);
-                        }) ;
-        runner.run();
+                            future::completeExceptionally,
+                            () -> {
+                                log.info("Loaded annotations for " + ac.getVideoReferenceUuid());
+                                future.complete(null);
+                            });
+            runner.run();
+        }
+        else {
+            future.complete(null);
+        }
 
         return future;
     }
