@@ -56,7 +56,7 @@ javafx {
     ]
 }
 
-/*
+/* *****************************************************************************
   These runtime args are shared by several tasks. We add many env params that
   configure values defined in reference.conf. Note that the conf params will
   only be added to the launchers IF they are defined in the system env at
@@ -106,15 +106,23 @@ confEnvParams.each { k ->
     }
 }
 
-application {
-    mainClassName = "org.mbari.vars.ui/org.mbari.vars.ui.App"
-    applicationDefaultJvmArgs = runtimeJvmArgs
-}
 
 
 /* *****************************************************************************
  Use the jlink plugin to build a dist with a JVM
  */
+application {
+    mainClassName = "org.mbari.vars.ui/org.mbari.vars.ui.App"
+    applicationDefaultJvmArgs = runtimeJvmArgs
+}
+
+def targetInstallerType = "dmg"
+if (org.gradle.internal.os.OperatingSystem.current().isLinux()) {
+    targetInstallerType = "deb"
+}
+else if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+    targetInstallerType = "msi"
+}
 
 jlink {
     imageZip = file("$buildDir/image-zip/vars-annotation.zip")

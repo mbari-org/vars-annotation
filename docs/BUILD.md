@@ -75,4 +75,4 @@ export SHARKTOPODA_DEFAULTS_CONTROL_PORT=8800
 export SHARKTOPODA_DEFAULTS_FRAMEGRAB_PORT=5000
 ```
 
-To build a standalone distribution run: `gradlew jpackage`
+To build a standalone distribution run: `gradlew jpackage`. The build application will be in `org.mbari.vars.ui/build/jpackage`.
