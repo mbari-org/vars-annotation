@@ -1,4 +1,5 @@
-# Real-time Annotation
+# Workflow: Real-time Annotation
+
 This document describes the flow of opening a real time annotation session.
 
 ## UI Flow
@@ -18,6 +19,6 @@ This document describes the flow of opening a real time annotation session.
  5. Send POST request to vampire squid to create media. Open the media returned by the request.
  6. When closing a real-time annotation (or exiting the app when one is open), set the duration based on the time of the last annotation in the annotation group.
  
- ## MediaPlayer
+## MediaPlayer
  
  Remove or disable sharktopodacontrolpane? Need to look into removing/adapting/ or repacing the media controls when in real-time mode.
