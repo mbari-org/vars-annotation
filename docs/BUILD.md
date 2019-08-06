@@ -14,6 +14,9 @@ export JPACKAGE_HOME="/Users/brian/Applications/jdk-14.jdk/Contents/Home"
 
 # fish
 set -x JPACKAGE_HOME "/Users/brian/Applications/jdk-14.jdk/Contents/Home"
+
+# cmd
+set JPACKAGE_HOME=C:\Users\brian\Applications\jdk-14
 ```
 
 ## Build
@@ -47,7 +50,7 @@ SHARKTOPODA_DEFAULTS_CONTROL_PORT,
 SHARKTOPODA_DEFAULTS_FRAMEGRAB_PORT
 ```
 
-Here's an example `env-config.sh` file you could create to define your deployment environment. Just remember to run `source env-config.sh` before your build.
+Here's an example `env-config.sh` file you could create to define your deployment environment. Just remember to run `source env-config.sh` before your build. A default `env-config.sh` script is included that will reset the values to ones used for testing with [m3-microservices](https://github.com/mbari-media-management/m3-microservices).
 
 ```bash
 export ACCOUNTS_SERVICE_URL=http://vars.server.org/accounts/v1
