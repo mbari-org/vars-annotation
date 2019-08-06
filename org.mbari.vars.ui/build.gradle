@@ -75,7 +75,7 @@ def runtimeJvmArgs = [
 // If any o these exist as enironment vairables add them as -Dkey=value to jvmArgs
 def confEnvParams = [
         "ACCOUNTS_SERVICE_URL",
-        "DACCOUNTS_SERVICE_TIMEOUT",
+        "ACCOUNTS_SERVICE_TIMEOUT",
         "ACCOUNTS_SERVICE_CLIENT_SECRET",
         "ANNOTATION_SERVICE_URL",
         "ANNOTATION_SERVICE_TIMEOUT",
