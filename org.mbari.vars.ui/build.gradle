@@ -101,7 +101,7 @@ def confEnvParams = [
 confEnvParams.each { k ->
     def v = System.getenv(k)
     if (v) {
-        runtimeJvmArgs.addAll(["-D${k}", v])
+        runtimeJvmArgs.add("-D${k}=${v}")
     }
 }
 
