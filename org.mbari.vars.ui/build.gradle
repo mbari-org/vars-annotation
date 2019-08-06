@@ -72,6 +72,7 @@ def runtimeJvmArgs = [
         '--add-exports', 'javafx.base/com.sun.javafx.event=com.jfoenix'
 ]
 
+// If any o these exist as enironment vairables add them as -Dkey=value to jvmArgs
 def confEnvParams = [
         "ACCOUNTS_SERVICE_URL",
         "DACCOUNTS_SERVICE_TIMEOUT",
@@ -138,7 +139,6 @@ jlink {
         name = 'VARS Annotation'
         jvmArgs = runtimeJvmArgs
     }
-
 
 
     jpackage {
