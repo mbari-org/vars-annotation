@@ -116,13 +116,6 @@ application {
     applicationDefaultJvmArgs = runtimeJvmArgs
 }
 
-def targetInstallerType = "dmg"
-if (org.gradle.internal.os.OperatingSystem.current().isLinux()) {
-    targetInstallerType = "deb"
-}
-else if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
-    targetInstallerType = "msi"
-}
 
 jlink {
     imageZip = file("$buildDir/image-zip/vars-annotation.zip")
@@ -151,11 +144,24 @@ jlink {
 
     jpackage {
         jpackageHome = System.getenv("JPACKAGE_HOME")
-        installerType = "dmg"
-        installerOptions = [
-                "--identifier", project.name,
-                "--mac-bundle-name", "VARS Annotation"
-        ]
+
+        if  (org.gradle.internal.os.OperatingSystem.current().isLinux()) {
+            installerType = "deb"
+            installerOptions = [
+                    "--identifier", project.name
+            ]
+        }
+        else if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+            installerType = "msi"
+        }
+        else {
+            installerType = "dmg"
+            installerOptions = [
+                    "--identifier", project.name,
+                    "--mac-bundle-name", "VARS Annotation"
+            ]
+        }
+
     }
 
 }
