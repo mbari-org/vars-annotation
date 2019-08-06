@@ -141,26 +141,28 @@ jlink {
         jvmArgs = runtimeJvmArgs
     }
 
-
     jpackage {
         jpackageHome = System.getenv("JPACKAGE_HOME")
 
+        def customInstallerOptions = [
+                "--identifier", project.name,
+                "--copyright", "Monterey Bay Aquarium Research Institute",
+                "--vendor", "org.mbari"
+        ]
+
         if  (org.gradle.internal.os.OperatingSystem.current().isLinux()) {
             installerType = "deb"
-            installerOptions = [
-                    "--identifier", project.name
-            ]
         }
         else if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
             installerType = "msi"
         }
         else {
             installerType = "dmg"
-            installerOptions = [
-                    "--identifier", project.name,
-                    "--mac-bundle-name", "VARS Annotation"
-            ]
+            customInstallerOptions.addAll([
+                    "--mac-bundle-name", "VARS Annotation",
+            ])
         }
+        installerOptions = customInstallerOptions
 
     }
 
