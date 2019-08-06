@@ -28,7 +28,7 @@ export JPACKAGE_HOME="/Users/brian/Applications/jdk-14.jdk/Contents/Home"
 set -x JPACKAGE_HOME "/Users/brian/Applications/jdk-14.jdk/Contents/Home"
 
 # cmd
-set JPACKAGE_HOME=C:\Users\brian\Applications\jdk-14
+set JPACKAGE_HOME="C:\Users\brian\Applications\jdk-14"
 ```
 
 ### Build
@@ -64,7 +64,7 @@ SHARKTOPODA_DEFAULTS_CONTROL_PORT,
 SHARKTOPODA_DEFAULTS_FRAMEGRAB_PORT
 ```
 
-This project includes an example [env-config.sh](https://github.com/mbari-media-management/vars-annotation/blob/master/env-config.sh) that sets the environment variables to ones used for testing with [m3-microservices](https://github.com/mbari-media-management/m3-microservices). You can create you own to define variables you use for your in-house configuration. Just remember to run `source env-config.sh` before your build.
+This project includes an example [env-config.sh](https://github.com/mbari-media-management/vars-annotation/blob/master/env-config.sh) that sets the environment variables to ones used for testing with [m3-microservices](https://github.com/mbari-media-management/m3-microservices). You can create you own to define variables for your in-house configuration. Just remember to run `source my-env-config.sh` before your build.
 
 #### Run Build
 
