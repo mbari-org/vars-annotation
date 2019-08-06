@@ -35,7 +35,7 @@ set JPACKAGE_HOME="C:\Users\brian\Applications\jdk-14"
 
 #### Define Environment Variables
 
-The build can be customized for your deployment by setting environment variables _before_ you run a build. Refer to [reference.conf](https://github.com/mbari-media-management/vars-annotation/blob/master/org.mbari.vars.ui/src/main/resources/reference.conf) for more details. If these are not explicitly defined, they will default to values appropriate for working with the development setup provided by [m3-microservices](https://github.com/mbari-media-management/m3-microservices). Currently, the following variables can be defined:
+The build can be customized for your deployment by setting environment variables _before_ you run a build. Refer to [reference.conf](https://github.com/mbari-media-management/vars-annotation/blob/master/org.mbari.vars.ui/src/main/resources/reference.conf) for more details. If any of these variables are not explicitly defined, they will default to values appropriate for working with the development setup provided by [m3-microservices](https://github.com/mbari-media-management/m3-microservices). Currently, the following variables can be defined:
 
 ```bash
 ACCOUNTS_SERVICE_URL,
