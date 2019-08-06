@@ -4,7 +4,7 @@
 
 ```bash
 export JPACKAGE_HOME="/Users/brian/Applications/jdk-14.jdk/Contents/Home"
-source my-env-conf.sh
+source my-env-config.sh
 gradle jpackage
 # built app is in org.mbari.vars.ui/build/jpackage
 ```
