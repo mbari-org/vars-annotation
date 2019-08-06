@@ -4,7 +4,7 @@ aux_links:
     "MBARI":
       - "http://www.mbari.org"
     "MBARI Media Management":
-      - "//github.com/mbari-media-managment"
+      - "//github.com/mbari-media-management"
     "vars-annotation":
-      - "//github.com/mbari-media-managment/vars-annotation"
+      - "//github.com/mbari-media-management/vars-annotation"
 color_scheme: "dark"
