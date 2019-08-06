@@ -8,6 +8,7 @@ __Note__: This project can be built on macOS, Linux, and Windows (We actually te
 2. Run `gradlew check` to run tests and verify environment.
 3. Download [jpackage](https://jdk.java.net/jpackage/). 
 4. Define `JPACKAGE_HOME` environment variable that points to the location of the jpackage JVM. e.g. 
+
 ```
 # bash
 export JPACKAGE_HOME="/Users/brian/Applications/jdk-14.jdk/Contents/Home"
