@@ -1,7 +1,5 @@
 # Building from Source Code
 
-__Note__: This project can be built on macOS, Linux, and Windows (We actually tested all of them). We primarily develop on _macOS_ and these build instructions reflect that. They should be essentially identical on Linux.
-
 ## tl;dr
 
 ```bash
@@ -12,6 +10,8 @@ gradle jpackage
 ```
 
 ## Instructions
+
+This project can be built on macOS, Linux, and Windows (We actually tested all of them). We primarily develop on _macOS_ and these build instructions reflect that. They should be essentially identical on Linux.
 
 ### Set up
 
