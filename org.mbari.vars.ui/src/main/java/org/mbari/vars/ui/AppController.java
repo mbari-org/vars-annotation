@@ -185,7 +185,10 @@ public class AppController {
         data.setMedia(newMedia);
         AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
         if (newMedia != null) {
-            decorator.findAnnotations(newMedia.getVideoReferenceUuid());
+            // Load annotations for media & if needed, show concurrent annotations
+            decorator.findAnnotations(newMedia.getVideoReferenceUuid())
+                .thenAccept(v ->
+                        eventBus.send(new ShowConcurrentAnnotationsMsg(data.isShowConcurrentAnnotations())));
         }
 
 
@@ -194,28 +197,11 @@ public class AppController {
     private void showConcurrentMedia(Boolean show) {
         AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
         Media media = toolBox.getData().getMedia();
+        toolBox.getData().setShowConcurrentAnnotations(show);
         if (show) {
             if (media != null) {
                 ConcurrentAnnotationDecorator d2 = new ConcurrentAnnotationDecorator(toolBox);
                 d2.loadConcurrentAnnotations(media);
-//                UUID uuid = media.getVideoReferenceUuid();
-
-                /*
-                  1. Find medias for your deployment that overlap the one with
-                     the uuid you provided
-                  2. Convert those medias to a list of their UUIDs
-                  3. Pass that list to loadConcurrentAnnotations. That will
-                     get all annotations, from the overlapping media, that
-                     overlap with the timebounds of your current media
-                 */
-//                toolBox.getServices()
-//                        .getMediaService()
-//                        .findConcurrentByVideoReferenceUuid(uuid)
-//                        .thenApply(ms -> ms.stream()
-//                                .filter(m -> !m.getVideoReferenceUuid().equals(uuid))
-//                                .map(Media::getVideoReferenceUuid)
-//                                .collect(Collectors.toList()))
-//                        .thenAccept(decorator::loadConcurrentAnnotations);
             }
         }
         else {

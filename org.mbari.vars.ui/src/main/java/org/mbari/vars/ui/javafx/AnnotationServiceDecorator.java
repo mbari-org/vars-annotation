@@ -86,19 +86,19 @@ public class AnnotationServiceDecorator {
         }
     }
 
-    public void findAnnotations(UUID videoReferenceUuid) {
-        findAnnotations(videoReferenceUuid, toolBox.getExecutorService());
+    public CompletableFuture<Void> findAnnotations(UUID videoReferenceUuid) {
+        return findAnnotations(videoReferenceUuid, toolBox.getExecutorService());
     }
     /**
      * Find all annotations for a given video reference. The calls to retrieve
      * the annotations are
      * @param videoReferenceUuid
      */
-    public void findAnnotations(UUID videoReferenceUuid, ExecutorService executor) {
+    public CompletableFuture<Void>  findAnnotations(UUID videoReferenceUuid, ExecutorService executor) {
         AnnotationService service = toolBox.getServices().getAnnotationService();
         EventBus eventBus = toolBox.getEventBus();
         AtomicInteger loadedAnnotationCount = new AtomicInteger(0);
-        service.countAnnotations(videoReferenceUuid)
+        return service.countAnnotations(videoReferenceUuid)
                 .whenComplete((v, ex) -> eventBus.send(new ShowProgress()))
                 .thenAccept(ac ->
                         loadAnnotationPages(loadedAnnotationCount,

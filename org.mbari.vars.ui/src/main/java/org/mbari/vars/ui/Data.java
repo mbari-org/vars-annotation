@@ -1,10 +1,7 @@
 package org.mbari.vars.ui;
 
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.mbari.vars.services.model.Annotation;
@@ -30,6 +27,8 @@ public class  Data {
     private final StringProperty activity = new SimpleStringProperty();
 
     private final StringProperty group = new SimpleStringProperty();
+
+    private final BooleanProperty showConcurrentAnnotations = new SimpleBooleanProperty(false);
 
     public Media getMedia() {
         return media.get();
@@ -105,4 +104,15 @@ public class  Data {
         this.group.set(group);
     }
 
+    public boolean isShowConcurrentAnnotations() {
+        return showConcurrentAnnotations.get();
+    }
+
+    public BooleanProperty showConcurrentAnnotationsProperty() {
+        return showConcurrentAnnotations;
+    }
+
+    public void setShowConcurrentAnnotations(boolean showConcurrentAnnotations) {
+        this.showConcurrentAnnotations.set(showConcurrentAnnotations);
+    }
 }

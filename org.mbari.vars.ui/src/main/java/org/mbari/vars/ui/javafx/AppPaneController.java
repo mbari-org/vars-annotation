@@ -68,6 +68,7 @@ public class AppPaneController {
     private ToolBar toolBar;
     private final UIToolBox toolBox;
     private ComboBox<String> usersComboBox;
+    private CheckBox showConcurrentCheckBox;
     private PopOver openPopOver;
     private StatusBar utilityPane;
     private final ImageViewController imageViewController;
@@ -85,6 +86,7 @@ public class AppPaneController {
     private static final String masterPaneKey =  "master-split-pane";
     private static final String topPaneKey = "top-split-pane";
     private static final String bottomPaneKey = "bottom-split-pane";
+    private static final String concurrentStatusKey = "concurrent-status-key";
     private final Logger log = LoggerFactory.getLogger(getClass());
 
 
@@ -128,6 +130,7 @@ public class AppPaneController {
             saveDividerPositions(masterPaneKey, getMasterPane());
             saveDividerPositions(bottomPaneKey, getBottomPane());
             saveDividerPositions(topPaneKey, getTopPane());
+            saveBooleanPreference(concurrentStatusKey, getShowConcurrentCheckBox().isSelected());
         }));
 
 
@@ -150,6 +153,18 @@ public class AppPaneController {
         for (int i = 0; i < pos.length; i++) {
             p1.putDouble(i+ "", pos[i]);
         }
+    }
+
+    private void saveBooleanPreference(String name, Boolean value) {
+        Preferences p0 = Preferences.userNodeForPackage(getClass());
+        Preferences p1 = p0.node(name);
+        p1.putBoolean("is-selected", value);
+    }
+
+    private Boolean loadBooleanPreference(String name) {
+        Preferences p0 = Preferences.userNodeForPackage(getClass());
+        Preferences p1 = p0.node(name);
+        return p1.getBoolean("is-selected", false);
     }
 
     private void loadDividerPositions(String name, SplitPane pane) {
@@ -539,16 +554,7 @@ public class AppPaneController {
             // --- Configure concurrent controls
 
 
-            CheckBox checkBox = new JFXCheckBox(toolBox.getI18nBundle()
-                    .getString("apppane.statusbar.label.concurrent"));
-            checkBox.getStyleClass().add("utility-label");
-            checkBox.selectedProperty()
-                    .addListener((obs, oldv, newv) ->
-                            toolBox.getEventBus().send(new ShowConcurrentAnnotationsMsg(newv)));
-            // When the media is changed unselect the check box
-            toolBox.getData()
-                    .mediaProperty()
-                    .addListener((obs, oldv, newv) -> checkBox.setSelected(false));
+            CheckBox checkBox = getShowConcurrentCheckBox();
 
             Pane spacer0 = new Pane();
             spacer0.setPrefSize(20, 5);
@@ -567,6 +573,25 @@ public class AppPaneController {
 
         }
         return utilityPane;
+    }
+
+    private CheckBox getShowConcurrentCheckBox() {
+        if (showConcurrentCheckBox == null) {
+            showConcurrentCheckBox = new JFXCheckBox(toolBox.getI18nBundle()
+                    .getString("apppane.statusbar.label.concurrent"));
+            showConcurrentCheckBox.getStyleClass().add("utility-label");
+            Boolean isSelected = loadBooleanPreference(concurrentStatusKey);
+            showConcurrentCheckBox.setSelected(isSelected);
+            toolBox.getData().setShowConcurrentAnnotations(isSelected);
+            showConcurrentCheckBox.selectedProperty()
+                    .addListener((obs, oldv, newv) ->
+                            toolBox.getEventBus().send(new ShowConcurrentAnnotationsMsg(newv)));
+            // When the media is changed unselect the check box
+//            toolBox.getData()
+//                    .mediaProperty()
+//                    .addListener((obs, oldv, newv) -> showConcurrentCheckBox.setSelected(false));
+        }
+        return showConcurrentCheckBox;
     }
 
     public AnnotationTableController getAnnotationTableController() {
