@@ -33,6 +33,8 @@ set JPACKAGE_HOME=C:\Users\brian\Applications\jdk-14
 
 ### Build
 
+#### Define Environment Variables
+
 The build can be customized for your deployment by setting environment variables _before_ you run a build. Refer to [reference.conf](https://github.com/mbari-media-management/vars-annotation/blob/master/org.mbari.vars.ui/src/main/resources/reference.conf) for more details. If these are not explicitly defined, they will default to values appropriate for working with the development setup provided by [m3-microservices](https://github.com/mbari-media-management/m3-microservices). Currently, the following variables can be defined:
 
 ```bash
@@ -64,4 +66,6 @@ SHARKTOPODA_DEFAULTS_FRAMEGRAB_PORT
 
 This project includes an example [env-config.sh](https://github.com/mbari-media-management/vars-annotation/blob/master/env-config.sh) that sets the environment variables to ones used for testing with [m3-microservices](https://github.com/mbari-media-management/m3-microservices). You can create you own to define variables you use for your in-house configuration. Just remember to run `source env-config.sh` before your build.
 
-Once your enviroment is configured, run: `gradlew jpackage` to build the application. The built application will be in `org.mbari.vars.ui/build/jpackage`. Note that the build will include it's own JVM, so it can be distrubuted without requiring users to install Java.
+#### Run Build
+
+Once your enviroment is configured, run: `gradlew jpackage` to build the application. The built application will be in `org.mbari.vars.ui/build/jpackage`. Note that the build packages it's own JVM, so it can be distrubuted without requiring users to install Java.
