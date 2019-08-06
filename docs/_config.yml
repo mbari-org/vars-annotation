@@ -1,1 +1,10 @@
-theme: jekyll-theme-minimal
+remote_theme: pmarsceill/just-the-docs
+search_enabled: true
+aux_links:
+    "MBARI":
+      - "http://www.mbari.org"
+    "MBARI Media Management":
+      - "//github.com/mbari-media-managment"
+    "vars-annotation":
+      - "//github.com/mbari-media-managment/vars-annotation"
+color_scheme: "dark"
