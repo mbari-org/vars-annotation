@@ -40,6 +40,7 @@ module org.mbari.vars.ui {
 
   opens org.mbari.vars.ui to javafx.graphics;
   opens org.mbari.vars.ui.javafx to javafx.fxml;
+  opens org.mbari.vars.ui.javafx.abpanel to javafx.fxml;
   opens org.mbari.vars.ui.javafx.mediadialog to javafx.fxml;
   opens org.mbari.vars.ui.javafx.rectlabel to javafx.fxml;
   opens org.mbari.vars.ui.javafx.roweditor to javafx.fxml;

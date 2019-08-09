@@ -14,6 +14,7 @@ import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.messages.ClearCacheMsg;
 import org.mbari.vars.services.model.ConceptAssociationTemplate;
 import org.mbari.vars.core.util.ListUtils;
+import org.mbari.vars.ui.util.JFXUtilities;
 
 import java.util.List;
 import java.util.Optional;
@@ -122,8 +123,10 @@ public class AssocSelectionDialogController {
                 .getConceptService()
                 .findAllTemplates()
                 .thenAccept(cats -> {
-                    ObservableList<ConceptAssociationTemplate> list = FXCollections.observableArrayList(cats);
-                    assocComboBox.setItems(list);
+                    Platform.runLater(() -> {
+                        ObservableList<ConceptAssociationTemplate> list = FXCollections.observableArrayList(cats);
+                        assocComboBox.setItems(list);
+                    });
                 });
     }
 
