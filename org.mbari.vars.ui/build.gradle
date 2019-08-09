@@ -37,10 +37,10 @@ dependencies {
         because("If not excluded we end up with both mac and linux javafx jars which cause jlink to fail")
     }
 
-    implementation('org.mbari.m3:vars-blackmagic') {
-        exclude group: 'org.slf4j', module: 'slf4j-simple'
-        because("Do not want this slf4j provider included on classpath")
-    }
+//    implementation('org.mbari.m3:vars-blackmagic') {
+//        exclude group: 'org.slf4j', module: 'slf4j-simple'
+//        because("Do not want this slf4j provider included on classpath")
+//    }
 
     runtimeOnly 'ch.qos.logback:logback-classic'
     runtimeOnly 'javax.servlet:javax.servlet-api'

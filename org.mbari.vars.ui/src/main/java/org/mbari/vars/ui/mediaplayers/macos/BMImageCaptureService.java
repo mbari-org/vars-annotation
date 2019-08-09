@@ -1,6 +1,6 @@
 package org.mbari.vars.ui.mediaplayers.macos;
 
-import org.mbari.m3.blackmagic.BlackmagicImageCapture;
+//import org.mbari.m3.blackmagic.BlackmagicImageCapture;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.services.model.Framegrab;
@@ -24,17 +24,19 @@ import java.util.concurrent.TimeUnit;
 public class BMImageCaptureService implements SelectableImageCaptureService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private BlackmagicImageCapture imageCapture;
+//    private BlackmagicImageCapture imageCapture;
     public static BMImageCaptureService imageCaptureService;
     private String currentDevice = "";
 
     protected BMImageCaptureService() {
-        imageCapture = new BlackmagicImageCapture();
+//        imageCapture = new BlackmagicImageCapture();
     }
 
     public Collection<String> listDevices() {
+        log.warn("BlackMagic is currently disabled. It was causing problems.");
         try {
-            return Arrays.asList(imageCapture.videoDevicesAsStrings());
+//            return Arrays.asList(imageCapture.videoDevicesAsStrings());
+            return new ArrayList<>();
         }
         catch (UnsatisfiedLinkError e) {
             log.warn("Something is wrong with the BlackMagic libraries", e);
@@ -46,10 +48,10 @@ public class BMImageCaptureService implements SelectableImageCaptureService {
         String cd = currentDevice == null ? "" : currentDevice;
         try {
             if (!cd.equals(device)) {
-                imageCapture.stopSession();
+//                imageCapture.stopSession();
             }
             if (device != null) {
-                imageCapture.startSessionWithNamedDevice(device);
+//                imageCapture.startSessionWithNamedDevice(device);
             }
         }
         catch (UnsatisfiedLinkError e) {
@@ -64,7 +66,7 @@ public class BMImageCaptureService implements SelectableImageCaptureService {
         //imageCapture.startSessionWithNamedDevice(currentDevice);
         Optional<Image> imageOpt = Optional.empty();
         try {
-            imageOpt = imageCapture.capture(file, Duration.ofSeconds(10));
+//            imageOpt = imageCapture.capture(file, Duration.ofSeconds(10));
         }
         catch (UnsatisfiedLinkError e) {
             log.warn("Something is wrong with the BlackMagic libraries", e);
@@ -105,7 +107,7 @@ public class BMImageCaptureService implements SelectableImageCaptureService {
 
     @Override
     public void dispose() {
-        imageCapture.stopSession();
+//        imageCapture.stopSession();
         // TODO need to add dispose method to vars-blackmagic
     }
 
@@ -116,9 +118,9 @@ public class BMImageCaptureService implements SelectableImageCaptureService {
         return imageCaptureService;
     }
 
-    public BlackmagicImageCapture getImageCapture() {
-        return imageCapture;
-    }
+//    public BlackmagicImageCapture getImageCapture() {
+//        return imageCapture;
+//    }
 
 
 }
