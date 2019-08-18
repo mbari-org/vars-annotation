@@ -1,6 +1,5 @@
 plugins {
-    // https://github.com/nebula-plugins/nebula-project-plugin
-    id 'nebula.facet' version '6.0.3'
+    id 'nebula.facet'
 }
 
 facets {

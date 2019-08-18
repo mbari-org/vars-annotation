@@ -1,7 +1,7 @@
 plugins {
     id 'application'
-    id 'org.openjfx.javafxplugin' version "0.0.8"
-    id 'org.beryx.jlink' version "2.14.0"
+    id 'org.openjfx.javafxplugin'
+    id 'org.beryx.jlink'
 }
 
 dependencies {
