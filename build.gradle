@@ -114,6 +114,13 @@ subprojects {
     bintray {
         key = System.getenv("BINTRAY_KEY")
         user = System.getenv("BINTRAY_USER")
+        publications = ['maven']
+        pkg {
+            repo = 'maven'
+            name = project.name
+            licenses = ['Apache-2.0']
+            vcsUrl = 'https://github.com/mbari-media-management/vars-annotation.git'
+        }
     }
 
 }
