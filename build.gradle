@@ -3,19 +3,23 @@ plugins {
     id 'com.github.spotbugs' apply  false
     id 'org.kordamp.gradle.jdeps' apply false
     id "com.github.ben-manes.versions" apply false
+    id "com.jfrog.bintray" apply false
     id "org.javamodularity.moduleplugin" apply false
 }
 
 
 subprojects {
 
+    version = "0.3.1"
+
     apply plugin: 'com.adarshr.test-logger'
     apply plugin: 'com.github.ben-manes.versions'
     apply plugin: 'com.github.spotbugs'
+    apply plugin: 'com.jfrog.bintray'
     apply plugin: 'java'
+    apply plugin: 'maven-publish'
     apply plugin: 'org.javamodularity.moduleplugin'
     apply plugin: 'org.kordamp.gradle.jdeps'
-
 
     sourceCompatibility = 11
     targetCompatibility = 11
@@ -23,6 +27,7 @@ subprojects {
     repositories {
         jcenter()
         mavenCentral()
+        mavenLocal()
         maven {
             url 'http://dl.bintray.com/hohonuuli/maven'
         }
@@ -94,6 +99,21 @@ subprojects {
 
     jdepsReport {
         classpaths = ['compileClasspath', 'runtimeClasspath']
+    }
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                groupId "org.mbari.m3"
+                artifactId project.name
+                from components.java
+            }
+        }
+    }
+
+    bintray {
+        key = System.getenv("BINTRAY_KEY")
+        user = System.getenv("BINTRAY_USER")
     }
 
 }
