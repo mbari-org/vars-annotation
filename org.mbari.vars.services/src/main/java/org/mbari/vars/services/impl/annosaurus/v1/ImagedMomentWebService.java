@@ -1,6 +1,6 @@
-package org.mbari.m3.corelib.services.annosaurus.v1;
+package org.mbari.vars.services.impl.annosaurus.v1;
 
-import org.mbari.m3.corelib.model.ImagedMoment;
+import org.mbari.vars.services.model.ImagedMoment;
 import retrofit2.Call;
 import retrofit2.http.*;
 

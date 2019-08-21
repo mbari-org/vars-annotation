@@ -1,6 +1,6 @@
-package org.mbari.m3.corelib.services.annosaurus.v1;
+package org.mbari.vars.services.impl.annosaurus.v1;
 
-import org.mbari.m3.corelib.model.Index;
+import org.mbari.vars.services.model.Index;
 import retrofit2.Call;
 import retrofit2.http.*;
 

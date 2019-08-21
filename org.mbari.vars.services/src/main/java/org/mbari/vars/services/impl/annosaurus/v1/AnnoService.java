@@ -77,6 +77,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(annoService.countAllGroupByVideoReferenceUuid());
     }
 
+
     /**
      *
      * @param concurrentRequest
@@ -99,6 +100,11 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     @Override
     public CompletableFuture<List<AnnotationCount>> countImagedMomentsGroupByVideoReferenceUuid() {
         return sendRequest(annoService.countImagedMomentsGroupByVideoReferenceUuid());
+    }
+
+    @Override
+    public CompletableFuture<ConceptCount> countObservationsByConcept(String concept) {
+        return sendRequest(annoService.countObservationsByConcept(concept));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.mbari.vars.services.impl.vampiresquid.v1;
 
+import org.mbari.vars.services.model.LastUpdate;
 import org.mbari.vars.services.model.Media;
 import retrofit2.Call;
 import retrofit2.http.*;

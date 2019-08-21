@@ -1,6 +1,7 @@
 package org.mbari.vars.services.impl.vampiresquid.v1;
 
 import org.mbari.vars.services.gson.ByteArrayConverter;
+import org.mbari.vars.services.model.LastUpdate;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.AuthService;
 import org.mbari.vars.services.MediaService;
@@ -13,6 +14,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining

@@ -69,12 +69,6 @@ public interface AnnotationService {
 
         CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, Long limit, Long offset);
 
-        CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, int pageSize, Duration pageTimeout,
-                        ExecutorService executor);
-
-        CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, long limit, long offset,
-                        int pageSize, Duration pageTimeout, ExecutorService executor);
-
         CompletableFuture<Association> findAssociationByUuid(UUID associationUuid);
 
         CompletableFuture<ConceptAssociationResponse> findByConceptAssociationRequest(

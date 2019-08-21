@@ -1,7 +1,7 @@
-package org.mbari.m3.corelib.services.annosaurus.v1;
+package org.mbari.vars.services.impl.annosaurus.v1;
 
-import org.mbari.m3.corelib.model.AncillaryData;
-import org.mbari.m3.corelib.model.AncillaryDataDeleteCount;
+import org.mbari.vars.services.model.AncillaryData;
+import org.mbari.vars.services.model.AncillaryDataDeleteCount;
 import retrofit2.Call;
 import retrofit2.http.*;
 
