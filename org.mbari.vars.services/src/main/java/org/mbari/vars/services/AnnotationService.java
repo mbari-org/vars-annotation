@@ -1,12 +1,24 @@
-package org.mbari.vars.services;
+/*
+ * @(#)AnnotationService.java   2019.08.21 at 03:42:13 PDT
+ *
+ * Copyright 2011 MBARI
+ *
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import org.mbari.vars.services.model.*;
+package org.mbari.vars.services;
 
 import java.net.URL;
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import org.mbari.vars.services.model.*;
 
 /**
  *
@@ -15,77 +27,98 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface AnnotationService {
 
-    CompletableFuture<Annotation> findByUuid(UUID observationUuid);
+        CompletableFuture<AnnotationCount> countAnnotations(UUID videoReferenceUuid);
 
-    CompletableFuture<List<Association>> findByVideoReferenceAndLinkName(UUID videoReferenceUuid,
-                                                                         String linkName);
+        CompletableFuture<List<AnnotationCount>> countAnnotationsGroupByVideoReferenceUuid();
 
-    CompletableFuture<List<Association>> findByVideoReferenceAndLinkNameAndConcept(UUID videoReferenceUuid,
-                                                                                   String linkName,
-                                                                                   String concept);
+        CompletableFuture<ConcurrentRequestCount> countByConcurrentRequest(ConcurrentRequest concurrentRequest);
 
-    CompletableFuture<AncillaryData> findAncillaryData(UUID observationUuid);
+        CompletableFuture<MultiRequestCount> countByMultiRequest(MultiRequest multiRequest);
 
-    CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid);
+        CompletableFuture<List<AnnotationCount>> countImagedMomentsGroupByVideoReferenceUuid();
 
-    CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, Long limit, Long offset);
+        CompletableFuture<ConceptCount> countObservationsByConcept(String concept);
 
-    CompletableFuture<List<Annotation>> findByImageReference(UUID imageReferenceUuid);
+        CompletableFuture<Annotation> createAnnotation(Annotation annotation);
 
-    CompletableFuture<Image> findImageByUuid(UUID imageReferenceUuid);
+        CompletableFuture<Collection<Annotation>> createAnnotations(Collection<Annotation> annotations);
 
-    CompletableFuture<List<Image>> findImagesByVideoReferenceUuid(UUID videoReferenceUuid);
+        CompletableFuture<Association> createAssociation(UUID observationUuid, Association association);
 
-    CompletableFuture<Association> findAssociationByUuid(UUID associationUuid);
+        CompletableFuture<Image> createImage(Image image);
 
-    CompletableFuture<AnnotationCount> countAnnotations(UUID videoReferenceUuid);
+        CompletableFuture<List<AncillaryData>> createOrUpdateAncillaryData(
 
-    CompletableFuture<List<Annotation>> findByConcurrentRequest(ConcurrentRequest concurrentRequest,
-                                                                long limit,
-                                                                long offset);
+                        List<AncillaryData> ancillaryData);
 
-    CompletableFuture<ConcurrentRequestCount> countByConcurrentRequest(ConcurrentRequest concurrentRequest);
+        CompletableFuture<Boolean> deleteAnnotation(UUID observationUuid);
 
-    CompletableFuture<List<Annotation>> findByMultiRequest(MultiRequest multiRequest,
-                                                           long limit,
-                                                           long offset);
+        CompletableFuture<Void> deleteAnnotations(Collection<UUID> observationUuids);
 
-    CompletableFuture<MultiRequestCount> countByMultiRequest(MultiRequest multiRequest);
+        CompletableFuture<Boolean> deleteAssociation(UUID associationUuid);
 
-    CompletableFuture<ConceptAssociationResponse> findByConceptAssociationRequest(ConceptAssociationRequest request);
+        CompletableFuture<Void> deleteAssociations(Collection<UUID> associationUuids);
 
-    CompletableFuture<List<String>> findGroups();
+        CompletableFuture<Boolean> deleteImage(UUID imageReferenceUuid);
 
-    CompletableFuture<List<String>> findActivities();
+        CompletableFuture<List<String>> findActivities();
 
-    CompletableFuture<Annotation> createAnnotation(Annotation annotation);
+        CompletableFuture<AncillaryData> findAncillaryData(UUID observationUuid);
 
-    CompletableFuture<Collection<Annotation>> createAnnotations(Collection<Annotation> annotations);
+        CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid);
 
-    CompletableFuture<Association> createAssociation(UUID observationUuid, Association association);
+        CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, Long limit, Long offset);
 
-    CompletableFuture<Image> createImage(Image image);
+        CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, int pageSize, Duration pageTimeout,
+                        ExecutorService executor);
 
-    CompletableFuture<Annotation> updateAnnotation(Annotation annotation);
+        CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, long limit, long offset,
+                        int pageSize, Duration pageTimeout, ExecutorService executor);
 
-    CompletableFuture<Collection<Annotation>> updateAnnotations(Collection<Annotation> annotations);
+        CompletableFuture<Association> findAssociationByUuid(UUID associationUuid);
 
-    CompletableFuture<Association> updateAssociation(Association association);
+        CompletableFuture<ConceptAssociationResponse> findByConceptAssociationRequest(
+                        ConceptAssociationRequest request);
 
-    CompletableFuture<Collection<Association>> updateAssociations(Collection<Association> associations);
+        CompletableFuture<List<Annotation>> findByConcurrentRequest(ConcurrentRequest concurrentRequest, long limit,
+                        long offset);
 
-    CompletableFuture<Image> updateImage(Image image);
+        CompletableFuture<List<Annotation>> findByImageReference(UUID imageReferenceUuid);
 
-    CompletableFuture<Boolean> deleteAnnotation(UUID observationUuid);
+        CompletableFuture<List<Annotation>> findByMultiRequest(MultiRequest multiRequest, long limit, long offset);
 
-    CompletableFuture<Void> deleteAnnotations(Collection<UUID> observationUuids);
+        CompletableFuture<Annotation> findByUuid(UUID observationUuid);
 
-    CompletableFuture<Boolean> deleteAssociation(UUID associationUuid);
+        CompletableFuture<List<Association>> findByVideoReferenceAndLinkName(UUID videoReferenceUuid, String linkName);
 
-    CompletableFuture<Void> deleteAssociations(Collection<UUID> associationUuids);
+        CompletableFuture<List<Association>> findByVideoReferenceAndLinkNameAndConcept(UUID videoReferenceUuid,
+                        String linkName, String concept);
 
-    CompletableFuture<Boolean> deleteImage(UUID imageReferenceUuid);
+        CompletableFuture<List<String>> findGroups();
 
-    CompletableFuture<Image> findImageByUrl(URL url);
+        CompletableFuture<Image> findImageByUrl(URL url);
 
+        CompletableFuture<Image> findImageByUuid(UUID imageReferenceUuid);
+
+        CompletableFuture<List<Image>> findImagesByVideoReferenceUuid(UUID videoReferenceUuid);
+
+        CompletableFuture<List<Index>> findIndicesByVideoReferenceUuid(UUID videoReferenceUuid);
+
+        CompletableFuture<Collection<AncillaryData>> merge(UUID videoReferenceUuid, Collection<AncillaryData> data);
+
+        CompletableFuture<ConceptsRenamed> renameConcepts(String oldConcept, String newConcept);
+
+        CompletableFuture<Annotation> updateAnnotation(Annotation annotation);
+
+        CompletableFuture<Collection<Annotation>> updateAnnotations(Collection<Annotation> annotations);
+
+        CompletableFuture<Association> updateAssociation(Association association);
+
+        CompletableFuture<Collection<Association>> updateAssociations(Collection<Association> associations);
+
+        CompletableFuture<Image> updateImage(Image image);
+
+        CompletableFuture<List<Index>> updateIndexRecordedTimestamps(Collection<Index> indices);
+
+        CompletableFuture<Collection<Annotation>> updateRecordedTimestampsForTapes(Collection<Annotation> annotations);
 }

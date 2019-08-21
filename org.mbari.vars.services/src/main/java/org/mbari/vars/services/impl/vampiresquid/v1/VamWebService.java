@@ -42,6 +42,12 @@ public interface VamWebService {
     Call<List<Media>> findByCameraIdAndTimestamp(@Path("camera_id") String cameraId,
                                                  @Path("timestamp") Instant timestamp);
 
+    @GET("media/camera/{camera_id}/{start_timestamp}/{end_timestamp}")
+    Call<List<Media>> findByCameraIdAndDates(@Path("camera_id") String cameraId,
+            @Path("start_timestamp") Instant startTimestamp,
+            @Path("end_timestamp") Instant endTimestamp);
+
+
     @GET("media/concurrent/{uuid}")
     Call<List<Media>> findConcurrent(@Path("uuid") UUID uuid);
 
@@ -69,6 +75,19 @@ public interface VamWebService {
     Call<Media> update(@Path("uuid") UUID videoUuid,
                        @FieldMap Map<String, String> fields,
                        @HeaderMap Map<String, String> headers);
+
+
+    @GET("videosequences/lastupdate/{uuid}")
+    Call<LastUpdate> findLastVideoSequenceUpdate(@Path("uuid") UUID uuid);
+
+    @GET("videos/lastupdate/{uuid}")
+    Call<LastUpdate> findLastVideoUpdate(@Path("uuid") UUID uuid);
+
+    @GET("videoreferences/lastupdate/{uuid}")
+    Call<LastUpdate> findLastVideoReferenceUpdate(@Path("uuid") UUID uuid);
+
+    @GET("videoreferences/uris")
+    Call<List<String>> findAllURIs();
 
     @GET("videosequences/cameras")
     Call<List<String>> findAllCameraIds();

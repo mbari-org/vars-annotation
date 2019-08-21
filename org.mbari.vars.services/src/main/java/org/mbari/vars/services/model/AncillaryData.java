@@ -9,23 +9,63 @@ import java.util.UUID;
  */
 public class AncillaryData {
 
-    private double altitude;
-    private double depthMeters;
-    private double latitude;
-    private double lightTransmission;
-    private double longitude;
-    private double oxygenMlL;
-    private double phi;
-    private double pressureDbar;
-    private double psi;
-    private double salinity;
-    private double temperatureCelsius;
-    private double theta;
-    private double x;
-    private double y;
-    private double z;
+    /** Used for merging only. Typically this will be null */
+    private Instant recordedTimestamp;
+    private Double altitude;
+    private String crs;
+    private Double depthMeters;
+    private Double latitude;
+    private Double lightTransmission;
+    private Double longitude;
+    private Double oxygenMlL;
+    private Double phi;
+    private String posePositionUnits;
+    private Double pressureDbar;
+    private Double psi;
+    private Double salinity;
+    private Double temperatureCelsius;
+    private Double theta;
+    private Double x;
+    private Double y;
+    private Double z;
     private Instant lastUpdatedTime;
     private UUID uuid;
+    private UUID imagedMomentUuid;
+
+    public AncillaryData() {
+    }
+
+    public AncillaryData(AncillaryData src) {
+        setAltitude(src.getAltitude());
+        setCrs(src.getCrs());
+        setDepthMeters(src.getDepthMeters());
+        setLatitude(src.getLatitude());
+        setLightTransmission(src.getLightTransmission());
+        setLongitude(src.getLongitude());
+        setOxygenMlL(src.getOxygenMlL());
+        setPhi(src.getPhi());
+        setPosePositionUnits(src.getPosePositionUnits());
+        setPressureDbar(src.getPressureDbar());
+        setPsi(src.getPsi());
+        setSalinity(src.getSalinity());
+        setTemperatureCelsius(src.getTemperatureCelsius());
+        setTheta(src.getTheta());
+        setX(src.getX());
+        setY(src.getY());
+        setZ(src.getZ());
+        uuid = src.getUuid();
+        lastUpdatedTime = src.getLastUpdatedTime();
+        setImagedMomentUuid(src.getImagedMomentUuid());
+        setRecordedTimestamp(src.getRecordedTimestamp());
+    }
+
+    public Instant getRecordedTimestamp() {
+        return recordedTimestamp;
+    }
+
+    public void setRecordedTimestamp(Instant recordedTimestamp) {
+        this.recordedTimestamp = recordedTimestamp;
+    }
 
     public Instant getLastUpdatedTime() {
         return lastUpdatedTime;
@@ -35,12 +75,11 @@ public class AncillaryData {
         return uuid;
     }
 
-    public double getAltitude() {
-
+    public Double getAltitude() {
         return altitude;
     }
 
-    public void setAltitude(double altitude) {
+    public void setAltitude(Double altitude) {
         this.altitude = altitude;
     }
 
@@ -48,111 +87,137 @@ public class AncillaryData {
         return depthMeters;
     }
 
-    public void setDepthMeters(double depthMeters) {
+    public void setDepthMeters(Double depthMeters) {
         this.depthMeters = depthMeters;
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public double getLightTransmission() {
+    public Double getLightTransmission() {
         return lightTransmission;
     }
 
-    public void setLightTransmission(double lightTransmission) {
+    public void setLightTransmission(Double lightTransmission) {
         this.lightTransmission = lightTransmission;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
-    public double getOxygenMlL() {
+    public Double getOxygenMlL() {
         return oxygenMlL;
     }
 
-    public void setOxygenMlL(double oxygenMlL) {
+    public void setOxygenMlL(Double oxygenMlL) {
         this.oxygenMlL = oxygenMlL;
     }
 
-    public double getPhi() {
+    public Double getPhi() {
         return phi;
     }
 
-    public void setPhi(double phi) {
+    public void setPhi(Double phi) {
         this.phi = phi;
     }
 
-    public double getPressureDbar() {
+    public Double getPressureDbar() {
         return pressureDbar;
     }
 
-    public void setPressureDbar(double pressureDbar) {
+    public void setPressureDbar(Double pressureDbar) {
         this.pressureDbar = pressureDbar;
     }
 
-    public double getPsi() {
+    public Double getPsi() {
         return psi;
     }
 
-    public void setPsi(double psi) {
+    public void setPsi(Double psi) {
         this.psi = psi;
     }
 
-    public double getSalinity() {
+    public Double getSalinity() {
         return salinity;
     }
 
-    public void setSalinity(double salinity) {
+    public void setSalinity(Double salinity) {
         this.salinity = salinity;
     }
 
-    public double getTemperatureCelsius() {
+    public Double getTemperatureCelsius() {
         return temperatureCelsius;
     }
 
-    public void setTemperatureCelsius(double temperatureCelsius) {
+    public void setTemperatureCelsius(Double temperatureCelsius) {
         this.temperatureCelsius = temperatureCelsius;
     }
 
-    public double getTheta() {
+    public Double getTheta() {
         return theta;
     }
 
-    public void setTheta(double theta) {
+    public void setTheta(Double theta) {
         this.theta = theta;
     }
 
-    public double getX() {
+    public Double getX() {
         return x;
     }
 
-    public void setX(double x) {
+    public void setX(Double x) {
         this.x = x;
     }
 
-    public double getY() {
+    public Double getY() {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(Double y) {
         this.y = y;
     }
 
-    public double getZ() {
+    public Double getZ() {
         return z;
     }
 
-    public void setZ(double z) {
+    public void setZ(Double z) {
         this.z = z;
     }
+
+    public String getCrs() {
+        return crs;
+    }
+
+    public void setCrs(String crs) {
+        this.crs = crs;
+    }
+
+    public String getPosePositionUnits() {
+        return posePositionUnits;
+    }
+
+    public void setPosePositionUnits(String posePositionUnits) {
+        this.posePositionUnits = posePositionUnits;
+    }
+
+    public UUID getImagedMomentUuid() {
+        return imagedMomentUuid;
+    }
+
+    public void setImagedMomentUuid(UUID imagedMomentUuid) {
+        this.imagedMomentUuid = imagedMomentUuid;
+    }
+
+
 }

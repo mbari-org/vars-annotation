@@ -32,6 +32,7 @@ public class AnnoWebServiceFactory extends RetrofitServiceFactory {
                 .setPrettyPrinting()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                .registerTypeAdapter(ImagedMoment.class, new AnnotationCreator())
                 .registerTypeAdapter(Duration.class, new DurationConverter())
                 .registerTypeAdapter(Timecode.class, new TimecodeConverter())
                 .registerTypeAdapter(byte[].class, new ByteArrayConverter());

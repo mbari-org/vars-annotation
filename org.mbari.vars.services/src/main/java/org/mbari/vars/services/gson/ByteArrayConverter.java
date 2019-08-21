@@ -31,7 +31,6 @@ public class ByteArrayConverter implements JsonSerializer<byte[]>, JsonDeseriali
      * @return
      */
     public static byte[] decode(String s) {
-        Base64.getDecoder().decode(s);
         return HexUtils.parseHexBinary(s);
     }
 

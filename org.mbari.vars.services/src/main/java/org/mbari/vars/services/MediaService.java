@@ -39,6 +39,9 @@ public interface MediaService {
 
     CompletableFuture<List<Media>> findByCameraIdAndTimestamp(String cameraId, Instant timestamp);
 
+    CompletableFuture<List<Media>> findByCameraIdAndDate(String cameraId, Instant startTimestamp,
+            Instant endTimestamp);
+
     CompletableFuture<List<Media>> findByVideoSequenceNameAndTimestamp(String videoSequenceName, Instant timestamp);
 
     CompletableFuture<List<String>> findAllCameraIds();

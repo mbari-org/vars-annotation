@@ -100,6 +100,11 @@ public class VamService implements MediaService, RetrofitWebService {
     }
 
     @Override
+    public CompletableFuture<List<Media>> findByCameraIdAndDate(String cameraId, Instant startTimestamp, Instant endTimestamp) {
+        return sendRequest(vamWebService.findByCameraIdAndDates(cameraId, startTimestamp, endTimestamp));
+    }
+
+    @Override
     public CompletableFuture<List<Media>> findConcurrentByVideoReferenceUuid(UUID uuid) {
         return sendRequest(vamWebService.findConcurrent(uuid));
     }
@@ -121,6 +126,25 @@ public class VamService implements MediaService, RetrofitWebService {
 
     public CompletableFuture<List<Media>> findByFilename(String filename) {
         return sendRequest(vamWebService.findByFilename(filename));
+    }
+
+    public CompletableFuture<List<URI>> findAllURIs() {
+        return sendRequest(vamWebService.findAllURIs())
+                .thenApply(s -> s.stream()
+                        .map(URI::create)
+                        .collect(Collectors.toList()));
+    }
+
+    public CompletableFuture<LastUpdate> findLastVideoSequenceUpdate(UUID uuid) {
+        return sendRequest(vamWebService.findLastVideoSequenceUpdate(uuid));
+    }
+
+    public CompletableFuture<LastUpdate> findLastVideoUpdate(UUID uuid) {
+        return sendRequest(vamWebService.findLastVideoUpdate(uuid));
+    }
+
+    public CompletableFuture<LastUpdate> findLastVideoReferenceUpdate(UUID uuid) {
+        return sendRequest(vamWebService.findLastVideoReferenceUpdate(uuid));
     }
 
     private void addField(Map<String, String> map, String key, Object value) {
