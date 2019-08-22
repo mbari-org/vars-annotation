@@ -46,6 +46,10 @@ subprojects {
         }
     }
 
+    ext {
+        javafxVersion = "11.0.2"
+    }
+
     dependencies {
 
         constraints {
