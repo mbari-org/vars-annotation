@@ -68,4 +68,4 @@ This project includes an example [env-config.sh](https://github.com/mbari-media-
 
 #### Run Build
 
-Once your enviroment is configured, run: `gradlew jpackage` to build the application. The built application will be in `org.mbari.vars.ui/build/jpackage`. Note that the build packages it's own JVM, so it can be distrubuted without requiring users to install Java.
+Once your enviroment is configured, run: `gradlew jpackage` to build the application. The built application will be in `org.mbari.vars.ui/build/jpackage` and packaged for whatever OS that you built it on. Note that the build packages it's own JVM, so it can be distrubuted without requiring users to install Java.
