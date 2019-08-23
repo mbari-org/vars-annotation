@@ -82,7 +82,7 @@ subprojects {
             implementation 'org.mbari.vcr4j:vcr4j-jserialcomm:4.0.2'
             implementation 'org.mbari.vcr4j:vcr4j-rs422:4.0.2'
             implementation 'org.mbari.vcr4j:vcr4j-sharktopoda:4.0.2'
-            implementation 'org.mbari:mbarix4j:1.10.0'
+            implementation 'org.mbari:mbarix4j:2.0.1.jre11'
             implementation 'org.scijava:native-lib-loader:2.3.4'
             implementation 'org.slf4j:slf4j-api:1.7.26'
             runtimeOnly 'ch.qos.logback:logback-classic:1.2.3'

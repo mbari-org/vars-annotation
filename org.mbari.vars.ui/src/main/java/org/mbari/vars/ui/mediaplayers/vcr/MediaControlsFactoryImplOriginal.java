@@ -10,7 +10,7 @@ import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.ImageCaptureService;
 import org.mbari.vars.services.MediaService;
-import org.mbari.util.SystemUtilities;
+import mbarix4j.util.SystemUtilities;
 import org.mbari.vcr4j.*;
 import org.mbari.vcr4j.commands.VideoCommands;
 import org.mbari.vcr4j.decorators.StatusDecorator;

@@ -17,14 +17,12 @@ module org.mbari.vars.ui {
   requires org.kordamp.ikonli.javafx;
   requires org.kordamp.ikonli.material;
   requires org.mbari.vars.core;
-//  requires org.mbari.vars.javafx;
   requires org.mbari.vars.services;
   requires org.reactivestreams;
   requires rxjavafx;
-  requires slf4j.api;
+  requires org.slf4j;
   requires typesafe.config;
   requires vars.avfoundation;
-//  requires vars.blackmagic;
   requires vcr4j.core;
   requires vcr4j.jserialcomm;
   requires vcr4j.rs422;

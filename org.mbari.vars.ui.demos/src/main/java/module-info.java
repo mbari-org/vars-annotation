@@ -10,7 +10,7 @@ open module org.mbari.vars.ui.demos {
   requires org.controlsfx.controls;
   requires org.mbari.vars.core;
   requires org.mbari.vars.services;
-  requires slf4j.api;
+  requires org.slf4j;
 
 
 }

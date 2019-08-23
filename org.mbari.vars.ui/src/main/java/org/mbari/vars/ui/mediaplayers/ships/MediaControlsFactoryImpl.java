@@ -8,7 +8,7 @@ import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.ImageCaptureService;
 import org.mbari.vars.services.MediaService;
-import org.mbari.util.SystemUtilities;
+import mbarix4j.util.SystemUtilities;
 import org.mbari.vars.ui.mediaplayers.*;
 import org.mbari.vcr4j.SimpleVideoError;
 import org.mbari.vcr4j.VideoError;

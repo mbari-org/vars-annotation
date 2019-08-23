@@ -1,8 +1,8 @@
 package org.mbari.vars.ui.javafx;
 
 
-import org.mbari.awt.image.ImageUtilities;
-import org.mbari.io.FileUtilities;
+import mbarix4j.awt.image.ImageUtilities;
+import mbarix4j.io.FileUtilities;
 import org.mbari.vars.ui.EventBus;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;

@@ -7,7 +7,7 @@ import org.mbari.vars.ui.events.MediaControlsChangedEvent;
 import org.mbari.vars.ui.events.MediaPlayerChangedEvent;
 import org.mbari.vars.services.model.Media;
 
-import org.mbari.util.stream.StreamUtilities;
+import mbarix4j.util.stream.StreamUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
