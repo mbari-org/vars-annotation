@@ -32,7 +32,9 @@ dependencies {
         exclude group: 'org.openjfx'
     }
 
-    runtimeOnly 'ch.qos.logback:logback-classic'
+    runtimeOnly('ch.qos.logback:logback-classic') {
+        exclude group: 'javax.activation'
+    }
     runtimeOnly 'javax.servlet:javax.servlet-api'
 }
 
