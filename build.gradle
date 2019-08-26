@@ -10,7 +10,7 @@ plugins {
 
 subprojects {
 
-    version = "0.3.2"
+    version = "0.3.3"
 
     apply plugin: 'com.adarshr.test-logger'
     apply plugin: 'com.github.ben-manes.versions'
@@ -54,9 +54,9 @@ subprojects {
 
         constraints {
             implementation 'com.squareup.okhttp3:logging-interceptor:3.14.2'
-            implementation 'com.auth0:java-jwt:3.8.1'
+            implementation 'com.auth0:java-jwt:3.8.2'
             implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.1'
-            implementation 'com.github.ben-manes.caffeine:caffeine:2.7.0'
+            implementation 'com.github.ben-manes.caffeine:caffeine:2.8.0'
             implementation 'com.google.code.gson:gson:2.8.5'
             implementation 'com.google.inject:guice:4.2.2'
             implementation 'com.google.guava:guava:28.0-jre'
@@ -68,7 +68,7 @@ subprojects {
             implementation 'de.jensd:fontawesomefx-commons:11.0'
             implementation 'de.jensd:fontawesomefx-materialicons:2.2.0-11'
             implementation 'eu.hansolo:Medusa:11.1'
-            implementation 'io.reactivex.rxjava2:rxjava:2.2.11'
+            implementation 'io.reactivex.rxjava2:rxjava:2.2.12'
             implementation 'io.reactivex.rxjava2:rxjavafx:2.11.0-RC34'
             implementation 'javax.inject:javax.inject:1'
             implementation 'javax.servlet:javax.servlet-api:4.0.1'
@@ -92,7 +92,7 @@ subprojects {
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.1'
         testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.5.1'
-        testRuntimeOnly 'ch.qos.logback:logback-classic:1.2.3'
+
     }
 
     task tree(type: DependencyReportTask) {}
