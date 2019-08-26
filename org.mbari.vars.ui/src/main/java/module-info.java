@@ -1,4 +1,5 @@
 module org.mbari.vars.ui {
+
   requires com.google.common;
   requires com.google.guice;
   requires com.jfoenix;
@@ -19,8 +20,8 @@ module org.mbari.vars.ui {
   requires org.mbari.vars.core;
   requires org.mbari.vars.services;
   requires org.reactivestreams;
-  requires rxjavafx;
   requires org.slf4j;
+  requires rxjavafx;
   requires typesafe.config;
   requires vars.avfoundation;
   requires vcr4j.core;
@@ -30,11 +31,11 @@ module org.mbari.vars.ui {
 
   uses org.mbari.vars.ui.mediaplayers.MediaControlsFactory;
 
-  provides org.mbari.vars.ui.mediaplayers.MediaControlsFactory with
-          org.mbari.vars.ui.mediaplayers.macos.MediaControlsFactoryImpl,
-          org.mbari.vars.ui.mediaplayers.sharktopoda.MediaControlsFactoryImpl,
-          org.mbari.vars.ui.mediaplayers.ships.MediaControlsFactoryImpl,
-          org.mbari.vars.ui.mediaplayers.vcr.MediaControlsFactoryImpl;
+  provides org.mbari.vars.ui.mediaplayers.MediaControlsFactory
+      with org.mbari.vars.ui.mediaplayers.macos.MediaControlsFactoryImpl,
+      org.mbari.vars.ui.mediaplayers.sharktopoda.MediaControlsFactoryImpl,
+      org.mbari.vars.ui.mediaplayers.ships.MediaControlsFactoryImpl,
+      org.mbari.vars.ui.mediaplayers.vcr.MediaControlsFactoryImpl;
 
   opens org.mbari.vars.ui to javafx.graphics;
   opens org.mbari.vars.ui.javafx to javafx.fxml;

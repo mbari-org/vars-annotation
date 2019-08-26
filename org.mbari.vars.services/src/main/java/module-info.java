@@ -16,7 +16,7 @@ module org.mbari.vars.services {
   requires org.mbari.vars.core;
   requires retrofit2.converter.gson;
   requires retrofit2;
-  requires slf4j.api;
+  requires org.slf4j;
   requires typesafe.config;
   requires vcr4j.core;
 
