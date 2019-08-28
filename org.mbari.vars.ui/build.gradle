@@ -42,7 +42,9 @@ dependencies {
 //        because("Do not want this slf4j provider included on classpath")
 //    }
 
-    runtimeOnly 'ch.qos.logback:logback-classic'
+    runtimeOnly('ch.qos.logback:logback-classic') {
+        exclude group: 'javax.activation'
+    }
     runtimeOnly 'javax.servlet:javax.servlet-api'
 }
 
