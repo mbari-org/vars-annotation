@@ -71,7 +71,8 @@ def runtimeJvmArgs = [
         '--add-exports', 'javafx.controls/com.sun.javafx.scene.control=com.jfoenix',
         '--add-exports', 'javafx.base/com.sun.javafx.binding=com.jfoenix',
         '--add-exports', 'javafx.graphics/com.sun.javafx.stage=com.jfoenix',
-        '--add-exports', 'javafx.base/com.sun.javafx.event=com.jfoenix'
+        '--add-exports', 'javafx.base/com.sun.javafx.event=com.jfoenix',
+        '--add-reads', 'vars.annotation.merged.module=org.slf4j'
 ]
 
 // If any o these exist as enironment vairables add them as -Dkey=value to jvmArgs
