@@ -9,7 +9,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.commands.CreateAnnotationFromConceptCmd;
 import org.mbari.vars.ui.messages.ShowConceptInTreeViewMsg;
 import org.mbari.vars.services.ConceptService;

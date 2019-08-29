@@ -2,7 +2,7 @@ package org.mbari.vars.ui.commands;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.messages.ShowFatalErrorAlert;
 import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;

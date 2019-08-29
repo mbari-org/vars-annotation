@@ -5,6 +5,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.ui.messages.*;
 import org.mbari.vars.services.model.Annotation;

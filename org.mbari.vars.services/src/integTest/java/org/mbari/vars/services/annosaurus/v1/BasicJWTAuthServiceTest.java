@@ -1,13 +1,15 @@
-package org.mbari.m3.vars.annotation.services.annosaurus.v1;
+package org.mbari.vars.services.annosaurus.v1;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import org.mbari.m3.vars.annotation.model.Authorization;
-import org.mbari.m3.vars.annotation.services.AuthService;
-import org.mbari.m3.vars.annotation.services.BasicJWTAuthService;
-import org.mbari.vars.ui.demos.javafx.DemoConstants;
+import org.mbari.vars.services.AuthService;
+import org.mbari.vars.services.BasicJWTAuthService;
+import org.mbari.vars.services.TestToolbox;
+import org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory;
+import org.mbari.vars.services.model.Authorization;
 
 import java.util.Optional;
+
 
 /**
  * @author Brian Schlining
@@ -15,17 +17,17 @@ import java.util.Optional;
  */
 public class BasicJWTAuthServiceTest {
 
-    AnnoWebServiceFactory serviceFactory = DemoConstants.newAnnoWebServiceFactory();
-    String clientSecret = DemoConstants.getToolBox().getConfig().getString("annotation.service.client.secret");
-    AuthService authService = new BasicJWTAuthService(serviceFactory,
-            new Authorization("APIKEY", clientSecret));
-
-    @Test
-    public void testAuth() {
-        Optional<Authorization> authorize = authService.authorize();
-        assertTrue("Authorization was null", authorize.isPresent());
-        Authorization a = authorize.get();
-        assertTrue("Token type was not Bearer", a.getTokenType().equalsIgnoreCase("Bearer"));
-    }
+//    AnnoWebServiceFactory serviceFactory = TestToolbox.getServices().newAnnoWebServiceFactory();
+//    String clientSecret = TestToolbox.getConfig().getString("annotation.service.client.secret");
+//    AuthService authService = new BasicJWTAuthService(serviceFactory,
+//            new Authorization("APIKEY", clientSecret));
+//
+//    @Test
+//    public void testAuth() {
+//        Optional<Authorization> authorize = authService.authorize();
+//        assertTrue("Authorization was null", authorize.isPresent());
+//        Authorization a = authorize.get();
+//        assertTrue("Token type was not Bearer", a.getTokenType().equalsIgnoreCase("Bearer"));
+//    }
 
 }

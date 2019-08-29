@@ -1,13 +1,15 @@
 package org.mbari.m3.vars.annotation.services.panoptes.v1;
 
+import mbarix4j.net.URLUtilities;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.mbari.io.FileUtilities;
-import org.mbari.m3.vars.annotation.Initializer;
-import static org.mbari.m3.vars.annotation.util.AsyncUtils.await;
 
-import org.mbari.m3.vars.annotation.model.ImageUploadResults;
-import org.mbari.net.URLUtilities;
+import static org.mbari.vars.core.util.AsyncUtils.await;
+
+
+import org.mbari.vars.services.ImageArchiveService;
+import org.mbari.vars.services.TestToolbox;
+import org.mbari.vars.services.model.ImageUploadResults;
 
 import java.io.File;
 import java.net.URL;
@@ -22,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 public class PanoptesServiceTest {
 
     private Duration timeout = Duration.ofMillis(45000);
-    private PanoptesService service = Initializer.getInjector().getInstance(PanoptesService.class);
+    private ImageArchiveService service = TestToolbox.getServices().getImageArchiveService();
 
     @Test
     public void testUpload() {

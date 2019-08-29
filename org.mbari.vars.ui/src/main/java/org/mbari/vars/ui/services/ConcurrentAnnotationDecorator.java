@@ -2,7 +2,7 @@ package org.mbari.vars.ui.services;
 
 import com.google.common.collect.Lists;
 import org.mbari.vars.ui.AppConfig;
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.ui.messages.HideProgress;

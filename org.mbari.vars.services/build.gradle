@@ -25,6 +25,7 @@ dependencies {
     implementation 'com.typesafe:config'
     implementation 'javax.inject:javax.inject'
     implementation 'org.mbari.vcr4j:vcr4j-core'
+    implementation 'org.mbari:mbarix4j'
 
     implementation('com.github.ben-manes.caffeine:caffeine') {
         exclude group: 'org.checkerframework', module: 'checker-qual'

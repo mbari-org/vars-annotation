@@ -1,6 +1,6 @@
 package org.mbari.vars.ui.mediaplayers;
 
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.events.MediaChangedEvent;
 import org.mbari.vars.ui.events.MediaControlsChangedEvent;

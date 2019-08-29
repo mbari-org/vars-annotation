@@ -1,4 +1,4 @@
-package org.mbari.vars.ui;
+package org.mbari.vars.core;
 
 
 import io.reactivex.Observable;

@@ -8,7 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.Data;
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.ui.events.AnnotationsRemovedEvent;

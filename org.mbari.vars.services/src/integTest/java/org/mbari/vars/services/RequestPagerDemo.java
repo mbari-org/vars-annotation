@@ -1,14 +1,11 @@
-package org.mbari.m3.vars.annotation.services;
+package org.mbari.vars.services;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.Subject;
-import javafx.beans.InvalidationListener;
-import javafx.collections.ObservableList;
-import org.mbari.m3.vars.annotation.AppDemo;
-import org.mbari.m3.vars.annotation.Initializer;
-import org.mbari.m3.vars.annotation.model.Annotation;
-import org.mbari.m3.vars.annotation.model.AnnotationCount;
+
+import org.mbari.vars.services.TestToolbox;
+import org.mbari.vars.services.model.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,49 +27,49 @@ public class RequestPagerDemo {
         System.getProperties().setProperty("user.timezone", "UTC");
         UUID videoReferenceUuid = UUID.fromString("030ef551-c52e-44db-a857-e67edc61bf32");
 
-        Logger log = LoggerFactory.getLogger(AppDemo.class);
-        Initializer.getToolBox()
+        Logger log = LoggerFactory.getLogger(RequestPagerDemo.class);
+        TestToolbox
                 .getEventBus()
                 .toObserverable()
                 .subscribe(e -> log.debug(e.toString()));
 
-
-        ObservableList<Annotation> annotations = Initializer.getToolBox()
-                .getData()
-                .getAnnotations();
-
-        annotations.addListener((InvalidationListener) observable ->
-                log.debug("Annotation count: " + annotations.size()));
-
-        AnnotationService service = Initializer.getToolBox()
-                .getServices()
-                .getAnnotationService();
-
-        Function<RequestPager.Page, List<Annotation>> function = (page) -> {
-            try {
-                return service.findAnnotations(videoReferenceUuid, page.getLimit(), page.getOffset())
-                        .get(300, TimeUnit.SECONDS);
-            } catch (Exception e) {
-                log.error("WTF?", e);
-                throw new RuntimeException(e);
-            }
-        };
-
-        AnnotationCount count = service.countAnnotations(videoReferenceUuid).get(10, TimeUnit.SECONDS);
-        System.out.println("Found " + count.getCount() + " annotations");
-        RequestPager<List<Annotation>> pager = new RequestPager<>(function, 3, 2);
-        RequestPager.Runner<List<Annotation>> runner = pager.build(count.getCount(), 30);
-        Observable<List<Annotation>> observable = runner.getObservable();
-        observable.subscribeOn(Schedulers.io())
-                .subscribe(annotations::addAll,
-                    e -> log.error("Bummer!", e),
-                    () -> {
-                        log.info("Completed!");
-                        if (count.getCount() != annotations.size()) {
-                            log.error("We did not fetch all the annotations. Expected " + count.getCount() + ". Found " + annotations.size());
-                        }
-                        System.exit(0);
-                    });
-        runner.run();
+//
+//        ObservableList<Annotation> annotations = Initializer.getToolBox()
+//                .getData()
+//                .getAnnotations();
+//
+//        annotations.addListener((InvalidationListener) observable ->
+//                log.debug("Annotation count: " + annotations.size()));
+//
+//        AnnotationService service = Initializer.getToolBox()
+//                .getServices()
+//                .getAnnotationService();
+//
+//        Function<RequestPager.Page, List<Annotation>> function = (page) -> {
+//            try {
+//                return service.findAnnotations(videoReferenceUuid, page.getLimit(), page.getOffset())
+//                        .get(300, TimeUnit.SECONDS);
+//            } catch (Exception e) {
+//                log.error("WTF?", e);
+//                throw new RuntimeException(e);
+//            }
+//        };
+//
+//        AnnotationCount count = service.countAnnotations(videoReferenceUuid).get(10, TimeUnit.SECONDS);
+//        System.out.println("Found " + count.getCount() + " annotations");
+//        RequestPager<List<Annotation>> pager = new RequestPager<>(function, 3, 2);
+//        RequestPager.Runner<List<Annotation>> runner = pager.build(count.getCount(), 30);
+//        Observable<List<Annotation>> observable = runner.getObservable();
+//        observable.subscribeOn(Schedulers.io())
+//                .subscribe(annotations::addAll,
+//                    e -> log.error("Bummer!", e),
+//                    () -> {
+//                        log.info("Completed!");
+//                        if (count.getCount() != annotations.size()) {
+//                            log.error("We did not fetch all the annotations. Expected " + count.getCount() + ". Found " + annotations.size());
+//                        }
+//                        System.exit(0);
+//                    });
+//        runner.run();
     }
 }

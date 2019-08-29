@@ -9,7 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.commands.CreateAssociationsCmd;
 import org.mbari.vars.ui.javafx.Icons;

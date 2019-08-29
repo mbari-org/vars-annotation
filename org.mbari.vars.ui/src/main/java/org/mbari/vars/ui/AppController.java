@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import mbarix4j.io.IOUtilities;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.ui.mediaplayers.MediaPlayers;
 import org.mbari.vars.ui.messages.*;

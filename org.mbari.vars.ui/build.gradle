@@ -58,6 +58,12 @@ javafx {
     ]
 }
 
+tasks.withType(JavaExec) {
+    if (System.getProperty('DEBUG', 'false') == 'true') {
+        jvmArgs '-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9099'
+    }
+}
+
 /* *****************************************************************************
   These runtime args are shared by several tasks. We add many env params that
   configure values defined in reference.conf. Note that the conf params will

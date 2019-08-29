@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.demos.javafx.DemoConstants;
 import org.mbari.vars.ui.javafx.concepttree.SearchTreePaneController;
 import org.mbari.vars.services.ConceptService;

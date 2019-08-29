@@ -5,6 +5,7 @@ import com.typesafe.config.Config;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.stage.Stage;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.services.Services;
 import org.mbari.vcr4j.VideoError;

@@ -1,10 +1,11 @@
-package org.mbari.m3.vars.annotation.services;
+package org.mbari.vars.services;
 
 import org.junit.Test;
-import org.mbari.m3.vars.annotation.model.Concept;
-import org.mbari.m3.vars.annotation.model.ConceptDetails;
-import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBConceptService;
-import org.mbari.m3.vars.annotation.services.varskbserver.v1.KBWebServiceFactory;
+import org.mbari.vars.services.impl.varskbserver.v1.KBConceptService;
+import org.mbari.vars.services.impl.varskbserver.v1.KBWebServiceFactory;
+import org.mbari.vars.services.model.Concept;
+import org.mbari.vars.services.model.ConceptDetails;
+
 
 import java.time.Duration;
 import java.util.Optional;
@@ -21,13 +22,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class CachedConceptServiceTest {
 
-    String endpoint = "http://localhost:8083/kb/v1/";
-    ConceptService conceptService = new CachedConceptService(
-            new KBConceptService(new KBWebServiceFactory(endpoint,
-                    Duration.ofSeconds(5), Executors.newFixedThreadPool(2))));
-
-//    ConceptService conceptService = new KBConceptService(new KBWebServiceFactory(endpoint,
-//                    Duration.ofSeconds(5), Executors.newFixedThreadPool(2)));
+    ConceptService conceptService = TestToolbox.getServices().getConceptService();
 
     @Test
     public void testFetchConceptTree() throws InterruptedException, ExecutionException {

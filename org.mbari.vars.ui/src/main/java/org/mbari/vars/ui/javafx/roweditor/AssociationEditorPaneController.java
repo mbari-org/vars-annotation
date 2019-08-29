@@ -22,7 +22,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.javafx.Icons;

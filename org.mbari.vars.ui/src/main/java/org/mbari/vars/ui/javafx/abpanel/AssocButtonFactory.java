@@ -7,7 +7,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.commands.CreateAssociationsCmd;
 import org.mbari.vars.services.model.Annotation;

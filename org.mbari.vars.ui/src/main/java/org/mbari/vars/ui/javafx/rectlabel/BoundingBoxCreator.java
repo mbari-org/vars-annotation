@@ -3,7 +3,7 @@ package org.mbari.vars.ui.javafx.rectlabel;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 
 /**
  * Usage:

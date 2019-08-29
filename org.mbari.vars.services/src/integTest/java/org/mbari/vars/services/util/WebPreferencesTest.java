@@ -3,9 +3,9 @@ package org.mbari.vars.services.util;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.mbari.vars.services.ServicesBuilder;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.services.util.WebPreferencesFactory;
+
+import org.mbari.vars.services.PreferencesService;
+import org.mbari.vars.services.TestToolbox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,9 +20,8 @@ public class WebPreferencesTest {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
 
-    WebPreferencesFactory factory = new WebPreferencesFactory(Initializer.getToolBox()
-            .getServices()
-            .getPreferencesService(), 10 * 1000L);
+    private PreferencesService service = TestToolbox.getServices().getPreferencesService();
+    WebPreferencesFactory factory = new WebPreferencesFactory(service, 10 * 1000L);
 
     @Test
     public void testNode() {

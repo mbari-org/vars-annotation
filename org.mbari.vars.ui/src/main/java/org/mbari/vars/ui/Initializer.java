@@ -2,6 +2,7 @@ package org.mbari.vars.ui;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.ServicesBuilder;
 import org.mbari.vars.services.Services;
 import org.mbari.vars.core.util.LessCSSLoader;

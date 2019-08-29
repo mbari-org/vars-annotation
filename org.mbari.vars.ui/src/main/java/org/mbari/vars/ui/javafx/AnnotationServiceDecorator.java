@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.ui.events.AnnotationsChangedEvent;

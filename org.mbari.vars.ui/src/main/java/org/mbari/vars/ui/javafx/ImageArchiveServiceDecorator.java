@@ -3,7 +3,7 @@ package org.mbari.vars.ui.javafx;
 
 import mbarix4j.awt.image.ImageUtilities;
 import mbarix4j.io.FileUtilities;
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.commands.CommandUtil;

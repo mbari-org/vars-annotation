@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.events.UserAddedEvent;
 import org.mbari.vars.ui.messages.ShowInfoAlert;
