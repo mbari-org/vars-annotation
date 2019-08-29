@@ -1,11 +1,17 @@
-package org.mbari.m3.vars.annotation.services.annosaurus.v1;
+package org.mbari.vars.services.annosaurus.v1;
 
 import static org.junit.Assert.*;
+import static org.mbari.vars.core.util.AsyncUtils.*;
 
 import org.junit.Test;
 import org.mbari.vars.services.AnnotationService;
 
-import static org.mbari.m3.vars.annotation.util.AsyncUtils.await;
+import org.mbari.vars.services.TestToolbox;
+import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.services.model.AnnotationCount;
+import org.mbari.vars.services.model.Association;
+import org.mbari.vars.services.model.Image;
+
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -24,7 +30,8 @@ import java.util.concurrent.CompletableFuture;
  */
 public class AnnoServiceTest {
 
-    AnnotationService annoService = Initializer.getInjector().getInstance(AnnoService.class);
+
+    AnnotationService annoService = TestToolbox.getServices().getAnnotationService();
     Duration timeout = Duration.ofMillis(15000);
 
     private final UUID uuid = UUID.fromString("ccbe1c1b-100d-41ab-87ac-7e48d57c8278");

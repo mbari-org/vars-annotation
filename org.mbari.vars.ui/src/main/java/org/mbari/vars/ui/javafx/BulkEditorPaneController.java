@@ -28,7 +28,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.commands.*;
@@ -44,6 +44,7 @@ import org.mbari.vars.ui.javafx.mediadialog.SelectMediaDialog;
 import org.mbari.vars.ui.javafx.shared.ConceptSelectionDialogController;
 import org.mbari.vars.ui.javafx.shared.DetailsDialog;
 import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
+import org.mbari.vars.ui.messages.ShowExceptionAlert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -522,8 +523,12 @@ public class BulkEditorPaneController {
 
         lookupTemplates(concepts)
                 .whenComplete((templates, ex) -> {
-                    if (ex != null) {
-                        // TODO show error dialog
+                    if (ex instanceof Exception) {
+                        ResourceBundle i18n = toolBox.getI18nBundle();
+                        String title = i18n.getString("bulkeditor.association.add.error.title");
+                        String header = i18n.getString("bulkeditor.association.add.error.header");
+                        String content = i18n.getString("bulkeditor.association.add.error.content");
+                        eventBus.send(new ShowExceptionAlert(title, header, content, (Exception) ex));
                     }
                     else {
                         DetailsDialog dialog = new DetailsDialog(toolBox);

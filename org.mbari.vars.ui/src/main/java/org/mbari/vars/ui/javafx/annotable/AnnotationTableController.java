@@ -6,7 +6,9 @@ import io.reactivex.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.services.model.Media;
+import org.mbari.vars.ui.Data;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
@@ -35,12 +37,14 @@ public class AnnotationTableController {
     private TableView<Annotation> tableView;
     private final ResourceBundle i18n;
     private final EventBus eventBus;
+    private final Data data;
 
 
     @Inject
     public AnnotationTableController(UIToolBox toolBox) {
         this.i18n = toolBox.getI18nBundle();
         this.eventBus = toolBox.getEventBus();
+        this.data = toolBox.getData();
 
         Observable<Object> observable = eventBus.toObserverable();
 
@@ -150,15 +154,31 @@ public class AnnotationTableController {
                 ContextMenu menu = new ContextMenu();
                 MenuItem seekItem = new MenuItem(i18n.getString("annotable.ctxmenu.seek"));
                 seekItem.setOnAction(evt -> {
-                    Annotation a = row.getItem();
-                    if (a.getTimecode() != null) {
-                        eventBus.send(new SeekMsg<>(a.getTimecode()));
-                    }
-                    else if (a.getElapsedTime() != null) {
-                        eventBus.send(new SeekMsg<>(a.getElapsedTime()));
-                    }
-                    else if (a.getRecordedTimestamp() != null) {
-                        eventBus.send(new SeekMsg<>(a.getRecordedTimestamp()));
+                    Media media = data.getMedia();
+                    if (media != null) {
+                        Annotation a = row.getItem();
+
+                        // If annotation is on it's native media, just use it's native index
+                        if (a.getVideoReferenceUuid().equals(media.getVideoReferenceUuid())) {
+                            if (a.getTimecode() != null) {
+                                eventBus.send(new SeekMsg<>(a.getTimecode()));
+                            } else if (a.getElapsedTime() != null) {
+                                eventBus.send(new SeekMsg<>(a.getElapsedTime()));
+                            } else if (a.getRecordedTimestamp() != null) {
+                                eventBus.send(new SeekMsg<>(a.getRecordedTimestamp()));
+                            }
+                        }
+                        else {
+                            // If not on the native media use the recordedTimestamp if available
+                            // Otherwise fall back to elasped time (although this could jump
+                            // to wrong point if video files have different start times)
+                            if (a.getRecordedTimestamp() != null) {
+                                eventBus.send(new SeekMsg<>(a.getRecordedTimestamp()));
+                            }
+                            else if (a.getElapsedTime() != null) {
+                                eventBus.send(new SeekMsg<>(a.getElapsedTime()));
+                            }
+                        }
                     }
                 });
                 menu.getItems().add(seekItem);

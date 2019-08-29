@@ -1,15 +1,14 @@
-package org.mbari.m3.vars.annotation.services.varskbserver.v1;
+package org.mbari.vars.services.varskbserver.v1;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.mbari.m3.vars.annotation.Initializer;
-import org.mbari.m3.vars.annotation.model.Concept;
-import org.mbari.m3.vars.annotation.model.ConceptDetails;
-import org.mbari.m3.vars.annotation.services.ConceptService;
-import org.mbari.m3.vars.annotation.services.varsuserserver.v1.KBUserService;
 
-import java.time.Duration;
+import org.mbari.vars.services.ConceptService;
+import org.mbari.vars.services.TestToolbox;
+import org.mbari.vars.services.model.Concept;
+import org.mbari.vars.services.model.ConceptDetails;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.*;
@@ -22,8 +21,8 @@ public class KBConceptServiceTest {
 
     String endpoint = "http://localhost:8083/kb/v1/";
     //KBConceptService conceptService = Initializer.getInjector().getInstance(KBConceptService.class);
-    ConceptService conceptService = new KBConceptService(new KBWebServiceFactory(endpoint,
-                    Duration.ofSeconds(5), Executors.newFixedThreadPool(2)));
+    ConceptService conceptService = TestToolbox.getServices().getConceptService();
+
 
     @Test
     public void findRoot() throws InterruptedException, ExecutionException, TimeoutException {

@@ -2,6 +2,11 @@ package org.mbari.vars.services.vampiresquid.v1;
 
 
 
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.jupiter.api.Test;
+import org.mbari.vars.services.MediaService;
+import org.mbari.vars.services.TestToolbox;
 import org.mbari.vars.services.model.Media;
 
 import java.net.URI;
@@ -19,7 +24,7 @@ import java.util.concurrent.TimeoutException;
  * @since 2018-01-03T11:56:00
  */
 public class MediaServiceTest {
-    //MediaService mediaService =
+    MediaService mediaService = TestToolbox.getServices().getMediaService();
 
     // THis passes but we're turning it off so that we don't put
     // bogus values in the database
@@ -32,7 +37,7 @@ public class MediaServiceTest {
         Instant now = Instant.now();
         CompletableFuture<Media> f = mediaService.create("Test-01",
                 "Test", "Test-01-" + now,
-                new URI(MediaParams.URI_PREFIX + "Test-01"), now);
+                new URI("urn:rtva:org.mbari:" + "Test-01"), now);
         Media media = f.get(5000, TimeUnit.MILLISECONDS);
         Assert.assertNotNull(media);
     }

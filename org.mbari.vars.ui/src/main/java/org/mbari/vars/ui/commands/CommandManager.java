@@ -1,6 +1,6 @@
 package org.mbari.vars.ui.commands;
 
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.messages.ClearCommandManagerMsg;

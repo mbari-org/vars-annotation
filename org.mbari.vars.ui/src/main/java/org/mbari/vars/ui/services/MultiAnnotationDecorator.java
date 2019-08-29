@@ -5,7 +5,7 @@ import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 import org.mbari.vars.ui.AppConfig;
-import org.mbari.vars.ui.EventBus;
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.messages.HideProgress;
 import org.mbari.vars.ui.messages.SetProgress;

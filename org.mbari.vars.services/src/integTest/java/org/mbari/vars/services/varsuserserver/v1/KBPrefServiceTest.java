@@ -1,14 +1,14 @@
-package org.mbari.m3.vars.annotation.services.varsuserserver.v1;
+package org.mbari.vars.services.varsuserserver.v1;
 
 import static org.junit.Assert.*;
+import static org.mbari.vars.core.util.AsyncUtils.await;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.mbari.m3.vars.annotation.Initializer;
-import org.mbari.m3.vars.annotation.model.PreferenceNode;
-import org.mbari.m3.vars.annotation.util.AsyncUtils;
+import org.mbari.vars.services.PreferencesService;
+import org.mbari.vars.services.TestToolbox;
+import org.mbari.vars.services.model.PreferenceNode;
 
-import static org.mbari.m3.vars.annotation.util.AsyncUtils.await;
 
 import java.time.Duration;
 import java.util.List;
@@ -25,8 +25,9 @@ import java.util.concurrent.CompletableFuture;
 public class KBPrefServiceTest {
 
     Random random = new Random();
-    KBPrefService prefService = Initializer.getInjector().getInstance(KBPrefService.class);
-    Duration timeout = Initializer.getToolBox().getConfig().getDuration("preferences.service.timeout");
+    PreferencesService prefService = TestToolbox.getServices().getPreferencesService();
+
+    Duration timeout = Duration.ofSeconds(10);
     PreferenceNode node = new PreferenceNode("/brian/trashme/trash/" + random.nextInt(), "Foo", "Bar");
 
     @Test
