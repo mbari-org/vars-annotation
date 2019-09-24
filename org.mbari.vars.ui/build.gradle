@@ -58,11 +58,6 @@ javafx {
     ]
 }
 
-tasks.withType(JavaExec) {
-    if (System.getProperty('DEBUG', 'false') == 'true') {
-        jvmArgs '-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9099'
-    }
-}
 
 /* *****************************************************************************
   These runtime args are shared by several tasks. We add many env params that
@@ -112,6 +107,14 @@ confEnvParams.each { k ->
     def v = System.getenv(k)
     if (v) {
         runtimeJvmArgs.add("-D${k}=${v}")
+    }
+}
+
+tasks.withType(JavaExec) {
+    if (System.getProperty('DEBUG', 'false') == 'true') {
+        def debugJvmArgs = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9099']
+        debugJvmArgs.addAll(runtimeJvmArgs)
+        jvmArgs(debugJvmArgs)
     }
 }
 

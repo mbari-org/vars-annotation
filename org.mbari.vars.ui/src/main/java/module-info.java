@@ -43,6 +43,7 @@ module org.mbari.vars.ui {
   opens org.mbari.vars.ui.javafx.mediadialog to javafx.fxml;
   opens org.mbari.vars.ui.javafx.rectlabel to javafx.fxml;
   opens org.mbari.vars.ui.javafx.roweditor to javafx.fxml;
+  opens org.mbari.vars.ui.javafx.shared to javafx.fxml;
   opens org.mbari.vars.ui.mediaplayers.macos to javafx.fxml;
   opens org.mbari.vars.ui.mediaplayers.sharktopoda to javafx.fxml;
   opens org.mbari.vars.ui.mediaplayers.ships to javafx.fxml;

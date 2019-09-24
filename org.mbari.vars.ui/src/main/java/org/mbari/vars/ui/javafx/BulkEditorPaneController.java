@@ -531,25 +531,32 @@ public class BulkEditorPaneController {
                         eventBus.send(new ShowExceptionAlert(title, header, content, (Exception) ex));
                     }
                     else {
-                        DetailsDialog dialog = new DetailsDialog(toolBox);
-                        dialog.getController().setTemplates(templates);
-                        Platform.runLater(() -> {
-                            dialog.getDialogPane().getScene().getWindow().sizeToScene();
-                            Optional<Details> opt = dialog.showAndWait();
-                            opt.ifPresent(details -> {
-                                Association a = Association.fromDetails(details);
-                                toolBox.getEventBus()
-                                        .send(new CreateAssociationsCmd(a, annosCopy));
-                            } );
-                        });
+                        try {
+                            DetailsDialog dialog = new DetailsDialog(toolBox);
+                            dialog.getController().setTemplates(templates);
+                            Platform.runLater(() -> {
+                                dialog.getDialogPane().getScene().getWindow().sizeToScene();
+                                Optional<Details> opt = dialog.showAndWait();
+                                opt.ifPresent(details -> {
+                                    Association a = Association.fromDetails(details);
+                                    toolBox.getEventBus()
+                                            .send(new CreateAssociationsCmd(a, annosCopy));
+                                });
+                            });
 
-                        // Request focus in the search text field. We can't do this
-                        // until the dialog is visible.
-                        toolBox.getExecutorService()
-                                .submit(() -> Platform.runLater(() ->
-                                        dialog.getController()
-                                                .getSearchTextField()
-                                                .requestFocus()));
+                            // Request focus in the search text field. We can't do this
+                            // until the dialog is visible.
+                            toolBox.getExecutorService()
+                                    .submit(() -> Platform.runLater(() ->
+                                            dialog.getController()
+                                                    .getSearchTextField()
+                                                    .requestFocus()));
+                        }
+                        catch (Exception e) {
+                            log.error("WTF?", e);
+                        }
+
+
                     }
                 });
 
