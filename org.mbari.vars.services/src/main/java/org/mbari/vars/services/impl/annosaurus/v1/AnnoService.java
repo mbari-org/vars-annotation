@@ -15,6 +15,7 @@ package org.mbari.vars.services.impl.annosaurus.v1;
 
 import java.net.URL;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -38,6 +39,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     private final ImageWebService imageService;
     private final AncillaryDataWebService dataService;
     private final IndexWebService indexService;
+    private final ImagedMomentWebService imagedMomentService;
     private final Map<String, String> defaultHeaders;
     private final Map<String, String> bulkHeaders;
 
@@ -54,6 +56,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         imageService = serviceFactory.create(ImageWebService.class, authService);
         dataService = serviceFactory.create(AncillaryDataWebService.class, authService);
         indexService = serviceFactory.create(IndexWebService.class, authService);
+        imagedMomentService = serviceFactory.create(ImagedMomentWebService.class, authService);
         defaultHeaders = new HashMap<>();
         defaultHeaders.put("Accept", "application/json");
         defaultHeaders.put("Accept-Charset", "utf-8");
@@ -189,6 +192,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
      * @param videoReferenceUuid
      * @return
      */
+    @Override
     public CompletableFuture<AncillaryDataDeleteCount> deleteAncillaryDataByVideoReference(
             UUID videoReferenceUuid) {
         return sendRequest(dataService.deleteByVideoReference(videoReferenceUuid));
@@ -233,6 +237,11 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     }
 
     @Override
+    public CompletableFuture<List<UUID>> findAllVideoReferenceUuids() {
+        return sendRequest(annoService.findAllVideoReferenceUuids());
+    }
+
+    @Override
     public CompletableFuture<AncillaryData> findAncillaryData(UUID observationUuid) {
         return sendRequest(annoService.findAncillaryData(observationUuid));
     }
@@ -242,6 +251,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
      * @param videoReferenceUuid
      * @return
      */
+    @Override
     public CompletableFuture<List<AncillaryData>> findAncillaryDataByVideoReference(
             UUID videoReferenceUuid) {
         return sendRequest(dataService.findByVideoReferenceUuid(videoReferenceUuid));
@@ -375,6 +385,11 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(imageService.findByVideoReferenceUuid(videoReferenceUuid));
     }
 
+    @Override
+    public CompletableFuture<List<ImagedMoment>> findImagedMomentsByVideoReferenceUuid(UUID videoReferenceUuid) {
+        return sendRequest(imagedMomentService.findByVideoReferenceUuid(videoReferenceUuid));
+    }
+
     /**
      *
      * @param videoReferenceUuid
@@ -486,6 +501,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
      * @param indices
      * @return
      */
+    @Override
     public CompletableFuture<List<Index>> updateIndexRecordedTimestamps(Collection<Index> indices) {
         return sendRequest(indexService.update(indices, bulkHeaders));
     }
@@ -495,8 +511,18 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
      * @param annotations
      * @return
      */
+    @Override
     public CompletableFuture<Collection<Annotation>> updateRecordedTimestampsForTapes(
             Collection<Annotation> annotations) {
         return sendRequest(annoService.updateRecordedTimestampForTapes(annotations, bulkHeaders));
     }
+
+    @Override
+    public CompletableFuture<Optional<ImagedMoment>> updateRecordedTimestamp(UUID imagedMomentUuid, Instant recordedTimestamp) {
+        Map<String, String> map = Map.of("recorded_timestamp", recordedTimestamp.toString());
+        return sendRequest(imagedMomentService.update(imagedMomentUuid, map, defaultHeaders))
+                .thenApply(Optional::ofNullable);
+
+    }
+
 }

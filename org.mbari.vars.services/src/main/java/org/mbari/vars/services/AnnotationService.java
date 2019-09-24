@@ -14,7 +14,9 @@
 package org.mbari.vars.services;
 
 import java.net.URL;
+import java.time.Instant;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.List;
 import java.util.UUID;
@@ -47,9 +49,10 @@ public interface AnnotationService {
 
         CompletableFuture<Image> createImage(Image image);
 
-        CompletableFuture<List<AncillaryData>> createOrUpdateAncillaryData(
+        CompletableFuture<List<AncillaryData>> createOrUpdateAncillaryData(List<AncillaryData> ancillaryData);
 
-                        List<AncillaryData> ancillaryData);
+        CompletableFuture<AncillaryDataDeleteCount> deleteAncillaryDataByVideoReference(
+                UUID videoReferenceUuid);
 
         CompletableFuture<Boolean> deleteAnnotation(UUID observationUuid);
 
@@ -63,7 +66,12 @@ public interface AnnotationService {
 
         CompletableFuture<List<String>> findActivities();
 
+        CompletableFuture<List<UUID>> findAllVideoReferenceUuids();
+
         CompletableFuture<AncillaryData> findAncillaryData(UUID observationUuid);
+
+        CompletableFuture<List<AncillaryData>> findAncillaryDataByVideoReference(
+                UUID videoReferenceUuid);
 
         CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid);
 
@@ -96,6 +104,8 @@ public interface AnnotationService {
 
         CompletableFuture<List<Image>> findImagesByVideoReferenceUuid(UUID videoReferenceUuid);
 
+        CompletableFuture<List<ImagedMoment>> findImagedMomentsByVideoReferenceUuid(UUID videoReferenceUuid);
+
         CompletableFuture<List<Index>> findIndicesByVideoReferenceUuid(UUID videoReferenceUuid);
 
         CompletableFuture<Collection<AncillaryData>> merge(UUID videoReferenceUuid, Collection<AncillaryData> data);
@@ -115,4 +125,6 @@ public interface AnnotationService {
         CompletableFuture<List<Index>> updateIndexRecordedTimestamps(Collection<Index> indices);
 
         CompletableFuture<Collection<Annotation>> updateRecordedTimestampsForTapes(Collection<Annotation> annotations);
+
+        CompletableFuture<Optional<ImagedMoment>> updateRecordedTimestamp(UUID imagedMomentUuid, Instant recordedTimestamp);
 }

@@ -1,5 +1,6 @@
 package org.mbari.vars.services;
 
+import org.mbari.vars.services.model.LastUpdate;
 import org.mbari.vars.services.model.Media;
 
 import java.net.URI;
@@ -49,6 +50,12 @@ public interface MediaService {
     CompletableFuture<List<Media>> findConcurrentByVideoReferenceUuid(UUID uuid);
 
     CompletableFuture<List<Media>> findByFilename(String filename);
+
+    CompletableFuture<LastUpdate> findLastVideoSequenceUpdate(UUID uuid);
+
+    CompletableFuture<LastUpdate> findLastVideoUpdate(UUID uuid);
+
+    CompletableFuture<LastUpdate> findLastVideoReferenceUpdate(UUID uuid);
 
     /**
      *
