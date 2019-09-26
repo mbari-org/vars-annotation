@@ -47,7 +47,7 @@ public class ServicesBuilder {
         }
     }
 
-    private ServicesBuilder(Config config) {
+    public ServicesBuilder(Config config) {
         this.config = config;
         this.appConfig = new ServiceConfig(config);
     }
