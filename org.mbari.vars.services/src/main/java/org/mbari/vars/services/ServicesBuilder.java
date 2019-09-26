@@ -29,7 +29,7 @@ public class ServicesBuilder {
     private final ServiceConfig appConfig;
     private final Executor defaultExecutor = new ForkJoinPool();
 
-    private static class Prefs {
+    public static class Prefs {
         final PreferencesFactory preferencesFactory;
         final PreferencesService preferencesService;
 
@@ -68,7 +68,7 @@ public class ServicesBuilder {
                 prefs.getPreferencesFactory());
     }
 
-    private AnnoService buildAnnotationService() {
+    public AnnoService buildAnnotationService() {
         ServiceConfig.ServiceParams params = appConfig.getAnnotationServiceParamsV1();
         AnnoWebServiceFactory factory = new AnnoWebServiceFactory(params.getEndpoint(), params.getTimeout());
         AuthService authService = new BasicJWTAuthService(factory,
@@ -87,7 +87,7 @@ public class ServicesBuilder {
         return new AnnoServiceV2(factory, authService);
     }
 
-    private MediaService buildMediaService() {
+    public MediaService buildMediaService() {
         ServiceConfig.ServiceParams params = appConfig.getMediaServiceParamsV1();
         VamWebServiceFactory factory = new VamWebServiceFactory(params.getEndpoint(), params.getTimeout());
         AuthService authService = new BasicJWTAuthService(factory,
@@ -95,7 +95,7 @@ public class ServicesBuilder {
         return new VamService(factory, authService);
     }
 
-    private ConceptService buildConceptService() {
+    public ConceptService buildConceptService() {
         ServiceConfig.ServiceParams params = appConfig.getConceptServiceParamsV1();
         KBWebServiceFactory factory = new KBWebServiceFactory(params.getEndpoint(),
                 params.getTimeout(), defaultExecutor);
