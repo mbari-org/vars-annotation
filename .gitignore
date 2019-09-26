@@ -9,3 +9,5 @@ bin/
 out/
 .bloop/
 .metals/
+*.orig
+target/
