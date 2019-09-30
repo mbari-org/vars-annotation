@@ -11,6 +11,7 @@ import org.mbari.vars.services.model.Media;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -38,9 +39,12 @@ public class DuplicateAnnotationsCmd implements Command {
         duplicate.setObserver(user);
         duplicate.setActivity(activity);
 
+        // M3-41 - video lab doesn't want associations copied
+        duplicate.setAssociations(Collections.emptyList());
+
         // if we don't null the associations uuid, it will fail to insert due to
         // a duplicate primary key clash.
-        duplicate.getAssociations().forEach(Association::resetUuid);
+//        duplicate.getAssociations().forEach(Association::resetUuid);
         return duplicate;
     }
 
