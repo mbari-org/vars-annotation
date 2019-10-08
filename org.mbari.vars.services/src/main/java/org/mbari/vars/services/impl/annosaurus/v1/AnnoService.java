@@ -111,6 +111,11 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     }
 
     @Override
+    public CompletableFuture<AnnotationCount> countImagedMomentsModifiedBefore(UUID videoReferenceUuid, Instant date) {
+        return sendRequest(imagedMomentService.countByModifiedBefore(videoReferenceUuid, date));
+    }
+
+    @Override
     public CompletableFuture<Annotation> createAnnotation(Annotation annotation) {
         Long durationMillis = (annotation.getDuration() == null) ? null : annotation.getDuration()
                 .toMillis();

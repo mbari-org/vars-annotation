@@ -41,6 +41,8 @@ public interface AnnotationService {
 
         CompletableFuture<ConceptCount> countObservationsByConcept(String concept);
 
+        CompletableFuture<AnnotationCount> countImagedMomentsModifiedBefore(UUID videoReferenceUuid, Instant date);
+
         CompletableFuture<Annotation> createAnnotation(Annotation annotation);
 
         CompletableFuture<Collection<Annotation>> createAnnotations(Collection<Annotation> annotations);

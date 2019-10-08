@@ -1,9 +1,11 @@
 package org.mbari.vars.services.impl.annosaurus.v1;
 
+import org.mbari.vars.services.model.AnnotationCount;
 import org.mbari.vars.services.model.ImagedMoment;
 import retrofit2.Call;
 import retrofit2.http.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -22,4 +24,8 @@ public interface ImagedMomentWebService {
     Call<ImagedMoment> update(@Path("uuid") UUID imagedMomentUuid,
             @FieldMap Map<String, String> fields,
             @HeaderMap Map<String, String> headers);
+
+    @GET("imagedmoments/videoreference/modified/{uuid}/{date}")
+    Call<AnnotationCount> countByModifiedBefore(@Path("uuid") UUID videoReferenceUuid,
+                                                @Path("date") Instant date);
 }
