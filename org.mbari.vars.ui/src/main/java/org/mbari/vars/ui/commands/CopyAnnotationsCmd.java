@@ -13,6 +13,7 @@ import org.mbari.vcr4j.time.Timecode;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -45,6 +46,10 @@ public class CopyAnnotationsCmd implements Command {
         copy.setImagedMomentUuid(null);
         copy.setObserver(observer);
         copy.setActivity(activity);
+
+        // Don't copy the existing images to a new imaged moment, otherwise
+        // the insert will fail due to duplicate uuid/url.
+        copy.setImages(Collections.emptyList());
 
         // if we don't null the associations uuid, it will fail to insert due to
         // a duplicate primary key clash.
