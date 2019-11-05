@@ -40,7 +40,7 @@ public class KBUserService implements UserService, RetrofitWebService {
     public CompletableFuture<User> create(User user) {
         return sendRequest(userService.create(user.getUsername(),
                 user.getPassword(),
-                user.getRold(),
+                user.getRole(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getAffiliation(),

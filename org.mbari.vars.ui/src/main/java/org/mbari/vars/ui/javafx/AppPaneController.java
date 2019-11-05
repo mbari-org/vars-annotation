@@ -9,6 +9,7 @@ import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -437,8 +438,12 @@ public class AppPaneController {
                     .subscribe(event -> {
                         Platform.runLater(() -> {
                             User user = event.get();
-                            usersComboBox.getItems().add(user.getUsername());
-                            FXCollections.sort(usersComboBox.getItems(), sorter);
+                            // M3-53 fix. Copy to editable arraylist first
+                            List<String> newItems = new ArrayList<>(usersComboBox.getItems());
+                            newItems.add(user.getUsername());
+                            Collections.sort(newItems, sorter);
+                            ObservableList<String> items = FXCollections.observableList(newItems);
+                            usersComboBox.setItems(items);
                             usersComboBox.getSelectionModel().select(user.getUsername());
                         });
                     });
