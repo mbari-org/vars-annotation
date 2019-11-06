@@ -10,15 +10,22 @@ import java.util.stream.Collectors;
  */
 public class ConceptDetails {
     private String name;
+    private String rank;
+    private String author;
     private List<String> alternateNames;
     private List<ConceptMedia> media;
     private List<ConceptDescriptor> descriptors;
 
-    public ConceptDetails(String name, List<String> alternateNames, List<ConceptMedia> media, List<ConceptDescriptor> descriptors) {
+    public ConceptDetails(String name,
+                          String rank,
+                          String author,
+                          List<String> alternateNames,
+                          List<ConceptMedia> media,
+                          List<ConceptDescriptor> descriptors) {
         this.name = name;
-        this.alternateNames = Collections.unmodifiableList(alternateNames.stream()
-                .sorted((a, b) -> a.compareToIgnoreCase(b))
-                .collect(Collectors.toList()));
+        this.alternateNames = alternateNames.stream()
+                .sorted(String::compareToIgnoreCase)
+                .collect(Collectors.toUnmodifiableList());
         this.media = Collections.unmodifiableList(media);
         this.descriptors = Collections.unmodifiableList(descriptors);
     }
@@ -37,5 +44,13 @@ public class ConceptDetails {
 
     public List<ConceptDescriptor> getDescriptors() {
         return descriptors;
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 }
