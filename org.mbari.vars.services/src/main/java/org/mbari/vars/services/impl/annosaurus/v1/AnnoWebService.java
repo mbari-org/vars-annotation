@@ -110,6 +110,11 @@ public interface AnnoWebService {
     @GET("ancillarydata/observation/{uuid}")
     Call<AncillaryData> findAncillaryData(@Path("uuid") UUID observationUuid);
 
+    @GET("fast/concept/{concept}")
+    Call<List<Annotation>> findByConcept(@Path("concept") String concept,
+                                         @Query("limit") Long limit,
+                                         @Query("offset") Long offset);
+
 //    @POST("annotations/concurrent")
     @POST("fast/concurrent")
     Call<List<Annotation>> findByConcurrentRequest(@Body ConcurrentRequest concurrentRequest,

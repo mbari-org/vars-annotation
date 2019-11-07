@@ -80,6 +80,11 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(annoService.countAllGroupByVideoReferenceUuid());
     }
 
+    @Override
+    public CompletableFuture<List<Annotation>> findByConcept(String concept) {
+        // TODO add pager?
+        return sendRequest(annoService.findByConcept(concept, 0L, 1000000L));
+    }
 
     /**
      *
