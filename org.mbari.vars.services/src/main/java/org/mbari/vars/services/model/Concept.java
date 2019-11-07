@@ -52,6 +52,10 @@ public class Concept {
         return children;
     }
 
+    public void clearChildren() {
+        children = Collections.emptyList();
+    }
+
     public ConceptDetails getConceptDetails() {
         return conceptDetails;
     }

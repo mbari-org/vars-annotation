@@ -38,6 +38,11 @@ public class KBConceptService implements ConceptService, RetrofitWebService {
                 .thenCompose(root -> sendRequest(service.findTree(root.getName())));
     }
 
+    public CompletableFuture<Optional<Concept>> findParent(String name) {
+        return sendRequest(service.findParentBranch(name))
+                .thenApply(c -> findParent(c, name));
+    }
+
     @Override
     public CompletableFuture<Optional<ConceptDetails>> findDetails(String name) {
         return sendRequest(service.findDetails(name)).thenApply(Optional::ofNullable);
@@ -71,5 +76,40 @@ public class KBConceptService implements ConceptService, RetrofitWebService {
     @Override
     public CompletableFuture<List<ConceptAssociationTemplate>> findAllTemplates() {
         return sendRequest(service.findAllTemplates());
+    }
+
+    /**
+     * Take a branch from `phylogeny/down` and finds the parent concept for given
+     * concept name
+     * @param concept The root or node of a branch returned from `phylogeny/down`
+     *                call
+     * @param conceptName The concept whose parent we want to find.
+     * @return The parent concept if found. Empty otherwise
+     */
+    private Optional<Concept> findParent(Concept concept, String conceptName) {
+        List<Concept> children = concept.getChildren();
+
+        // Exit recursion
+        if (children == null || children.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Optional<Concept> match = children.stream()
+                .filter(c -> c.getName().equals(conceptName))
+                .findFirst();
+
+        if (match.isPresent()) {
+            return match;
+        }
+        else {
+            return children.stream()
+                    .map(c -> findParent(c, conceptName))
+                    .filter(Optional::isPresent)
+                    .findFirst()
+                    .orElseGet(Optional::empty);
+        }
+
+
+
     }
 }

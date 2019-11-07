@@ -26,6 +26,9 @@ public interface KBWebService {
     @GET("phylogeny/down/{name}")
     Call<Concept> findTree(@Path("name") String name);
 
+    @GET("phylogeny/up/{name}")
+    Call<Concept> findParentBranch(@Path("name") String name);
+
     @GET("concept")
     Call<List<String>> findAllNames();
 

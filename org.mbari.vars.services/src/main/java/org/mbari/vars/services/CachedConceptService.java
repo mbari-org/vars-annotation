@@ -87,6 +87,11 @@ public class CachedConceptService implements ConceptService {
         }
     }
 
+    @Override
+    public CompletableFuture<Optional<Concept>> findParent(String name) {
+        return conceptService.findParent(name);
+    }
+
     private void cacheChildren(Concept concept) {
         concept.getChildren()
                 .forEach(child -> {

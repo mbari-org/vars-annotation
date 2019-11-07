@@ -89,6 +89,11 @@ public class ModifyingConceptService implements ConceptService {
         return conceptService.findConcept(name);
     }
 
+    @Override
+    public CompletableFuture<Optional<Concept>> findParent(String name) {
+        return conceptService.findParent(name);
+    }
+
     private List<ConceptAssociationTemplate> filter(List<ConceptAssociationTemplate> templates) {
         return templates.stream()
                 .filter(t -> {
