@@ -82,8 +82,15 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
 
     @Override
     public CompletableFuture<List<Annotation>> findByConcept(String concept) {
-        // TODO add pager?
+        // TODO: add pager?
+        // HACK: Hardcoded max of a milliion annotations
         return sendRequest(annoService.findByConcept(concept, 0L, 1000000L));
+    }
+
+    @Override
+    public CompletableFuture<List<Annotation>> findByConcept(String concept, Long limit, Long offset) {
+        // TODO add pager?
+        return sendRequest(annoService.findByConcept(concept, limit, offset));
     }
 
     /**
