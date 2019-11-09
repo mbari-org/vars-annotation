@@ -113,7 +113,8 @@ public interface AnnoWebService {
     @GET("fast/concept/{concept}")
     Call<List<Annotation>> findByConcept(@Path("concept") String concept,
                                          @Query("limit") Long limit,
-                                         @Query("offset") Long offset);
+                                         @Query("offset") Long offset,
+                                         @Query("data") Boolean data);
 
 //    @POST("annotations/concurrent")
     @POST("fast/concurrent")

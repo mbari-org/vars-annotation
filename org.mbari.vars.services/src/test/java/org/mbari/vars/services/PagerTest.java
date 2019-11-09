@@ -16,7 +16,6 @@ public class PagerTest {
             data.add(i);
         }
 
-
         var pager = new Pager<>((limit, offset) -> {
             var start = offset;
             Long end = limit + offset;

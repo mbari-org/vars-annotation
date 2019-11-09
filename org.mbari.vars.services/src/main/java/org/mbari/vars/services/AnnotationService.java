@@ -75,9 +75,9 @@ public interface AnnotationService {
         CompletableFuture<List<AncillaryData>> findAncillaryDataByVideoReference(
                 UUID videoReferenceUuid);
 
-        CompletableFuture<List<Annotation>> findByConcept(String concept);
+        CompletableFuture<List<Annotation>> findByConcept(String concept, Boolean data);
 
-        CompletableFuture<List<Annotation>> findByConcept(String concept, Long limit, Long offset);
+        CompletableFuture<List<Annotation>> findByConcept(String concept, Long limit, Long offset, Boolean data);
 
         CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid);
 
