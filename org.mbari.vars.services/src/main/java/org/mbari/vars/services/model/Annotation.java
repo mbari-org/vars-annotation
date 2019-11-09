@@ -32,6 +32,7 @@ public class Annotation implements ImagedMoment {
     private String activity;
     private List<Association> associations;
     private List<ImageReference> imageReferences;
+    private AncillaryData ancillaryData;
 
     public Annotation() {
     }
@@ -207,6 +208,22 @@ public class Annotation implements ImagedMoment {
 
     public void setImages(List<ImageReference> images) {
         this.imageReferences = images;
+    }
+
+    public List<ImageReference> getImageReferences() {
+        return imageReferences;
+    }
+
+    public void setImageReferences(List<ImageReference> imageReferences) {
+        this.imageReferences = imageReferences;
+    }
+
+    public AncillaryData getAncillaryData() {
+        return ancillaryData;
+    }
+
+    public void setAncillaryData(AncillaryData ancillaryData) {
+        this.ancillaryData = ancillaryData;
     }
 
     @Override
