@@ -40,6 +40,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     private final AncillaryDataWebService dataService;
     private final IndexWebService indexService;
     private final ImagedMomentWebService imagedMomentService;
+    private final VideoInfoWebService videoInfoWebService;
     private final Map<String, String> defaultHeaders;
     private final Map<String, String> bulkHeaders;
 
@@ -57,6 +58,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         dataService = serviceFactory.create(AncillaryDataWebService.class, authService);
         indexService = serviceFactory.create(IndexWebService.class, authService);
         imagedMomentService = serviceFactory.create(ImagedMomentWebService.class, authService);
+        videoInfoWebService = serviceFactory.create(VideoInfoWebService.class, authService);
         defaultHeaders = new HashMap<>();
         defaultHeaders.put("Accept", "application/json");
         defaultHeaders.put("Accept-Charset", "utf-8");
