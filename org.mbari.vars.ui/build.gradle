@@ -159,7 +159,8 @@ jlink {
         def customInstallerOptions = [
                 "--identifier", project.name,
                 "--copyright", "Monterey Bay Aquarium Research Institute",
-                "--vendor", "org.mbari"
+                "--vendor", "org.mbari",
+                "--app-version", project.version
         ]
 
         if  (org.gradle.internal.os.OperatingSystem.current().isLinux()) {

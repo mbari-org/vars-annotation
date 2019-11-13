@@ -1,13 +1,13 @@
 // https://github.com/nebula-plugins/nebula-project-plugin
 pluginManagement {
   plugins {
-    id 'com.adarshr.test-logger' version '1.7.0'
+    id 'com.adarshr.test-logger' version '2.0.0'
     id "com.jfrog.bintray" version "1.8.4"
     id 'nebula.facet' version '6.0.3'
     id 'nebula.maven-publish' version '8.1.0'
-    id 'org.beryx.jlink' version "2.15.1"
+    id 'org.beryx.jlink' version "2.16.3"
     id 'org.kordamp.gradle.jdeps' version '0.7.0'
-    id "com.github.ben-manes.versions" version "0.21.0"
+    id "com.github.ben-manes.versions" version "0.27.0"
     id "com.github.spotbugs" version "2.0.0"
     id "org.javamodularity.moduleplugin" version "1.5.0"
     id "org.openjfx.javafxplugin" version "0.0.8"
