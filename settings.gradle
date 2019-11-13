@@ -5,7 +5,7 @@ pluginManagement {
     id "com.jfrog.bintray" version "1.8.4"
     id 'nebula.facet' version '6.0.3'
     id 'nebula.maven-publish' version '8.1.0'
-    id 'org.beryx.jlink' version "2.16.3"
+    id 'org.beryx.jlink' version "2.16.4"
     id 'org.kordamp.gradle.jdeps' version '0.7.0'
     id "com.github.ben-manes.versions" version "0.27.0"
     id "com.github.spotbugs" version "2.0.0"

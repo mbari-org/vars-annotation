@@ -157,7 +157,6 @@ jlink {
         jpackageHome = System.getenv("JPACKAGE_HOME")
 
         def customInstallerOptions = [
-                "--identifier", project.name,
                 "--copyright", "Monterey Bay Aquarium Research Institute",
                 "--vendor", "org.mbari",
                 "--app-version", project.version
@@ -172,7 +171,8 @@ jlink {
         else {
             installerType = "dmg"
             customInstallerOptions.addAll([
-                    "--mac-bundle-name", "VARS Annotation",
+                "--mac-package-name", "VARS Annotation",
+                "--mac-package-identifier", project.name
             ])
         }
         installerOptions = customInstallerOptions
