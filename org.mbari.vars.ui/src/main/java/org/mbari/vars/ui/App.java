@@ -16,9 +16,11 @@ import org.mbari.vars.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.LogManager;
 
 /**
@@ -116,6 +118,17 @@ public class App extends Application {
         try (InputStream is = App.class.getResourceAsStream("/logging.properties")) {
             LogManager.getLogManager().readConfiguration(is);
         }
+        File varsDir = new File(System.getProperty("user.home"), ".vars");
+        File varsLogDir = new File(varsDir, "logs");
+        var dirs = List.of(varsDir, varsLogDir);
+        dirs.forEach(d -> {
+            if (!d.exists()) {
+                var ok = d.mkdir();
+                if (!ok) {
+                    log.warn("Failed to create " + d.getAbsolutePath());
+                }
+            }
+        });
     }
 
 }
