@@ -280,6 +280,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return findAnnotations(videoReferenceUuid, null, null);
     }
 
+
     @Override
     public CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, Long limit,
             Long offset) {
