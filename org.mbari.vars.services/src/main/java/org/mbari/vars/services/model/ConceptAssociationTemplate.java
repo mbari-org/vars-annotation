@@ -1,6 +1,5 @@
 package org.mbari.vars.services.model;
 
-import javax.annotation.Nonnull;
 
 /**
  * @author Brian Schlining
@@ -14,13 +13,13 @@ public class ConceptAssociationTemplate implements Details {
     public static final ConceptAssociationTemplate NIL = new ConceptAssociationTemplate(Association.VALUE_NIL,
             Association.VALUE_NIL, Association.VALUE_NIL);
 
-    public ConceptAssociationTemplate(@Nonnull String linkName, @Nonnull String toConcept, @Nonnull String linkValue) {
+    public ConceptAssociationTemplate(String linkName, String toConcept,  String linkValue) {
         this.linkName = linkName;
         this.toConcept = toConcept;
         this.linkValue = linkValue;
     }
 
-    public ConceptAssociationTemplate(@Nonnull Details details) {
+    public ConceptAssociationTemplate(Details details) {
         this(details.getLinkName(), details.getToConcept(), details.getLinkValue());
     }
 

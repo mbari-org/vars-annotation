@@ -9,8 +9,7 @@ dependencies {
 //    compile project(':org.mbari.vars.javafx')
     implementation project(':org.mbari.vars.services')
 
-//    implementation 'com.google.guava:guava'
-    implementation 'com.google.inject:guice'
+//    implementation 'com.google.inject:guice'
     implementation 'com.jfoenix:jfoenix'
     implementation 'com.typesafe:config'
     implementation 'io.reactivex.rxjava2:rxjava'
@@ -22,6 +21,11 @@ dependencies {
     implementation 'org.mbari.vcr4j:vcr4j-sharktopoda'
     implementation 'org.mbari:mbarix4j'
     implementation 'org.slf4j:slf4j-api'
+
+    implementation('com.google.inject:guice') {
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+        exclude group: 'org.checkerframework', module: 'checker-compat-qual'
+    }
 
     implementation('io.reactivex.rxjava2:rxjavafx') {
         exclude group: 'org.openjfx', module: 'javafx-base'
@@ -42,10 +46,11 @@ dependencies {
 //        because("Do not want this slf4j provider included on classpath")
 //    }
 
-    runtimeOnly('ch.qos.logback:logback-classic') {
-        exclude group: 'javax.activation'
-    }
+//    runtimeOnly('ch.qos.logback:logback-classic') {
+//        exclude group: 'javax.activation'
+//    }
     runtimeOnly 'javax.servlet:javax.servlet-api'
+    runtimeOnly 'org.slf4j:slf4j-jdk14'
 }
 
 javafx {

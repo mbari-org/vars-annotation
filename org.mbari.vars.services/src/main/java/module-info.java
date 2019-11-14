@@ -10,7 +10,7 @@ module org.mbari.vars.services {
   requires java.prefs;
   requires java.sql;
   requires javax.inject;
-  requires jsr305;
+//  requires jsr305;
   requires okhttp3.logging;
   requires okhttp3;
   requires org.mbari.vars.core;

@@ -11,7 +11,6 @@ import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.Details;
 import org.mbari.vars.ui.util.FXMLUtils;
 
-import javax.annotation.Nullable;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -69,7 +68,11 @@ public class DetailEditorPaneController {
         return linkValueTextField;
     }
 
-    public void setDetails(@Nullable Details details) {
+    /**
+     *
+     * @param details This can be null
+     */
+    public void setDetails(Details details) {
         if (details == null) {
             linkNameTextField.setText(null);
             toConceptComboBox.getItems().clear();

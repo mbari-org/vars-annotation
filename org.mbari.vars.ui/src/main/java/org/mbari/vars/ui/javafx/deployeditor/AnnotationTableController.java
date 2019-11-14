@@ -19,7 +19,6 @@ import org.mbari.vars.core.util.AsyncUtils;
 import org.mbari.vars.ui.util.JFXUtilities;
 import org.mbari.vars.core.util.ListUtils;
 
-import javax.annotation.Nonnull;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,8 +39,8 @@ public class AnnotationTableController {
     private final EventBus eventBus;
     private boolean disabled = true;
 
-    public AnnotationTableController(@Nonnull UIToolBox toolBox,
-                                     @Nonnull EventBus eventBus) {
+    public AnnotationTableController(UIToolBox toolBox,
+                                     EventBus eventBus) {
         this.toolBox = toolBox;
         this.i18n = toolBox.getI18nBundle();
         this.eventBus = eventBus;

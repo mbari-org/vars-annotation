@@ -16,7 +16,10 @@ import org.mbari.vars.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
+import java.util.logging.LogManager;
 
 /**
  * Hello world!
@@ -37,8 +40,9 @@ public class App extends Application {
     private static final String WIDTH_KEY = "stage-width";
     private static final String HEIGHT_KEY = "stage-height";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         System.getProperties().setProperty("user.timezone", "UTC");
+        setupLogging();
         log = LoggerFactory.getLogger(App.class);
         //Log uncaught Exceptions
         Thread.setDefaultUncaughtExceptionHandler((thread, ex) -> {
@@ -106,6 +110,12 @@ public class App extends Application {
             System.exit(0);
         });
         primaryStage.show();
+    }
+
+    private static void setupLogging() throws IOException {
+        try (InputStream is = App.class.getResourceAsStream("/logging.properties")) {
+            LogManager.getLogManager().readConfiguration(is);
+        }
     }
 
 }

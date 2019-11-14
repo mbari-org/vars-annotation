@@ -48,7 +48,6 @@ import org.mbari.vars.ui.messages.ShowExceptionAlert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 
 /**
  *
@@ -314,7 +313,7 @@ public class BulkEditorPaneController {
         }
     }
 
-    private void setSelectedAnnotations(@Nonnull  ObservableList<Annotation> selectedAnnotations) {
+    private void setSelectedAnnotations(ObservableList<Annotation> selectedAnnotations) {
         Preconditions.checkNotNull(selectedAnnotations);
         if (this.selectedAnnotations != null) {
             selectedAnnotations.removeListener(selectionChangeListener);

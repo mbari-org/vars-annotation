@@ -15,7 +15,6 @@ import org.mbari.vars.core.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.util.function.Predicate;
 
 /**
@@ -132,7 +131,11 @@ public class FilteredComboBoxDecorator<T>  {
         }
     }
 
-    public void setComparator(@Nonnull AutoCompleteComparator<T> comparator) {
+    /**
+     *
+     * @param comparator Can not be null
+     */
+    public void setComparator(AutoCompleteComparator<T> comparator) {
         this.comparator = comparator;
         handleFilterChanged(filter.get());
     }

@@ -33,10 +33,11 @@ dependencies {
         exclude group: 'org.openjfx'
     }
 
-    runtimeOnly('ch.qos.logback:logback-classic') {
-        exclude group: 'javax.activation'
-    }
+//    runtimeOnly('ch.qos.logback:logback-classic') {
+//        exclude group: 'javax.activation'
+//    }
     runtimeOnly 'javax.servlet:javax.servlet-api'
+    runtimeOnly 'org.slf4j:slf4j-jdk14'
 }
 
 javafx {
