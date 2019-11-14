@@ -3,9 +3,10 @@ plugins {
 }
 
 dependencies {
-    compile project(':org.mbari.vars.services')
-    compile project(':org.mbari.vars.javafx')
-    compile project(':org.mbari.vars.ui')
+    implementation project(':org.mbari.vars.services')
+    implementation project(':org.mbari.vars.javafx')
+    implementation project(':org.mbari.vars.ui')
+    implementation project(':org.mbari.vars.core')
 
     implementation 'com.google.guava:guava'
     implementation 'com.google.inject:guice'

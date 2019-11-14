@@ -12,7 +12,7 @@ facets {
 
 dependencies {
 
-    compile project(':org.mbari.vars.core')
+    implementation project(':org.mbari.vars.core')
 
     implementation 'com.auth0:java-jwt'
     implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers'
