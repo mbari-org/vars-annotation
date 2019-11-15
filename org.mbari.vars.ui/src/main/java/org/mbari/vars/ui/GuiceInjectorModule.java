@@ -102,7 +102,7 @@ public class GuiceInjectorModule implements Module {
         // --- Create a service that munges the data from the service for a better UI experience.
         ModifyingConceptService modService = new ModifyingConceptService(service, config);
         // --- Using a local cache
-        CachedConceptService cachedService = new CachedConceptService(modService);
+        CachedConceptService2 cachedService = new CachedConceptService2(modService);
         //List<String> cachedConceptTemplates = config.getStringList("app.annotation.details.cache");
         //cachedService.prefetch(cachedConceptTemplates);
         binder.bind(String.class)

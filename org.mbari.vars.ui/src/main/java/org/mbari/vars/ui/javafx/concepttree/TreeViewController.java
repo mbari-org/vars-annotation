@@ -34,7 +34,6 @@ public class TreeViewController {
     private FilterableTreeItem<Concept> buildTreeItem(Concept concept, FilterableTreeItem<Concept> parent) {
         FilterableTreeItem<Concept> item = new FilterableTreeItem<>(concept);
         if (parent != null) {
-            //parent.getInternalChildren().add(item);
             parent.getSourceChildren().add(item);
         }
         concept.getChildren()

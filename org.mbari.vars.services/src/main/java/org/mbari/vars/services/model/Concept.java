@@ -43,6 +43,7 @@ public class Concept {
             alternateNames.addAll(getConceptDetails().getAlternateNames());
         }
         return new ArrayList<>(alternateNames);
+//        return  alternativeNames;
     }
 
     public List<Concept> getChildren() {

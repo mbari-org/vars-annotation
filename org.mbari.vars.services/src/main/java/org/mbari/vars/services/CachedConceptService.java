@@ -73,6 +73,7 @@ public class CachedConceptService implements ConceptService {
     @Override
     public CompletableFuture<Concept> findRoot() {
         if (rootName == null) {
+
             return conceptService.findRoot()
                     .thenApply(c -> {
                         rootName = c.getName();

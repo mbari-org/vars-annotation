@@ -1,0 +1,98 @@
+{
+  "name": "object",
+  "alternativeNames": [
+    "root"
+  ],
+  "children": [
+    {
+      "name": "physical object",
+      "alternativeNames": [
+        "physical-object"
+      ],
+      "children": [
+        {
+          "name": "marine organism",
+          "alternativeNames": [
+            "marine-organism"
+          ],
+          "children": [
+            {
+              "name": "Eukaryota",
+              "rank": "superkingdom",
+              "children": [
+                {
+                  "name": "Animalia",
+                  "alternativeNames": [
+                    "metazoa"
+                  ],
+                  "rank": "kingdom",
+                  "children": [
+                    {
+                      "name": "Cnidaria",
+                      "alternativeNames": [
+                        "cnidarian"
+                      ],
+                      "rank": "phylum",
+                      "children": [
+                        {
+                          "name": "Hydrozoa",
+                          "alternativeNames": [
+                            "hydrozoan",
+                            "hydroid",
+                            "hydralike animal"
+                          ],
+                          "rank": "superclass",
+                          "children": [
+                            {
+                              "name": "Hydroidolina",
+                              "rank": "subclass",
+                              "children": [
+                                {
+                                  "name": "Siphonophorae",
+                                  "alternativeNames": [
+                                    "siphonophore",
+                                    "Siphonophora"
+                                  ],
+                                  "rank": "order",
+                                  "children": [
+                                    {
+                                      "name": "Physonectae",
+                                      "alternativeNames": [
+                                        "Physophorae",
+                                        "physonect"
+                                      ],
+                                      "rank": "suborder",
+                                      "children": [
+                                        {
+                                          "name": "Agalmatidae",
+                                          "alternativeNames": [
+                                            "Agalmidae"
+                                          ],
+                                          "rank": "family",
+                                          "children": [
+                                            {
+                                              "name": "Nanomia",
+                                              "rank": "genus"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

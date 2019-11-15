@@ -118,8 +118,8 @@ public class App extends Application {
         try (InputStream is = App.class.getResourceAsStream("/logging.properties")) {
             LogManager.getLogManager().readConfiguration(is);
         }
-        File varsDir = new File(System.getProperty("user.home"), ".vars");
-        File varsLogDir = new File(varsDir, "logs");
+        var varsDir = new File(System.getProperty("user.home"), ".vars");
+        var varsLogDir = new File(varsDir, "logs");
         var dirs = List.of(varsDir, varsLogDir);
         dirs.forEach(d -> {
             if (!d.exists()) {

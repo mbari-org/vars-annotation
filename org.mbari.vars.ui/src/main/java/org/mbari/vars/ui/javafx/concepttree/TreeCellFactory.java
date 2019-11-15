@@ -9,6 +9,8 @@ import org.mbari.vars.services.model.ConceptDetails;
 import org.mbari.vars.services.ConceptService;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -56,13 +58,16 @@ class TreeCellFactory {
                 setText(null);
             }
             else {
-                updateCell(item);
+                updateCell();
                 if (item.getConceptDetails() == null) {
                     conceptService.findDetails(item.getName())
                             .thenAccept(opt -> {
                                 opt.ifPresent(cd -> {
+//                                    System.out.println("Loaded details for " + item.getName());
                                     item.setConceptDetails(cd);
-                                    updateCell(item);
+                                    // as we are async, the cell may or may not contain the item
+                                    // We'll update it just in case it's the same item.
+                                    Platform.runLater(this::updateCell);
                                 });
                             });
                 }
@@ -79,29 +84,24 @@ class TreeCellFactory {
             return s;
         }
 
-        private void updateCell(Concept item) {
-            String text = asString(item);
-            Runnable r = () -> {
+        private void updateCell() {
+            Concept item = getItem();
+            if (item != null) {
+                String text = asString(item);
                 setText(text);
                 ConceptDetails cd = item.getConceptDetails();
                 if (cd != null) {
                     if (!cd.getMedia().isEmpty()) {
                         getStyleClass().removeAll(styleClassPlain);
                         getStyleClass().addAll(styleClassWithMedia);
-                    }
-                    else {
+                    } else {
                         getStyleClass().removeAll(styleClassWithMedia);
                         getStyleClass().addAll(styleClassPlain);
                     }
                 }
-            };
-            if (Platform.isFxApplicationThread()) {
-                r.run();
-            }
-            else {
-                Platform.runLater(r);
             }
         }
+
 
 
     }
