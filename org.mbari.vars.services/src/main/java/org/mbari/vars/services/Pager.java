@@ -18,7 +18,6 @@ import java.util.function.Function;
  */
 public class Pager<T> implements Runnable {
 
-    private final BiFunction<Long, Long, T> fetchFn;
     private final RequestPager.Runner<T> runner;
 
     /**
@@ -29,7 +28,6 @@ public class Pager<T> implements Runnable {
      * @param pageSize The number of objects to retrieve per page request
      */
     public Pager(BiFunction<Long, Long, T> fetchFn, Long limit, Long pageSize) {
-        this.fetchFn = fetchFn;
 
         Function<RequestPager.Page, T> fn = (page) -> {
             try {
