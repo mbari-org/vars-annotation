@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.LogManager;
@@ -115,20 +117,18 @@ public class App extends Application {
     }
 
     private static void setupLogging() throws IOException {
+        // COnfigure JDK logging
         try (InputStream is = App.class.getResourceAsStream("/logging.properties")) {
             LogManager.getLogManager().readConfiguration(is);
         }
-        var varsDir = new File(System.getProperty("user.home"), ".vars");
-        var varsLogDir = new File(varsDir, "logs");
-        var dirs = List.of(varsDir, varsLogDir);
-        dirs.forEach(d -> {
-            if (!d.exists()) {
-                var ok = d.mkdir();
-                if (!ok) {
-                    log.warn("Failed to create " + d.getAbsolutePath());
-                }
-            }
-        });
+
+        // Create directory to write logs to
+        var varsDir = Initializer.getSettingsDirectory();
+        var varsLogDir = Paths.get(varsDir.normalize().toString(), "logs");
+        var createdDir = Initializer.createDirectory(varsLogDir);
+        if (createdDir == null) {
+            log.warn("Failed to create " + varsLogDir);
+        }
     }
 
 }

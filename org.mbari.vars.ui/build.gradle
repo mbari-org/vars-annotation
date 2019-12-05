@@ -81,7 +81,7 @@ def runtimeJvmArgs = [
         '--add-reads', 'vars.annotation.merged.module=org.slf4j'
 ]
 
-// If any o these exist as enironment vairables add them as -Dkey=value to jvmArgs
+// If any of these exist as environment variables add them as -Dkey=value to jvmArgs
 def confEnvParams = [
         "ACCOUNTS_SERVICE_URL",
         "ACCOUNTS_SERVICE_TIMEOUT",
@@ -117,13 +117,11 @@ confEnvParams.each { k ->
 
 tasks.withType(JavaExec) {
     if (System.getProperty('DEBUG', 'false') == 'true') {
-        def debugJvmArgs = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9099']
+        def debugJvmArgs = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005']
         debugJvmArgs.addAll(runtimeJvmArgs)
         jvmArgs(debugJvmArgs)
     }
 }
-
-
 
 /* *****************************************************************************
  Use the jlink plugin to build a dist with a JVM
