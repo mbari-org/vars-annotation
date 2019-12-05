@@ -54,12 +54,10 @@ public class AppController {
 
     public Scene getScene() {
         if (scene == null) {
-            //AppPaneController paneController = new AppPaneController(toolBox);
             AppPaneController paneController = new AppPaneController(toolBox);
             scene = new Scene(paneController.getRoot());
             scene.getStylesheets()
                     .addAll(toolBox.getStylesheets());
-
             new KeyMapping(toolBox, scene, paneController);
 
         }

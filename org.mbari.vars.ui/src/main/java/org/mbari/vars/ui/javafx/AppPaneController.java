@@ -449,16 +449,29 @@ public class AppPaneController {
                     });
 
             // When a username is selected send a change event
-            JavaFxObservable.valuesOf(usersComboBox.getSelectionModel().selectedItemProperty())
-                    .subscribe(s -> {
-                        userService.findAllUsers()
-                                .thenAccept(users -> {
-                                    Optional<User> opt = users.stream()
-                                            .filter(u -> u.getUsername().equals(s))
-                                            .findFirst();
-                                    opt.ifPresent(user -> eventBus.send(new UserChangedEvent(user)));
-                                });
-                    });
+            usersComboBox.getSelectionModel()
+                    .selectedItemProperty()
+                    .addListener((obs, oldv, newv) -> {
+                if (newv != null) {
+                    userService.findAllUsers()
+                            .thenAccept(users -> {
+                                Optional<User> opt = users.stream()
+                                        .filter(u -> u.getUsername().equals(newv))
+                                        .findFirst();
+                                opt.ifPresent(user -> eventBus.send(new UserChangedEvent(user)));
+                            });
+                }
+            });
+//            JavaFxObservable.valuesOf(usersComboBox.getSelectionModel().selectedItemProperty())
+//                    .subscribe(s -> {
+//                        userService.findAllUsers()
+//                                .thenAccept(users -> {
+//                                    Optional<User> opt = users.stream()
+//                                            .filter(u -> u.getUsername().equals(s))
+//                                            .findFirst();
+//                                    opt.ifPresent(user -> eventBus.send(new UserChangedEvent(user)));
+//                                });
+//                    });
 
             // Populate the combobox and select the user form the OS
             userService.findAllUsers()
@@ -470,7 +483,9 @@ public class AppPaneController {
                         Platform.runLater(() -> {
                             usersComboBox.setItems(FXCollections.observableList(usernames));
                             String defaultUser = System.getProperty("user.name");
-                            usersComboBox.getSelectionModel().select(defaultUser);
+                            if (usernames.contains(defaultUser)) {
+                                usersComboBox.getSelectionModel().select(defaultUser);
+                            }
                         });
                     });
 

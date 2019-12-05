@@ -109,7 +109,7 @@ public class Initializer {
         return imageDirectory;
     }
 
-    private static Path createDirectory(Path path) {
+    public static Path createDirectory(Path path) {
         Path createdPath = path;
         if (!Files.exists(path)) {
             try {
