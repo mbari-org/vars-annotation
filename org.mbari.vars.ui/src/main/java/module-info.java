@@ -3,7 +3,7 @@ module org.mbari.vars.ui {
   requires com.google.common;
   requires com.google.guice;
   requires com.jfoenix;
-  requires gson;
+  requires com.google.gson;
   requires io.reactivex.rxjava2;
   requires java.desktop;
   requires java.prefs;
@@ -11,6 +11,7 @@ module org.mbari.vars.ui {
   requires javafx.fxml;
   requires javafx.graphics;
   requires javax.inject;
+  requires com.fazecast.jSerialComm;
 //  requires jsr305;
   requires mbarix4j;
   requires org.controlsfx.controls;
@@ -37,6 +38,7 @@ module org.mbari.vars.ui {
       org.mbari.vars.ui.mediaplayers.sharktopoda.MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.ships.MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.vcr.MediaControlsFactoryImpl;
+
 
   opens org.mbari.vars.ui to javafx.graphics;
   opens org.mbari.vars.ui.javafx to javafx.fxml;

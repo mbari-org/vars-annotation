@@ -51,6 +51,7 @@ dependencies {
 //    }
     runtimeOnly 'javax.servlet:javax.servlet-api'
     runtimeOnly 'org.slf4j:slf4j-jdk14'
+//    runtimeOnly 'com.fazecast:jSerialComm'
 }
 
 javafx {

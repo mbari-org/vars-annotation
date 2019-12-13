@@ -3,7 +3,7 @@ module org.mbari.vars.services {
   requires com.google.common;
   requires com.google.guice;
   requires gson.javatime.serialisers;
-  requires gson;
+  requires com.google.gson;
   requires io.reactivex.rxjava2;
   requires java.desktop;
   requires java.jwt;
