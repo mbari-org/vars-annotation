@@ -72,7 +72,7 @@ public class MediaParamsPaneController {
         commportComboBox.setEditable(false);
         ObservableList<String> serialPorts = FXCollections.observableArrayList(MediaControlsFactoryImpl.getSerialPorts());
         commportComboBox.setItems(serialPorts);
-        MediaControlsFactoryImplOriginal.getSelectedSerialPort()
+        MediaControlsFactoryImpl.getSelectedSerialPort()
                 .ifPresent(sp -> commportComboBox.getSelectionModel().select(sp));
     }
 

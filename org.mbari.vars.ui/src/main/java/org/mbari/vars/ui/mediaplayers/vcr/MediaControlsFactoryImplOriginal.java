@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 /**
  * @author Brian Schlining
  * @since 2018-03-26T10:52:00
+ * @deprecated
  */
 public class MediaControlsFactoryImplOriginal implements MediaControlsFactory {
 

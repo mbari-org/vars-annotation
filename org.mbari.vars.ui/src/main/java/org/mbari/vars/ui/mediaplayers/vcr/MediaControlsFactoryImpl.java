@@ -62,7 +62,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
         String title = i18n.getString("mediaplayer.vcr.open.error.title");
         String header = i18n.getString("mediaplayer.vcr.open.error.header");
         String content = i18n.getString("mediaplayer.vcr.open.error.content") + " " +
-                MediaControlsFactoryImplOriginal.getSelectedSerialPort().orElse("<undefined>");
+                MediaControlsFactoryImpl.getSelectedSerialPort().orElse("<undefined>");
         ShowNonfatalErrorAlert alert = new ShowNonfatalErrorAlert(title, header, content, new RuntimeException(ex));
         Initializer.getToolBox()
                 .getEventBus()
@@ -269,5 +269,14 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
         else {
             return Optional.of(serialPort);
         }
+    }
+
+    /**
+     * Stores the serialPort value to local preferences
+     * @param serialPort
+     */
+    public static void setSelectedSerialPort(String serialPort) {
+        Preferences prefs = Preferences.userNodeForPackage(MediaControlsFactoryImplOriginal.PREF_NODE_KEY);
+        prefs.put(MediaControlsFactoryImplOriginal.PREF_SERIALPORT_KEY, serialPort);
     }
 }
