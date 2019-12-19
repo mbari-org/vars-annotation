@@ -30,7 +30,7 @@ public class AppDemo extends App {
      *
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         System.getProperties().setProperty("user.timezone", "UTC");
 

@@ -418,6 +418,11 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(indexService.findByVideoReferenceUuid(videoReferenceUuid));
     }
 
+    @Override
+    public CompletableFuture<CachedVideoReference> findVideoReferenceByVideoReferenceUuid(UUID videoReferenceUuid) {
+        return sendRequest(videoInfoWebService.findByVideoReferenceUuid(videoReferenceUuid));
+    }
+
     /**
      *
      * @param videoReferenceUuid
