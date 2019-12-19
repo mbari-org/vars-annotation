@@ -82,7 +82,7 @@ subprojects {
             implementation 'org.kordamp.ikonli:ikonli-javafx:11.3.4'
             implementation 'org.kordamp.ikonli:ikonli-material-pack:11.3.4'
             implementation 'org.mbari.m3:vars-blackmagic:0.0.2'
-            implementation 'org.mbari.vars:vars-avfoundation:2.2.2'
+            implementation 'org.mbari.vars:vars-avfoundation:2.2.3'
             implementation 'org.mbari.vcr4j:vcr4j-core:4.2.0.jre11'
             implementation 'org.mbari.vcr4j:vcr4j-jserialcomm:4.2.0.jre11'
             implementation 'org.mbari.vcr4j:vcr4j-rs422:4.2.0.jre11'
