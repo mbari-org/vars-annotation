@@ -32,6 +32,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 
 /**
+ * This is the main controller for the App
+ *
  * @author Brian Schlining
  * @since 2017-05-10T09:55:00
  */

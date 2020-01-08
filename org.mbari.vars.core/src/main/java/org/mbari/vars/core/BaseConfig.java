@@ -12,7 +12,7 @@ import java.util.function.Function;
 /**
  * BaseConfig - In general, we strongly prefer not to scatter config strings
  * throughout the codebase. Instead, for vars-annotation apps, extend this
- * class and add methoed that reads teh config and returns the value of interest.
+ * class and add methed that reads the config and returns the value of interest.
  * Some helper methods are provided.
  */
 public abstract class BaseConfig {

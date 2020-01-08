@@ -11,6 +11,8 @@ import org.mbari.vars.services.model.User;
 import java.util.Collection;
 
 /**
+ * `Global` state is kept in this object. The current Data object can be retrieved from the
+ * UIToolbox instance.
  * @author Brian Schlining
  * @since 2017-05-11T13:07:00
  */

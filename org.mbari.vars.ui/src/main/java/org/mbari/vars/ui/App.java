@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.logging.LogManager;
 
 /**
- * Hello world!
+ * This is the main entry point for the vars-annotation application
  *
  */
 public class App extends Application {

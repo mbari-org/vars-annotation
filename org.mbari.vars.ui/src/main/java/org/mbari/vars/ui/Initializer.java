@@ -54,7 +54,6 @@ public class Initializer {
 
     public static UIToolBox getToolBox() {
         if (toolBox == null) {
-//            Services services = getInjector().getInstance(Services.class);
             Services services = ServicesBuilder.build(Initializer.getConfig());
             ResourceBundle bundle = ResourceBundle.getBundle("i18n",
                     Locale.getDefault());

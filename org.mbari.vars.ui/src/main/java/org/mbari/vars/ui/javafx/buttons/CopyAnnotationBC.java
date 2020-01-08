@@ -30,7 +30,6 @@ public class CopyAnnotationBC extends AbstractBC {
     public void init() {
         String tooltip = toolBox.getI18nBundle().getString("buttons.copy");
         Text icon = Icons.FLIP_TO_FRONT.standardSize();
-//        Text icon = iconFactory.createIcon(MaterialIcon.FLIP_TO_FRONT, "30px");
         initializeButton(tooltip, icon);
 
         toolBox.getEventBus()

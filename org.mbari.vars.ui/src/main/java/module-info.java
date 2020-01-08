@@ -12,7 +12,6 @@ module org.mbari.vars.ui {
   requires javafx.graphics;
   requires javax.inject;
   requires com.fazecast.jSerialComm;
-//  requires jsr305;
   requires mbarix4j;
   requires org.controlsfx.controls;
   requires org.kordamp.iconli.core;

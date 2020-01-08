@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
+ * We are avoiding scattering config strings through the codebase. The AppConfig
+ * provides fixed endpoints for looking up config values
  * @author Brian Schlining
  * @since 2019-05-14T14:47:00
  */
 public class AppConfig extends ServiceConfig  {
-
-
 
     public static class ServiceParams {
         private final String endpoint;
@@ -45,12 +45,9 @@ public class AppConfig extends ServiceConfig  {
     }
 
 
-
     public AppConfig(Config config) {
         super(config);
     }
-
-
 
     public int getSharktopodaDefaultsControlPort() {
         return read("sharktopoda.defaults.control.port", config::getInt, 8800);

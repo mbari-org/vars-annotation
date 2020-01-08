@@ -13,5 +13,7 @@ open module org.mbari.vars.ui.demos {
   requires org.mbari.vars.core;
   requires org.mbari.vars.services;
   requires org.slf4j;
+  requires vcr4j.core;
+  requires io.reactivex.rxjava2;
 
 }
