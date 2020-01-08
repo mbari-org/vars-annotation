@@ -1,22 +1,23 @@
 module org.mbari.vars.services {
+
   requires com.github.benmanes.caffeine;
   requires com.google.common;
+  requires com.google.gson;
   requires com.google.guice;
   requires gson.javatime.serialisers;
-  requires com.google.gson;
   requires io.reactivex.rxjava2;
+  requires com.fasterxml.jackson.databind; // required by java-jwt
   requires java.desktop;
   requires java.jwt;
   requires java.prefs;
   requires java.sql;
   requires javax.inject;
-//  requires jsr305;
   requires okhttp3.logging;
   requires okhttp3;
   requires org.mbari.vars.core;
+  requires org.slf4j;
   requires retrofit2.converter.gson;
   requires retrofit2;
-  requires org.slf4j;
   requires typesafe.config;
   requires vcr4j.core;
 

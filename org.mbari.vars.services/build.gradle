@@ -15,9 +15,9 @@ dependencies {
     implementation project(':org.mbari.vars.core')
 
     implementation 'com.auth0:java-jwt'
+    implementation 'com.fasterxml.jackson.core:jackson-databind' // used java-jwt
     implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers'
     implementation 'com.google.code.gson:gson'
-//    implementation 'com.google.inject:guice'
     implementation 'com.squareup.okhttp3:logging-interceptor'
     implementation 'com.squareup.retrofit2:converter-gson'
     implementation 'com.squareup.retrofit2:retrofit'

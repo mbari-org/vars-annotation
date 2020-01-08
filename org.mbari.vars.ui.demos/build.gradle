@@ -8,7 +8,7 @@ dependencies {
     implementation project(':org.mbari.vars.ui')
     implementation project(':org.mbari.vars.core')
 
-    implementation 'com.google.guava:guava'
+
     implementation 'com.google.inject:guice'
     implementation 'com.jfoenix:jfoenix'
     implementation 'com.typesafe:config'
@@ -33,9 +33,6 @@ dependencies {
         exclude group: 'org.openjfx'
     }
 
-//    runtimeOnly('ch.qos.logback:logback-classic') {
-//        exclude group: 'javax.activation'
-//    }
     runtimeOnly 'javax.servlet:javax.servlet-api'
     runtimeOnly 'org.slf4j:slf4j-jdk14'
 }
