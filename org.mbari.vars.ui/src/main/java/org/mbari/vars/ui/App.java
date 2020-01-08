@@ -116,10 +116,14 @@ public class App extends Application {
         primaryStage.show();
     }
 
-    private static void setupLogging() throws IOException {
+    private static void setupLogging() {
         // COnfigure JDK logging
         try (InputStream is = App.class.getResourceAsStream("/logging.properties")) {
             LogManager.getLogManager().readConfiguration(is);
+        }
+        catch (Exception e){
+            System.err.println("Failed to initialize logging: " +
+                    e.getClass() + " -> " + e.getLocalizedMessage());
         }
 
         // Create directory to write logs to

@@ -19,6 +19,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,7 +35,7 @@ public class AnnoServiceTest {
     AnnotationService annoService = TestToolbox.getServices().getAnnotationService();
     Duration timeout = Duration.ofMillis(15000);
 
-    private final UUID uuid = UUID.fromString("ccbe1c1b-100d-41ab-87ac-7e48d57c8278");
+    private final UUID uuid = UUID.fromString("c101ecb4-d22d-4f5c-aa9f-1d1048643086");
     private final UUID tempUuid = UUID.randomUUID();
 
     @Test
@@ -63,7 +64,7 @@ public class AnnoServiceTest {
         Optional<AnnotationCount> c0 = await(f0, timeout);
         assertTrue("Expected a count, but nothing was returned", c0.isPresent());
         AnnotationCount i = c0.get();
-        assertTrue("Expected 77 but found " + i, i.getCount() == 77);
+        assertEquals(786, i.getCount().intValue());
     }
 
     @Test
@@ -105,7 +106,9 @@ public class AnnoServiceTest {
         }
         assertEquals("Concept was not as expected", a0.getConcept(), a1.getConcept());
         assertEquals("Observer was not as expected", a0.getObserver(), a1.getObserver());
-        assertEquals("RecordedTimestamp was not as expected", a0.getRecordedTimestamp(), a1.getRecordedTimestamp());
+        var ats = a0.getRecordedTimestamp().truncatedTo(ChronoUnit.MILLIS);
+        var bts = a1.getRecordedTimestamp().truncatedTo(ChronoUnit.MILLIS);
+        assertEquals("RecordedTimestamp was not as expected", ats, bts);
         assertNotEquals("ObservationTimestamp were equal ... not OK", a0.getObservationTimestamp(), a1.getObservationTimestamp());
         assertEquals("Activity were not equal", a0.getActivity(), a1.getActivity());
         assertEquals("Group was not equal", a0.getGroup(), a1.getGroup());
@@ -191,7 +194,8 @@ public class AnnoServiceTest {
         assertTrue("Image is missing", imgOpt0.isPresent());
         Image img0 = imgOpt0.get();
         assertEquals(image.getVideoReferenceUuid(), img0.getVideoReferenceUuid());
-        assertEquals(image.getRecordedTimestamp(), img0.getRecordedTimestamp());
+        var roundedTimestamp = image.getRecordedTimestamp().truncatedTo(ChronoUnit.MILLIS);
+        assertEquals(roundedTimestamp, img0.getRecordedTimestamp());
         assertEquals(image.getUrl(), img0.getUrl());
 
         // --- 3. Delete Image

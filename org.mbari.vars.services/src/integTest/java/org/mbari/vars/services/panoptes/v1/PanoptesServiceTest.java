@@ -28,7 +28,7 @@ public class PanoptesServiceTest {
 
     @Test
     public void testUpload() {
-        URL imageUrl = getClass().getResource("/images/00_02_25_20.png");
+        URL imageUrl = getClass().getResource("/images/20191120T221422Z--be9152f9-cb21-4d4f-8b40-00085ebba626.jpg");
         File imageFile = URLUtilities.toFile(imageUrl);
         CompletableFuture<ImageUploadResults> f = service.upload("i2MAP", "9999",
                 "00_02_25_20.png", imageFile.toPath());
