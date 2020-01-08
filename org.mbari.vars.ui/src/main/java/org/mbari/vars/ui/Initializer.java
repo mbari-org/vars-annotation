@@ -17,6 +17,9 @@ import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 
 /**
+ * JPMS didn't play well with dependency injection via Guice. I ripped it out
+ * and am using this static intializer class to wire together all the services
+ * and factories.
  * @author Brian Schlining
  * @since 2017-05-15T10:52:00
  */

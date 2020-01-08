@@ -18,6 +18,9 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 
 /**
+ * One-stop shop for Shared resources that are used throughout the VARS
+ * Annotation application.
+ *
  * @author Brian Schlining
  * @since 2017-06-10T12:06:00
  */

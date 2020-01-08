@@ -12,9 +12,7 @@ import org.mbari.vcr4j.time.Timecode;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -88,12 +86,16 @@ public class CopyAnnotationsCmd implements Command {
                 .getAnnotationService()
                 .createAnnotations(copiedAnnotations)
                 .thenAccept(annos -> {
+
+                    // Filter out any that already exist in the table
+                    List<Annotation> newAnnos = filterPrexisting(toolBox, annos);
+
                     copiedAnnotations.clear();
-                    copiedAnnotations.addAll(annos);
+                    copiedAnnotations.addAll(newAnnos);
                     toolBox.getEventBus()
-                           .send(new AnnotationsAddedEvent(copiedAnnotations));
+                           .send(new AnnotationsAddedEvent(newAnnos));
                     toolBox.getEventBus()
-                           .send(new AnnotationsSelectedEvent(copiedAnnotations));
+                           .send(new AnnotationsSelectedEvent(newAnnos));
                 });
 
     }
@@ -112,6 +114,17 @@ public class CopyAnnotationsCmd implements Command {
                             .send(new AnnotationsRemovedEvent(copiedAnnotations));
                     copiedAnnotations.forEach(a -> a.setImagedMomentUuid(null));
                 });
+    }
+
+    private List<Annotation> filterPrexisting(UIToolBox toolBox, Collection<Annotation> annotations) {
+        List<Annotation> existingAnnotations = new ArrayList<>(toolBox.getData().getAnnotations());
+        List<Annotation> newAnnotations = new ArrayList<>();
+        for (Annotation a: annotations) {
+            if (!existingAnnotations.contains(a)) {
+                newAnnotations.add(a);
+            }
+        }
+        return newAnnotations;
     }
 
     @Override

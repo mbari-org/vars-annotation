@@ -25,7 +25,6 @@ public class DuplicateAnnotationBC extends AbstractBC {
 
     protected void init() {
         String tooltip = toolBox.getI18nBundle().getString("buttons.duplicate");
-//        Text icon = iconFactory.createIcon(MaterialIcon.FLIP_TO_BACK, "30px");
         Text icon = Icons.FLIP_TO_BACK.standardSize();
         initializeButton(tooltip, icon);
 

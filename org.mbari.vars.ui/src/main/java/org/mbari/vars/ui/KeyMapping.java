@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
+ * Defines the key mappings that are registered on the main window (javafx Scene)
  * @author Brian Schlining
  * @since 2019-04-18T17:19:00
  */
