@@ -87,7 +87,8 @@ public class CopyAnnotationsCmd implements Command {
                 .createAnnotations(copiedAnnotations)
                 .thenAccept(annos -> {
 
-                    // M3-52: Filter out any that already exist in the table
+                    // M3-52: Filter out any that already exist in the table.
+                    // This only occurs when copying to same index
                     List<Annotation> newAnnos = filterPrexisting(toolBox, annos);
 
                     copiedAnnotations.clear();

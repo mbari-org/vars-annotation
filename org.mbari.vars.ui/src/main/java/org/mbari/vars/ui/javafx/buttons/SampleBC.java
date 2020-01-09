@@ -1,7 +1,6 @@
 package org.mbari.vars.ui.javafx.buttons;
 
 import com.jfoenix.controls.JFXComboBox;
-import com.typesafe.config.Config;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -18,15 +17,20 @@ import org.mbari.vars.services.model.Association;
 import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
 import org.mbari.vars.ui.messages.ShowExceptionAlert;
 import org.mbari.vars.ui.messages.ShowWarningAlert;
+import org.mbari.vars.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 /**
+ * Button Controller for adding a sample to an annotation. A sample has
+ * 2 associations, one for the sampler, the other for the sample id.
  * @author Brian Schlining
  * @since 2017-09-11T08:57:00
  */
@@ -48,7 +52,6 @@ public class SampleBC extends AbstractBC {
     public void init() {
         ResourceBundle i18n = toolBox.getI18nBundle();
         String tooltip = i18n.getString("buttons.sample");
-//        Text icon = iconFactory.createIcon(MaterialIcon.ADD_SHOPPING_CART, "30px");
         Text icon = Icons.ADD_SHOPPING_CART.standardSize();
         initializeButton(tooltip, icon);
     }
@@ -94,7 +97,6 @@ public class SampleBC extends AbstractBC {
     }
 
     private void createAssociation(String sampleBy, String sampleId) {
-        Config config = toolBox.getConfig();
         String assNameEquipment = toolBox.getAppConfig()
                 .getAppAnnotationSampleAssociationEquipment();
         Association a1 = new Association(assNameEquipment, sampleBy, Association.VALUE_NIL);
@@ -142,26 +144,53 @@ public class SampleBC extends AbstractBC {
             String content = i18n.getString("buttons.sample.warning.content");
 
             // TODO listen for cache reset to clear and repopulate dialog
-            toolBox.getServices()
-                    .getConceptService()
-                    .findConcept(defaultSampleConcept)
-                    .handle((opt, ex) -> {
-                        if (ex instanceof Exception) {
-                            toolBox.getEventBus()
-                                    .send(new ShowExceptionAlert(title, header, content, (Exception) ex));
-                        }
-                        else if (opt.isEmpty()) {
-                            toolBox.getEventBus()
-                                    .send(new ShowWarningAlert(title, header, content));
-                        }
-                        else {
-                            List<String> samplers = opt.get().flatten();
-                            new FilteredComboBoxDecorator<>(comboBox, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
-                            comboBox.setItems(FXCollections.observableArrayList(samplers));
-                            comboBox.getSelectionModel().select(defaultSampleConcept);
-                        }
-                        return null;
+            Duration timeout = toolBox.getAppConfig().getConceptServiceParamsV1().getTimeout();
+
+            // M3-10: Async _might_ be the cause of this. Trying sync instead
+            try {
+                var opt = toolBox.getServices()
+                        .getConceptService()
+                        .findConcept(defaultSampleConcept)
+                        .get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+                if (opt.isPresent()) {
+                    var samplers = opt.get().flatten();
+                    JFXUtilities.runOnFXThread(() -> {
+                        new FilteredComboBoxDecorator<>(comboBox, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
+                        comboBox.setItems(FXCollections.observableArrayList(samplers));
+                        comboBox.getSelectionModel().select(defaultSampleConcept);
                     });
+                }
+                else {
+                    toolBox.getEventBus()
+                            .send(new ShowWarningAlert(title, header, content));
+                }
+            }
+            catch (Exception e) {
+                toolBox.getEventBus()
+                        .send(new ShowExceptionAlert(title, header, content, e));
+            }
+//            toolBox.getServices()
+//                    .getConceptService()
+//                    .findConcept(defaultSampleConcept)
+//                    .handle((opt, ex) -> {
+//                        if (ex instanceof Exception) {
+//                            toolBox.getEventBus()
+//                                    .send(new ShowExceptionAlert(title, header, content, (Exception) ex));
+//                        }
+//                        else if (opt.isEmpty()) {
+//                            toolBox.getEventBus()
+//                                    .send(new ShowWarningAlert(title, header, content));
+//                        }
+//                        else {
+//                            List<String> samplers = opt.get().flatten();
+//                            JFXUtilities.runOnFXThread(() -> {
+//                                new FilteredComboBoxDecorator<>(comboBox, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
+//                                comboBox.setItems(FXCollections.observableArrayList(samplers));
+//                                comboBox.getSelectionModel().select(defaultSampleConcept);
+//                            });
+//                        }
+//                        return null;
+//                    });
 
         }
         return dialogPane;
