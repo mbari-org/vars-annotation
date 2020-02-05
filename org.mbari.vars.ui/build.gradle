@@ -6,10 +6,8 @@ plugins {
 
 dependencies {
     implementation project(':org.mbari.vars.core')
-//    compile project(':org.mbari.vars.javafx')
     implementation project(':org.mbari.vars.services')
 
-//    implementation 'com.google.inject:guice'
     implementation 'com.jfoenix:jfoenix'
     implementation 'com.typesafe:config'
     implementation 'io.reactivex.rxjava2:rxjava'
@@ -50,7 +48,10 @@ dependencies {
 //        exclude group: 'javax.activation'
 //    }
     runtimeOnly 'javax.servlet:javax.servlet-api'
+
+    // For command line comment out runtime and add implementation so we see log output.
     runtimeOnly 'org.slf4j:slf4j-jdk14'
+//    implementation 'org.slf4j:slf4j-jdk14'
 //    runtimeOnly 'com.fazecast:jSerialComm'
 }
 

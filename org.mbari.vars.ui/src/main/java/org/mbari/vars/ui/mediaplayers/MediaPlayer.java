@@ -7,6 +7,7 @@ import org.mbari.vcr4j.VideoIO;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.commands.VideoCommands;
+import org.mbari.vcr4j.time.Timecode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +69,12 @@ public class MediaPlayer<S extends VideoState, E extends VideoError> extends org
         getVideoIO().getIndexObservable()
                 .take(1)
                 .forEach(future::complete);
+//                .forEach(i -> {
+//                    System.out.println("INDEX: " +
+//                            i.getTimecode().orElseGet(() -> Timecode.zero()));
+//                    future.complete(i);
+//                });
+
         getVideoIO().send(VideoCommands.REQUEST_INDEX);
         return future;
     }
