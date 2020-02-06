@@ -29,14 +29,11 @@ subprojects {
         mavenCentral()
         mavenLocal()
         maven {
-            url 'http://repo1.maven.org/maven2'
+            url 'https://repo1.maven.org/maven2'
         }
         maven {
             url 'https://dl.bintray.com/org-mbari/maven'
         }
-//        maven {
-//            url 'https://dl.bintray.com/hohonuuli/maven'
-//        }
         maven {
             url 'https://dl.bintray.com/jerady/maven'
         }
