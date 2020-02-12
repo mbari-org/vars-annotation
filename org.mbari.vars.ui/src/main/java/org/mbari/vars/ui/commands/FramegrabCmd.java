@@ -7,6 +7,7 @@ import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
 import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.ui.messages.ShowAlert;
+import org.mbari.vars.ui.messages.ShowExceptionAlert;
 import org.mbari.vars.ui.messages.ShowWarningAlert;
 import org.mbari.vars.services.model.*;
 import org.mbari.vars.services.AnnotationService;
@@ -185,11 +186,14 @@ public class FramegrabCmd implements Command {
                     .whenComplete((opt, throwable) -> {
                         // refresh whether is succeeds or fails
                         boolean deleteImage = false;
+                        ResourceBundle i18n = toolBox.getI18nBundle();
                         if (pngImageRef == null) {
-                            showWarningAlert(toolBox, "Framegrab capture failed");
+                            String msg = i18n.getString("commands.framecapture.fail.noimage");
+                            showWarningAlert(toolBox, msg, throwable);
                         }
                         else if (pngImageRef != null && annotationRef == null) {
-                            showWarningAlert(toolBox, "Failed to create an annotation for the framegrab");
+                            String msg = i18n.getString("commands.framecapture.faile.noannotation");
+                            showWarningAlert(toolBox, msg, throwable);
                             deleteImage = true;
                         }
                         decorator.refreshRelatedAnnotations(pngImageRef.getImageReferenceUuid(), deleteImage);
@@ -199,14 +203,20 @@ public class FramegrabCmd implements Command {
         }
     }
 
-
-
     private void showWarningAlert(UIToolBox toolBox, String content) {
+        showWarningAlert(toolBox, content, null);
+    }
+
+
+    private void showWarningAlert(UIToolBox toolBox, String content, Throwable throwable) {
         ResourceBundle i18n = toolBox.getI18nBundle();
         String title = i18n.getString("commands.framecapture.title");
         String header = i18n.getString("commands.framecapture.header");
         EventBus eventBus = toolBox.getEventBus();
-        ShowAlert alert = new ShowWarningAlert(title, header, content);
+        
+        ShowAlert alert = (throwable == null) ? 
+            new ShowWarningAlert(title, header, content) :
+            new ShowExceptionAlert(title, header, content, new RuntimeException(content, throwable));
         eventBus.send(alert);
     }
 
