@@ -1,17 +1,18 @@
 module org.mbari.vars.ui {
 
+  requires com.fazecast.jSerialComm;
   requires com.google.common;
+  requires com.google.gson;
   requires com.google.guice;
   requires com.jfoenix;
-  requires com.google.gson;
   requires io.reactivex.rxjava2;
   requires java.desktop;
+  requires java.logging;
   requires java.prefs;
   requires javafx.controls;
   requires javafx.fxml;
   requires javafx.graphics;
   requires javax.inject;
-  requires com.fazecast.jSerialComm;
   requires mbarix4j;
   requires org.controlsfx.controls;
   requires org.kordamp.iconli.core;
@@ -28,7 +29,6 @@ module org.mbari.vars.ui {
   requires vcr4j.jserialcomm;
   requires vcr4j.rs422;
   requires vcr4j.sharktopoda;
-  requires java.logging;
 
   uses org.mbari.vars.ui.mediaplayers.MediaControlsFactory;
 
@@ -37,7 +37,6 @@ module org.mbari.vars.ui {
       org.mbari.vars.ui.mediaplayers.sharktopoda.MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.ships.MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.vcr.MediaControlsFactoryImpl;
-
 
   opens org.mbari.vars.ui to javafx.graphics;
   opens org.mbari.vars.ui.javafx to javafx.fxml;
