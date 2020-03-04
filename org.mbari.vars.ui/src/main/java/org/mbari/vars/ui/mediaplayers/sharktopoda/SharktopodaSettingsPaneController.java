@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
+import org.mbari.vars.ui.AppConfig;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.ui.javafx.prefs.IPrefs;
@@ -60,8 +61,9 @@ public class SharktopodaSettingsPaneController implements IPrefs {
      */
     public static Pair<Integer, Integer> getPortNumbers() {
         Preferences prefs = Preferences.userNodeForPackage(SharktopodaSettingsPaneController.class);
-        int dSharkPort = Initializer.getConfig().getInt("sharktopoda.defaults.control.port");
-        int dFgPort = Initializer.getConfig().getInt("sharktopoda.defaults.framegrab.port");
+        AppConfig appConfig = Initializer.getToolBox().getAppConfig();
+        int dSharkPort = appConfig.getSharktopodaDefaultsControlPort();
+        int dFgPort = appConfig.getSharktopodaDefaultsFramegrabPort();
 
         try {
             int cport = prefs.getInt(CONTROL_PORT_KEY, dSharkPort);
@@ -86,8 +88,9 @@ public class SharktopodaSettingsPaneController implements IPrefs {
 
     @Override
     public void load() {
-        int dSharkPort = Initializer.getConfig().getInt("sharktopoda.defaults.control.port");
-        int dFgPort = Initializer.getConfig().getInt("sharktopoda.defaults.framegrab.port");
+        AppConfig appConfig = Initializer.getToolBox().getAppConfig();
+        int dSharkPort = appConfig.getSharktopodaDefaultsControlPort();
+        int dFgPort = appConfig.getSharktopodaDefaultsFramegrabPort();
 
         int sharkPort = prefs.getInt(CONTROL_PORT_KEY, dSharkPort);
         int fgPort = prefs.getInt(FRAMEGRAB_PORT_KEY, dFgPort);
@@ -97,10 +100,11 @@ public class SharktopodaSettingsPaneController implements IPrefs {
 
     @Override
     public void save() {
-        Config config = Initializer.getConfig();
+
+        AppConfig appConfig = Initializer.getToolBox().getAppConfig();
+        int sharkPort = appConfig.getSharktopodaDefaultsControlPort();
+        int fgPort = appConfig.getSharktopodaDefaultsFramegrabPort();
         ResourceBundle i18n = Initializer.getToolBox().getI18nBundle();
-        int sharkPort = config.getInt("sharktopoda.defaults.control.port");
-        int fgPort = config.getInt("sharktopoda.defaults.framegrab.port");
 
         try {
             sharkPort = Integer.parseInt(controlPortTextField.getText());

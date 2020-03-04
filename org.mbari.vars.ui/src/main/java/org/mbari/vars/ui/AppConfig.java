@@ -57,6 +57,23 @@ public class AppConfig extends ServiceConfig  {
         return read("sharktopoda.defaults.framegrab.port", config::getInt, 5000);
     }
 
+    public int getLocalizationDefaultsIncomingPort() {
+        return read("localization.defaults.incoming.port", config::getInt, 5561);
+    }
+
+    public String getLocalizationDefaultsIncomingTopic() {
+        return read("localization.defaults.incoming.topic", config::getString, "localization");
+    }
+
+    public int getLocalizationDefaultsOutgoingPort() {
+        return read("localization.defaults.outgoing.port", config::getInt, 5562);
+    }
+
+    public String getLocalizationDefaultsOutgoingTopic() {
+        return read("localization.defaults.outgoing.topic", config::getString, "localization");
+    }
+
+
     public List<String> getAppAnnotationSampleLinknames() {
         return read("app.annotation.sample.linknames", config::getStringList, Collections.emptyList());
     }

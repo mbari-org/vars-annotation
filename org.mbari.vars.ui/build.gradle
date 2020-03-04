@@ -17,6 +17,7 @@ dependencies {
     implementation 'org.mbari.vcr4j:vcr4j-core'
     implementation 'org.mbari.vcr4j:vcr4j-jserialcomm'
     implementation 'org.mbari.vcr4j:vcr4j-sharktopoda'
+    implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client'
     implementation 'org.mbari:mbarix4j'
     implementation 'org.slf4j:slf4j-api'
 
