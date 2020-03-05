@@ -15,7 +15,7 @@
         </filter>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 <!--             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %p %c - %m%n</pattern>-->
-            <pattern>%gray(%d{yyyy-MM-dd HH:mm:ss}) %highlight(%p) %blue(%c) [%green(%t)] %m%n</pattern>
+            <pattern>%gray(%d{yyyy-MM-dd HH:mm:ss}) [%green(%-32t)] %highlight(%-5p) %blue(%-50c{50})  %m%n</pattern>
         </encoder>
     </appender>
 
