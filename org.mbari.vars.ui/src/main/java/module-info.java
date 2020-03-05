@@ -41,6 +41,7 @@ module org.mbari.vars.ui {
   opens org.mbari.vars.ui to javafx.graphics;
   opens org.mbari.vars.ui.javafx to javafx.fxml;
   opens org.mbari.vars.ui.javafx.abpanel to javafx.fxml;
+  opens org.mbari.vars.ui.javafx.localization to javafx.fxml;
   opens org.mbari.vars.ui.javafx.mediadialog to javafx.fxml;
   opens org.mbari.vars.ui.javafx.rectlabel to javafx.fxml;
   opens org.mbari.vars.ui.javafx.roweditor to javafx.fxml;
@@ -51,19 +52,20 @@ module org.mbari.vars.ui {
   opens org.mbari.vars.ui.mediaplayers.ships to javafx.fxml;
   opens org.mbari.vars.ui.mediaplayers.vcr to javafx.fxml;
 
-  exports org.mbari.vars.ui;
   exports org.mbari.vars.ui.commands;
   exports org.mbari.vars.ui.events;
-  exports org.mbari.vars.ui.javafx;
   exports org.mbari.vars.ui.javafx.annotable;
   exports org.mbari.vars.ui.javafx.cbpanel;
   exports org.mbari.vars.ui.javafx.concepttree;
+  exports org.mbari.vars.ui.javafx.localization;
   exports org.mbari.vars.ui.javafx.mediadialog;
   exports org.mbari.vars.ui.javafx.rectlabel;
   exports org.mbari.vars.ui.javafx.roweditor;
   exports org.mbari.vars.ui.javafx.shared;
-  exports org.mbari.vars.ui.messages;
-  exports org.mbari.vars.ui.services;
+  exports org.mbari.vars.ui.javafx;
   exports org.mbari.vars.ui.mediaplayers.sharktopoda;
   exports org.mbari.vars.ui.mediaplayers.ships;
+  exports org.mbari.vars.ui.messages;
+  exports org.mbari.vars.ui.services;
+  exports org.mbari.vars.ui;
 }

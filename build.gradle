@@ -64,7 +64,7 @@ subprojects {
             implementation 'com.google.inject:guice:4.2.2'
             implementation 'com.jfoenix:jfoenix:9.0.9'
             implementation 'com.squareup.okhttp3:logging-interceptor:3.14.4'
-            implementation 'com.squareup.retrofit2:converter-gson:2.7.2'
+            implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
             implementation 'com.squareup.retrofit2:retrofit:2.7.2'
             implementation 'com.sun.activation:javax.activation:1.2.0'
             implementation 'com.typesafe:config:1.4.0'
