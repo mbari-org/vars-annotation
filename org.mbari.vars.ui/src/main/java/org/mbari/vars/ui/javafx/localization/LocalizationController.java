@@ -16,12 +16,15 @@ public class LocalizationController {
         this.eventBus = eventBus;
         eventBus.toObserverable()
                 .ofType(AnnotationsAddedEvent.class)
+                .filter(evt -> evt.getEventSource() != this)
                 .subscribe(this::handleAdded);
         eventBus.toObserverable()
                 .ofType(AnnotationsRemovedEvent.class)
+                .filter(evt -> evt.getEventSource() != this)
                 .subscribe(this::handleRemoved);
         eventBus.toObserverable()
                 .ofType(AnnotationsChangedEvent.class)
+                .filter(evt -> evt.getEventSource() != this)
                 .subscribe(this::handleChanged);
     }
 

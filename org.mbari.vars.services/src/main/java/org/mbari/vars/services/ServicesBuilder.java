@@ -73,9 +73,9 @@ public class ServicesBuilder {
         new AnnoWebServiceFactory(params.getEndpoint(), params.getTimeout());
     AuthService authService =
         new BasicJWTAuthService(factory, new Authorization("APIKEY", params.getClientSecret()));
-    AnnoWebServiceFactory serviceFactory =
-        new AnnoWebServiceFactory(params.getEndpoint(), params.getTimeout());
-    return new AnnoService(serviceFactory, authService);
+    // AnnoWebServiceFactory serviceFactory =
+    //     new AnnoWebServiceFactory(params.getEndpoint(), params.getTimeout());
+    return new AnnoService(factory, authService);
   }
 
   private AnnoServiceV2 buildAnnotationV2Service() {
