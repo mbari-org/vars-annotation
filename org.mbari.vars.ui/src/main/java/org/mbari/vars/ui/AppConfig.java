@@ -57,8 +57,12 @@ public class AppConfig extends ServiceConfig  {
         return read("sharktopoda.defaults.framegrab.port", config::getInt, 5000);
     }
 
+    public String getLocalizationPaneTitle() {
+        return read("localization.pane.title", config::getString, "Localization Settings");
+    }
+
     public int getLocalizationDefaultsIncomingPort() {
-        return read("localization.defaults.incoming.port", config::getInt, 5561);
+        return read("localization.defaults.incoming.port", config::getInt, 5562);
     }
 
     public String getLocalizationDefaultsIncomingTopic() {
@@ -66,7 +70,7 @@ public class AppConfig extends ServiceConfig  {
     }
 
     public int getLocalizationDefaultsOutgoingPort() {
-        return read("localization.defaults.outgoing.port", config::getInt, 5562);
+        return read("localization.defaults.outgoing.port", config::getInt, 5561);
     }
 
     public String getLocalizationDefaultsOutgoingTopic() {

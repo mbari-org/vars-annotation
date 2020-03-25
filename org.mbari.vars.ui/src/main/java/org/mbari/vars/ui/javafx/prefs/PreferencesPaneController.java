@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXTabPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.javafx.localization.LocalizationSettingsPaneController;
 import org.mbari.vars.ui.mediaplayers.MediaPlayers;
 import org.mbari.vars.ui.mediaplayers.SettingsPane;
 
@@ -29,9 +30,19 @@ public class PreferencesPaneController implements IPrefs {
         if (root == null) {
             root = new JFXTabPane();
             root.setPrefSize(600, 600);
+            loadLocalizationSettingsPane();
             loadMediaControlsSettingsPanes();
         }
         return root;
+    }
+
+    private void loadLocalizationSettingsPane() {
+        LocalizationSettingsPaneController controller = LocalizationSettingsPaneController.newInstance(toolBox);
+        Tab tab = new Tab(controller.getName());
+        tab.setClosable(false);
+        tab.setContent(controller.getRoot());
+        root.getTabs().add(tab);
+        prefs.add(controller);
     }
 
     private void loadMediaControlsSettingsPanes() {

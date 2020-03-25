@@ -2,12 +2,13 @@
 
 <?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="org.mbari.vars.ui.javafx.localization.LocalizationSettingsPaneController">
+<GridPane fx:id="root" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="10.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.javafx.localization.LocalizationSettingsPaneController">
   <columnConstraints>
     <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -23,7 +24,7 @@
    <children>
       <Label text="%localization.pref.content" GridPane.columnSpan="2147483647" GridPane.vgrow="NEVER" />
       <Label text="%localization.pref.in.port" GridPane.rowIndex="2" GridPane.vgrow="NEVER" />
-      <Label text="localization.pref.out.port" GridPane.rowIndex="3" GridPane.vgrow="NEVER" />
+      <Label text="%localization.pref.out.port" GridPane.rowIndex="3" GridPane.vgrow="NEVER" />
       <JFXTextField fx:id="incomingPortTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.vgrow="NEVER" />
       <JFXTextField fx:id="outgoingPortTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.vgrow="NEVER" />
       <JFXTextField fx:id="incomingTopicTextField" minWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="2" GridPane.vgrow="NEVER" />
@@ -32,4 +33,7 @@
       <Label text="%localization.pref.out.topic" GridPane.columnIndex="2" GridPane.rowIndex="3" GridPane.vgrow="NEVER" />
       <JFXCheckBox fx:id="enabledCheckBox" text="%localization.pref.enabled" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.vgrow="NEVER" />
    </children>
+   <padding>
+      <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+   </padding>
 </GridPane>

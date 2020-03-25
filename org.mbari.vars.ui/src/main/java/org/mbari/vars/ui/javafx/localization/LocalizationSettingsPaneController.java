@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.layout.GridPane;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.AppConfig;
 import org.mbari.vars.ui.UIToolBox;
@@ -20,6 +21,9 @@ import java.util.prefs.Preferences;
  * @since 2020-03-03T15:22:00
  */
 public class LocalizationSettingsPaneController implements IPrefs {
+
+    @FXML
+    private GridPane root;
 
     @FXML
     private JFXTextField incomingPortTextField;
@@ -77,8 +81,14 @@ public class LocalizationSettingsPaneController implements IPrefs {
         incomingPortTextField.setTextFormatter(textFormatter1);
         outgoingPortTextField.setTextFormatter(textFormatter2);
 
-        load();
+    }
 
+    public GridPane getRoot() {
+        return root;
+    }
+
+    public String getName() {
+        return toolBox.getAppConfig().getLocalizationPaneTitle();
     }
 
     @Override
