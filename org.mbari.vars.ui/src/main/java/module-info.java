@@ -38,7 +38,6 @@ module org.mbari.vars.ui {
       org.mbari.vars.ui.mediaplayers.ships.MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.vcr.MediaControlsFactoryImpl;
 
-
   opens org.mbari.vars.ui to javafx.graphics;
   opens org.mbari.vars.ui.javafx to javafx.fxml;
   opens org.mbari.vars.ui.javafx.abpanel to javafx.fxml;
