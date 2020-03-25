@@ -143,7 +143,7 @@ jlink {
             '--strip-debug',
             '--compress', '2',
             '--no-header-files',
-            '--no-man-pages',
+            '--no-man-pages'
     ]
 
     if(System.getenv("CI")) {
@@ -161,12 +161,14 @@ jlink {
     }
 
     jpackage {
-        jpackageHome = System.getenv("JPACKAGE_HOME")
+        // jpackageHome = System.getenv("JPACKAGE_HOME")
+        jpackageHome = "C:\\Program Files\\AdoptOpenJDK\\jdk-14.0.0.36-hotspot"
 
         def customInstallerOptions = [
-                "--copyright", "Monterey Bay Aquarium Research Institute",
-                "--vendor", "org.mbari",
-                "--app-version", project.version
+                "--app-version", project.version,
+                "--copyright", "Monterey Bay Aquarium Research Institute 2020",
+                "--name", "VARS Annotation",
+                "--vendor", "org.mbari"
         ]
 
         if  (org.gradle.internal.os.OperatingSystem.current().isLinux()) {
@@ -174,6 +176,11 @@ jlink {
         }
         else if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
             installerType = "msi"
+            customInstallerOptions.addAll([
+                "--win-upgrade-uuid", "1afa1e7b-8c54-4007-9ccb-537b61826967",
+                "--win-menu-group", "VARS",
+                "--win-menu"
+            ])
         }
         else {
             installerType = "dmg"
