@@ -161,8 +161,8 @@ jlink {
     }
 
     jpackage {
-        // jpackageHome = System.getenv("JPACKAGE_HOME")
-        jpackageHome = "C:\\Program Files\\AdoptOpenJDK\\jdk-14.0.0.36-hotspot"
+        jpackageHome = System.getenv("JPACKAGE_HOME")
+        // jpackageHome = "C:\\Program Files\\AdoptOpenJDK\\jdk-14.0.0.36-hotspot"
 
         def customInstallerOptions = [
                 "--app-version", project.version,
