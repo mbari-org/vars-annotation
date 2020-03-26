@@ -47,7 +47,9 @@ public class DetachFramegrabsBC extends AbstractBC {
 
     private void checkEnable(Collection<Annotation> selectedAnnotations) {
         User user = toolBox.getData().getUser();
-        boolean enable = user != null && selectedAnnotations
+        boolean enable = user != null && 
+            selectedAnnotations != null && 
+            selectedAnnotations
                 .stream()
                 .anyMatch(a -> !a.getImages().isEmpty());
         JFXUtilities.runOnFXThread(() -> button.setDisable(!enable));
@@ -55,13 +57,7 @@ public class DetachFramegrabsBC extends AbstractBC {
 
     @Override
     protected void checkEnable() {
-        User user = toolBox.getData().getUser();
-        boolean enable = user != null && toolBox.getData()
-                .getSelectedAnnotations()
-                .stream()
-                .anyMatch(a -> !a.getImages().isEmpty());
-        JFXUtilities.runOnFXThread(() -> button.setDisable(!enable));
-
+        checkEnable(toolBox.getData().getSelectedAnnotations());
     }
 
     @Override
