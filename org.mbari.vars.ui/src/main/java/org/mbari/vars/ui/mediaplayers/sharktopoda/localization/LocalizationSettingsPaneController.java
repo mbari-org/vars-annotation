@@ -7,6 +7,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.model.Media;
+import org.mbari.vars.ui.App;
 import org.mbari.vars.ui.AppConfig;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.events.MediaChangedEvent;
@@ -96,22 +97,17 @@ public class LocalizationSettingsPaneController implements IPrefs {
         return toolBox.getAppConfig().getLocalizationPaneTitle();
     }
 
-    private LocalizationSettings loadSettings() {
-        AppConfig appConfig = toolBox.getAppConfig();
-        LocalizationSettings defaultSettings = new LocalizationSettings(appConfig);
-        return LocalizationPrefs.load(defaultSettings);
-    }
 
     @Override
     public void load() {
-        updateUIFromSettings(loadSettings());
+        updateUIFromSettings(LocalizationPrefs.load(toolBox.getAppConfig()));
     }
 
 
     @Override
     public void save() {
         settingsFromUI().ifPresent(newSettings -> {
-            LocalizationSettings oldSettings = loadSettings();
+            LocalizationSettings oldSettings = LocalizationPrefs.load(toolBox.getAppConfig());
             if (!Objects.equals(newSettings, oldSettings)) {
                 LocalizationPrefs.save(newSettings);
 

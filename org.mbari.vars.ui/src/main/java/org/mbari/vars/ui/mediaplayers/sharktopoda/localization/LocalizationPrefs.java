@@ -1,10 +1,12 @@
 package org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
 
+import org.mbari.vars.ui.AppConfig;
+
 import java.util.prefs.Preferences;
 
 /**
- * Saves and loads localization preferences. Default values are defined in reference.conf and
- * application.conf or passed in at the command line.
+ * Saves and loads `LocalizationSettings` from preferences. Default values are defined in
+ * reference.conf and application.conf or passed in at the command line.
  *
  * @author Brian Schlining
  * @since 2020-03-05T16:15:00
@@ -43,5 +45,15 @@ public class LocalizationPrefs {
         String outgoingTopic = prefs.get(OUT_TOPIC_KEY, settings.getOutgoingTopic());
         boolean enabled = prefs.getBoolean(ENABLED_KEY, settings.isEnabled());
         return new LocalizationSettings(incomingPort, incomingTopic, outgoingPort, outgoingTopic, enabled);
+    }
+
+    /**
+     * Loads settings from preferences, using values defined via AppConfig as defaults
+     * @param appConfig
+     * @return
+     */
+    public static LocalizationSettings load(AppConfig appConfig) {
+        LocalizationSettings defaultSettings = new LocalizationSettings(appConfig);
+        return load(defaultSettings);
     }
 }
