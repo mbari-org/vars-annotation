@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.localization;
+package org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
 
 import com.google.gson.Gson;
 import io.reactivex.disposables.Disposable;

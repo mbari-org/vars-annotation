@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.localization;
+package org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
 
 import java.util.prefs.Preferences;
 
@@ -15,6 +15,7 @@ public class LocalizationPrefs {
     private static final String IN_TOPIC_KEY = "incoming-topic";
     private static final String OUT_PORT_KEY = "outgoing-port";
     private static final String OUT_TOPIC_KEY = "outgoing-topic";
+    private static final String ENABLED_KEY = "is enabled";
 
     /**
      * Saves settings to preferences (local)
@@ -25,6 +26,7 @@ public class LocalizationPrefs {
         prefs.put(IN_TOPIC_KEY, settings.getIncomingTopic());
         prefs.putInt(OUT_PORT_KEY, settings.getOutgoingPort());
         prefs.put(OUT_TOPIC_KEY, settings.getOutgoingTopic());
+        prefs.putBoolean(ENABLED_KEY, settings.isEnabled());
     }
 
     /**
@@ -39,6 +41,7 @@ public class LocalizationPrefs {
         String incomingTopic = prefs.get(IN_TOPIC_KEY, settings.getIncomingTopic());
         int outgoingPort = prefs.getInt(OUT_PORT_KEY, settings.getOutgoingPort());
         String outgoingTopic = prefs.get(OUT_TOPIC_KEY, settings.getOutgoingTopic());
-        return new LocalizationSettings(incomingPort, incomingTopic, outgoingPort, outgoingTopic);
+        boolean enabled = prefs.getBoolean(ENABLED_KEY, settings.isEnabled());
+        return new LocalizationSettings(incomingPort, incomingTopic, outgoingPort, outgoingTopic, enabled);
     }
 }

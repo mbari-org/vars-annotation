@@ -4,7 +4,7 @@ import com.jfoenix.controls.JFXTabPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.localization.LocalizationSettingsPaneController;
+import org.mbari.vars.ui.mediaplayers.sharktopoda.localization.LocalizationSettingsPaneController;
 import org.mbari.vars.ui.mediaplayers.MediaPlayers;
 import org.mbari.vars.ui.mediaplayers.SettingsPane;
 

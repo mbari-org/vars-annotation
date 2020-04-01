@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.localization;
+package org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
 
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXTextField;
@@ -14,7 +14,6 @@ import org.mbari.vars.ui.util.FXMLUtils;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
-import java.util.prefs.Preferences;
 
 /**
  * @author Brian Schlining
@@ -49,6 +48,7 @@ public class LocalizationSettingsPaneController implements IPrefs {
         incomingTopicTextField.setText(settings.getIncomingTopic());
         outgoingPortTextField.setText(settings.getOutgoingPort() + "");
         outgoingTopicTextField.setText(settings.getOutgoingTopic());
+        enabledCheckBox.setSelected(settings.isEnabled());
     }
 
     private Optional<LocalizationSettings> settingsFromUI() {
@@ -57,7 +57,9 @@ public class LocalizationSettingsPaneController implements IPrefs {
             String incomingTopic = incomingTopicTextField.getText();
             int outgoingPort = Integer.parseInt(outgoingPortTextField.getText());
             String outgoingTopic = outgoingTopicTextField.getText();
-            LocalizationSettings settings = new LocalizationSettings(incomingPort, incomingTopic, outgoingPort, outgoingTopic);
+            boolean enabled = enabledCheckBox.isSelected();
+            LocalizationSettings settings = new LocalizationSettings(incomingPort,
+                    incomingTopic, outgoingPort, outgoingTopic, enabled);
             return Optional.of(settings);
         }
         catch (Exception e) {

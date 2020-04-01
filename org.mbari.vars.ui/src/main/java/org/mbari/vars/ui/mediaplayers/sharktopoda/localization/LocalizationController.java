@@ -1,25 +1,13 @@
-package org.mbari.vars.ui.javafx.localization;
+package org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.reactivex.disposables.Disposable;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
 import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.AnnotationsAddedEvent;
-import org.mbari.vars.ui.events.AnnotationsChangedEvent;
-import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
 import org.mbari.vcr4j.sharktopoda.client.gson.DurationConverter;
 import org.mbari.vcr4j.sharktopoda.client.localization.IO;
-import org.mbari.vcr4j.sharktopoda.client.localization.Localization;
-import org.mbari.vcr4j.sharktopoda.client.localization.Message;
 
 import java.io.Closeable;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * @author Brian Schlining

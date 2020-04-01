@@ -1,6 +1,4 @@
-package org.mbari.vars.ui.javafx.localization;
-
-import java.util.UUID;
+package org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
 
 public class BoundingBox {
     private int x;

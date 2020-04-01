@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.localization;
+package org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
 
 import org.mbari.vars.ui.AppConfig;
 import org.mbari.vcr4j.sharktopoda.client.localization.Preconditions;
@@ -15,8 +15,13 @@ public class LocalizationSettings {
     private String incomingTopic;
     private int outgoingPort;
     private String outgoingTopic;
+    private boolean enabled;
 
-    public LocalizationSettings(int incomingPort, String incomingTopic, int outgoingPort, String outgoingTopic) {
+    public LocalizationSettings(int incomingPort,
+                                String incomingTopic,
+                                int outgoingPort,
+                                String outgoingTopic,
+                                boolean enabled) {
         Preconditions.require(incomingTopic != null, "incomingTopic can not be null");
         Preconditions.require(!incomingTopic.isBlank(), "incomingTopic can not be blank");
         Preconditions.require(!incomingTopic.isEmpty(), "incomingTopic can not be empty");
@@ -27,13 +32,15 @@ public class LocalizationSettings {
         this.incomingTopic = incomingTopic;
         this.outgoingPort = outgoingPort;
         this.outgoingTopic = outgoingTopic;
+        this.enabled = enabled;
     }
 
     public LocalizationSettings(AppConfig appConfig) {
         this(appConfig.getLocalizationDefaultsIncomingPort(),
                 appConfig.getLocalizationDefaultsIncomingTopic(),
                 appConfig.getLocalizationDefaultsOutgoingPort(),
-                appConfig.getLocalizationDefaultsOutgoingTopic());
+                appConfig.getLocalizationDefaultsOutgoingTopic(),
+                false);
     }
 
     public int getIncomingPort() {
@@ -52,4 +59,7 @@ public class LocalizationSettings {
         return outgoingTopic;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
 }
