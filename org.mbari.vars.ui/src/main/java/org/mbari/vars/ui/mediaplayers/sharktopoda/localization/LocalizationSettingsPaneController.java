@@ -6,11 +6,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import org.mbari.vars.core.EventBus;
+import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.AppConfig;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.events.MediaChangedEvent;
 import org.mbari.vars.ui.javafx.prefs.IPrefs;
 import org.mbari.vars.ui.util.FXMLUtils;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
@@ -93,18 +96,33 @@ public class LocalizationSettingsPaneController implements IPrefs {
         return toolBox.getAppConfig().getLocalizationPaneTitle();
     }
 
-    @Override
-    public void load() {
+    private LocalizationSettings loadSettings() {
         AppConfig appConfig = toolBox.getAppConfig();
         LocalizationSettings defaultSettings = new LocalizationSettings(appConfig);
-        LocalizationSettings settings = LocalizationPrefs.load(defaultSettings);
-        updateUIFromSettings(settings);
+        return LocalizationPrefs.load(defaultSettings);
+    }
+
+    @Override
+    public void load() {
+        updateUIFromSettings(loadSettings());
     }
 
 
     @Override
     public void save() {
-        settingsFromUI().ifPresent(LocalizationPrefs::save);
+        settingsFromUI().ifPresent(newSettings -> {
+            LocalizationSettings oldSettings = loadSettings();
+            if (!Objects.equals(newSettings, oldSettings)) {
+                LocalizationPrefs.save(newSettings);
+
+                // Relaunch media player if one is opened
+                Media media = toolBox.getData().getMedia();
+                if (media != null) {
+                    toolBox.getEventBus()
+                            .send(new MediaChangedEvent(this, media));
+                }
+            }
+        });
     }
 
     public static LocalizationSettingsPaneController newInstance(UIToolBox toolBox) {

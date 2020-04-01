@@ -11,8 +11,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
+import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.AppConfig;
 import org.mbari.vars.ui.Initializer;
+import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.events.MediaChangedEvent;
 import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.ui.javafx.prefs.IPrefs;
 import org.mbari.vars.ui.util.FXMLUtils;
@@ -101,18 +104,18 @@ public class SharktopodaSettingsPaneController implements IPrefs {
     @Override
     public void save() {
 
-        AppConfig appConfig = Initializer.getToolBox().getAppConfig();
+        UIToolBox toolBox = Initializer.getToolBox();
+        AppConfig appConfig = toolBox.getAppConfig();
         int sharkPort = appConfig.getSharktopodaDefaultsControlPort();
         int fgPort = appConfig.getSharktopodaDefaultsFramegrabPort();
-        ResourceBundle i18n = Initializer.getToolBox().getI18nBundle();
+        ResourceBundle i18n = toolBox.getI18nBundle();
 
         try {
             sharkPort = Integer.parseInt(controlPortTextField.getText());
             fgPort = Integer.parseInt(framegrabPortTextField.getText());
         }
         catch (Exception e) {
-            Initializer.getToolBox()
-                    .getEventBus()
+            toolBox.getEventBus()
                     .send(new ShowNonfatalErrorAlert(i18n.getString("mediaplayer.sharktopoda.error.title"),
                             i18n.getString("mediaplayer.sharktopoda.error.header"),
                             i18n.getString("mediaplayer.sharktopoda.error.content"),
@@ -120,5 +123,12 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         }
         prefs.putInt(CONTROL_PORT_KEY, sharkPort);
         prefs.putInt(FRAMEGRAB_PORT_KEY, fgPort);
+
+        Media media = toolBox.getData()
+                .getMedia();
+        if (media != null) {
+            toolBox.getEventBus()
+                    .send(new MediaChangedEvent(this, media));
+        }
     }
 }

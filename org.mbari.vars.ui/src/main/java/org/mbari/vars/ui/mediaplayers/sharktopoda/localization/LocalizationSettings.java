@@ -1,7 +1,11 @@
 package org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
 
+import org.mbari.vars.core.util.Eq;
 import org.mbari.vars.ui.AppConfig;
 import org.mbari.vcr4j.sharktopoda.client.localization.Preconditions;
+
+import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * Immutable bean class that stores values to configure the ZeroMQ localization communications.
@@ -16,6 +20,7 @@ public class LocalizationSettings {
     private int outgoingPort;
     private String outgoingTopic;
     private boolean enabled;
+
 
     public LocalizationSettings(int incomingPort,
                                 String incomingTopic,
@@ -61,5 +66,22 @@ public class LocalizationSettings {
 
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LocalizationSettings that = (LocalizationSettings) o;
+        return incomingPort == that.incomingPort &&
+                outgoingPort == that.outgoingPort &&
+                enabled == that.enabled &&
+                Objects.equals(incomingTopic, that.incomingTopic) &&
+                Objects.equals(outgoingTopic, that.outgoingTopic);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(incomingPort, incomingTopic, outgoingPort, outgoingTopic, enabled);
     }
 }
