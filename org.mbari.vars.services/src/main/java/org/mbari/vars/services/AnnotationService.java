@@ -49,6 +49,10 @@ public interface AnnotationService {
 
     CompletableFuture<Association> createAssociation(UUID observationUuid, Association association);
 
+    CompletableFuture<Association> createAssociation(UUID observationUuid,
+                                                     Association association,
+                                                     UUID associationUuid);
+
     CompletableFuture<Image> createImage(Image image);
 
     CompletableFuture<List<AncillaryData>> createOrUpdateAncillaryData(List<AncillaryData> ancillaryData);

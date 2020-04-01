@@ -12,11 +12,12 @@ import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vcr4j.sharktopoda.client.localization.IO;
 import org.mbari.vcr4j.sharktopoda.client.localization.Localization;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class OutgoingController {
+public class OutgoingController implements Closeable {
     private final IO io;
     private final Gson gson;
     private final List<Disposable> disposables = new ArrayList<>();
@@ -29,22 +30,22 @@ public class OutgoingController {
         this.gson = gson;
         disposables.add(eventBus.toObserverable()
                 .ofType(AnnotationsAddedEvent.class)
-                .filter(evt -> evt.getEventSource() != this)
+                .filter(evt -> evt.getEventSource() != LocalizationController.EVENT_SOURCE)
                 .filter(evt -> !evt.get().isEmpty())
                 .subscribe(this::handleAddedLocally));
         disposables.add(eventBus.toObserverable()
                 .ofType(AnnotationsRemovedEvent.class)
-                .filter(evt -> evt.getEventSource() != this)
+                .filter(evt -> evt.getEventSource() != LocalizationController.EVENT_SOURCE)
                 .filter(evt -> !evt.get().isEmpty())
                 .subscribe(this::handleRemovedLocally));
         disposables.add(eventBus.toObserverable()
                 .ofType(AnnotationsChangedEvent.class)
-                .filter(evt -> evt.getEventSource() != this)
+                .filter(evt -> evt.getEventSource() != LocalizationController.EVENT_SOURCE)
                 .filter(evt -> !evt.get().isEmpty())
                 .subscribe(this::handleChangedLocally));
         disposables.add(eventBus.toObserverable()
                 .ofType(AnnotationsSelectedEvent.class)
-                .filter(evt -> evt.getEventSource() != this)
+                .filter(evt -> evt.getEventSource() != LocalizationController.EVENT_SOURCE)
                 .subscribe(this::handleSelectedLocally));
 
     }

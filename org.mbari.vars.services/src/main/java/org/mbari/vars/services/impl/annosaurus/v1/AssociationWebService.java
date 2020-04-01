@@ -39,6 +39,16 @@ public interface AssociationWebService {
                              @HeaderMap Map<String, String> headers);
 
     @FormUrlEncoded
+    @POST("associations")
+    Call<Association> create(@Field("observation_uuid") UUID observationUuid,
+                             @Field("link_name") String linkName,
+                             @Field("to_concept") String toConcept,
+                             @Field("link_value") String linkValue,
+                             @Field("mime_type") String mimeType,
+                             @Field("associatino_uuid") UUID associationUuid,
+                             @HeaderMap Map<String, String> headers);
+
+    @FormUrlEncoded
     @PUT("associations/{uuid}")
     Call<Association> update(@Path("uuid") UUID associationUuid,
                              @FieldMap Map<String, String> fields,

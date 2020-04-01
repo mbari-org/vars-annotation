@@ -173,6 +173,30 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(call);
     }
 
+    /**
+     * Creates an association using a predefined uuid for it. This method was added to
+     * support bounding boxes created by Cthulhu which uses the associationUuid as
+     * identity for bounding boxes.
+     * @param observationUuid
+     * @param association
+     * @param associationUuid
+     * @return
+     */
+    @Override
+    public CompletableFuture<Association> createAssociation(UUID observationUuid,
+                                                            Association association,
+                                                            UUID associationUuid) {
+        Call<Association> call = assService.create(observationUuid,
+                association.getLinkName(),
+                association.getToConcept(),
+                association.getLinkValue(),
+                association.getMimeType(),
+                associationUuid,
+                defaultHeaders);
+
+        return sendRequest(call);
+    }
+
     @Override
     public CompletableFuture<Image> createImage(Image image) {
         String url = (image.getUrl() == null) ? null : image.getUrl()

@@ -7,22 +7,34 @@ import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.ui.Data;
+import org.mbari.vars.ui.commands.CreateAssociationsCmd;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.sharktopoda.client.localization.IO;
 import org.mbari.vcr4j.sharktopoda.client.localization.Localization;
-import org.mbari.vcr4j.sharktopoda.client.localization.Message;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-class IncomingController {
+class IncomingController implements Closeable {
     private final EventBus eventBus;
     private final IO io;
     private final Gson gson;
     private final List<Disposable> disposables = new ArrayList<>();
     private final Data data;
+    private final ListChangeListener<Localization> changeListener = c -> {
+        while (c.next()) {
+            if (c.wasAdded()) {
+                List<? extends Localization> addedSubList = c.getAddedSubList();
+                if (!addedSubList.isEmpty()) {
+                    addLocalizations(addedSubList);
+                }
+            }
+        }
+    };
 
     public IncomingController(EventBus eventBus, IO io, Gson gson, Data data) {
         this.eventBus = eventBus;
@@ -31,26 +43,9 @@ class IncomingController {
         this.data = data;
         io.getController()
                 .getLocalizations()
-                .addListener((ListChangeListener<Localization>) c -> {
-                    while (c.next()) {
-                        if (c.wasAdded()) {
-                            List<? extends Localization> addedSubList = c.getAddedSubList();
-                            localizationsToAnnotations(addedSubList);
-                        }
-                    }
-                });
-        disposables.add(io.getController()
-                .getIncoming()
-                .ofType(Message.class)
-                .subscribe(this::handleIncomingMessage));
+                .addListener(changeListener);
     }
 
-    public void handleIncomingMessage(Message message) {
-        switch (message.getAction()) {
-            case Message.ACTION_ADD:
-
-        }
-    }
 
     public List<Annotation> localizationsToAnnotations(Collection<? extends Localization> xs) {
         List<Annotation> annotations = new ArrayList<>();
@@ -58,36 +53,59 @@ class IncomingController {
             // Does the annotation already exist?
             VideoIndex videoIndex = new VideoIndex(x.getElapsedTime());
 
-            Annotation a = new Annotation(x.getConcept(),
-                    data.getUser().getUsername(),
-                    videoIndex,
-                    x.getVideoReferenceUuid());
-            a.setDuration(x.getDuration());
+            Optional<Annotation> opt = annotations.stream()
+                    .filter(a -> a.getObservationUuid().equals(x.getAnnotationUuid()))
+                    .findFirst();
+
+            Annotation annotation = opt.orElseGet(() -> {
+                Annotation a = new Annotation(x.getConcept(),
+                        data.getUser().getUsername(),
+                        videoIndex,
+                        x.getVideoReferenceUuid());
+                a.setDuration(x.getDuration());
+                a.setObservationUuid(x.getAnnotationUuid());
+                annotations.add(a);
+                return a;
+            });
 
             BoundingBox bb = new BoundingBox(x.getX(), x.getY(), x.getWidth(), x.getHeight());
             String json = gson.toJson(bb);
-
 
             Association ass = new Association("bounding box",
                     Association.VALUE_SELF,
                     json,
                     "application/json");
 
+            annotation.getAssociations()
+                    .add(ass);
 
-//            Optional<Annotation> opt = data.getAnnotations()
-//                    .stream()
-//                    .filter(a -> a.getObservationUuid().equals(x.getAnnotationUuid()))
-//                    .findFirst();
-//
-//            if (opt.isPresent()) {
-//                // existing annotation
-//            }
-
-
-            // Does it have this localization (by assocation uuid = localizationUuid)
-
-            //
         }
-        return null;
+        return annotations;
+    }
+
+    private void addLocalizations(Collection<? extends Localization> xs) {
+        // For now we're assuming that any externally created bounding box is a new annotation
+        List<Annotation> annotations = localizationsToAnnotations(xs);
+        List<Annotation> existingAnnotations = new ArrayList<>(data.getAnnotations());
+        annotations.removeAll(existingAnnotations);
+        annotations.stream()
+                .forEach(annotation -> {
+                    Command cmd = new CreateAssociationsCmd()
+                });
+
+        List<Association> newAssociations = annotations.stream()
+                .flatMap(a -> a.getAssociations().stream())
+                .collect(Collectors.toList());
+
+
+
+
+    }
+
+    public void close() {
+        disposables.forEach(Disposable::dispose);
+        io.getController()
+                .getLocalizations()
+                .removeListener(changeListener);
     }
 }
