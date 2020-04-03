@@ -10,6 +10,8 @@ public class BoundingBox {
     private int width;
     private int height;
 
+    public static String LINK_NAME = "bounding box";
+
     public BoundingBox() {
     }
 

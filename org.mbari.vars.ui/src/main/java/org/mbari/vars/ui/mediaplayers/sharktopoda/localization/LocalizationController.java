@@ -41,7 +41,7 @@ public class LocalizationController implements Closeable {
                 settings.getIncomingTopic(),
                 settings.getOutgoingTopic());
 
-        incomingController = new IncomingController(toolBox.getEventBus(), io, gson, toolBox.getData());
+        incomingController = new IncomingController(io, gson, toolBox);
         outgoingController = new OutgoingController(toolBox.getEventBus(), io, gson);
 
     }

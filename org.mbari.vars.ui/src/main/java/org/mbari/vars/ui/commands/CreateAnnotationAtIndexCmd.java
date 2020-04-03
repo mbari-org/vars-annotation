@@ -1,6 +1,7 @@
 package org.mbari.vars.ui.commands;
 
 import org.mbari.vars.core.EventBus;
+import org.mbari.vars.services.ConceptService;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
@@ -10,6 +11,7 @@ import org.mbari.vars.services.model.Association;
 import org.mbari.vcr4j.VideoIndex;
 
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Brian Schlining
@@ -38,11 +40,14 @@ public class CreateAnnotationAtIndexCmd implements Command  {
 
     @Override
     public void apply(UIToolBox toolBox) {
-        toolBox.getServices()
-                .getConceptService()
+        ConceptService conceptService = toolBox.getServices().getConceptService();
+
+        conceptService
                 .findConcept(concept)
-                .thenAccept(opt -> opt.ifPresent(primaryConcept -> {
-                    String primaryName = primaryConcept.getName();
+                .thenCompose(opt ->
+                    opt.map(value -> CompletableFuture.supplyAsync(() -> value)).orElseGet(conceptService::findRoot))
+                .thenAccept(concept -> {
+                    String primaryName = concept.getName();
                     Annotation a = CommandUtil.buildAnnotation(toolBox.getData(),
                             primaryName, videoIndex);
                     if (associationTemplate != null) {
@@ -60,7 +65,7 @@ public class CreateAnnotationAtIndexCmd implements Command  {
                                     eventBus.send(new AnnotationsSelectedEvent(annotation));
                                 }
                             });
-                }));
+                });
     }
 
     @Override

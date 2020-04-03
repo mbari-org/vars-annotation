@@ -96,7 +96,7 @@ public class LocalizationSettingsPaneController implements IPrefs {
     }
 
     public String getName() {
-        return toolBox.getAppConfig().getLocalizationPaneTitle();
+        return toolBox.getI18nBundle().getString("localization.pane.title");
     }
 
 
