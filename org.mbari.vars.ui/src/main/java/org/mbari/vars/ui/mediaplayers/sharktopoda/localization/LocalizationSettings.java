@@ -64,6 +64,9 @@ public class LocalizationSettings {
         return outgoingTopic;
     }
 
+    /**
+     * @return true if localization communication should be started when a media is opened
+     */
     public boolean isEnabled() {
         return enabled;
     }

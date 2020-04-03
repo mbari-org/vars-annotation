@@ -26,7 +26,7 @@ public class BulkCreateAnnotations implements Command {
 
     public BulkCreateAnnotations(Collection<Annotation> annotations) {
         Preconditions.checkArgument(annotations != null, "You provided a null collection ... bad!!");
-        Preconditions.checkArgument(annotations.isEmpty(), "You are attempting to create annotations from an empty collection. You get nothing!!");
+        Preconditions.checkArgument(!annotations.isEmpty(), "You are attempting to create annotations from an empty collection. You get nothing!!");
         this.annotations = annotations;
     }
 

@@ -1,5 +1,9 @@
 package org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
 
+/**
+ * Bean class used for serializing/deserializing bounding box info into JSON
+ * All coordinaates are intended to be pixels
+ */
 public class BoundingBox {
     private int x;
     private int y;

@@ -20,6 +20,8 @@ import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
 
 /**
+ * UI for setting preferences for LocalizationSettings values.
+ *
  * @author Brian Schlining
  * @since 2020-03-03T15:22:00
  */

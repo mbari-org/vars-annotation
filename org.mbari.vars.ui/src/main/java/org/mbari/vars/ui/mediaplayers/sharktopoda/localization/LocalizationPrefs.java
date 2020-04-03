@@ -49,8 +49,9 @@ public class LocalizationPrefs {
 
     /**
      * Loads settings from preferences, using values defined via AppConfig as defaults
-     * @param appConfig
-     * @return
+     * @param appConfig AppConfig provides access to default settings defined in the
+     *                  applicaiton.conf files
+     * @return LocalizationSettings loaded from preferences (falls back to defaults defined in appConfig
      */
     public static LocalizationSettings load(AppConfig appConfig) {
         LocalizationSettings defaultSettings = new LocalizationSettings(appConfig);

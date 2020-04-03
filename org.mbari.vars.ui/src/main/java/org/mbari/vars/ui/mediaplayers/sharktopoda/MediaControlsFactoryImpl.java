@@ -8,6 +8,7 @@ import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.ui.mediaplayers.MediaControlsFactory;
 import org.mbari.vars.ui.mediaplayers.SettingsPane;
 import org.mbari.vars.services.model.Media;
+import org.mbari.vars.ui.mediaplayers.sharktopoda.localization.LocalizationLifecycleController;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIO;
 import org.mbari.vcr4j.VideoState;
@@ -36,11 +37,13 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
     private SettingsPaneImpl settingsPane;
     private SharktoptodaControlPane controlPane;
     private final Logger log = LoggerFactory.getLogger(getClass());
+    private final LocalizationLifecycleController localizationLifecycleController;
 
 
     public MediaControlsFactoryImpl() {
         this.toolBox = Initializer.getToolBox();
         controlPane = new SharktoptodaControlPane(toolBox);
+        localizationLifecycleController = new LocalizationLifecycleController(toolBox);
     }
 
     @Override
