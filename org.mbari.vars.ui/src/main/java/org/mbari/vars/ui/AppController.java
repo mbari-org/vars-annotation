@@ -8,6 +8,7 @@ import mbarix4j.io.IOUtilities;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.ui.mediaplayers.MediaPlayers;
+import org.mbari.vars.ui.mediaplayers.sharktopoda.localization.LocalizationLifecycleController;
 import org.mbari.vars.ui.messages.*;
 import org.mbari.vars.ui.events.*;
 import org.mbari.vars.services.model.Annotation;
@@ -46,11 +47,13 @@ public class AppController {
     private final MediaPlayers mediaPlayers;
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final FileChooser fileChooser = new FileChooser();
+    private final LocalizationLifecycleController localizationLifecycleController;
 
     public AppController(UIToolBox toolBox) {
         this.toolBox = toolBox;
         alerts = new Alerts(toolBox);
         mediaPlayers = new MediaPlayers(toolBox);
+        localizationLifecycleController = new LocalizationLifecycleController(toolBox);
         initialize();
     }
 

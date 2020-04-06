@@ -37,13 +37,10 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
     private SettingsPaneImpl settingsPane;
     private SharktoptodaControlPane controlPane;
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final LocalizationLifecycleController localizationLifecycleController;
-
 
     public MediaControlsFactoryImpl() {
         this.toolBox = Initializer.getToolBox();
         controlPane = new SharktoptodaControlPane(toolBox);
-        localizationLifecycleController = new LocalizationLifecycleController(toolBox);
     }
 
     @Override
@@ -81,7 +78,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
         // Spawn this off in a thread or on an executor
         Runnable r = () -> {
             try {
-                SharktopodaVideoIO videoIO = new SharktopodaVideoIO(UUID.randomUUID(), "localhost", sharktopodaPort);
+                SharktopodaVideoIO videoIO = new SharktopodaVideoIO(media.getVideoReferenceUuid(), "localhost", sharktopodaPort);
                 videoIO.send(new OpenCmd(media.getUri().toURL()));
                 VideoIO<SharktopodaState, SharktopodaError> io =
                         new SchedulerVideoIO<>(videoIO, Executors.newCachedThreadPool());
