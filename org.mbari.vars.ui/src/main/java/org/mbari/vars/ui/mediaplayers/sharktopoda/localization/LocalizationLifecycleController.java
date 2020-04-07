@@ -37,6 +37,11 @@ public class LocalizationLifecycleController {
                 .subscribe(this::manageControllerLifecycle);
     }
 
+    private boolean isFileMedia(Media media) {
+        String scheme = media.getUri().getScheme();
+        return scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("file");
+    }
+
     private void manageControllerLifecycle(Media media) {
         // Manage lifecylce in it's own thread as it needs to block for a second to allow
         // ZeroMQ to spin down/up.
@@ -51,7 +56,7 @@ public class LocalizationLifecycleController {
                     // Nothing to do. Let's get out of here.
                     return;
                 }
-                else if (media.getUri().getScheme().equalsIgnoreCase("http") &&
+                else if (isFileMedia(media) &&
                     settings.isEnabled()) {
                     log.debug("Creating a LocalizationController for " + media.getUri());
                     controller = new LocalizationController(settings, toolBox);
@@ -63,7 +68,7 @@ public class LocalizationLifecycleController {
                 if (media == null) {
                     // What to do?
                 }
-                else if (!media.getUri().getScheme().equalsIgnoreCase("http")) {
+                else if (!isFileMedia(media)) {
                     controller.close();
                     controllerRef.set(null);
                     pause = true;
