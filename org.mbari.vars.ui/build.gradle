@@ -198,9 +198,21 @@ jlink {
 tasks.jpackageImage.doLast {
     if (org.gradle.internal.os.OperatingSystem.current().isMacOsX()) {
         copy {
+            println("MACOSX: Adding VARS Annotation.icns")
             from "src/jpackage/macos"
             include "VARS Annotation.icns"
             into "build/jpackage/VARS Annotation.app/Contents/Resources"
+        }
+        exec {
+            println("MACOSX: Modifying Info.plist")
+            workingDir "build/jpackage/VARS Annotation.app/Contents"
+
+            executable 'plutil'
+    
+            args '-insert', 'NSCameraUsageDescription', '-string',  
+              'VARS Annotation uses camera access for framecapture from hardware', 
+              'Info.plist'
+
         }
     }
 }
