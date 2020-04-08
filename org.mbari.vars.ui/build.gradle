@@ -194,3 +194,13 @@ jlink {
     }
 
 }
+
+tasks.jpackageImage.doLast {
+    if (org.gradle.internal.os.OperatingSystem.current().isMacOsX()) {
+        copy {
+            from "src/jpackage/macos"
+            include "VARS Annotation.icns"
+            into "build/jpackage/VARS Annotation.app/Contents/Resources"
+        }
+    }
+}
