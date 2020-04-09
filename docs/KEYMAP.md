@@ -1,10 +1,3 @@
----
-layout: default
-title: Keymap
-nav_order: 2
----
-
-
 # Keymap
 
 ## Current Keymap

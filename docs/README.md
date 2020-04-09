@@ -1,9 +1,3 @@
----
-layout: default
-title: About VARS Annotation
-nav_order: 1
----
-
 # About vars-annotation
 
 ![MBARI logo](resources/images/mbari-logo.png)

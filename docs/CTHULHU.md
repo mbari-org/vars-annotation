@@ -1,9 +1,3 @@
----
-layout: default
-title: Using VARS with Cthulhu
-nav_order: 4
----
-
 # Using VARS with Cthulhu
 
 ![MBARI logo](resources/images/mbari-logo.png)
