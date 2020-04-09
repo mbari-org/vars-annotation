@@ -22,10 +22,10 @@ This project can be built on macOS, Linux, and Windows (We actually tested all o
 
 ```bash
 # bash
-export JPACKAGE_HOME="/Users/brian/Applications/jdk-14.jdk/Contents/Home"
+export JPACKAGE_HOME="/Library/Java/JavaVirtualMachines/jdk-14.jdk/Contents/Home"
 
 # fish
-set -x JPACKAGE_HOME "/Users/brian/Applications/jdk-14.jdk/Contents/Home"
+set -x JPACKAGE_HOME "/Library/Java/JavaVirtualMachines/jdk-14.jdk/Contents/Home"
 
 # cmd
 set JPACKAGE_HOME="C:\Users\brian\Applications\jdk-14"
