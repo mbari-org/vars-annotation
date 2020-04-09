@@ -1,5 +1,8 @@
 # Keymap
 
+
+![MBARI logo](../resources/images/mbari-logo.png)
+
 ## Current Keymap
 
 At MBARI, many of the video control keys are mapped onto a [Shuttle Pro](https://www.contourdesign.com/product/shuttle/) profile. Allowing users simple controls to the video players.
