@@ -25,7 +25,7 @@ To configure Cthulhu, do the following:
 
 ![Cthulhu Settings](resources/images/cthulhu-settings.png)
 
-### Configuration VARS
+### Configuring VARS
 
 1. Launch VARS Annotation
 2. Open the settings (i.e. click on the gear icon on the toolbar)
@@ -34,6 +34,8 @@ To configure Cthulhu, do the following:
 5. The VARS `incoming port` should have the same value as Cthulhu's `outgoing port`. e.g. Cthulhu outgoing  5562 maps to VARS incoming 5562. 
 6. The VARAS `outgoing port` should have the same value as Cthulhu's `incoming port`.
 7. For simplicity, just leave all the topics as `localization`.
+
+![VARS Settings](resources/images/vars-annotation-settings1.png)
 
 ## Usage
 
