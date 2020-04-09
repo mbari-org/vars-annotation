@@ -1,5 +1,8 @@
 # Building from Source Code
 
+
+![MBARI logo](../images/mbari-logo.png)
+
 ## tl;dr
 
 ```bash

@@ -1,7 +1,6 @@
 # Keymap
 
-
-![MBARI logo](../resources/images/mbari-logo.png)
+![MBARI logo](../images/mbari-logo.png)
 
 ## Current Keymap
 

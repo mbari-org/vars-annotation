@@ -1,6 +1,6 @@
 # Using VARS with Cthulhu
 
-![MBARI logo](resources/images/mbari-logo.png)
+![MBARI logo](../images/mbari-logo.png)
 
 ## tl;dr
 
@@ -23,7 +23,7 @@ To configure Cthulhu, do the following:
 4. Under the `Remote Contol` section, set the `Contorl Port` value. This should match whatever you use to configure VARS to talk to [Sharktopoda](https://github.com/mbari-media-management/Sharktopoda). The customary value at MBARI's video lab is `8800`
 5. Under the `Localization` section note the incoming ports and topics. There's no need to change them, but you'll need those values to configure VARS.
 
-![Cthulhu Settings](resources/images/cthulhu-settings.png)
+![Cthulhu Settings](../images/cthulhu-settings.png)
 
 ### Configuring VARS
 
@@ -35,7 +35,7 @@ To configure Cthulhu, do the following:
 6. The VARS `outgoing port` should have the same value as Cthulhu's `incoming port`.
 7. For simplicity, just leave all the topics as `localization`.
 
-![VARS Settings](resources/images/vars-annotation-settings1.png)
+![VARS Settings](../images/vars-annotation-settings1.png)
 
 ## Usage
 
