@@ -1,3 +1,9 @@
+---
+layout: default
+title: Keymap
+nav_order: 2
+---
+
 
 # Keymap
 
@@ -41,4 +47,5 @@ Delete annotations              [cmd]+[delete]
 Undo                            [cmd]+Z
 Redo                            [cmd]+[shift]+Z
 ```
-Note that on Windows/Linux substitude the [ctrl] key for the [cmd] key used above.
+
+__Note that on Windows/Linux substitude the [ctrl] key for the [cmd] key used above.__

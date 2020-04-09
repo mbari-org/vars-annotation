@@ -1,3 +1,9 @@
+---
+layout: default
+title: Building from Source Code
+nav_order: 2
+---
+
 # Building from Source Code
 
 ## tl;dr

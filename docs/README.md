@@ -1,6 +1,12 @@
-![MBARI logo](resources/images/mbari-logo.png)
+---
+layout: default
+title: About VARS Annotation
+nav_order: 1
+---
 
 # About vars-annotation
+
+![MBARI logo](resources/images/mbari-logo.png)
 
 [![Build Status](https://travis-ci.org/mbari-media-management/vars-annotation.svg?branch=master)](https://travis-ci.org/mbari-media-management/vars-annotation)  [![DOI](https://zenodo.org/badge/90881605.svg)](https://zenodo.org/badge/latestdoi/90881605)
 
