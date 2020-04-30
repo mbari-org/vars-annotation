@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Managed traffic from vars-annotation to external localization apps
  */
-public class OutgoingController implements Closeable {
+public class  OutgoingController implements Closeable {
     private final IO io;
     private final Gson gson;
     private final List<Disposable> disposables = new ArrayList<>();

@@ -4,7 +4,7 @@
 
 ## tl;dr
 
-Sharktopoda is one of serveral video players that can interact with VARS. It is a macOS applications and provides robust playback support for h264 and ProRes video codecs.
+Sharktopoda is one of serveral video players that can interact with VARS. It is a macOS applications that provides robust playback support for h264 and ProRes video codecs.
 
 ## Installation
 
