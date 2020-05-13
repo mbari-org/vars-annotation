@@ -155,31 +155,8 @@ public class AnnotationTableController {
                 MenuItem seekItem = new MenuItem(i18n.getString("annotable.ctxmenu.seek"));
                 seekItem.setOnAction(evt -> {
                     Media media = data.getMedia();
-                    if (media != null) {
-                        Annotation a = row.getItem();
-
-                        // If annotation is on it's native media, just use it's native index
-                        if (a.getVideoReferenceUuid().equals(media.getVideoReferenceUuid())) {
-                            if (a.getTimecode() != null) {
-                                eventBus.send(new SeekMsg<>(a.getTimecode()));
-                            } else if (a.getElapsedTime() != null) {
-                                eventBus.send(new SeekMsg<>(a.getElapsedTime()));
-                            } else if (a.getRecordedTimestamp() != null) {
-                                eventBus.send(new SeekMsg<>(a.getRecordedTimestamp()));
-                            }
-                        }
-                        else {
-                            // If not on the native media use the recordedTimestamp if available
-                            // Otherwise fall back to elasped time (although this could jump
-                            // to wrong point if video files have different start times)
-                            if (a.getRecordedTimestamp() != null) {
-                                eventBus.send(new SeekMsg<>(a.getRecordedTimestamp()));
-                            }
-                            else if (a.getElapsedTime() != null) {
-                                eventBus.send(new SeekMsg<>(a.getElapsedTime()));
-                            }
-                        }
-                    }
+                    Annotation a = row.getItem();
+                    SeekMsg.seek(media, a, eventBus);
                 });
                 menu.getItems().add(seekItem);
 

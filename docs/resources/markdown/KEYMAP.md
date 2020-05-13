@@ -41,6 +41,7 @@ Frame capture                   [cmd]+F
 Delete annotations              [cmd]+[delete]
 Undo                            [cmd]+Z
 Redo                            [cmd]+[shift]+Z
+Seek to seleced annotation      [cmd]+[shift]+S
 ```
 
 __Note that on Windows/Linux substitude the [ctrl] key for the [cmd] key used above.__

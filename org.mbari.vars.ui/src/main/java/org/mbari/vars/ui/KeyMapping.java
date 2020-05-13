@@ -6,6 +6,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import org.mbari.vars.core.EventBus;
+import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.ui.messages.*;
 import org.mbari.vars.services.model.Annotation;
@@ -86,6 +87,15 @@ public class KeyMapping {
             int idx = selectionModel.getSelectedIndex();
             selectionModel.clearSelection();
             selectionModel.select(idx - 1);
+        });
+
+        map.put(new KeyCodeCombination(KeyCode.S, osModifier, shiftModifier), () -> {
+            TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
+                    .getTableView()
+                    .getSelectionModel();
+            Annotation selectedItem = selectionModel.getSelectedItem();
+            Media media = toolBox.getData().getMedia();
+            SeekMsg.seek(media, selectedItem, eventBus);
         });
 
         map.put(new KeyCodeCombination(KeyCode.N, osModifier),
