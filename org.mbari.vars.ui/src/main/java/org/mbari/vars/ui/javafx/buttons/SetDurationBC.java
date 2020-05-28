@@ -34,7 +34,7 @@ public class SetDurationBC extends AbstractBC {
     protected void init() {
         String tooltip = toolBox.getI18nBundle().getString("buttons.duration");
 //        Text icon = iconFactory.createIcon(MaterialIcon.AV_TIMER, "30px");
-        Text icon = Icons.AV_TIMER.standardSize();
+        Text icon = Icons.ALARM.standardSize();
         initializeButton(tooltip, icon);
     }
 }

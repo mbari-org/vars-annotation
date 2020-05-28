@@ -14,6 +14,8 @@ public enum Icons {
     ADD(Material.ADD),
     ADD_A_PHOTO(Material.ADD_A_PHOTO),
     ADD_SHOPPING_CART(Material.ADD_SHOPPING_CART),
+    ALARM(Material.ALARM),
+    ALARM_OFF(Material.ALARM_OFF),
     ARROW_BACK(Material.ARROW_BACK),
     ARROW_FORWARD(Material.ARROW_FORWARD),
     AV_TIMER(Material.AV_TIMER),

@@ -125,6 +125,9 @@ public class ControlsPaneController {
             Button durationBtn = new JFXButton();
             new SetDurationBC(durationBtn, toolBox);
 
+            Button deleteDurationBtn = new JFXButton();
+            new DeleteDurationBC(deleteDurationBtn, toolBox);
+
 //            Button denseBtn = new JFXButton();
 //            new TempDenseBC(denseBtn, toolBox);
 //
@@ -133,7 +136,7 @@ public class ControlsPaneController {
 
             buttonPane.getChildren().addAll(newBtn, dupBtn, copyBtn, framegrabBtn,
                     detachBtn, sampleBtn, newRefBtn, oldRefBtn, uponBtn,
-                    commentBtn, durationBtn, deleteBtn);
+                    commentBtn, durationBtn, deleteDurationBtn, deleteBtn);
 
         }
         return buttonPane;

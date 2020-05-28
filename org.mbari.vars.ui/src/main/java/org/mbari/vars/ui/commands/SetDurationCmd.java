@@ -47,6 +47,7 @@ public class SetDurationCmd implements Command {
     }
 
     private void updateDuration(VideoIndex videoIndex) {
+        // TODO: M3-123
         if (videoIndex.getTimestamp().isPresent()) {
             applyTimestamp(videoIndex.getTimestamp().get());
         }
