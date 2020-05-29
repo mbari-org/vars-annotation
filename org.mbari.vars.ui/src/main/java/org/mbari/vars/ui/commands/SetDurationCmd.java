@@ -10,6 +10,7 @@ import org.mbari.vcr4j.time.Timecode;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -79,6 +80,7 @@ public class SetDurationCmd implements Command {
         return "Set duration for " +
                 originalAnnotations.size() + " annotations";
     }
+
 
     private void applyElapsedTime(Duration elapsedTime) {
         modifiedAnnotations.forEach(a -> {
