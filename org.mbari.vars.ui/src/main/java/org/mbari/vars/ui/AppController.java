@@ -154,7 +154,7 @@ public class AppController {
         }
     }
 
-    private void seek(SeekMsg msg) {
+    private void seek(SeekMsg<?> msg) {
         Object idx = msg.getIndex();
         MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
         if (idx instanceof Timecode) {

@@ -81,7 +81,9 @@ def runtimeJvmArgs = [
         '--add-exports', 'javafx.base/com.sun.javafx.event=com.jfoenix',
         '--add-exports', 'javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix',
         '--add-exports', 'javafx.controls/com.sun.javafx.scene.control=com.jfoenix',
-        '--add-exports', 'javafx.graphics/com.sun.javafx.stage=com.jfoenix'
+        '--add-exports', 'javafx.graphics/com.sun.javafx.stage=com.jfoenix',
+        '--add-opens', 'java.base/java.lang.invoke=retrofit2',
+        '--add-opens', 'java.base/java.lang.invoke=vars.annotation.merged.module'
 //        '--add-reads', 'vars.annotation.merged.module=org.slf4j'
 ]
 
@@ -188,6 +190,17 @@ jlink {
                 "--mac-package-name", "VARS Annotation",
                 "--mac-package-identifier", project.name
             ])
+
+            def prefix = System.getenv("MAC_PACKAGE_SIGNING_PREFIX")
+            def user=System.getenv("MAC_SIGNING_KEY_USER_NAME")
+            if (prefix && user) {
+                customInstallerOptions.addAll([
+                    "--mac-sign",
+                    "--mac-package-signing-prefix", prefix,
+                    "--mac-signing-key-user-name", user
+                ])
+            }
+
         }
         installerOptions = customInstallerOptions
 
