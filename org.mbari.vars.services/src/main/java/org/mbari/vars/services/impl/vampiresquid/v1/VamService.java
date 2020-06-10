@@ -56,7 +56,7 @@ public class VamService implements MediaService, RetrofitWebService {
         addField(fieldMap, "audio_codec", media::getAudioCodec);
         addField(fieldMap, "video_description", media::getDescription);
 //        addField(fieldMap, "video_name", media::getVideoName);
-        sendRequest(vamWebService.createMedia(media.getVideoSequenceName(), media.getCameraId(),
+        return sendRequest(vamWebService.createMedia(media.getVideoSequenceName(), media.getCameraId(),
                 media.getVideoName(), media.getUri(), media.getStartTimestamp(), fieldMap,
                 defaultHeaders));
     }

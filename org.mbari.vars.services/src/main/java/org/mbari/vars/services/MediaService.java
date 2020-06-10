@@ -16,6 +16,8 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface MediaService {
 
+    CompletableFuture<Media> create(Media media);
+
     CompletableFuture<Media> create(String videoSequenceName,
                                     String cameraId,
                                     String videoName,

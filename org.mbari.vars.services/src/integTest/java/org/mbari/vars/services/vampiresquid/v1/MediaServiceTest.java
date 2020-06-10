@@ -31,7 +31,7 @@ public class MediaServiceTest {
     // bogus values in the database
 //    @Ignore
     @Test
-    public void testCreateUrn() throws InterruptedException,
+    public void testCreate() throws InterruptedException,
             ExecutionException,
             URISyntaxException,
             TimeoutException {
@@ -42,6 +42,30 @@ public class MediaServiceTest {
         Media media = f.get(5000, TimeUnit.MILLISECONDS);
         assertNotNull(media);
     }
+
+    @Test
+    public void testCreateMedia() throws Exception {
+        Instant now = Instant.now();
+        var media = new Media();
+        media.setVideoSequenceName("Test-02");
+        media.setCameraId("Test");
+        media.setVideoName("Test-02-" + now);
+        media.setUri(URI.create("http://www.foo.bar/test/Test-02-" + now.toEpochMilli() + ".mp4"));
+        media.setStartTimestamp(now);
+        var f = mediaService.create(media);
+        var m = f.get(5000, TimeUnit.MILLISECONDS);
+        assertNotNull(m);
+        assertEquals(media.getVideoSequenceName(), m.getVideoSequenceName());
+        assertEquals(media.getCameraId(), m.getCameraId());
+        assertEquals(media.getVideoName(), m.getVideoName());
+        assertEquals(media.getStartTimestamp(), m.getStartTimestamp());
+        assertEquals(media.getUri(), m.getUri());
+        assertNotNull(m.getVideoSequenceUuid());
+        assertNotNull(m.getVideoUuid());
+        assertNotNull(m.getVideoReferenceUuid());
+
+    }
+
 
     @Test
     public void testFindByVideoSequenceName() throws Exception {
