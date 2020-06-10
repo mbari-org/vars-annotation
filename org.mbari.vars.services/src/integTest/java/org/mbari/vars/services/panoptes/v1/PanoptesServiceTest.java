@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.services.panoptes.v1;
+package org.mbari.vars.services.panoptes.v1;
 
 import mbarix4j.net.URLUtilities;
 import org.junit.Test;

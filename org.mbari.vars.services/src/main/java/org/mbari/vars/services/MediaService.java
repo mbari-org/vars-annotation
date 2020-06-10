@@ -26,6 +26,9 @@ public interface MediaService {
                                     Instant startTimestamp,
                                     Duration duration);
 
+    CompletableFuture<Media> update(Media media);
+
+
     CompletableFuture<Media> findByUuid(UUID uuid);
 
     CompletableFuture<Media> findBySha512(byte[] sha512);
@@ -46,6 +49,8 @@ public interface MediaService {
     CompletableFuture<List<Media>> findByVideoSequenceNameAndTimestamp(String videoSequenceName, Instant timestamp);
 
     CompletableFuture<List<String>> findAllCameraIds();
+
+    CompletableFuture<List<URI>> findAllURIs();
 
     CompletableFuture<List<Media>> findConcurrentByVideoReferenceUuid(UUID uuid);
 

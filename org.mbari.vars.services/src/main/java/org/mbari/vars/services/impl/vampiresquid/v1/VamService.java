@@ -1,5 +1,6 @@
 package org.mbari.vars.services.impl.vampiresquid.v1;
 
+import org.mbari.vars.core.util.HexUtils;
 import org.mbari.vars.services.gson.ByteArrayConverter;
 import org.mbari.vars.services.model.LastUpdate;
 import org.mbari.vars.services.model.Media;
@@ -14,6 +15,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -58,6 +60,31 @@ public class VamService implements MediaService, RetrofitWebService {
         addField(fieldMap, "start", startTimestamp);
         return sendRequest(vamWebService.update(videoUuid,
                 fieldMap, defaultHeaders));
+    }
+
+    @Override
+    public CompletableFuture<Media> update(Media media) {
+        Map<String, String> fieldMap = new HashMap<>();
+        addField(fieldMap, "video_sequence_uuid", () -> media.getVideoSequenceUuid().toString());
+        addField(fieldMap, "video_reference_uuid", () -> media.getVideoReferenceUuid().toString());
+        addField(fieldMap, "video_uuid", () -> media.getVideoUuid().toString());
+        addField(fieldMap, "video_sequence_name", media::getVideoSequenceName);
+        addField(fieldMap, "camera_id", media::getCameraId);
+        addField(fieldMap, "uri", () -> media.getUri().toString());
+        addField(fieldMap, "start_timestamp", () -> media.getStartTimestamp().toString());
+        addField(fieldMap, "duration_millis", () -> media.getDuration().toMillis() + "");
+        addField(fieldMap, "container", media::getContainer);
+        addField(fieldMap, "width", () -> media.getWidth().toString());
+        addField(fieldMap, "height", () -> media.getHeight().toString());
+        addField(fieldMap, "frameRate", () -> media.getFrameRate().toString());
+        addField(fieldMap, "size_bytes", () -> media.getSizeBytes().toString());
+        addField(fieldMap, "sha512", () -> HexUtils.printHexBinary(media.getSha512()));
+        addField(fieldMap, "video_codec", media::getVideoCodec);
+        addField(fieldMap, "audio_codec", media::getAudioCodec);
+        addField(fieldMap, "video_description", media::getDescription);
+        addField(fieldMap, "video_name", media::getVideoName);
+        return sendRequest(vamWebService.update(media.getVideoUuid(), ))
+
     }
 
     @Override
@@ -152,6 +179,18 @@ public class VamService implements MediaService, RetrofitWebService {
     private void addField(Map<String, String> map, String key, Object value) {
         if (value != null) {
             map.put(key, asString(value));
+        }
+    }
+
+    private void addField(Map<String, String> map, String key, Supplier<String> fn) {
+        try {
+            var value = fn.get();
+            if (value != null) {
+                map.put(key, value);
+            }
+        }
+        catch (Exception e) {
+            // Do nothing
         }
     }
 }
