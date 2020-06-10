@@ -35,20 +35,45 @@ public class VamService implements MediaService, RetrofitWebService {
         defaultHeaders.put("Accept-Charset", "utf-8");
     }
 
+    public CompletableFuture<Media> create(Media media) {
+        var fieldMap = new HashMap<String, String>();
+        // Note that UUIDs are not currently consumed by vampire-squid
+        addField(fieldMap, "video_sequence_uuid", () -> media.getVideoSequenceUuid().toString());
+        addField(fieldMap, "video_reference_uuid", () -> media.getVideoReferenceUuid().toString());
+        addField(fieldMap, "video_uuid", () -> media.getVideoUuid().toString());
+//        addField(fieldMap, "video_sequence_name", media::getVideoSequenceName);
+//        addField(fieldMap, "camera_id", media::getCameraId);
+//        addField(fieldMap, "uri", () -> media.getUri().toString());
+//        addField(fieldMap, "start_timestamp", () -> media.getStartTimestamp().toString());
+        addField(fieldMap, "duration_millis", () -> media.getDuration().toMillis() + "");
+        addField(fieldMap, "container", media::getContainer);
+        addField(fieldMap, "width", () -> media.getWidth().toString());
+        addField(fieldMap, "height", () -> media.getHeight().toString());
+        addField(fieldMap, "frameRate", () -> media.getFrameRate().toString());
+        addField(fieldMap, "size_bytes", () -> media.getSizeBytes().toString());
+        addField(fieldMap, "sha512", () -> HexUtils.printHexBinary(media.getSha512()));
+        addField(fieldMap, "video_codec", media::getVideoCodec);
+        addField(fieldMap, "audio_codec", media::getAudioCodec);
+        addField(fieldMap, "video_description", media::getDescription);
+//        addField(fieldMap, "video_name", media::getVideoName);
+        sendRequest(vamWebService.createMedia(media.getVideoSequenceName(), media.getCameraId(),
+                media.getVideoName(), media.getUri(), media.getStartTimestamp(), fieldMap,
+                defaultHeaders));
+    }
+
     @Override
     public CompletableFuture<Media> create(String videoSequenceName,
             String cameraId,
             String videoName,
             URI uri,
             Instant startTimestamp) {
-        return sendRequest(vamWebService.create(videoSequenceName,
+        return sendRequest(vamWebService.createMedia(videoSequenceName,
                 cameraId,
                 videoName,
                 uri,
                 startTimestamp,
-                null, null, null, null,
-                null, null, null, null,
-                null, null, defaultHeaders));
+                new HashMap<>(),
+                defaultHeaders));
     }
 
     public CompletableFuture<Media> update(UUID videoUuid,
@@ -83,8 +108,7 @@ public class VamService implements MediaService, RetrofitWebService {
         addField(fieldMap, "audio_codec", media::getAudioCodec);
         addField(fieldMap, "video_description", media::getDescription);
         addField(fieldMap, "video_name", media::getVideoName);
-        return sendRequest(vamWebService.update(media.getVideoUuid(), ))
-
+        return sendRequest(vamWebService.updateMedia(media.getVideoUuid(), fieldMap, defaultHeaders));
     }
 
     @Override

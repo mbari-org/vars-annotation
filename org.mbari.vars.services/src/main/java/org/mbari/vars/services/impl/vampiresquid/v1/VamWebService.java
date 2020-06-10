@@ -54,6 +54,17 @@ public interface VamWebService {
 
     @FormUrlEncoded
     @POST("media")
+    Call<Media> createMedia(@Field("video_sequence_name") String videoSequenceName,
+                            @Field("camera_id") String cameraId,
+                            @Field("video_name") String videoName,
+                            @Field("uri") URI uri,
+                            @Field("start_timestamp") Instant startTimestamp,
+                            @FieldMap Map<String, String> fields,
+                            @HeaderMap Map<String, String> headers);
+
+    @Deprecated(since="0.4.2", forRemoval = true)
+    @FormUrlEncoded
+    @POST("media")
     Call<Media> create(@Field("video_sequence_name") String videoSequenceName,
                        @Field("camera_id") String cameraId,
                        @Field("video_name") String videoName,
@@ -71,9 +82,11 @@ public interface VamWebService {
                        @Field("sha512") byte[] sha512,
                        @HeaderMap Map<String, String> headers);
 
-    Call<Media> updateMedia(@Path("uuid") UUID videoUuid,
+    @FormUrlEncoded
+    @PUT("media/{uuid}")
+    Call<Media> updateMedia(@Path("uuid") UUID videoReferenceUuid,
                             @FieldMap Map<String, String> fields,
-                            @HeaderMap Map<String, String> headers)
+                            @HeaderMap Map<String, String> headers);
 
     @FormUrlEncoded
     @PUT("videos/{uuid}")
