@@ -92,5 +92,12 @@ public class MediaServiceTest {
         assertEquals(m0.getVideoName(), m1.getVideoName());
     }
 
+    @Test
+    public void testFindByMissingUri() throws Exception {
+        var f = mediaService.findByUri(URI.create("urn:i.dont.exist:v1234"));
+        var m = f.get(5000, TimeUnit.MILLISECONDS);
+        assertNull(m);
+    }
+
 
 }

@@ -32,8 +32,8 @@ public class KeyMapping {
     private final Scene scene;
     private final AppPaneController paneController;
     private final EventBus eventBus;
-    private final Duration jump = Duration.ofSeconds(1);
-    private final Duration miniJump = Duration.ofMillis(100);
+    private Duration jump = Duration.ofSeconds(1);
+    private Duration miniJump = Duration.ofMillis(100);
     //private final MediaPlayerDecorator mediaPlayerDecorator;
 
     private final KeyCombination.Modifier osModifier = KeyCombination.SHORTCUT_DOWN;
@@ -49,7 +49,22 @@ public class KeyMapping {
         this.paneController = paneController;
         eventBus = toolBox.getEventBus();
 //        mediaPlayerDecorator = new MediaPlayerDecorator(toolBox);
+
+        // Listen for changes to timeJump in Data. timeJump can be changed in a
+        // SharktopodaSettingsPaneController
+        toolBox.getData().timeJumpProperty().addListener((obj, oldV, newV) -> {
+            if (newV != null) {
+                setTimeJump(newV.intValue());
+            }
+        });
+        setTimeJump(toolBox.getData().getTimeJump());
         apply();
+    }
+
+    private void setTimeJump(int millis) {
+        Duration d = Duration.ofMillis(millis);
+        jump = d;
+        miniJump = d.dividedBy(10);
     }
 
     private void apply() {

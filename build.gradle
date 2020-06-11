@@ -113,12 +113,25 @@ subprojects {
     }
 
     publishing {
+        repositories {
+//            maven {
+//                name = "GitHubPackages"
+//                url = uri("https://maven.pkg.github.com/mbari-media-management")
+//                credentials {
+//                    username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
+//                    password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+//                }
+//            }
+        }
         publications {
             maven(MavenPublication) {
                 groupId "org.mbari.m3"
                 artifactId project.name
                 from components.java
             }
+//            gpr(MavenPublication) {
+//                from components.java
+//            }
         }
     }
 

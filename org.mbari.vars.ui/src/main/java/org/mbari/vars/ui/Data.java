@@ -32,6 +32,8 @@ public class  Data {
 
     private final BooleanProperty showConcurrentAnnotations = new SimpleBooleanProperty(false);
 
+    private final IntegerProperty timeJump = new SimpleIntegerProperty(1000);
+
     public Media getMedia() {
         return media.get();
     }
@@ -116,5 +118,21 @@ public class  Data {
 
     public void setShowConcurrentAnnotations(boolean showConcurrentAnnotations) {
         this.showConcurrentAnnotations.set(showConcurrentAnnotations);
+    }
+
+    public int getTimeJump() {
+        return timeJump.get();
+    }
+
+    /**
+     * The amount of time in milliseconds to jump forward or back on a keystroke
+     * @return
+     */
+    public IntegerProperty timeJumpProperty() {
+        return timeJump;
+    }
+
+    public void setTimeJump(int timeJump) {
+        this.timeJump.set(timeJump);
     }
 }

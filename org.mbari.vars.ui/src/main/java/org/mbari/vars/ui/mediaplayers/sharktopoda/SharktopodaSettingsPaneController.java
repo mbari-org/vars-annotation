@@ -7,6 +7,7 @@ import java.util.prefs.Preferences;
 
 import com.typesafe.config.Config;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
@@ -33,11 +34,16 @@ public class SharktopodaSettingsPaneController implements IPrefs {
     private TextField framegrabPortTextField;
 
     @FXML
+    private TextField timeJumpTextField;
+
+    @FXML
     private GridPane root;
 
     private Preferences prefs = Preferences.userNodeForPackage(getClass());
     public static final String CONTROL_PORT_KEY = "sharktopoda-control-port";
     public static final String FRAMEGRAB_PORT_KEY = "sharktopoda-framegrab-port";
+    public static final String TIME_JUMP = "sharktopoda-time-jump";
+    public static final Integer DEFAULT_TIME_JUMP = 1000;
 
     @FXML
     void initialize() {
@@ -52,8 +58,10 @@ public class SharktopodaSettingsPaneController implements IPrefs {
 
         TextFormatter<String> textFormatter1 = new TextFormatter<>(filter);
         TextFormatter<String> textFormatter2 = new TextFormatter<>(filter);
+        TextFormatter<String> textFormatter3 = new TextFormatter<>(filter);
         controlPortTextField.setTextFormatter(textFormatter1);
         framegrabPortTextField.setTextFormatter(textFormatter2);
+        timeJumpTextField.setTextFormatter(textFormatter3);
 
         load();
     }
@@ -78,6 +86,16 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         }
     }
 
+    public static Integer getTimeJump() {
+        Preferences prefs = Preferences.userNodeForPackage(SharktopodaSettingsPaneController.class);
+        try {
+            return prefs.getInt(TIME_JUMP, DEFAULT_TIME_JUMP);
+        }
+        catch (Exception e) {
+            return DEFAULT_TIME_JUMP;
+        }
+    }
+
     public static SharktopodaSettingsPaneController newInstance() {
         ResourceBundle i18n = Initializer.getToolBox().getI18nBundle();
         return FXMLUtils.newInstance(SharktopodaSettingsPaneController.class,
@@ -97,8 +115,10 @@ public class SharktopodaSettingsPaneController implements IPrefs {
 
         int sharkPort = prefs.getInt(CONTROL_PORT_KEY, dSharkPort);
         int fgPort = prefs.getInt(FRAMEGRAB_PORT_KEY, dFgPort);
+        int timeJump = prefs.getInt(TIME_JUMP, DEFAULT_TIME_JUMP);
         controlPortTextField.setText(sharkPort + "");
         framegrabPortTextField.setText(fgPort + "");
+        timeJumpTextField.setText(timeJump + "");
     }
 
     @Override
@@ -108,11 +128,13 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         AppConfig appConfig = toolBox.getAppConfig();
         int sharkPort = appConfig.getSharktopodaDefaultsControlPort();
         int fgPort = appConfig.getSharktopodaDefaultsFramegrabPort();
+        int timeJump = toolBox.getData().getTimeJump();
         ResourceBundle i18n = toolBox.getI18nBundle();
 
         try {
             sharkPort = Integer.parseInt(controlPortTextField.getText());
             fgPort = Integer.parseInt(framegrabPortTextField.getText());
+            timeJump = Integer.parseInt(timeJumpTextField.getText());
         }
         catch (Exception e) {
             toolBox.getEventBus()
@@ -123,6 +145,10 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         }
         prefs.putInt(CONTROL_PORT_KEY, sharkPort);
         prefs.putInt(FRAMEGRAB_PORT_KEY, fgPort);
+
+        // Time jump is saved to prefs but also set in Data so it can be used immediatly
+        prefs.putInt(TIME_JUMP, timeJump);
+        toolBox.getData().setTimeJump(timeJump);
 
         Media media = toolBox.getData()
                 .getMedia();

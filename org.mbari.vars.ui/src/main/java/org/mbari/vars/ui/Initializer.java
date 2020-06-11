@@ -6,6 +6,7 @@ import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.ServicesBuilder;
 import org.mbari.vars.services.Services;
 import org.mbari.vars.core.util.LessCSSLoader;
+import org.mbari.vars.ui.mediaplayers.sharktopoda.SharktopodaSettingsPaneController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +25,8 @@ import java.util.concurrent.ForkJoinPool;
  * @since 2017-05-15T10:52:00
  */
 public class Initializer {
+
+    private static final Logger log = LoggerFactory.getLogger(Initializer.class);
 
     private static Path settingsDirectory;
     private static Path imageDirectory;
@@ -65,7 +68,14 @@ public class Initializer {
             LessCSSLoader lessLoader = new LessCSSLoader();
             String stylesheet = lessLoader.loadLess(Initializer.class.getResource("/less/annotation.less"))
                     .toExternalForm();
-            toolBox = new UIToolBox(new Data(),
+
+            //
+            Data data = new Data();
+            Integer timeJump = SharktopodaSettingsPaneController.getTimeJump();
+            log.info("Setting Time Jump to {} millis", timeJump);
+            data.setTimeJump(timeJump);
+
+            toolBox = new UIToolBox(data,
                     services,
                     new EventBus(),
                     bundle,
@@ -76,7 +86,7 @@ public class Initializer {
         return toolBox;
     }
 
-    private static final Logger log = LoggerFactory.getLogger(Initializer.class);
+
 
     /**
      * The settingsDirectory is scratch space for VARS
