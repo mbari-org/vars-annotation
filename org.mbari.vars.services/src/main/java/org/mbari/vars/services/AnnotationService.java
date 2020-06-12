@@ -69,6 +69,8 @@ public interface AnnotationService {
 
     CompletableFuture<Boolean> deleteImage(UUID imageReferenceUuid);
 
+    CompletableFuture<Annotation> deleteDuration(UUID observationUuid);
+
     CompletableFuture<List<String>> findActivities();
 
     CompletableFuture<List<UUID>> findAllVideoReferenceUuids();

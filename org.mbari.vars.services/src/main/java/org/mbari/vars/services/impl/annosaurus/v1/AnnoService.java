@@ -274,6 +274,12 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     }
 
     @Override
+    public CompletableFuture<Annotation> deleteDuration(UUID observationUuid) {
+        return sendRequest(annoService.deleteDuration(observationUuid))
+                .thenCompose(observation -> findByUuid(observation.getUuid()));
+    }
+
+    @Override
     public CompletableFuture<List<String>> findActivities() {
         return sendRequest(annoService.findActivities());
     }

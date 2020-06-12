@@ -149,6 +149,9 @@ public interface AnnoWebService {
     @GET("observations/groups")
     Call<List<String>> findGroups();
 
+    @PUT("observations/delete/duration/{uuid}")
+    Call<Observation> deleteDuration(@Path("uuid") UUID observationUuid);
+
     @PUT("ancillarydata/merge/{uuid}")
     Call<Collection<AncillaryData>> merge(@Path("uuid") UUID videoReferenceUuid,
             @Body Collection<AncillaryData> data, @HeaderMap Map<String, String> headers);
