@@ -32,6 +32,8 @@ import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
 import org.mbari.vars.ui.javafx.shared.HierarchicalConceptComboBoxDecorator;
 import org.mbari.vars.ui.util.FXMLUtils;
 import org.mbari.vars.core.util.ListUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AssociationEditorPaneController {
 
@@ -80,6 +82,7 @@ public class AssociationEditorPaneController {
     private volatile Annotation annotation;
     private volatile Association selectedAssociation;
     private static final ConceptAssociationTemplate nil = ConceptAssociationTemplate.NIL;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
 
     @FXML
@@ -147,6 +150,7 @@ public class AssociationEditorPaneController {
         // Trigger search when enter is pressed in search field
         searchTextField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
+                event.consume();
                 searchTemplates(searchTextField.getText());
             }
         });

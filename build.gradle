@@ -50,7 +50,7 @@ subprojects {
     }
 
     ext {
-        javafxVersion = "14"
+        javafxVersion = "14.0.1"
     }
 
     dependencies {

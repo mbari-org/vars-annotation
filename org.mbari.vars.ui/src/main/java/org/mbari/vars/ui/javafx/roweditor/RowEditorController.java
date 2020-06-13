@@ -14,6 +14,8 @@ import org.mbari.vars.ui.commands.DeleteAssociationsCmd;
 import org.mbari.vars.ui.commands.UpdateAssociationCmd;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -27,6 +29,7 @@ public class RowEditorController {
     private Pane root;
     private volatile Annotation annotation;
     private final UIToolBox toolBox = Initializer.getToolBox();
+//    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public RowEditorController() {
         rowController = AnnotationEditorPaneController.newInstance();
@@ -87,6 +90,7 @@ public class RowEditorController {
                         .send(cmd);
             }
         });
+
 
         associationController.getAddButton().setOnAction(v -> doAction());
         associationController.getLinkValueTextField().setOnAction(v -> doAction());
