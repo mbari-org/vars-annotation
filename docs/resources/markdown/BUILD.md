@@ -63,7 +63,7 @@ export MAC_SIGNING_KEY_USER_NAME="Your Sigining User Name"
 
 ### Define JPACKAGE_HOME
 
-The looks for the environment variable `JPACKAGE_HOME`. This is the equivalent of `JAVA_HOME` but points to the JDK 14+ build. Here's examples
+The build looks for the environment variable `JPACKAGE_HOME`. This is the equivalent of `JAVA_HOME` but points to the JDK 14+ build. Here's examples
 
 __macOS__: E
 
@@ -90,7 +90,7 @@ export JPACKAGE_HOME=/usr/lib/jvm/openjdk-14-jdk
 
 ## Build
 
-1. Run `gradlew check` to run tests and verify environment
+1. Optional: Run `gradlew check` to run tests and verify environment
 2. Set your `JPACKAGE_HOME` variable. e.g. `export JPACKAGE_HOME="/Path/To/adoptopenjdk-14.jdk/Contents/Home"`
 3. Set other required env variables: `source "/My/Path/To/env-config.sh"`
 4. Run `gradlew clean jpackage --info`
