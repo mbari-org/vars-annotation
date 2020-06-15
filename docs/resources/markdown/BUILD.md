@@ -22,9 +22,10 @@ gradle jpackage
 
 ### Customization for your Infrastructure
 
-The build can be customized for your deployment by setting environment variables _before_ you run a build. Refer to [reference.conf](https://github.com/mbari-media-management/vars-annotation/blob/master/org.mbari.vars.ui/src/main/resources/reference.conf) for more details. If any of these variables are not explicitly defined, they will default to values appropriate for working with the development setup provided by [m3-microservices](https://github.com/mbari-media-management/m3-microservices). This project includes an example [env-config.sh](https://github.com/mbari-media-management/vars-annotation/blob/master/env-config.sh)
+The build can be customized for your deployment by setting environment variables _before_ you run a build. Refer to [reference.conf](https://github.com/mbari-media-management/vars-annotation/blob/master/org.mbari.vars.ui/src/main/resources/reference.conf) for more details. If any of these variables are not explicitly defined, they will default to values appropriate for working with the development setup provided by [m3-microservices](https://github.com/mbari-media-management/m3-microservices). 
 
-These environment variables define information about your in-house microservices configuration. For Linux/Mac, I recommend putting these in a file like `env-config.sh`. Here's example contents below, substitute in the actual URLs and Secrets for your configuration:
+These environment variables define information about your in-house microservices configuration. For Linux/Mac, I recommend putting these in a file like `env-config.sh`. This project includes an example [env-config.sh](https://github.com/mbari-media-management/vars-annotation/blob/master/env-config.sh)
+. Here's example contents below, substitute in the actual URLs and Secrets for your configuration:
 
 __env-config.sh__
 
@@ -94,7 +95,7 @@ export JPACKAGE_HOME=/usr/lib/jvm/openjdk-14-jdk
 2. Set your `JPACKAGE_HOME` variable. e.g. `export JPACKAGE_HOME="/Path/To/adoptopenjdk-14.jdk/Contents/Home"`
 3. Set other required env variables: `source "/My/Path/To/env-config.sh"`
 4. Run `gradlew clean jpackage --info`
-5. The build package will be found in `vars-annotation/org.mbari.vars.ui/build/jpackage`. The app will be packaged for whatever OS you run the build on. Note that the built app includes it's own packaged JVM, so it can be distrubuted without requiring users to install Java.
+5. The built package will be found in `vars-annotation/org.mbari.vars.ui/build/jpackage`. The app will be packaged for whatever OS you run the build on. Note that the built app includes it's own packaged JVM, so it can be distrubuted without requiring users to install Java.
 
 ## Useful commands
 
