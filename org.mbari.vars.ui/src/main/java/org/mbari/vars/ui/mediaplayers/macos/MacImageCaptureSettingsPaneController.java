@@ -62,6 +62,7 @@ public class MacImageCaptureSettingsPaneController implements SettingsPane  {
         avfRadioButton.setUserData(CaptureApi.AVFOUNDATION);
         bmRadioButton.setToggleGroup(toggleGroup);
         bmRadioButton.setUserData(CaptureApi.BLACKMAGIC_DESIGN);
+        bmRadioButton.setDisable(true);
         toggleGroup.selectedToggleProperty().addListener((obs, oldv, newv) -> {
             if (newv != null) {
                 CaptureApi captureApi = (CaptureApi) newv.getUserData();
