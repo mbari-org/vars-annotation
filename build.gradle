@@ -10,7 +10,7 @@ plugins {
 
 subprojects {
 
-    version = "0.5.0"
+    version = "0.5.1"
 
     apply plugin: 'com.adarshr.test-logger'
     apply plugin: 'com.github.ben-manes.versions'
@@ -79,7 +79,7 @@ subprojects {
             implementation 'org.glassfish.jersey.core:jersey-client:2.29'
             implementation 'org.kordamp.ikonli:ikonli-javafx:11.5.0'
             implementation 'org.kordamp.ikonli:ikonli-material-pack:11.5.0'
-            implementation 'org.mbari.m3:vars-blackmagic:0.0.2'
+//            implementation 'org.mbari.m3:vars-blackmagic:0.0.2'
             implementation 'org.mbari.vars:vars-avfoundation:2.2.3'
             implementation 'org.mbari.vcr4j:vcr4j-core:4.4.0.jre11'
             implementation 'org.mbari.vcr4j:vcr4j-jserialcomm:4.4.0.jre11'

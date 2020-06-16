@@ -25,9 +25,9 @@ dependencies {
     implementation 'org.mbari.vcr4j:vcr4j-sharktopoda'
     implementation 'org.slf4j:slf4j-api'
 
-    implementation('org.mbari.m3:vars-blackmagic') {
-        exclude group: 'org.slf4j', module: 'slf4j-simple'
-    }
+//    implementation('org.mbari.m3:vars-blackmagic') {
+//        exclude group: 'org.slf4j', module: 'slf4j-simple'
+//    }
 
     implementation('eu.hansolo:Medusa') {
         exclude group: 'org.openjfx'
