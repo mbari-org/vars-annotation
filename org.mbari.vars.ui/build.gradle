@@ -190,16 +190,17 @@ jlink {
                 "--mac-package-name", "VARS Annotation",
                 "--mac-package-identifier", project.name
             ])
+            imageOptions = ["--icon", "src/jpackage/macos/VARS Annotation.icns"]
 
-            def prefix = System.getenv("MAC_PACKAGE_SIGNING_PREFIX")
-            def user=System.getenv("MAC_SIGNING_KEY_USER_NAME")
-            if (prefix && user) {
-                customInstallerOptions.addAll([
-                    "--mac-sign",
-                    "--mac-package-signing-prefix", prefix,
-                    "--mac-signing-key-user-name", user
-                ])
-            }
+            // def prefix = System.getenv("MAC_PACKAGE_SIGNING_PREFIX")
+            // def user=System.getenv("MAC_SIGNING_KEY_USER_NAME")
+            // if (prefix && user) {
+            //     customInstallerOptions.addAll([
+            //         "--mac-sign",
+            //         "--mac-package-signing-prefix", prefix,
+            //         "--mac-signing-key-user-name", user
+            //     ])
+            // }
 
         }
         installerOptions = customInstallerOptions
@@ -210,12 +211,12 @@ jlink {
 
 tasks.jpackageImage.doLast {
     if (org.gradle.internal.os.OperatingSystem.current().isMacOsX()) {
-        copy {
-            println("MACOSX: Adding VARS Annotation.icns")
-            from "src/jpackage/macos"
-            include "VARS Annotation.icns"
-            into "build/jpackage/VARS Annotation.app/Contents/Resources"
-        }
+        // copy {
+        //     println("MACOSX: Adding VARS Annotation.icns")
+        //     from "src/jpackage/macos"
+        //     include "VARS Annotation.icns"
+        //     into "build/jpackage/VARS Annotation.app/Contents/Resources"
+        // }
         exec {
             println("MACOSX: Modifying Info.plist")
             workingDir "build/jpackage/VARS Annotation.app/Contents"
@@ -225,7 +226,21 @@ tasks.jpackageImage.doLast {
             args '-insert', 'NSCameraUsageDescription', '-string',  
               'VARS Annotation uses camera access for framecapture from hardware', 
               'Info.plist'
+        }
 
+        
+        def signer = System.getenv("MAC_CODE_SIGNER")
+        if (signer) {
+            exec {
+                println("MACOSX: Signing application")
+                workingDir "build/jpackage"
+
+                executable "codesign"
+
+                args "--entitlements", "${projectDir}/src/jpackage/macos/java.entitlements",
+                  "--options", "runtime", "--deep", "-vvv", "-f", "--sign", signer, 
+                  "VARS Annotation.app"
+            }
         }
     }
 }
