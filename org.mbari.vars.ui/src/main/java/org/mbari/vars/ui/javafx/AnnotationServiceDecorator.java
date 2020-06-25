@@ -149,7 +149,7 @@ public class AnnotationServiceDecorator {
 
         Function<RequestPager.Page, List<Annotation>> function = (page) -> {
             try {
-                return service.findAnnotations(ac.getVideoReferenceUuid(), page.getLimit(), page.getOffset())
+                return service.findAnnotations(ac.getVideoReferenceUuid(), page.getLimit(), page.getOffset(), false)
                         .get(chunkTimeout.toMillis(), TimeUnit.MILLISECONDS);
             } catch (Exception e) {
                 log.info("A page request failed.", e);
@@ -295,7 +295,7 @@ public class AnnotationServiceDecorator {
         AnnotationService service = toolBox.getServices().getAnnotationService();
         EventBus eventBus = toolBox.getEventBus();
 
-        return service.findAnnotations(videoReferenceUuid, limit, offset)
+        return service.findAnnotations(videoReferenceUuid, limit, offset, false)
                 .thenApply(annotations -> media == null ? annotations : filterWithinMedia(annotations, media))
                 .thenAccept(annotations -> updateUI(eventBus,
                         annotations,

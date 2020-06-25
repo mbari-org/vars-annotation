@@ -49,7 +49,7 @@ public class AnnoServiceTest {
         assertFalse("Expect to find annotations, but none were returned", as0.isEmpty());
 
         // Find using limit and offset
-        CompletableFuture<List<Annotation>> f1 = annoService.findAnnotations(uuid, 2L, 4L);
+        CompletableFuture<List<Annotation>> f1 = annoService.findAnnotations(uuid, 2L, 4L, false);
         Optional<List<Annotation>> annos1 = await(f1, timeout);
         assertTrue("Expect to find annotations, but none were returned", annos1.isPresent());
         List<Annotation> as1 = annos1.get();

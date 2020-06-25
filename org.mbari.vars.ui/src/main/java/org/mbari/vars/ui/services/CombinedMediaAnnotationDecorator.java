@@ -105,7 +105,7 @@ public class CombinedMediaAnnotationDecorator {
 
                 try {
                     List<Annotation> annotations = annotationService
-                            .findAnnotations(ac.getVideoReferenceUuid(), limit, offset)
+                            .findAnnotations(ac.getVideoReferenceUuid(), limit, offset, false)
                             .get(chunkTimeout.toMillis(), TimeUnit.MILLISECONDS);
                     allAnnotations.addAll(annotations);
                 }

@@ -307,14 +307,25 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
 
     @Override
     public CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid) {
-        return findAnnotations(videoReferenceUuid, null, null);
+        return findAnnotations(videoReferenceUuid, null, null, false);
+    }
+
+    @Override
+    public CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, boolean data) {
+        return findAnnotations(videoReferenceUuid, null, null, data);
+    }
+
+    @Override
+    public CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, Long limit,
+                                                               Long offset) {
+        return sendRequest(annoService.findByVideoReferenceUuid(videoReferenceUuid, limit, offset, false));
     }
 
 
     @Override
     public CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, Long limit,
-            Long offset) {
-        return sendRequest(annoService.findByVideoReferenceUuid(videoReferenceUuid, limit, offset));
+            Long offset, Boolean data) {
+        return sendRequest(annoService.findByVideoReferenceUuid(videoReferenceUuid, limit, offset, data));
     }
 
     /**

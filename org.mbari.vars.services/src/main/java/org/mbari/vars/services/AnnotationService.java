@@ -85,7 +85,17 @@ public interface AnnotationService {
 
     CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid);
 
+    /**
+     * Finds annotations by videoReference
+     * @param videoReferenceUuid The UUID of the videoreference
+     * @param data true if we want ancillary data returned. false will not return ancillary data
+     * @return
+     */
+    CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, boolean data);
+
     CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, Long limit, Long offset);
+
+    CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, Long limit, Long offset, Boolean data);
 
     CompletableFuture<Association> findAssociationByUuid(UUID associationUuid);
 

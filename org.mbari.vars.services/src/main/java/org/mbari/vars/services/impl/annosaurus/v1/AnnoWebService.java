@@ -144,7 +144,9 @@ public interface AnnoWebService {
 //    @GET("annotations/videoreference/chunked/{uuid}")
     @GET("fast/videoreference/{uuid}")
     Call<List<Annotation>> findByVideoReferenceUuid(@Path("uuid") UUID uuid,
-            @Query("limit") Long limit, @Query("offset") Long offset);
+            @Query("limit") Long limit,
+            @Query("offset") Long offset,
+            @Query("data") Boolean data);
 
     @GET("observations/groups")
     Call<List<String>> findGroups();
