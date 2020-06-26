@@ -112,6 +112,12 @@ public class VamService implements MediaService, RetrofitWebService {
     }
 
     @Override
+    public CompletableFuture<Boolean> delete(UUID videoReferenceUuid) {
+        return sendRequest(vamWebService.deleteVideoReference(videoReferenceUuid))
+                .handle((v, ex) -> ex == null);
+    }
+
+    @Override
     public CompletableFuture<Media> findByUuid(UUID uuid) {
         return sendRequest(vamWebService.findByUuid(uuid));
     }

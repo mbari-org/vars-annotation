@@ -94,6 +94,8 @@ public interface VamWebService {
                        @FieldMap Map<String, String> fields,
                        @HeaderMap Map<String, String> headers);
 
+    @DELETE("videoreferences/{uuid}")
+    Call<Void> deleteVideoReference(@Path("uuid") UUID videoReferenceUuid);
 
     @GET("videosequences/lastupdate/{uuid}")
     Call<LastUpdate> findLastVideoSequenceUpdate(@Path("uuid") UUID uuid);

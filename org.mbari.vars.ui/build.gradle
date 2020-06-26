@@ -84,6 +84,7 @@ def runtimeJvmArgs = [
         '--add-exports', 'javafx.graphics/com.sun.javafx.stage=com.jfoenix',
         '--add-opens', 'java.base/java.lang.invoke=retrofit2',
         '--add-opens', 'java.base/java.lang.invoke=vars.annotation.merged.module',
+        '--add-opens', 'java.base/java.lang.reflect=com.jfoenix',
         '--add-reads', 'vars.annotation.merged.module=org.slf4j'
 ]
 
