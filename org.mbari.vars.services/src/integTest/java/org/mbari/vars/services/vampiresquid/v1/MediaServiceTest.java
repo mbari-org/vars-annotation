@@ -12,9 +12,11 @@ import org.mbari.vars.services.model.Media;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.time.Instant;
 
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +28,12 @@ import java.util.concurrent.TimeoutException;
  */
 public class MediaServiceTest {
     MediaService mediaService = TestToolbox.getServices().getMediaService();
+
+    private byte[] randomSha512() {
+        var b = new byte[64];
+        new Random().nextBytes(b);
+        return b;
+    }
 
     // THis passes but we're turning it off so that we don't put
     // bogus values in the database
@@ -52,6 +60,7 @@ public class MediaServiceTest {
         media.setVideoName("Test-02-" + now);
         media.setUri(URI.create("http://www.foo.bar/test/Test-02-" + now.toEpochMilli() + ".mp4"));
         media.setStartTimestamp(now);
+        media.setSha512(randomSha512());
         var f = mediaService.create(media);
         var m = f.get(5000, TimeUnit.MILLISECONDS);
         assertNotNull(m);
@@ -63,6 +72,58 @@ public class MediaServiceTest {
         assertNotNull(m.getVideoSequenceUuid());
         assertNotNull(m.getVideoUuid());
         assertNotNull(m.getVideoReferenceUuid());
+    }
+
+    @Ignore
+    @Test
+    public void testUpdate() throws Exception {
+        Instant now = Instant.now();
+        var media = new Media();
+        media.setVideoSequenceName("Test-03");
+        media.setCameraId("Test");
+        media.setVideoName("Test-03-" + now);
+        media.setUri(URI.create("http://www.foo.bar/test/Test-03-" + now.toEpochMilli() + ".mp4"));
+        media.setStartTimestamp(now);
+        media.setSha512(randomSha512()); // SHA is required to be able to update media!!
+        var f = mediaService.create(media);
+        var m = f.get(5000, TimeUnit.MILLISECONDS);
+        assertNotNull(m);
+        assertNotNull(m.getVideoReferenceUuid());
+        var then = now.plus(Duration.ofDays(3));
+        var duration = Duration.ofMillis(1234);
+        // FIXME: This update actually calls a `video` endpoint and returns a video JSON not a media
+        var m1 = mediaService.update(m.getVideoReferenceUuid(), then, duration).get(5000, TimeUnit.MILLISECONDS);
+        assertNotNull(m1);
+        assertEquals(duration, m1.getDuration());
+        assertEquals(then, m1.getStartTimestamp());
+    }
+
+    @Test
+    public void testUpdateMedia() throws Exception {
+        var now = Instant.now();
+        var media = new Media();
+        media.setVideoSequenceName("Test-04");
+        media.setCameraId("Test");
+        media.setVideoName("Test-04-" + now);
+        media.setUri(URI.create("http://www.foo.bar/test/Test-04-" + now.toEpochMilli() + ".mp4"));
+        media.setStartTimestamp(now);
+        media.setSha512(randomSha512()); // SHA is required to be able to update media!!
+        var f = mediaService.create(media);
+        var m = f.get(5000, TimeUnit.MILLISECONDS);
+        assertNotNull(m);
+        var then = now.plus(Duration.ofDays(3));
+        var duration = Duration.ofMillis(1234);
+        m.setStartTimestamp(then);
+        m.setDuration(duration);
+        m.setWidth(200);
+        m.setHeight(200);
+        var m1 = mediaService.update(m).get(5000, TimeUnit.MILLISECONDS);
+        assertNotNull(m1);
+        assertNotNull(m1.getVideoReferenceUuid());
+        assertEquals(then, m1.getStartTimestamp());
+        assertEquals(duration, m1.getDuration());
+        assertEquals(200, m1.getWidth().intValue());
+        assertEquals(200, m1.getHeight().intValue());
 
     }
 

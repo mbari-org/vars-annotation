@@ -88,6 +88,7 @@ public interface VamWebService {
                             @FieldMap Map<String, String> fields,
                             @HeaderMap Map<String, String> headers);
 
+    // FIXME: THis actually returns a video, not a media.
     @FormUrlEncoded
     @PUT("videos/{uuid}")
     Call<Media> update(@Path("uuid") UUID videoUuid,
