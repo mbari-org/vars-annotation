@@ -127,6 +127,24 @@ public class MediaServiceTest {
 
     }
 
+    @Test
+    public void testDelete() throws  Exception {
+        var now = Instant.now();
+        var media = new Media();
+        media.setVideoSequenceName("Test-05");
+        media.setCameraId("Test");
+        media.setVideoName("Test-05-" + now);
+        media.setUri(URI.create("http://www.foo.bar/test/Test-05-" + now.toEpochMilli() + ".mp4"));
+        media.setStartTimestamp(now);
+        media.setSha512(randomSha512());
+        var m = mediaService.create(media).get(5000, TimeUnit.MILLISECONDS);
+        assertNotNull(m);
+        var ok = mediaService.delete(m.getVideoReferenceUuid()).get(5000, TimeUnit.MILLISECONDS);
+        assertTrue(ok);
+        m = mediaService.findBySha512(media.getSha512()).get(5000, TimeUnit.MILLISECONDS);
+        assertNull(m);
+    }
+
 
     @Test
     public void testFindByVideoSequenceName() throws Exception {
