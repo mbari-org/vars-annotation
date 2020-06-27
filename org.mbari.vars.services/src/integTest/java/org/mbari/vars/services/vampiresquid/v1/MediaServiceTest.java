@@ -61,6 +61,7 @@ public class MediaServiceTest {
         media.setUri(URI.create("http://www.foo.bar/test/Test-02-" + now.toEpochMilli() + ".mp4"));
         media.setStartTimestamp(now);
         media.setSha512(randomSha512());
+        media.setFrameRate(24.0);
         var f = mediaService.create(media);
         var m = f.get(5000, TimeUnit.MILLISECONDS);
         assertNotNull(m);
@@ -72,6 +73,7 @@ public class MediaServiceTest {
         assertNotNull(m.getVideoSequenceUuid());
         assertNotNull(m.getVideoUuid());
         assertNotNull(m.getVideoReferenceUuid());
+        assertEquals(media.getFrameRate(), m.getFrameRate());
     }
 
     @Ignore
@@ -117,14 +119,15 @@ public class MediaServiceTest {
         m.setDuration(duration);
         m.setWidth(200);
         m.setHeight(200);
+        m.setFrameRate(24.0);
         var m1 = mediaService.update(m).get(5000, TimeUnit.MILLISECONDS);
         assertNotNull(m1);
         assertNotNull(m1.getVideoReferenceUuid());
         assertEquals(then, m1.getStartTimestamp());
         assertEquals(duration, m1.getDuration());
-        assertEquals(200, m1.getWidth().intValue());
-        assertEquals(200, m1.getHeight().intValue());
-
+        assertEquals(m.getWidth().intValue(), m1.getWidth().intValue());
+        assertEquals(m.getHeight().intValue(), m1.getHeight().intValue());
+        assertEquals(m.getFrameRate(), m1.getFrameRate());
     }
 
     @Test

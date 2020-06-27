@@ -49,7 +49,7 @@ public class VamService implements MediaService, RetrofitWebService {
         addField(fieldMap, "container", media::getContainer);
         addField(fieldMap, "width", () -> media.getWidth().toString());
         addField(fieldMap, "height", () -> media.getHeight().toString());
-        addField(fieldMap, "frameRate", () -> media.getFrameRate().toString());
+        addField(fieldMap, "frame_rate", () -> media.getFrameRate().toString());
         addField(fieldMap, "size_bytes", () -> media.getSizeBytes().toString());
         addField(fieldMap, "sha512", () -> HexUtils.printHexBinary(media.getSha512()));
         addField(fieldMap, "video_codec", media::getVideoCodec);
@@ -101,7 +101,7 @@ public class VamService implements MediaService, RetrofitWebService {
         addField(fieldMap, "container", media::getContainer);
         addField(fieldMap, "width", () -> media.getWidth().toString());
         addField(fieldMap, "height", () -> media.getHeight().toString());
-        addField(fieldMap, "frameRate", () -> media.getFrameRate().toString());
+        addField(fieldMap, "frame_rate", () -> media.getFrameRate().toString());
         addField(fieldMap, "size_bytes", () -> media.getSizeBytes().toString());
         addField(fieldMap, "sha512", () -> HexUtils.printHexBinary(media.getSha512()));
         addField(fieldMap, "video_codec", media::getVideoCodec);
