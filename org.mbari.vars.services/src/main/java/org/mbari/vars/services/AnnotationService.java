@@ -57,6 +57,8 @@ public interface AnnotationService {
 
     CompletableFuture<List<AncillaryData>> createOrUpdateAncillaryData(List<AncillaryData> ancillaryData);
 
+    CompletableFuture<CachedVideoReference> createCachedVideoReference(CachedVideoReference cvr);
+
     CompletableFuture<AncillaryDataDeleteCount> deleteAncillaryDataByVideoReference(UUID videoReferenceUuid);
 
     CompletableFuture<Boolean> deleteAnnotation(UUID observationUuid);
@@ -70,6 +72,8 @@ public interface AnnotationService {
     CompletableFuture<Boolean> deleteImage(UUID imageReferenceUuid);
 
     CompletableFuture<Annotation> deleteDuration(UUID observationUuid);
+
+    CompletableFuture<Boolean> deleteCacheVideoReference(UUID uuid);
 
     CompletableFuture<List<String>> findActivities();
 
@@ -148,4 +152,6 @@ public interface AnnotationService {
     CompletableFuture<Collection<Annotation>> updateRecordedTimestampsForTapes(Collection<Annotation> annotations);
 
     CompletableFuture<Optional<ImagedMoment>> updateRecordedTimestamp(UUID imagedMomentUuid, Instant recordedTimestamp);
+
+    CompletableFuture<CachedVideoReference> updateCachedVideoReference(CachedVideoReference cvr);
 }

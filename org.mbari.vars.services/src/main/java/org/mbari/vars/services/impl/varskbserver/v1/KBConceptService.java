@@ -87,29 +87,28 @@ public class KBConceptService implements ConceptService, RetrofitWebService {
      * @return The parent concept if found. Empty otherwise
      */
     private Optional<Concept> findParent(Concept concept, String conceptName) {
-        List<Concept> children = concept.getChildren();
 
-        // Exit recursion
-        if (children == null || children.isEmpty()) {
-            return Optional.empty();
+        Optional<Concept> theParent = Optional.empty();
+
+        if (concept != null) {
+            var parent = concept;
+            while (true) {
+                if (parent.getChildren().isEmpty()) {
+                    break;
+                }
+                var match = parent.getChildren()
+                        .stream()
+                        .map(Concept::getName)
+                        .filter(c -> c.equalsIgnoreCase(conceptName))
+                        .findAny();
+                if (match.isPresent()) {
+                    theParent = Optional.of(parent);
+                    break;
+                } else {
+                    parent = parent.getChildren().get(0);
+                }
+            }
         }
-
-        Optional<Concept> match = children.stream()
-                .filter(c -> c.getName().equals(conceptName))
-                .findFirst();
-
-        if (match.isPresent()) {
-            return match;
-        }
-        else {
-            return children.stream()
-                    .map(c -> findParent(c, conceptName))
-                    .filter(Optional::isPresent)
-                    .findFirst()
-                    .orElseGet(Optional::empty);
-        }
-
-
-
+        return theParent;
     }
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
     Logging Configuration.
 -->
@@ -14,7 +14,7 @@
             <level>debug</level>
         </filter>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-<!--             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %p %c - %m%n</pattern>-->
+            <!--             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %p %c - %m%n</pattern>-->
             <pattern>%gray(%d{yyyy-MM-dd HH:mm:ss}) [%green(%-32t)] %highlight(%-5p) %blue(%-50c{50})  %m%n</pattern>
         </encoder>
     </appender>
@@ -33,11 +33,12 @@
     </appender>
 
     <logger name="java.util.Date" level="WARN" />
-    <logger name="org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory" level="DEBUG" />
+    <logger name="org.gradle" level="WARN" />
     <logger name="org.mbari.vars.core.util.ActiveAppPinger" level="WARN" />
+    <logger name="org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory" level="DEBUG" />
+    <logger name="org.mbari.vars.services.impl.panoptes.v1.PanoptesWebServiceFactory" level="INFO" />
     <logger name="org.mbari.vcr4j.jserialcomm.SerialCommVideoIO" level="INFO" />
     <logger name="org.mbari.vcr4j" level="INFO" />
-    <logger name="org.gradle" level="WARN" />
 
     <root level="${LOGBACK_LEVEL}">
         <appender-ref ref="FILE" />

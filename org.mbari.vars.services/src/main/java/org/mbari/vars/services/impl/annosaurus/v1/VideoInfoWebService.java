@@ -46,5 +46,4 @@ public interface VideoInfoWebService {
     @DELETE("videoreferences/{uuid}")
     Call<Void> delete(@Path("uuid") UUID uuid, @HeaderMap Map<String, String> headers);
 
-
 }

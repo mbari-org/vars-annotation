@@ -229,6 +229,14 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(dataService.createOrUpdate(ancillaryData, bulkHeaders));
     }
 
+    @Override
+    public CompletableFuture<CachedVideoReference> createCachedVideoReference(CachedVideoReference cvr) {
+        return sendRequest(videoInfoWebService.create(cvr.getVideoReferenceUuid(),
+                cvr.getMissionId(),
+                cvr.getPlatformName(),
+                cvr.getMissionId(), defaultHeaders));
+    }
+
     /**
      *
      * @param videoReferenceUuid
@@ -277,6 +285,12 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     public CompletableFuture<Annotation> deleteDuration(UUID observationUuid) {
         return sendRequest(annoService.deleteDuration(observationUuid))
                 .thenCompose(observation -> findByUuid(observation.getUuid()));
+    }
+
+    @Override
+    public CompletableFuture<Boolean> deleteCacheVideoReference(UUID uuid) {
+        return sendRequest(videoInfoWebService.delete(uuid, defaultHeaders))
+                .thenApply(v -> true);
     }
 
     @Override
@@ -588,6 +602,22 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(imagedMomentService.update(imagedMomentUuid, map, defaultHeaders))
                 .thenApply(Optional::ofNullable);
 
+    }
+
+    @Override
+    public CompletableFuture<CachedVideoReference> updateCachedVideoReference(CachedVideoReference cvr) {
+        var map = new HashMap<String, String>();
+        map.put("video_reference_uuid", cvr.getVideoReferenceUuid().toString());
+        if (cvr.getMissionContact() != null) {
+            map.put("mission_contact", cvr.getMissionContact());
+        }
+        if (cvr.getMissionId() != null) {
+            map.put("mission_id", cvr.getMissionId());
+        }
+        if (cvr.getPlatformName() != null) {
+            map.put("platform_name", cvr.getPlatformName());
+        }
+        return sendRequest(videoInfoWebService.update(cvr.getUuid(), map, defaultHeaders));
     }
 
 }
