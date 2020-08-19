@@ -234,7 +234,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         return sendRequest(videoInfoWebService.create(cvr.getVideoReferenceUuid(),
                 cvr.getMissionId(),
                 cvr.getPlatformName(),
-                cvr.getMissionId(), defaultHeaders));
+                cvr.getMissionContact(), defaultHeaders));
     }
 
     /**
