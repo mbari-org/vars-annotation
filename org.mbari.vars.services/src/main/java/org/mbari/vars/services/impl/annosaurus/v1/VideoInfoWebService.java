@@ -39,6 +39,12 @@ public interface VideoInfoWebService {
 
     @FormUrlEncoded
     @PUT("videoreferences/{uuid}")
+    Call<CachedVideoReference> updateByVideoReferenceUuid(@Path("uuid") UUID videoReferenceUuid,
+                                      @FieldMap Map<String, String> fields,
+                                      @HeaderMap Map<String, String> headers);
+
+    @FormUrlEncoded
+    @PUT("/{uuid}")
     Call<CachedVideoReference> update(@Path("uuid") UUID uuid,
                                       @FieldMap Map<String, String> fields,
                                       @HeaderMap Map<String, String> headers);
