@@ -38,13 +38,13 @@ public interface VideoInfoWebService {
                                       @HeaderMap Map<String, String> headers);
 
     @FormUrlEncoded
-    @PUT("videoreferences/{uuid}")
+    @PUT("videoreferences/videoreference/{uuid}")
     Call<CachedVideoReference> updateByVideoReferenceUuid(@Path("uuid") UUID videoReferenceUuid,
                                       @FieldMap Map<String, String> fields,
                                       @HeaderMap Map<String, String> headers);
 
     @FormUrlEncoded
-    @PUT("/{uuid}")
+    @PUT("videoreferences/{uuid}")
     Call<CachedVideoReference> update(@Path("uuid") UUID uuid,
                                       @FieldMap Map<String, String> fields,
                                       @HeaderMap Map<String, String> headers);
