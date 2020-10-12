@@ -7,6 +7,7 @@ This project can be built on macOS, Linux, and Windows (We actually tested all o
 ## tl;dr
 
 ```bash
+export JAVA_HOME="/Users/brian/Applications/jdk-11.jdk/Contents/Home"
 export JPACKAGE_HOME="/Users/brian/Applications/jdk-14.jdk/Contents/Home"
 source env-config.sh
 gradle jpackage
