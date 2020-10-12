@@ -10,7 +10,7 @@ This project can be built on macOS, Linux, and Windows (We actually tested all o
 export JAVA_HOME="/Users/brian/Applications/jdk-11.jdk/Contents/Home"
 export JPACKAGE_HOME="/Users/brian/Applications/jdk-14.jdk/Contents/Home"
 source env-config.sh
-gradle jpackage
+gradlew jpackage
 # built app is in org.mbari.vars.ui/build/jpackage
 ```
 
@@ -67,7 +67,7 @@ export MAC_SIGNING_KEY_USER_NAME="Your Sigining User Name"
 
 The build looks for the environment variable `JPACKAGE_HOME`. This is the equivalent of `JAVA_HOME` but points to the JDK 14+ build. Here's examples
 
-__macOS__: E
+__macOS__: 
 
 ```bash
 # bash
@@ -103,5 +103,5 @@ export JPACKAGE_HOME=/usr/lib/jvm/openjdk-14-jdk
 Show application dependencies:
 
 ```
-gradle org.mbari.vars.ui:dependencies --configuration implementation
+gradlew org.mbari.vars.ui:dependencies --configuration implementation
 ```
