@@ -35,7 +35,7 @@ Toggle Play/Stop                [ctrl]+[space]
 Scroll up one row               [cmd]+[shift]+up
 Scroll down one row             [cmd]+[shift]+down
 New annotation                  [cmd]+N
-Copy annotation to new time     [cmd]+G
+Copy annotation to new time     [cmd]+R
 Duplicate annotation            [cmd]+T
 Frame capture                   [cmd]+F
 Delete annotations              [cmd]+[delete]
