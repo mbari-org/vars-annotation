@@ -116,7 +116,7 @@ public class KeyMapping {
         map.put(new KeyCodeCombination(KeyCode.N, osModifier),
                 () -> eventBus.send(new NewAnnotationMsg()));
 
-        map.put(new KeyCodeCombination(KeyCode.G, osModifier),
+        map.put(new KeyCodeCombination(KeyCode.R, osModifier),
                 () -> eventBus.send(new CopyAnnotationMsg()));
 
         map.put(new KeyCodeCombination(KeyCode.T, osModifier),
