@@ -5,7 +5,7 @@ pluginManagement {
     id 'com.adarshr.test-logger' version '2.1.1'
     id 'nebula.facet' version '8.0.0'
     id 'nebula.maven-publish' version '17.3.2'
-    id 'org.beryx.jlink' version "2.23.2"
+    id 'org.beryx.jlink' version "2.23.3"
     id 'org.kordamp.gradle.jdeps' version '0.12.0'
     id "com.github.ben-manes.versions" version "0.36.0"
     id "com.github.spotbugs" version "4.6.0"

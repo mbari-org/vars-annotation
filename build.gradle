@@ -50,35 +50,35 @@ subprojects {
     }
 
     ext {
-        javafxVersion = "14.0.2.1"
+        javafxVersion = "15.0.1"
     }
 
     dependencies {
 
         constraints {
-            implementation 'com.auth0:java-jwt:3.10.3'
-            implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
+            implementation 'com.auth0:java-jwt:3.13.0'
+            implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.1'
             implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.1'
-            implementation 'com.github.ben-manes.caffeine:caffeine:2.8.5'
+            implementation 'com.github.ben-manes.caffeine:caffeine:3.0.0'
             implementation 'com.google.code.gson:gson:2.8.6'
-            implementation 'com.google.inject:guice:4.2.3'
+            implementation 'com.google.inject:guice:5.0.1'
             implementation 'com.jfoenix:jfoenix:9.0.10'
             implementation 'com.squareup.okhttp3:logging-interceptor:3.14.4'
             implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
             implementation 'com.squareup.retrofit2:retrofit:2.9.0'
             implementation 'com.sun.activation:javax.activation:1.2.0'
-            implementation 'com.typesafe:config:1.4.0'
+            implementation 'com.typesafe:config:1.4.1'
             implementation 'de.jensd:fontawesomefx-commons:11.0'
             implementation 'de.jensd:fontawesomefx-materialicons:2.2.0-11'
             implementation 'eu.hansolo:Medusa:11.5'
-            implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
+            implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
             implementation 'io.reactivex.rxjava2:rxjavafx:2.11.0-RC34'
             implementation 'javax.inject:javax.inject:1'
             implementation 'javax.servlet:javax.servlet-api:4.0.1'
-            implementation 'org.controlsfx:controlsfx:11.0.2'
+            implementation 'org.controlsfx:controlsfx:11.1.0'
             implementation 'org.glassfish.jersey.core:jersey-client:2.29'
-            implementation 'org.kordamp.ikonli:ikonli-javafx:11.5.0'
-            implementation 'org.kordamp.ikonli:ikonli-material-pack:11.5.0'
+            implementation 'org.kordamp.ikonli:ikonli-javafx:12.2.0'
+            implementation 'org.kordamp.ikonli:ikonli-material-pack:12.2.0'
 //            implementation 'org.mbari.m3:vars-blackmagic:0.0.2'
             implementation 'org.mbari.vars:vars-avfoundation:2.2.4'
             implementation 'org.mbari.vcr4j:vcr4j-core:4.4.0.jre11'
@@ -95,10 +95,10 @@ subprojects {
             runtimeOnly 'org.slf4j:slf4j-jdk14:1.8.0-beta4'
         }
 
-        testCompileOnly 'junit:junit:4.13'
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
-        testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.6.0'
+        testCompileOnly 'junit:junit:4.13.2'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+        testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.7.1'
 
 
     }
