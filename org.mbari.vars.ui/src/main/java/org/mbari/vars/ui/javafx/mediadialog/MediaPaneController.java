@@ -81,19 +81,7 @@ public class MediaPaneController {
 
     private void updateView(Media media) {
         if (media == null) {
-            camerIdTextField.setText(null);
-            videoSequenceNameTextField.setText(null);
-            videoNameTextField.setText(null);
-            startTimestampTextField.setText(null);
-            uriTextField.setText(null);
-            uriTextField.setTooltip(null);
-            containerTextField.setText(null);
-            videoSizeTextField.setText(null);
-            videoDimensionTextField.setText(null);
-            frameRateTextField.setText(null);
-            endTimestampTextField.setText(null);
-            durationTextField.setText(null);
-            annotationCountTextField.setText(null);
+            resetView();
         }
         else {
             camerIdTextField.setText(media.getCameraId());
@@ -121,18 +109,19 @@ public class MediaPaneController {
     }
 
     private void resetView() {
+        annotationCountTextField.setText(null);
         camerIdTextField.setText(null);
-        videoSequenceNameTextField.setText(null);
-        videoNameTextField.setText(null);
+        containerTextField.setText(null);
+        durationTextField.setText(null);
+        endTimestampTextField.setText(null);
+        frameRateTextField.setText(null);
         startTimestampTextField.setText(null);
         uriTextField.setText(null);
-        containerTextField.setText(null);
-        videoSizeTextField.setText(null);
+        uriTextField.setTooltip(null);
         videoDimensionTextField.setText(null);
-        frameRateTextField.setText(null);
-        endTimestampTextField.setText(null);
-        durationTextField.setText(null);
-        annotationCountTextField.setText(null);
+        videoNameTextField.setText(null);
+        videoSequenceNameTextField.setText(null);
+        videoSizeTextField.setText(null);
     }
 
     public Pane getRoot() {
