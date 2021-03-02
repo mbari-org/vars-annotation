@@ -54,7 +54,9 @@ public class VamService implements MediaService, RetrofitWebService {
         addField(fieldMap, "sha512", () -> HexUtils.printHexBinary(media.getSha512()));
         addField(fieldMap, "video_codec", media::getVideoCodec);
         addField(fieldMap, "audio_codec", media::getAudioCodec);
-        addField(fieldMap, "video_description", media::getDescription);
+        addField(fieldMap, "description", media::getDescription);
+        addField(fieldMap, "video_description", media::getVideoDescription);
+        addField(fieldMap, "video_sequence_description", media::getVideoSequenceDescription);
 //        addField(fieldMap, "video_name", media::getVideoName);
         return sendRequest(vamWebService.createMedia(media.getVideoSequenceName(), media.getCameraId(),
                 media.getVideoName(), media.getUri(), media.getStartTimestamp(), fieldMap,
@@ -106,7 +108,9 @@ public class VamService implements MediaService, RetrofitWebService {
         addField(fieldMap, "sha512", () -> HexUtils.printHexBinary(media.getSha512()));
         addField(fieldMap, "video_codec", media::getVideoCodec);
         addField(fieldMap, "audio_codec", media::getAudioCodec);
-        addField(fieldMap, "video_description", media::getDescription);
+        addField(fieldMap, "description", media::getDescription);
+        addField(fieldMap, "video_description", media::getVideoDescription);
+        addField(fieldMap, "video_sequence_description", media::getVideoSequenceDescription);
         addField(fieldMap, "video_name", media::getVideoName);
         return sendRequest(vamWebService.updateMedia(media.getVideoReferenceUuid(), fieldMap, defaultHeaders));
     }

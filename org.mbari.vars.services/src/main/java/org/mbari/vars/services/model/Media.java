@@ -29,6 +29,8 @@ public class Media {
     private String audioCodec;
     private String description;
     private String videoName;
+    private String videoDescription;
+    private String videoSequenceDescription;
 
     public Media() {
     }
@@ -56,6 +58,8 @@ public class Media {
         audioCodec = media.audioCodec;
         description = media.description;
         videoName = media.videoName;
+        videoDescription = media.videoDescription;
+        videoSequenceDescription = media.videoSequenceDescription;
     }
 
     public String getVideoCodec() {
@@ -80,6 +84,22 @@ public class Media {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getVideoDescription() {
+        return videoDescription;
+    }
+
+    public void setVideoDescription(String videoDescription) {
+        this.videoDescription = videoDescription;
+    }
+
+    public String getVideoSequenceDescription() {
+        return videoSequenceDescription;
+    }
+
+    public void setVideoSequenceDescription(String videoSequenceDescription) {
+        this.videoSequenceDescription = videoSequenceDescription;
     }
 
     public UUID getVideoSequenceUuid() {
