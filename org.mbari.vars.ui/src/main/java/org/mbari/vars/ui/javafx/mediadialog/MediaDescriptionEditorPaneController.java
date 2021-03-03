@@ -10,7 +10,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import org.mbari.vars.services.MediaService;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.util.FXMLUtils;
@@ -36,13 +35,7 @@ public class MediaDescriptionEditorPaneController {
     private Label videoReferenceLabel;
 
     @FXML
-    private JFXButton videoSequenceBtn;
-
-    @FXML
-    private JFXButton videoBtn;
-
-    @FXML
-    private JFXButton videoReferenceBtn;
+    private JFXButton saveButton;
 
     @FXML
     private JFXTextArea videoSequenceTextArea;
@@ -59,22 +52,48 @@ public class MediaDescriptionEditorPaneController {
     @FXML
     void initialize() {
         mediaProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue == null) resetView();
-            else updateView(newValue);
+            updateView(newValue);
         });
+
+        videoReferenceTextArea.textProperty().addListener(change -> checkDisable());
+        videoTextArea.textProperty().addListener(change -> checkDisable());
+        videoSequenceTextArea.textProperty().addListener(change -> checkDisable());
+
+        updateView(null);
+    }
+
+    private void checkDisable() {
+        var disable = media.get() == null
+                || (videoReferenceTextArea.getText().equals(media.get().getDescription())
+                && videoTextArea.getText().equals(media.get().getVideoDescription())
+                && videoSequenceTextArea.getText().equals(media.get().getVideoSequenceDescription()));
+        saveButton.setDisable(disable);
     }
 
     private void updateView(Media media) {
+        saveButton.setDisable(true);
         if (media == null) {
             resetView();
         }
         else {
-
+            videoSequenceTextArea.setText(media.getVideoSequenceDescription());
+            videoTextArea.setText(media.getVideoDescription());
+            videoReferenceTextArea.setText(media.getDescription());
         }
     }
 
     private void resetView() {
+        videoSequenceTextArea.setText(null);
+        videoTextArea.setText(null);
+        videoReferenceTextArea.setText(null);
+    }
 
+    public GridPane getRoot() {
+        return root;
+    }
+
+    public JFXButton getSaveButton() {
+        return saveButton;
     }
 
     public Media getMedia() {

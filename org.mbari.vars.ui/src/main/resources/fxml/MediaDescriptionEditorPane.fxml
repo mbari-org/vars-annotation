@@ -11,22 +11,20 @@
   <columnConstraints>
     <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="400.0" />
-      <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints vgrow="NEVER" />
     <RowConstraints vgrow="NEVER" />
     <RowConstraints vgrow="NEVER" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
   </rowConstraints>
    <children>
       <Label fx:id="videoSequenceLabel" text="%mediaeditor.videoSequence" />
       <Label fx:id="videoLabel" text="%mediaeditor.video" GridPane.rowIndex="1" />
       <Label fx:id="videoReferenceLabel" text="mediaeditor.videoReference" GridPane.rowIndex="2" />
-      <JFXButton fx:id="videoSequenceBtn" GridPane.columnIndex="2" />
-      <JFXButton fx:id="videoBtn" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-      <JFXButton fx:id="videoReferenceBtn" GridPane.columnIndex="2" GridPane.rowIndex="2" />
       <JFXTextArea fx:id="videoSequenceTextArea" GridPane.columnIndex="1" />
       <JFXTextArea fx:id="videoTextArea" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <JFXTextArea fx:id="videoReferenceTextArea" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <JFXButton fx:id="saveButton" text="%mediaeditor.button.save" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
    </children>
 </fx:root>
