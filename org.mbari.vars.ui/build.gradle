@@ -21,10 +21,10 @@ dependencies {
     implementation 'org.mbari:mbarix4j'
     implementation 'org.slf4j:slf4j-api'
 
-    implementation('com.google.inject:guice') {
-        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-        exclude group: 'org.checkerframework', module: 'checker-compat-qual'
-    }
+//    implementation('com.google.inject:guice') {
+//        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+//        exclude group: 'org.checkerframework', module: 'checker-compat-qual'
+//    }
 
     implementation('io.reactivex.rxjava2:rxjavafx') {
         exclude group: 'org.openjfx', module: 'javafx-base'

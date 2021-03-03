@@ -1,6 +1,6 @@
 package org.mbari.vars.services.util;
 
-import com.google.common.base.Preconditions;
+import org.mbari.vars.core.util.Preconditions;
 import org.mbari.vars.services.PreferencesService;
 
 import javax.inject.Inject;

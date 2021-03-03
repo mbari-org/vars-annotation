@@ -20,7 +20,6 @@ import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.ui.util.JFXUtilities;
 import org.mbari.vars.core.util.ListUtils;
 
-import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -40,7 +39,6 @@ public class AnnotationTableController {
     private final Data data;
 
 
-    @Inject
     public AnnotationTableController(UIToolBox toolBox) {
         this.i18n = toolBox.getI18nBundle();
         this.eventBus = toolBox.getEventBus();

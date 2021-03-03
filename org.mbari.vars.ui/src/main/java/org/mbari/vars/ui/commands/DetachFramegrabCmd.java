@@ -1,8 +1,7 @@
 package org.mbari.vars.ui.commands;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import org.mbari.vars.core.EventBus;
+import org.mbari.vars.core.util.Preconditions;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.messages.ShowFatalErrorAlert;
 import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
@@ -31,7 +30,7 @@ public class DetachFramegrabCmd implements Command {
     public DetachFramegrabCmd(Collection<Annotation> originalAnnotations) {
         Preconditions.checkNotNull(originalAnnotations,
                 "Can not execute command on empty collection");
-        this.originalAnnotations = ImmutableList.copyOf(originalAnnotations);
+        this.originalAnnotations = Collections.unmodifiableCollection(originalAnnotations);
     }
 
     /**

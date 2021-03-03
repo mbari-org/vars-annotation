@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.javafx.cbpanel;
 
-import com.google.common.base.Preconditions;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTabPane;
 import javafx.application.Platform;
@@ -12,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.mbari.vars.core.util.Preconditions;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.messages.*;
 import org.mbari.vars.ui.javafx.Icons;

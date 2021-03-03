@@ -5,7 +5,6 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 
-import javax.inject.Inject;
 import java.util.ResourceBundle;
 
 /**
@@ -16,7 +15,6 @@ public class OpenRealTimeDialog extends Dialog<MediaParams> {
 
     private final MediaParamsPaneController controller;
 
-    @Inject
     public OpenRealTimeDialog(ResourceBundle i18n) {
         controller = MediaParamsPaneController.newInstance();
 

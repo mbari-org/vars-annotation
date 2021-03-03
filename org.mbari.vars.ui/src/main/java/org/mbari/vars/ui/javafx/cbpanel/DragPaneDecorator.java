@@ -12,7 +12,6 @@ import javafx.util.Duration;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.ConceptService;
 
-import javax.inject.Inject;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,7 +31,6 @@ public class DragPaneDecorator {
 
     private volatile boolean locked = false;
 
-    @Inject
     public DragPaneDecorator(ConceptService conceptService, EventBus eventBus, ResourceBundle i18n) {
         this.conceptService = conceptService;
         conceptButtonFactory = new ConceptButtonFactory(conceptService, eventBus, i18n);

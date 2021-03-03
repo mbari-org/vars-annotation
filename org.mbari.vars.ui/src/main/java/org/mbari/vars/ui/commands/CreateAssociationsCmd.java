@@ -1,16 +1,12 @@
 package org.mbari.vars.ui.commands;
 
-import com.google.common.collect.ImmutableList;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
@@ -28,7 +24,7 @@ public class CreateAssociationsCmd implements Command {
 
     public CreateAssociationsCmd(Association associationTemplate, Collection<Annotation> originalAnnotations) {
         this.associationTemplate = associationTemplate;
-        this.originalAnnotations = ImmutableList.copyOf(originalAnnotations);
+        this.originalAnnotations = Collections.unmodifiableCollection(originalAnnotations);
 
     }
 

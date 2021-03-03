@@ -1,7 +1,6 @@
 package org.mbari.vars.ui;
 
 
-import com.google.common.collect.Lists;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -33,7 +32,7 @@ public class App extends Application {
 
     private UIToolBox toolBox;
 
-    private static final Collection<Integer> BEACON_PORTS = Lists.newArrayList(4002, 4121, 5097, 6238, 6609,
+    private static final Collection<Integer> BEACON_PORTS = List.of(4002, 4121, 5097, 6238, 6609,
             7407, 8169, 9069, 9669, 16569);
     private static final String BEACON_MESSAGE = "VARS Annotation (M3)";
     private static ActiveAppBeacon activeAppBeacon;

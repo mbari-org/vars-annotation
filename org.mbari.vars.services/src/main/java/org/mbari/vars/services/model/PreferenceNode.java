@@ -1,6 +1,7 @@
 package org.mbari.vars.services.model;
 
-import com.google.common.base.Preconditions;
+
+import org.mbari.vars.core.util.Preconditions;
 
 /**
  * @author Brian Schlining

@@ -1,9 +1,9 @@
 module org.mbari.vars.ui {
 
   requires com.fazecast.jSerialComm;
-  requires com.google.common;
+//  requires com.google.common;
   requires com.google.gson;
-  requires com.google.guice;
+//  requires com.google.guice;
   requires com.jfoenix;
   requires io.reactivex.rxjava2;
   requires java.desktop;
@@ -12,7 +12,7 @@ module org.mbari.vars.ui {
   requires javafx.controls;
   requires javafx.fxml;
   requires javafx.graphics;
-  requires javax.inject;
+//  requires javax.inject;
   requires mbarix4j;
   requires org.controlsfx.controls;
   requires org.kordamp.ikonli.core;

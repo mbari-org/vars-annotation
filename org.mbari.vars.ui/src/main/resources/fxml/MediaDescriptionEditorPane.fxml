@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<fx:root fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" type="GridPane" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.javafx.mediadialog.MediaDescriptionEditorPaneController">
+<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.javafx.mediadialog.MediaDescriptionEditorPaneController">
   <columnConstraints>
     <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="400.0" />
@@ -21,10 +21,10 @@
    <children>
       <Label fx:id="videoSequenceLabel" text="%mediaeditor.videoSequence" />
       <Label fx:id="videoLabel" text="%mediaeditor.video" GridPane.rowIndex="1" />
-      <Label fx:id="videoReferenceLabel" text="mediaeditor.videoReference" GridPane.rowIndex="2" />
+      <Label fx:id="videoReferenceLabel" text="%mediaeditor.videoReferencemediaeditor.videoReference" GridPane.rowIndex="2" />
       <JFXTextArea fx:id="videoSequenceTextArea" GridPane.columnIndex="1" />
       <JFXTextArea fx:id="videoTextArea" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <JFXTextArea fx:id="videoReferenceTextArea" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <JFXButton fx:id="saveButton" text="%mediaeditor.button.save" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
    </children>
-</fx:root>
+</GridPane>

@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.services;
 
-import com.google.common.collect.Lists;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
@@ -185,7 +184,7 @@ public class MultiAnnotationDecorator {
             String title = i18n.getString("annotationservicedecorator.findannotations.error.title");
 
             String msg = String.join(" ",
-                    Lists.newArrayList(content1, videoReferenceUuid.toString(), content2));
+                    List.of(content1, videoReferenceUuid.toString(), content2));
             log.error(msg, ex);
 
             Exception e = ex instanceof Exception ? (Exception) ex : new RuntimeException(msg, ex);

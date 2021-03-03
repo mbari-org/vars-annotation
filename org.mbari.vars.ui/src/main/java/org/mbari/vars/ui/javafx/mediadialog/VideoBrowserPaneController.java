@@ -16,7 +16,6 @@ import org.mbari.vars.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -47,7 +46,6 @@ public class VideoBrowserPaneController {
     private Logger log = LoggerFactory.getLogger(getClass());
 
 
-    @Inject
     public VideoBrowserPaneController(AnnotationService annotationService,
             MediaService mediaService,
             ResourceBundle uiBundle) {

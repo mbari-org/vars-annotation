@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.javafx.deployeditor;
 
-import com.google.common.collect.Lists;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import javafx.beans.InvalidationListener;
@@ -49,7 +48,7 @@ public class AnnotationTableController {
 
         // Forward this tables annotation mutating events to main event bus
         EventBus mainEventBus = toolBox.getEventBus();
-        ArrayList<Class<? extends Command>> commandsToForward = Lists.newArrayList(ChangeGroupCmd.class,
+        List<Class<? extends Command>> commandsToForward = List.of(ChangeGroupCmd.class,
                 ChangeActivityCmd.class,
                 //MoveAnnotationsCmd.class,
                 MoveAnnotationsAndImagesCmd.class,

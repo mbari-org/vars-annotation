@@ -11,7 +11,6 @@ import org.mbari.vars.services.Services;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 
-import javax.inject.Inject;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.ResourceBundle;
@@ -39,7 +38,6 @@ public class UIToolBox {
     /** URL to the stylesheet used for the apps */
     private final Collection<String> stylesheets;
 
-    @Inject
     public UIToolBox(Data data,
                      Services services,
                      EventBus eventBus,

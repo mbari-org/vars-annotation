@@ -7,7 +7,6 @@ import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.MediaService;
 
-import javax.inject.Inject;
 import java.util.ResourceBundle;
 
 /**
@@ -22,7 +21,6 @@ public class SelectMediaDialog extends Dialog<Media> {
     private final MediaService mediaService;
     private final ResourceBundle uiBundle;
 
-    @Inject
     public SelectMediaDialog(AnnotationService annotationService,
             MediaService mediaService,
             ResourceBundle uiBundle) {

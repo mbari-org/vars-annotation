@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.javafx;
 
-import com.google.common.base.Preconditions;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 
@@ -29,14 +28,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.mbari.vars.core.EventBus;
+import org.mbari.vars.core.util.*;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.commands.*;
 import org.mbari.vars.ui.events.*;
-import org.mbari.vars.core.util.AsyncUtils;
-import org.mbari.vars.core.util.FnUtils;
-import org.mbari.vars.core.util.ListUtils;
-import org.mbari.vars.core.util.StringUtils;
 import org.mbari.vars.services.model.*;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.ConceptService;

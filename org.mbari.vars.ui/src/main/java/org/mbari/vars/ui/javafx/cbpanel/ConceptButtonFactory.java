@@ -14,7 +14,6 @@ import org.mbari.vars.ui.commands.CreateAnnotationFromConceptCmd;
 import org.mbari.vars.ui.messages.ShowConceptInTreeViewMsg;
 import org.mbari.vars.services.ConceptService;
 
-import javax.inject.Inject;
 import java.util.ResourceBundle;
 
 /**
@@ -29,7 +28,6 @@ public class ConceptButtonFactory {
     // We use the userdata field to let us know that this is a conceptbutton.
     public static final String USERDATA = ConceptButtonFactory.class.getSimpleName();
 
-    @Inject
     public ConceptButtonFactory(ConceptService conceptService, EventBus eventBus, ResourceBundle i18n) {
         this.eventBus = eventBus;
         this.i18n = i18n;

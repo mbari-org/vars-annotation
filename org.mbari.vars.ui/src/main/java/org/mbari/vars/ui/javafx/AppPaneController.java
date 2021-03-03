@@ -24,6 +24,7 @@ import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.ui.events.MediaChangedEvent;
 import org.mbari.vars.ui.events.UserAddedEvent;
 import org.mbari.vars.ui.events.UserChangedEvent;
+import org.mbari.vars.ui.javafx.mediadialog.MediaDescriptionEditorPaneController;
 import org.mbari.vars.ui.mediaplayers.ships.MediaParams;
 import org.mbari.vars.ui.mediaplayers.ships.OpenRealTimeDialog;
 import org.mbari.vars.ui.mediaplayers.ships.OpenRealTimeService;
@@ -79,6 +80,7 @@ public class AppPaneController {
     private final OpenTapeDialog tapeDialog;
     private ControlsPaneController controlsPaneController;
     private MediaPaneController mediaPaneController;
+    private MediaDescriptionEditorPaneController mediaDescriptionEditorPaneController;
     private BulkEditorPaneController bulkEditorPaneController;
     private AncillaryDataPaneController ancillaryDataPaneController;
     private RectLabelStageController rectLabelStageController;
@@ -118,6 +120,7 @@ public class AppPaneController {
         imageViewController = new ImageViewController(toolBox);
         controlsPaneController = new ControlsPaneController(toolBox);
         mediaPaneController = MediaPaneController.newInstance();
+        mediaDescriptionEditorPaneController = MediaDescriptionEditorPaneController.newInstance();
         bulkEditorPaneController = BulkEditorPaneController.newInstance(toolBox,
                 toolBox.getData().getAnnotations(),
                 toolBox.getData().getSelectedAnnotations(),
@@ -257,7 +260,12 @@ public class AppPaneController {
             Tab treeTab = new Tab("Knowledgebase", treeController.getRoot());
             treeTab.setClosable(false);
 
-            tabPane.getTabs().addAll(imageTab, bulkEditTab, treeTab, dataTab, mediaTab);
+            Tab mediaDescriptionTab = new Tab("Media Info", new ScrollPane(mediaDescriptionEditorPaneController.getRoot()));
+            mediaDescriptionTab.setClosable(false);
+            // mediaDescriptionTab is updated by showMediaOfSelectedRow
+
+
+            tabPane.getTabs().addAll(imageTab, bulkEditTab, treeTab, dataTab, mediaTab, mediaDescriptionTab);
 
         }
         return tabPane;
@@ -633,7 +641,10 @@ public class AppPaneController {
                 toolBox.getServices()
                         .getMediaService()
                         .findByUuid(annotation.getVideoReferenceUuid())
-                        .thenAccept(m -> mediaPaneController.setMedia(m, annotationService));
+                        .thenAccept(m -> {
+                            mediaPaneController.setMedia(m, annotationService);
+                            mediaDescriptionEditorPaneController.setMedia(m);
+                        });
             }
         }
     }

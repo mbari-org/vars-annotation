@@ -1,6 +1,6 @@
 package org.mbari.vars.ui.commands;
 
-import com.google.common.base.Preconditions;
+import org.mbari.vars.core.util.Preconditions;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.AnnotationService;

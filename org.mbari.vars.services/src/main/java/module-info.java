@@ -1,9 +1,9 @@
 module org.mbari.vars.services {
 
   requires com.github.benmanes.caffeine;
-  requires com.google.common;
+//  requires com.google.common;
   requires com.google.gson;
-  requires com.google.guice;
+//  requires com.google.guice;
   requires gson.javatime.serialisers;
   requires io.reactivex.rxjava2;
   requires com.fasterxml.jackson.databind; // required by java-jwt

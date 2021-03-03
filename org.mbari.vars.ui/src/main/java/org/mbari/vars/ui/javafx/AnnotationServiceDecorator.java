@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.javafx;
 
-import com.google.common.collect.Lists;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -126,7 +125,7 @@ public class AnnotationServiceDecorator {
             String title = i18n.getString("annotationservicedecorator.findannotations.error.title");
 
             String msg = String.join(" ",
-                    Lists.newArrayList(content1, videoReferenceUuid.toString(), content2));
+                    List.of(content1, videoReferenceUuid.toString(), content2));
             log.error(msg, ex);
 
             Exception e = ex instanceof Exception ? (Exception) ex : new RuntimeException(msg, ex);

@@ -1,10 +1,10 @@
 package org.mbari.vars.ui.events;
 
-import com.google.common.collect.ImmutableList;
 import org.mbari.vars.services.model.Annotation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author Brian Schlining
@@ -13,7 +13,7 @@ import java.util.Collection;
 public class AnnotationsRemovedEvent extends UIEvent<Collection<Annotation>> {
 
     public AnnotationsRemovedEvent(Object source, Collection<Annotation> annotations) {
-        super(source, ImmutableList.copyOf(annotations));
+        super(source, Collections.unmodifiableCollection(annotations));
     }
 
     public AnnotationsRemovedEvent(Collection<Annotation> annotations) {

@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.services;
 
-import com.google.common.collect.Lists;
 import org.mbari.vars.ui.AppConfig;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.UIToolBox;
@@ -175,7 +174,7 @@ public class ConcurrentAnnotationDecorator {
             String title = i18n.getString("annotationservicedecorator.findannotations.error.title");
 
             String msg = String.join(" ",
-                    Lists.newArrayList(content1, videoReferenceUuid.toString(), content2));
+                    List.of(content1, videoReferenceUuid.toString(), content2));
             log.error(msg, ex);
 
             Exception e = ex instanceof Exception ? (Exception) ex : new RuntimeException(msg, ex);

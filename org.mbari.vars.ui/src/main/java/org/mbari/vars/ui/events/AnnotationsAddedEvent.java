@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.events;
 
-import com.google.common.collect.ImmutableList;
 import org.mbari.vars.services.model.Annotation;
 
 import java.util.Collection;
@@ -13,7 +12,7 @@ import java.util.Collections;
 public class AnnotationsAddedEvent extends UIEvent<Collection<Annotation>> {
 
     public AnnotationsAddedEvent(Object source, Collection<Annotation> annotations) {
-        super(source, ImmutableList.copyOf(annotations));
+        super(source, Collections.unmodifiableCollection(annotations));
     }
 
     public AnnotationsAddedEvent(Collection<Annotation> annotations) {
