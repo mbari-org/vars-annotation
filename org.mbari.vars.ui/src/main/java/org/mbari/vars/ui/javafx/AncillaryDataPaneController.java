@@ -40,7 +40,9 @@ public class AncillaryDataPaneController {
 
     private void setAncillaryData(AncillaryData data) {
         if (data != null) {
-            ObservableList<PropertySheet.Item> items = BeanPropertyUtils.getProperties(data);
+            ObservableList<PropertySheet.Item> items = BeanPropertyUtils.getProperties(data)
+                    .filtered(i -> i.getValue() != null);
+
             Platform.runLater(() -> getPropertySheet().getItems().addAll(items));
         }
     }
