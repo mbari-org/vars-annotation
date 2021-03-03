@@ -21,7 +21,7 @@
    <children>
       <Label fx:id="videoSequenceLabel" text="%mediaeditor.videoSequence" />
       <Label fx:id="videoLabel" text="%mediaeditor.video" GridPane.rowIndex="1" />
-      <Label fx:id="videoReferenceLabel" text="%mediaeditor.videoReferencemediaeditor.videoReference" GridPane.rowIndex="2" />
+      <Label fx:id="videoReferenceLabel" text="%mediaeditor.videoReference" GridPane.rowIndex="2" />
       <JFXTextArea fx:id="videoSequenceTextArea" GridPane.columnIndex="1" />
       <JFXTextArea fx:id="videoTextArea" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <JFXTextArea fx:id="videoReferenceTextArea" GridPane.columnIndex="1" GridPane.rowIndex="2" />
