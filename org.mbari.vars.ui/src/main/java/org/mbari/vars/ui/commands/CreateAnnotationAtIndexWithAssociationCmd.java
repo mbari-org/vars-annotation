@@ -1,6 +1,7 @@
 package org.mbari.vars.ui.commands;
 
 import org.mbari.vars.core.EventBus;
+import org.mbari.vars.core.util.Preconditions;
 import org.mbari.vars.services.ConceptService;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.events.AnnotationsAddedEvent;
@@ -11,13 +12,15 @@ import org.mbari.vars.services.model.Association;
 import org.mbari.vcr4j.VideoIndex;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
  * @since 2018-05-11T13:20:00
  */
-public class CreateAnnotationAtIndexCmd implements Command  {
+public class CreateAnnotationAtIndexWithAssociationCmd implements Command  {
 
     private final String concept;
     private final VideoIndex videoIndex;
@@ -29,10 +32,11 @@ public class CreateAnnotationAtIndexCmd implements Command  {
      * @param videoIndex The index for the annotation
      * @param concept
      * @param associationTemplate An association based on this template will
-     *                            be added along to the annotation. If null,
-     *                            then no association will be added
+     *                            be added along to the annotation. If provided it must
+     *                            have a UUID set (required to track the association)
      */
-    public CreateAnnotationAtIndexCmd(VideoIndex videoIndex, String concept, Association associationTemplate) {
+    public CreateAnnotationAtIndexWithAssociationCmd(VideoIndex videoIndex, String concept, Association associationTemplate) {
+        Preconditions.checkArgument(associationTemplate.getUuid() != null, "The associationTemplate must have a UUID");
         this.videoIndex = videoIndex;
         this.concept = concept;
         this.associationTemplate = associationTemplate;
@@ -50,20 +54,29 @@ public class CreateAnnotationAtIndexCmd implements Command  {
                     String primaryName = concept.getName();
                     Annotation a = CommandUtil.buildAnnotation(toolBox.getData(),
                             primaryName, videoIndex);
-                    if (associationTemplate != null) {
-                        Association as = new Association(associationTemplate);
-                        a.setAssociations(Collections.singletonList(as));
-                    }
+                    Association as = new Association(associationTemplate);
+                    a.setAssociations(Collections.singletonList(as));
                     toolBox.getServices()
                             .getAnnotationService()
                             .createAnnotations(Collections.singletonList(a))
                             .thenAccept(a1 -> {
-                                annotation = a1.stream().findFirst().orElse(null);
-                                if (annotation != null) {
+                                var match = a1.stream()
+                                        .filter(anno -> {
+                                            List<Association> annos = anno.getAssociations()
+                                                    .stream()
+                                                    .filter(ass -> ass.getUuid().equals(associationTemplate.getUuid()))
+                                                    .collect(Collectors.toList());
+                                            return !annos.isEmpty();
+                                        })
+                                        .findFirst();
+
+                                match.ifPresent(anno -> {
+                                    annotation = anno;
                                     EventBus eventBus = toolBox.getEventBus();
                                     eventBus.send(new AnnotationsAddedEvent(annotation));
                                     eventBus.send(new AnnotationsSelectedEvent(annotation));
-                                }
+                                });
+
                             });
                 });
     }

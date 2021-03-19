@@ -9,6 +9,7 @@ public class BoundingBox {
     private int y;
     private int width;
     private int height;
+    private String generator;
 
     public static String LINK_NAME = "bounding box";
 
@@ -20,6 +21,14 @@ public class BoundingBox {
         this.y = y;
         this.width = width;
         this.height = height;
+    }
+
+    public BoundingBox(int x, int y, int width, int height, String generator) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.generator = generator;
     }
 
     public int getX() {
@@ -38,4 +47,7 @@ public class BoundingBox {
         return height;
     }
 
+    public String getGenerator() {
+        return generator;
+    }
 }

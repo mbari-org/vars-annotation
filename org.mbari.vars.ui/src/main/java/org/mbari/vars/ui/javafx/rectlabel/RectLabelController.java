@@ -32,7 +32,7 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.commands.Command;
-import org.mbari.vars.ui.commands.CreateAnnotationAtIndexCmd;
+import org.mbari.vars.ui.commands.CreateAnnotationAtIndexWithAssociationCmd;
 import org.mbari.vars.ui.commands.CreateAssociationsCmd;
 import org.mbari.vars.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
@@ -560,7 +560,8 @@ public class RectLabelController {
                 VideoIndex videoIndex = new VideoIndex(Optional.ofNullable(image.getRecordedTimestamp()),
                         Optional.ofNullable(image.getElapsedTime()),
                         Optional.ofNullable(image.getTimecode()));
-                Command cmd = new CreateAnnotationAtIndexCmd(videoIndex, concept, association);
+                Association copyWithUuid = new Association(UUID.randomUUID(), association);
+                Command cmd = new CreateAnnotationAtIndexWithAssociationCmd(videoIndex, concept, copyWithUuid);
                 toolBox.getEventBus().send(cmd);
             });
         }

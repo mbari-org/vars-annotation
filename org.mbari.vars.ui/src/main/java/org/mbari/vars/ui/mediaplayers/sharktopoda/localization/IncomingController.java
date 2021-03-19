@@ -10,7 +10,7 @@ import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.Data;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.commands.Command;
-import org.mbari.vars.ui.commands.CreateAnnotationAtIndexCmd;
+import org.mbari.vars.ui.commands.CreateAnnotationAtIndexWithAssociationCmd;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.sharktopoda.client.localization.IO;
 import org.mbari.vcr4j.sharktopoda.client.localization.Localization;
@@ -99,7 +99,7 @@ class IncomingController implements Closeable {
                 VideoIndex videoIndex = new VideoIndex(x.getElapsedTime());
                 String concept = x.getConcept();
                 Association template = toAssociation(x);
-                Command cmd = new CreateAnnotationAtIndexCmd(videoIndex, concept, template);
+                Command cmd = new CreateAnnotationAtIndexWithAssociationCmd(videoIndex, concept, template);
                 eventBus.send(cmd);
             }
 
@@ -108,7 +108,7 @@ class IncomingController implements Closeable {
     }
 
     private Association toAssociation(Localization x) {
-        BoundingBox bb = new BoundingBox(x.getX(), x.getY(), x.getWidth(), x.getHeight());
+        BoundingBox bb = new BoundingBox(x.getX(), x.getY(), x.getWidth(), x.getHeight(), "VARS Annotation");
         String json = gson.toJson(bb);
 
         return new Association(BoundingBox.LINK_NAME,
