@@ -122,7 +122,7 @@ subprojects {
         repositories {
            maven {
                name = "GitHubPackages"
-               url = uri("https://maven.pkg.github.com/mbari-media-management")
+               url = uri("https://maven.pkg.github.com/mbari-org/maven")
                credentials {
                    username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
                    password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
@@ -130,28 +130,30 @@ subprojects {
            }
         }
         publications {
-            maven(MavenPublication) {
-                groupId "org.mbari.vars"
-                artifactId project.name
-                from components.java
-            }
+            // maven(MavenPublication) {
+            //     groupId "org.mbari.vars"
+            //     artifactId project.name
+            //     from components.java
+            // }
            gpr(MavenPublication) {
+               groupId "org.mbari.vars"
+               artifactId project.name
                from components.java
            }
         }
     }
 
-    bintray {
-        key = System.getenv("BINTRAY_KEY")
-        user = System.getenv("BINTRAY_USER")
-        publications = ['maven']
-        pkg {
-            repo = 'maven'
-            name = project.name
-            licenses = ['Apache-2.0']
-            vcsUrl = 'https://github.com/mbari-media-management/vars-annotation.git'
-        }
-    }
+    // bintray {
+    //     key = System.getenv("BINTRAY_KEY")
+    //     user = System.getenv("BINTRAY_USER")
+    //     publications = ['maven']
+    //     pkg {
+    //         repo = 'maven'
+    //         name = project.name
+    //         licenses = ['Apache-2.0']
+    //         vcsUrl = 'https://github.com/mbari-media-management/vars-annotation.git'
+    //     }
+    // }
 
 }
 
