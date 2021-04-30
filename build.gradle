@@ -10,7 +10,7 @@ plugins {
 
 subprojects {
 
-    version = "1.0.1"
+    version = "1.0.2"
 
     apply plugin: 'com.adarshr.test-logger'
     apply plugin: 'com.github.ben-manes.versions'
@@ -55,16 +55,16 @@ subprojects {
     }
 
     ext {
-        javafxVersion = "15.0.1"
+        javafxVersion = "16"
     }
 
     dependencies {
 
         constraints {
-            implementation 'com.auth0:java-jwt:3.13.0'
-            implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.1'
+            implementation 'com.auth0:java-jwt:3.15.0'
+            implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
             implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.1'
-            implementation 'com.github.ben-manes.caffeine:caffeine:3.0.0'
+            implementation 'com.github.ben-manes.caffeine:caffeine:3.0.1'
             implementation 'com.google.code.gson:gson:2.8.6'
             implementation 'com.google.inject:guice:5.0.1'
             implementation 'com.jfoenix:jfoenix:9.0.10'
@@ -75,7 +75,7 @@ subprojects {
             implementation 'com.typesafe:config:1.4.1'
             implementation 'de.jensd:fontawesomefx-commons:11.0'
             implementation 'de.jensd:fontawesomefx-materialicons:2.2.0-11'
-            implementation 'eu.hansolo:Medusa:11.5'
+            implementation 'eu.hansolo:Medusa:11.7'
             implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
             implementation 'io.reactivex.rxjava2:rxjavafx:2.11.0-RC34'
             implementation 'javax.inject:javax.inject:1'
@@ -86,11 +86,11 @@ subprojects {
             implementation 'org.kordamp.ikonli:ikonli-material-pack:12.2.0'
 //            implementation 'org.mbari.m3:vars-blackmagic:0.0.2'
             implementation 'org.mbari.vars:vars-avfoundation:2.2.4'
-            implementation 'org.mbari.vcr4j:vcr4j-core:4.4.0.jre11'
-            implementation 'org.mbari.vcr4j:vcr4j-jserialcomm:4.4.0.jre11'
-            implementation 'org.mbari.vcr4j:vcr4j-rs422:4.4.0.jre11'
-            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda:4.4.0.jre11'
-            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client:4.4.0.jre11'
+            implementation 'org.mbari.vcr4j:vcr4j-core:4.4.1.jre11'
+            implementation 'org.mbari.vcr4j:vcr4j-jserialcomm:4.4.1.jre11'
+            implementation 'org.mbari.vcr4j:vcr4j-rs422:4.4.1.jre11'
+            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda:4.4.1.jre11'
+            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client:4.4.1.jre11'
             implementation 'org.mbari:mbarix4j:2.0.5.jre11'
             implementation 'org.scijava:native-lib-loader:2.3.4'
             implementation 'org.slf4j:slf4j-api:1.8.0-beta4'
