@@ -19,7 +19,7 @@ dependencies {
     implementation 'org.kordamp.ikonli:ikonli-javafx'
     implementation 'org.kordamp.ikonli:ikonli-material-pack'
     implementation 'org.mbari:mbarix4j'
-    implementation 'org.mbari.vars:vars-avfoundation'
+    // implementation 'org.mbari.vars:vars-avfoundation'
     implementation 'org.mbari.vcr4j:vcr4j-core'
     implementation 'org.mbari.vcr4j:vcr4j-jserialcomm'
     implementation 'org.mbari.vcr4j:vcr4j-sharktopoda'

@@ -10,7 +10,7 @@ plugins {
 
 subprojects {
 
-    version = "1.0.2"
+    version = "1.0.2.jre11"
 
     apply plugin: 'com.adarshr.test-logger'
     apply plugin: 'com.github.ben-manes.versions'
@@ -61,11 +61,11 @@ subprojects {
     dependencies {
 
         constraints {
-            implementation 'com.auth0:java-jwt:3.15.0'
+            implementation 'com.auth0:java-jwt:3.16.0'
             implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
             implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.1'
             implementation 'com.github.ben-manes.caffeine:caffeine:3.0.1'
-            implementation 'com.google.code.gson:gson:2.8.6'
+            implementation 'com.google.code.gson:gson:2.8.7'
             implementation 'com.google.inject:guice:5.0.1'
             implementation 'com.jfoenix:jfoenix:9.0.10'
             implementation 'com.squareup.okhttp3:logging-interceptor:3.14.4'

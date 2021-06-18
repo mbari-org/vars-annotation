@@ -5,13 +5,13 @@ pluginManagement {
     id 'com.adarshr.test-logger' version '2.1.1'
     id 'nebula.facet' version '8.0.0'
     id 'nebula.maven-publish' version '17.3.2'
-    id 'org.beryx.jlink' version "2.23.3"
+    id 'org.beryx.jlink' version "2.24.0"
     id 'org.kordamp.gradle.jdeps' version '0.12.0'
     id "com.github.ben-manes.versions" version "0.36.0"
     id "com.github.spotbugs" version "4.6.0"
     id "com.jfrog.bintray" version "1.8.5"
     id "org.javamodularity.moduleplugin" version "1.5.0" // DO NOT USE 1.6.0
-    id "org.openjfx.javafxplugin" version "0.0.9"
+    id "org.openjfx.javafxplugin" version "0.0.10"
   }
 }
 
