@@ -26,5 +26,5 @@ public interface PanoptesWebService {
     @GET("images/{camera_id}/{deployment_id}/{filename}")
     Call<ImageUploadResults> findImage(@Path("camera_id") String cameraId,
                                        @Path("deployment_id") String deploymentId,
-                                       @Path("name") String filename);
+                                       @Path("filename") String filename);
 }

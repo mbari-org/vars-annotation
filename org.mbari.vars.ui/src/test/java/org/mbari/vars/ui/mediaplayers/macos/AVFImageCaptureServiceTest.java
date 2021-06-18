@@ -60,20 +60,20 @@ public class AVFImageCaptureServiceTest {
     @Ignore
     @Test
     public void testImageCapture2() throws IOException {
-        AVFImageCaptureService service = AVFImageCaptureService.getInstance();
-        AVFImageCapture ic = service.getImageCapture();
-        String[] devices = ic.videoDevicesAsStrings();
-        if (devices.length > 0) {
-            ic.startSessionWithNamedDevice(devices[0]);
-            Path path = Paths.get("target",
-                    getClass().getSimpleName() + "-1-" + Instant.now() + ".png");
-            Optional<Image> png = ic.capture(path.toFile());
-            ic.stopSession();
-            Assert.assertTrue(png.isPresent());
-
-        }
-        else {
-            System.err.println("No frame capture devices were found");
-        }
+//        AVFImageCaptureService service = AVFImageCaptureService.getInstance();
+//        AVFImageCapture ic = service.getImageCapture();
+//        String[] devices = ic.videoDevicesAsStrings();
+//        if (devices.length > 0) {
+//            ic.startSessionWithNamedDevice(devices[0]);
+//            Path path = Paths.get("target",
+//                    getClass().getSimpleName() + "-1-" + Instant.now() + ".png");
+//            Optional<Image> png = ic.capture(path.toFile());
+//            ic.stopSession();
+//            Assert.assertTrue(png.isPresent());
+//
+//        }
+//        else {
+//            System.err.println("No frame capture devices were found");
+//        }
     }
 }
