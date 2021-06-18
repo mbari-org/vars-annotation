@@ -10,7 +10,7 @@ plugins {
 
 subprojects {
 
-    version = "1.0.3"
+    version = "1.0.2"
 
     apply plugin: 'com.adarshr.test-logger'
     apply plugin: 'com.github.ben-manes.versions'
