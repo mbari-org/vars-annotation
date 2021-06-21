@@ -134,7 +134,8 @@ tasks.withType(JavaExec) {
  Use the jlink plugin to build a dist with a JVM
  */
 application {
-    mainClassName = "org.mbari.vars.ui/org.mbari.vars.ui.App"
+    mainModule = "org.mbari.vars.ui"
+    mainClassName = "org.mbari.vars.ui.App"
     applicationDefaultJvmArgs = runtimeJvmArgs
 }
 
