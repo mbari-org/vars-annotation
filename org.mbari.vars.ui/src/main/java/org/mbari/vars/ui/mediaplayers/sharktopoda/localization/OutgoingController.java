@@ -84,6 +84,7 @@ public class  OutgoingController implements Closeable {
 
     public void handleSelectedLocally(AnnotationsSelectedEvent evt) {
         List<Localization> xs = annotationsToLocalizations(evt.get());
+//        xs.forEach(x -> System.out.println("SENDING LOCALIZATION: " + gson.toJson(x)));
         io.getSelectionController()
                 .select(xs, true);
     }
