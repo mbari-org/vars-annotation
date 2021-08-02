@@ -63,10 +63,11 @@ public class MediaDescriptionEditorPaneController {
     }
 
     private void checkDisable() {
-        var disable = media.get() == null
+        var disable = media == null
+                || media.get() == null
                 || (videoReferenceTextArea.getText().equals(media.get().getDescription())
-                && videoTextArea.getText().equals(media.get().getVideoDescription())
-                && videoSequenceTextArea.getText().equals(media.get().getVideoSequenceDescription()));
+                    && videoTextArea.getText().equals(media.get().getVideoDescription())
+                    && videoSequenceTextArea.getText().equals(media.get().getVideoSequenceDescription()));
         saveButton.setDisable(disable);
     }
 
