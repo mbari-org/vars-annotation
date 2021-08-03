@@ -3,19 +3,17 @@ plugins {
     id 'com.github.spotbugs' apply  false
     id 'org.kordamp.gradle.jdeps' apply false
     id "com.github.ben-manes.versions" apply false
-    id "com.jfrog.bintray" apply false
     id "org.javamodularity.moduleplugin" apply false
 }
 
 
 subprojects {
 
-    version = "1.0.2.jre11"
+    version = "1.0.3"
 
     apply plugin: 'com.adarshr.test-logger'
     apply plugin: 'com.github.ben-manes.versions'
     apply plugin: 'com.github.spotbugs'
-    apply plugin: 'com.jfrog.bintray'
     apply plugin: 'java'
     apply plugin: 'maven-publish'
     apply plugin: 'org.javamodularity.moduleplugin'
@@ -27,9 +25,6 @@ subprojects {
     repositories {
         jcenter()
         mavenCentral()
-        // maven {
-        //     url 'https://repo1.maven.org/maven2'
-        // }
         maven {
             name = "MBARI"
             url = uri("https://maven.pkg.github.com/mbari-org/maven")
@@ -38,9 +33,6 @@ subprojects {
                 password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
             }
         }
-        // maven {
-        //     url 'https://dl.bintray.com/jerady/maven'
-        // }
     }
 
     test {
@@ -60,8 +52,8 @@ subprojects {
     dependencies {
 
         constraints {
-            implementation 'com.auth0:java-jwt:3.16.0'
-            implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
+            implementation 'com.auth0:java-jwt:3.18.1'
+            implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.4'
             implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.1'
             implementation 'com.github.ben-manes.caffeine:caffeine:3.0.1'
             implementation 'com.google.code.gson:gson:2.8.7'
@@ -141,18 +133,6 @@ subprojects {
            }
         }
     }
-
-    // bintray {
-    //     key = System.getenv("BINTRAY_KEY")
-    //     user = System.getenv("BINTRAY_USER")
-    //     publications = ['maven']
-    //     pkg {
-    //         repo = 'maven'
-    //         name = project.name
-    //         licenses = ['Apache-2.0']
-    //         vcsUrl = 'https://github.com/mbari-media-management/vars-annotation.git'
-    //     }
-    // }
 
 }
 

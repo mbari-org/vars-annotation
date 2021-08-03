@@ -2,9 +2,7 @@ package org.mbari.vars.ui.events;
 
 import org.mbari.vars.services.model.Annotation;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * @author Brian Schlining
@@ -13,7 +11,7 @@ import java.util.Collections;
 public class AnnotationsRemovedEvent extends UIEvent<Collection<Annotation>> {
 
     public AnnotationsRemovedEvent(Object source, Collection<Annotation> annotations) {
-        super(source, Collections.unmodifiableCollection(annotations));
+        super(source, new ArrayList<>(annotations));
     }
 
     public AnnotationsRemovedEvent(Collection<Annotation> annotations) {
@@ -21,6 +19,6 @@ public class AnnotationsRemovedEvent extends UIEvent<Collection<Annotation>> {
     }
 
     public AnnotationsRemovedEvent(Annotation annotation) {
-        this(null, Arrays.asList(annotation));
+        this(null, List.of(annotation));
     }
 }
