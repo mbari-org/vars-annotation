@@ -27,10 +27,9 @@ subprojects {
     repositories {
         jcenter()
         mavenCentral()
-        mavenLocal()
-        maven {
-            url 'https://repo1.maven.org/maven2'
-        }
+        // maven {
+        //     url 'https://repo1.maven.org/maven2'
+        // }
         maven {
             name = "MBARI"
             url = uri("https://maven.pkg.github.com/mbari-org/maven")
@@ -39,9 +38,9 @@ subprojects {
                 password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
             }
         }
-        maven {
-            url 'https://dl.bintray.com/jerady/maven'
-        }
+        // maven {
+        //     url 'https://dl.bintray.com/jerady/maven'
+        // }
     }
 
     test {
