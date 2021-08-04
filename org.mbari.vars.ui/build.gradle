@@ -13,7 +13,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava'
     implementation 'org.kordamp.ikonli:ikonli-javafx'
     implementation 'org.kordamp.ikonli:ikonli-material-pack'
-//    implementation 'org.mbari.vars:vars-avfoundation'
+    implementation 'org.mbari.vars:vars-avfoundation'
     implementation 'org.mbari.vcr4j:vcr4j-core'
     implementation 'org.mbari.vcr4j:vcr4j-jserialcomm'
     implementation 'org.mbari.vcr4j:vcr4j-sharktopoda'
@@ -221,7 +221,7 @@ tasks.jpackageImage.doLast {
         //     into "build/jpackage/VARS Annotation.app/Contents/Resources"
         // }
         exec {
-            println("MACOSX: Modifying Info.plist")
+            println("MACOSX: Modifying Info.plist - Adding Camera Entitlement")
             workingDir "build/jpackage/VARS Annotation.app/Contents"
 
             executable 'plutil'
@@ -229,6 +229,17 @@ tasks.jpackageImage.doLast {
             args '-insert', 'NSCameraUsageDescription', '-string',  
               'VARS Annotation uses camera access for framecapture from hardware', 
               'Info.plist'
+        }
+
+        exec {
+            println("MACOSX: Modifying Info.plist - Adding Microphone Entitlement")
+            workingDir "build/jpackage/VARS Annotation.app/Contents"
+
+            executable 'plutil'
+
+            args '-insert', 'NSMicrophoneUsageDescription', '-string',
+                    'VARS Annotation uses microphone access to avoid crashes with Apple GateKeeper',
+                    'Info.plist'
         }
 
         

@@ -24,7 +24,7 @@ module org.mbari.vars.ui {
   requires org.slf4j;
   requires rxjavafx;
   requires typesafe.config;
-//  requires vars.avfoundation;
+  requires vars.avfoundation;
   requires vcr4j.core;
   requires vcr4j.jserialcomm;
   requires vcr4j.rs422;
