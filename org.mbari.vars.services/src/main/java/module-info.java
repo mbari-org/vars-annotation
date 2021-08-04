@@ -8,7 +8,7 @@ module org.mbari.vars.services {
   requires io.reactivex.rxjava2;
   requires com.fasterxml.jackson.databind; // required by java-jwt
   requires java.desktop;
-  requires java.jwt;
+  requires com.auth0.jwt;
   requires java.prefs;
   requires java.sql;
   requires javax.inject;

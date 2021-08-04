@@ -87,6 +87,7 @@ public class AppController {
                 .subscribe(e -> {
                     // Remove from both annotations and selectedAnnotations.
                     // Reset selected to exclude any that were removed.
+                    log.info("Removing {} annotations from internal data cache", e.get().size() );
                     ArrayList<Annotation> selected = new ArrayList<>(data.getSelectedAnnotations());
                     selected.removeAll(e.get());
                     eventBus.send(new AnnotationsSelectedEvent(selected));
