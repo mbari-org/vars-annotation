@@ -115,7 +115,7 @@ subprojects {
                name = "GitHubPackages"
                url = uri("https://maven.pkg.github.com/mbari-org/maven")
                credentials {
-                   username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
+                   username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER") ?: System.getenv("GITHUB_USERNAME")
                    password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
                }
            }
