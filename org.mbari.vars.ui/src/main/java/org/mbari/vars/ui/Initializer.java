@@ -65,9 +65,10 @@ public class Initializer {
                     Locale.getDefault());
 
             // We're using less!! Load it using our custom loader
-            LessCSSLoader lessLoader = new LessCSSLoader();
-            String stylesheet = lessLoader.loadLess(Initializer.class.getResource("/less/annotation.less"))
-                    .toExternalForm();
+            // LessCSSLoader lessLoader = new LessCSSLoader();
+            // String stylesheet = lessLoader.loadLess(Initializer.class.getResource("/less/annotation.less"))
+            //         .toExternalForm();
+            String stylesheet = Initializer.class.getResource("/css/annotation.css").toExternalForm();
 
             //
             Data data = new Data();
