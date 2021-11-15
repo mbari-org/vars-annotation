@@ -2,7 +2,8 @@
 
 # build script used internally at MBARI
 
-export JPACKAGE_HOME="/Library/Java/JavaVirtualMachines/adoptopenjdk-16.jdk/Contents/Home"
+# export JPACKAGE_HOME="/Library/Java/JavaVirtualMachines/temurin-16.jdk/Contents/Home"
+export JPACKAGE_HOME=$JAVA_HOME
 source "$HOME/workspace/M3/m3-deployspace/vars-annotation/env-config.sh"
 gradlew clean jpackage --info
 
