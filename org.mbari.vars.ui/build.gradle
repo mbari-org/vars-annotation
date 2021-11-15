@@ -243,18 +243,18 @@ tasks.jpackageImage.doLast {
         }
 
         
-        def signer = System.getenv("MAC_CODE_SIGNER")
-        if (signer) {
-            exec {
-                println("MACOSX: Signing application")
-                workingDir "build/jpackage"
+        // def signer = System.getenv("MAC_CODE_SIGNER")
+        // if (signer) {
+        //     exec {
+        //         println("MACOSX: Signing application")
+        //         workingDir "build/jpackage"
 
-                executable "codesign"
+        //         executable "codesign"
 
-                args "--entitlements", "${projectDir}/src/jpackage/macos/java.entitlements",
-                  "--options", "runtime", "--deep", "-vvv", "-f", "--sign", signer, 
-                  "VARS Annotation.app"
-            }
-        }
+        //         args "--entitlements", "${projectDir}/src/jpackage/macos/java.entitlements",
+        //           "--options", "runtime", "--deep", "-vvv", "-f", "--sign", signer, 
+        //           "VARS Annotation.app"
+        //     }
+        // }
     }
 }
