@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.macos;
+package org.mbari.vars.ui.mediaplayers.macos.avf;
 
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
@@ -16,7 +16,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 

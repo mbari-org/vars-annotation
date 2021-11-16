@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.macos;
+package org.mbari.vars.ui.mediaplayers.macos.avf;
 
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXRadioButton;
