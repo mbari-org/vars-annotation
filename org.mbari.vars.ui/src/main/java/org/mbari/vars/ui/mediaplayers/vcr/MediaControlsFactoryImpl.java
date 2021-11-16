@@ -7,7 +7,7 @@ import org.mbari.vars.ui.mediaplayers.MediaControlsFactory;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.ui.mediaplayers.NoopImageCaptureService;
 import org.mbari.vars.ui.mediaplayers.SettingsPane;
-import org.mbari.vars.ui.mediaplayers.macos.MacImageCaptureServiceRef;
+import org.mbari.vars.ui.mediaplayers.macos.avf.MacImageCaptureServiceRef;
 import org.mbari.vars.ui.messages.ShowInfoAlert;
 import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.services.model.Annotation;

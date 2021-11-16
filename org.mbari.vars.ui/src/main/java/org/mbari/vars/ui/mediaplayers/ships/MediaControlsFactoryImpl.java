@@ -3,7 +3,7 @@ package org.mbari.vars.ui.mediaplayers.ships;
 import javafx.scene.layout.Pane;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.mediaplayers.macos.MacImageCaptureServiceRef;
+import org.mbari.vars.ui.mediaplayers.macos.avf.MacImageCaptureServiceRef;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.ImageCaptureService;

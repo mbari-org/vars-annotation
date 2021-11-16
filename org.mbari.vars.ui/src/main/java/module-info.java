@@ -1,3 +1,5 @@
+import org.mbari.vars.ui.mediaplayers.macos.avf.MediaControlsFactoryImpl;
+
 module org.mbari.vars.ui {
 
   requires com.fazecast.jSerialComm;
@@ -34,7 +36,7 @@ module org.mbari.vars.ui {
   uses org.mbari.vars.ui.mediaplayers.MediaControlsFactory;
 
   provides org.mbari.vars.ui.mediaplayers.MediaControlsFactory
-      with org.mbari.vars.ui.mediaplayers.macos.MediaControlsFactoryImpl,
+      with MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.sharktopoda.MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.ships.MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.vcr.MediaControlsFactoryImpl;
@@ -69,4 +71,5 @@ module org.mbari.vars.ui {
   exports org.mbari.vars.ui.messages;
   exports org.mbari.vars.ui.services;
   exports org.mbari.vars.ui;
+    opens org.mbari.vars.ui.mediaplayers.macos.avf to javafx.fxml;
 }

@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.macos;
+package org.mbari.vars.ui.mediaplayers.macos.avf;
 
 //import org.mbari.m3.blackmagic.BlackmagicImageCapture;
 import org.mbari.vars.ui.Initializer;
@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;

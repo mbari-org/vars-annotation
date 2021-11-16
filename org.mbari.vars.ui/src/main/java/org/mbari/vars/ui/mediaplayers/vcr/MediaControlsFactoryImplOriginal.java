@@ -2,7 +2,7 @@ package org.mbari.vars.ui.mediaplayers.vcr;
 
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.mediaplayers.macos.MacImageCaptureServiceRef;
+import org.mbari.vars.ui.mediaplayers.macos.avf.MacImageCaptureServiceRef;
 import org.mbari.vars.ui.mediaplayers.*;
 import org.mbari.vars.ui.messages.ShowInfoAlert;
 import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
