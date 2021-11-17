@@ -29,7 +29,7 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
 
     @Override
     public Framegrab capture(File file) {
-        
+
 
     }
 
