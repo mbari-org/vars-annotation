@@ -10,22 +10,22 @@ public class Settings {
     public static final String BM_API_KEY = "macos-libbmagic-key";
 
     public static String getHost() {
-        Preferences prefs = Preferences.userNodeForPackage(BMImageCaptureService.class);
+        Preferences prefs = Preferences.userNodeForPackage(ImageCaptureServiceImpl.class);
         return prefs.get(BM_HOST, "localhost");
     }
 
     public static Integer getPort() {
-        Preferences prefs = Preferences.userNodeForPackage(BMImageCaptureService.class);
+        Preferences prefs = Preferences.userNodeForPackage(ImageCaptureServiceImpl.class);
         return prefs.getInt(BM_PORT, 9000);
     }
 
     public static String getApiKey() {
-        Preferences prefs = Preferences.userNodeForPackage(BMImageCaptureService.class);
+        Preferences prefs = Preferences.userNodeForPackage(ImageCaptureServiceImpl.class);
         return prefs.get(BM_API_KEY, "0123456789");
     }
 
-    public static void setBMSettings(String host, int port, String apiKey) {
-        Preferences prefs = Preferences.userNodeForPackage(BMImageCaptureService.class);
+    public static void saveSettings(String host, int port, String apiKey) {
+        Preferences prefs = Preferences.userNodeForPackage(ImageCaptureServiceImpl.class);
         prefs.put(BM_HOST, host);
         prefs.putInt(BM_PORT, port);
         prefs.put(BM_API_KEY, apiKey);
