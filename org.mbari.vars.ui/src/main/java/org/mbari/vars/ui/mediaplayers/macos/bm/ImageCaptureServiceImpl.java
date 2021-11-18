@@ -21,6 +21,7 @@ import java.net.Socket;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
@@ -57,37 +58,21 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
     public Framegrab capture(File file) {
         var path = file.toPath().toAbsolutePath().normalize();
         Framegrab framegrab = new Framegrab();
+        // TODO - verify that the framegrab and video align at this index.
+        //       if not, maybe index before and after framegrab and average the time
+        framegrab.setVideoIndex(new VideoIndex(Instant.now()));
         var success = requestFramegrab(path);
         if (success) {
-            MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = Initializer.getToolBox().getMediaPlayer();
-            if (mediaPlayer != null) {
-                // HACK - Use a 3 second timeout
-                try {
-                    mediaPlayer.requestVideoIndex()
-                            .thenAccept(framegrab::setVideoIndex)
-                            .get(3000, TimeUnit.MILLISECONDS);
-                }
-                catch (Exception e) {
-                    log.warn("Problem with requesting videoIndex while capturing a framegrab", e);
-                }
-
-                // If, for some reason, getting the video index fails. Fall back to a timestamp
-                if (framegrab.getVideoIndex().isEmpty()) {
-                    log.warn("Failed to get video index. Using current timestamp for video index");
-                    framegrab.setVideoIndex(new VideoIndex(Instant.now()));
-                }
-
-                try {
-                    BufferedImage image = ImageIO.read(file);
-                    framegrab.setImage(image);
-                } catch (Exception e) {
-                    log.warn("Image capture failed. Unable to read image back off disk", e);
-                }
+            try {
+                BufferedImage image = ImageIO.read(file);
+                framegrab.setImage(image);
+            } catch (Exception e) {
+                log.warn("Image capture failed. Unable to read image back off disk", e);
             }
         }
         return framegrab;
-
     }
+
 
     /**
      * This methods blocks waiting for a response from the remote server
@@ -99,7 +84,6 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
         initSocket();
         if (isSocketConnected(socket)) {
             var cmd = apiKey + "," + path + "\n"; // \n terminated CSV string
-
 
             try {
                 outToSocket.write(cmd);
