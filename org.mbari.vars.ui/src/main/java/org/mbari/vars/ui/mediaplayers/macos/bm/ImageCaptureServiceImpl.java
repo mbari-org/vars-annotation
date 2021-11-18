@@ -60,6 +60,8 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
         Framegrab framegrab = new Framegrab();
         // TODO - verify that the framegrab and video align at this index.
         //       if not, maybe index before and after framegrab and average the time
+        //      we don't need to request time from the mediaplayer as this
+        //      class is only used for real-time capture
         framegrab.setVideoIndex(new VideoIndex(Instant.now()));
         var success = requestFramegrab(path);
         if (success) {
