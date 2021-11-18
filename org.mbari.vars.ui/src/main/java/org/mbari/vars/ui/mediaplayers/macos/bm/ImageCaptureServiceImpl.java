@@ -1,14 +1,28 @@
 package org.mbari.vars.ui.mediaplayers.macos.bm;
 
+import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.ImageCaptureService;
 import org.mbari.vars.services.model.Framegrab;
+import org.mbari.vars.ui.Initializer;
+import org.mbari.vars.ui.mediaplayers.MediaPlayer;
+import org.mbari.vars.ui.messages.ShowExceptionAlert;
+import org.mbari.vcr4j.VideoError;
+import org.mbari.vcr4j.VideoIndex;
+import org.mbari.vcr4j.VideoState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 public class ImageCaptureServiceImpl implements ImageCaptureService {
 
@@ -16,30 +30,121 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
     private final String host;
     private final int port;
     private final String apiKey;
+    private final Duration timeout;
+    private final EventBus eventBus;
+    private final ResourceBundle i18n;
     private Socket socket;
+    private Writer outToSocket;
+    private BufferedReader inFromSocket;
 
 
-    public ImageCaptureServiceImpl(String host, int port, String apiKey) {
+    public ImageCaptureServiceImpl(String host,
+                                   int port,
+                                   String apiKey,
+                                   Duration timeout,
+                                   EventBus eventBus,
+                                   ResourceBundle i18n) {
         this.host = host;
         this.port = port;
         this.apiKey = apiKey;
+        this.timeout = timeout;
+        this.eventBus = eventBus;
+        this.i18n = i18n;
     }
-
 
 
     @Override
     public Framegrab capture(File file) {
+        var path = file.toPath().toAbsolutePath().normalize();
+        Framegrab framegrab = new Framegrab();
+        var success = requestFramegrab(path);
+        if (success) {
+            MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = Initializer.getToolBox().getMediaPlayer();
+            if (mediaPlayer != null) {
+                // HACK - Use a 3 second timeout
+                try {
+                    mediaPlayer.requestVideoIndex()
+                            .thenAccept(framegrab::setVideoIndex)
+                            .get(3000, TimeUnit.MILLISECONDS);
+                }
+                catch (Exception e) {
+                    log.warn("Problem with requesting videoIndex while capturing a framegrab", e);
+                }
+
+                // If, for some reason, getting the video index fails. Fall back to a timestamp
+                if (framegrab.getVideoIndex().isEmpty()) {
+                    log.warn("Failed to get video index. Using current timestamp for video index");
+                    framegrab.setVideoIndex(new VideoIndex(Instant.now()));
+                }
+
+                try {
+                    BufferedImage image = ImageIO.read(file);
+                    framegrab.setImage(image);
+                } catch (Exception e) {
+                    log.warn("Image capture failed. Unable to read image back off disk", e);
+                }
+            }
+        }
+        return framegrab;
+
+    }
+
+    /**
+     * This methods blocks waiting for a response from the remote server
+     * @param path
+     * @return
+     */
+    private boolean requestFramegrab(Path path) {
+        boolean success = false;
+        initSocket();
+        if (isSocketConnected(socket)) {
+            var cmd = apiKey + "," + path + "\n"; // \n terminated CSV string
 
 
+            try {
+                outToSocket.write(cmd);
+                outToSocket.flush();
+            }
+            catch (IOException e) {
+                sendError("mediaplayer.macos.bm.error.out.content", e);
+            }
+
+            try {
+                String response = null;
+                while (response == null) {
+                    response =  inFromSocket.readLine();
+                }
+                success = response.endsWith("OK");
+            }
+            catch (IOException e) {
+                sendError("mediaplayer.macos.bm.error.in.content", e);
+            }
+        }
+        return success;
     }
 
     @Override
     public void dispose() {
-
+        try {
+            outToSocket.close();
+            inFromSocket.close();
+            socket.close();
+        }
+        catch (IOException e) {
+            sendError("mediaplayer.macos.bm.error.close.content", e);
+        }
     }
 
     private static boolean isSocketConnected(Socket socket) {
         return socket != null && socket.isConnected() && !socket.isClosed();
+    }
+
+    private void sendError(String contentKey, Exception e) {
+        var title = i18n.getString("mediaplayer.macos.bm.error.title");
+        var content = i18n.getString(contentKey) + " " +
+                host + ":" + port;
+        var header = i18n.getString("mediaplayer.macos.bm.error.header");
+        eventBus.send(new ShowExceptionAlert(title, header, content,e));
     }
 
     private void initSocket() {
@@ -49,14 +154,25 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
                 var address = new InetSocketAddress(inetAddress, port);
                 socket = new Socket();
                 socket.setTcpNoDelay(true); //to disable Nagle's algorithm
-                socket.setSoLinger(false, 0); // so socket doenst' stay open for a short time after close
-                socket.setSoTimeout(10000); // timeout in ms for the socket to wait for a response
-                socket.connect(address, 5000);
+                socket.setSoLinger(false, 0); // so socket doesn't stay open for a short time after close
+                socket.setSoTimeout((int) timeout.toMillis()); // timeout in ms for the socket to wait for a response
+                socket.connect(address, (int) timeout.toMillis());
+                outToSocket = new PrintWriter(socket.getOutputStream());
+                inFromSocket = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             }
             catch (Exception e) {
                 log.warn("Failed to connect to TCP socket at " + host + ":" + port);
             }
         }
+    }
+
+    public static ImageCaptureServiceImpl newInstance() {
+        return new ImageCaptureServiceImpl(Settings.getHost(),
+                Settings.getPort(),
+                Settings.getApiKey(),
+                Duration.ofSeconds(Settings.getTimeout()),
+                Initializer.getToolBox().getEventBus(),
+                Initializer.getToolBox().getI18nBundle());
     }
 }
 

@@ -323,7 +323,7 @@ public class SharktoptodaControlPane extends Pane {
         if (media == null
                 || media.getStartTimestamp() == null
                 || videoIndex == null
-                || !videoIndex.getElapsedTime().isPresent()) {
+                || videoIndex.getElapsedTime().isEmpty()) {
             return Optional.empty();
         }
         else {

@@ -143,7 +143,7 @@ public class FramegrabCmd implements Command {
         File imageFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".png");
         Optional<Framegrab> framegrabOpt = capture(imageFile, media, mediaPlayer);
 
-        if (!framegrabOpt.isPresent()) {
+        if (framegrabOpt.isEmpty()) {
             //log.warn("No framegrab was captured for {} at {}", media.getVideoName(), media.getUri());
             ResourceBundle i18n = toolBox.getI18nBundle();
             String content = i18n.getString("commands.framecapture.nomedia.content") +

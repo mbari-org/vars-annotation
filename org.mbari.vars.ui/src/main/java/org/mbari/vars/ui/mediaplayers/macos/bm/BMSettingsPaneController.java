@@ -32,6 +32,9 @@ public class BMSettingsPaneController implements SettingsPane {
     private TextField portTextfield;
 
     @FXML
+    private TextField timeoutTextfield;
+
+    @FXML
     void initialize() {
 
         name = resources.getString("mediaplayer.macos.bm.name");
@@ -45,8 +48,11 @@ public class BMSettingsPaneController implements SettingsPane {
             return null;
         };
 
-        var textFormatter = new TextFormatter<>(filter);
-        portTextfield.setTextFormatter(textFormatter);
+        var textFormatter0 = new TextFormatter<>(filter);
+        portTextfield.setTextFormatter(textFormatter0);
+
+        var textFormatter1 = new TextFormatter<>(filter);
+        timeoutTextfield.setTextFormatter(textFormatter1);
     }
 
     @Override
@@ -64,20 +70,23 @@ public class BMSettingsPaneController implements SettingsPane {
         var host = Settings.getHost();
         var port = Settings.getPort();
         var apiKey = Settings.getApiKey();
-        configureSettings(host, port, apiKey);
+        var timeout = Settings.getTimeout();
+        configureSettings(host, port, apiKey, timeout);
     }
 
     @Override
     public void save() {
         Settings.saveSettings(hostTextfield.getText(),
                 Integer.parseInt(portTextfield.getText()),
-                keyTextfield.getText());
+                keyTextfield.getText(),
+                Integer.parseInt(timeoutTextfield.getText()));
     }
 
-    public void configureSettings(String host, int port, String apiKey) {
+    public void configureSettings(String host, int port, String apiKey, int timeout) {
         hostTextfield.setText(host);
         portTextfield.setText("" + port);
         keyTextfield.setText(apiKey);
+        timeoutTextfield.setText("" + timeout);
     }
 
     public static BMSettingsPaneController newInstance() {
