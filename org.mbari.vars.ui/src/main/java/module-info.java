@@ -37,6 +37,7 @@ module org.mbari.vars.ui {
 
   provides org.mbari.vars.ui.mediaplayers.MediaControlsFactory
       with MediaControlsFactoryImpl,
+      org.mbari.vars.ui.mediaplayers.macos.bm.MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.sharktopoda.MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.ships.MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.vcr.MediaControlsFactoryImpl;
@@ -49,7 +50,7 @@ module org.mbari.vars.ui {
   opens org.mbari.vars.ui.javafx.roweditor to javafx.fxml;
   opens org.mbari.vars.ui.javafx.shared to javafx.fxml;
   opens org.mbari.vars.ui.javafx.userdialog to javafx.fxml;
-  opens org.mbari.vars.ui.mediaplayers.macos to javafx.fxml;
+  opens org.mbari.vars.ui.mediaplayers.macos.bm to javafx.fxml;
   opens org.mbari.vars.ui.mediaplayers.sharktopoda to javafx.fxml;
   opens org.mbari.vars.ui.mediaplayers.sharktopoda.localization to javafx.fxml;
   opens org.mbari.vars.ui.mediaplayers.ships to javafx.fxml;
@@ -71,5 +72,5 @@ module org.mbari.vars.ui {
   exports org.mbari.vars.ui.messages;
   exports org.mbari.vars.ui.services;
   exports org.mbari.vars.ui;
-    opens org.mbari.vars.ui.mediaplayers.macos.avf to javafx.fxml;
+//    opens org.mbari.vars.ui.mediaplayers.macos.avf to javafx.fxml;
 }
