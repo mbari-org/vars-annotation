@@ -42,7 +42,7 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
     // TODO - Create a runnable/queue like commandmanager so that 
     //        all socket requests are done on the same thread
     private final BlockingQueue<File> pendingQueue = new LinkedBlockingQueue<>();
-    private final AtomicReference<CompletableFuture<Framegrab>> lastFramegrab = new AtomicReference<>();
+    private final BlockingQueue<Framegrab> framegrabs = new LinkedBlockingQueue<>();
     private final Thread thread;
 
     
@@ -98,22 +98,20 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
                     // TODO handle error via event
                 }
                 if (file != null) {
-                    var future = new CompletableFuture<Framegrab>();
-                    lastFramegrab.set(future);
+                    var now = Instant.now();
                     var framegrab = new Framegrab();
-                    framegrab.setVideoIndex(new VideoIndex(Instant.now()));
                     var path = file.toPath().toAbsolutePath().normalize();
                     var success = requestFramegrab(socket, outToSocket, inFromSocket, path);
                     if (success) {
                         try {
                             BufferedImage image = ImageIO.read(file);
                             framegrab.setImage(image);
-                            future.complete(framegrab);
+                            framegrab.setVideoIndex(new VideoIndex(now));
                         } catch (Exception e) {
                             log.warn("Image capture failed. Unable to read image back off disk", e);
-                            future.completeExceptionally(e);
                         }
                     }
+                    framegrabs.offer(framegrab);
                 }
                 ok = isSocketConnected(socket) && !doDispose;
             }
@@ -135,10 +133,9 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
     public Framegrab capture(File file) {
         pendingQueue.offer(file);
         try {
-            return lastFramegrab.getAndSet(null)
-                .get(timeout.toSeconds(), TimeUnit.SECONDS);
-
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+          return framegrabs.poll(timeout.toSeconds(), TimeUnit.SECONDS);
+        } 
+        catch (InterruptedException e) {
             log.atError().setCause(e).log("Image capture failed");
             return new Framegrab();
         }
