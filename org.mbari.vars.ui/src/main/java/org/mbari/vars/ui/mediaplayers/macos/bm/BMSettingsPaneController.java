@@ -1,6 +1,9 @@
 package org.mbari.vars.ui.mediaplayers.macos.bm;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
@@ -8,9 +11,11 @@ import javafx.scene.layout.Pane;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.mediaplayers.SettingsPane;
 import org.mbari.vars.ui.util.FXMLUtils;
-
+import org.mbari.vars.ui.util.JFXUtilities;
+import java.io.File;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
+import com.jfoenix.controls.JFXTextField;
 
 public class BMSettingsPaneController implements SettingsPane {
 
@@ -23,16 +28,22 @@ public class BMSettingsPaneController implements SettingsPane {
     private GridPane root;
 
     @FXML
-    private TextField hostTextfield;
+    private JFXTextField hostTextfield;
 
     @FXML
-    private TextField keyTextfield;
+    private JFXTextField keyTextfield;
 
     @FXML
-    private TextField portTextfield;
+    private JFXTextField portTextfield;
 
     @FXML
-    private TextField timeoutTextfield;
+    private JFXTextField timeoutTextfield;
+
+    @FXML
+    private Button testButton;
+
+    @FXML
+    private Label testLabel;
 
     @FXML
     void initialize() {
@@ -53,6 +64,36 @@ public class BMSettingsPaneController implements SettingsPane {
 
         var textFormatter1 = new TextFormatter<>(filter);
         timeoutTextfield.setTextFormatter(textFormatter1);
+
+        testButton.setOnAction(evt -> {
+            save();
+            Platform.runLater(() -> testLabel.setText("... running test"));
+        
+            // try to grab a frame
+            new Thread(() -> {
+                try {
+                    var file = File.createTempFile("trashme", ".png");
+                    var ics = ImageCaptureServiceImpl.newInstance();
+                    var framegrab = ics.capture(file);
+                    var msg = framegrab.getImage().isPresent() ? 
+                        resources.getString("mediaplayer.macos.bm.test.success") :
+                        resources.getString("mediaplayer.macos.bm.test.failure");
+                    ics.dispose();
+                    Platform.runLater(() -> testLabel.setText(msg));
+    
+                    // clean up
+                    file.delete();
+                }
+                catch (Exception e) {
+                    var msg = resources.getString("mediaplayer.macos.bm.test.failure");
+                    Platform.runLater(() -> testLabel.setText(msg));
+                }
+            }).start();
+            
+
+        });
+
+        JFXUtilities.attractAttention(testButton);
     }
 
     @Override
@@ -95,4 +136,5 @@ public class BMSettingsPaneController implements SettingsPane {
                 "/fxml/BMSettingsPane.fxml",
                 i18n);
     }
+
 }

@@ -4,11 +4,8 @@ import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.ImageCaptureService;
 import org.mbari.vars.services.model.Framegrab;
 import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.ui.messages.ShowExceptionAlert;
-import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
-import org.mbari.vcr4j.VideoState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +18,8 @@ import java.net.Socket;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
+
 
 public class ImageCaptureServiceImpl implements ImageCaptureService {
 
@@ -37,6 +33,9 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
     private Socket socket;
     private Writer outToSocket;
     private BufferedReader inFromSocket;
+
+    // TODO - Create a runnable/queue like commandmanager so that 
+    // all socket requests are done on the same thread
 
 
     public ImageCaptureServiceImpl(String host,
@@ -56,20 +55,23 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
 
     @Override
     public Framegrab capture(File file) {
-        var path = file.toPath().toAbsolutePath().normalize();
         Framegrab framegrab = new Framegrab();
-        // TODO - verify that the framegrab and video align at this index.
-        //       if not, maybe index before and after framegrab and average the time
-        //      we don't need to request time from the mediaplayer as this
-        //      class is only used for real-time capture
-        framegrab.setVideoIndex(new VideoIndex(Instant.now()));
-        var success = requestFramegrab(path);
-        if (success) {
-            try {
-                BufferedImage image = ImageIO.read(file);
-                framegrab.setImage(image);
-            } catch (Exception e) {
-                log.warn("Image capture failed. Unable to read image back off disk", e);
+        synchronized (socket) {
+            var path = file.toPath().toAbsolutePath().normalize();
+            
+            // TODO - verify that the framegrab and video align at this index.
+            //       if not, maybe index before and after framegrab and average the time
+            //      we don't need to request time from the mediaplayer as this
+            //      class is only used for real-time capture
+            framegrab.setVideoIndex(new VideoIndex(Instant.now()));
+            var success = requestFramegrab(path);
+            if (success) {
+                try {
+                    BufferedImage image = ImageIO.read(file);
+                    framegrab.setImage(image);
+                } catch (Exception e) {
+                    log.warn("Image capture failed. Unable to read image back off disk", e);
+                }
             }
         }
         return framegrab;
@@ -88,10 +90,14 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
             var cmd = apiKey + "," + path + "\n"; // \n terminated CSV string
 
             try {
+                log.atDebug().log(() -> "Sending command: " + cmd);
                 outToSocket.write(cmd);
                 outToSocket.flush();
             }
             catch (IOException e) {
+                log.atWarn()
+                    .setCause(e)
+                    .log(() -> "Unable to send command to remote server: " + cmd);
                 sendError("mediaplayer.macos.bm.error.out.content", e);
             }
 
@@ -100,9 +106,13 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
                 while (response == null) {
                     response =  inFromSocket.readLine();
                 }
+                log.atDebug().log("Received response: " + response);
                 success = response.endsWith("OK");
             }
             catch (IOException e) {
+                log.atWarn()
+                    .setCause(e)
+                    .log(() -> "Unable to receive response from remote server");
                 sendError("mediaplayer.macos.bm.error.in.content", e);
             }
         }
@@ -111,10 +121,13 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
 
     @Override
     public void dispose() {
+        log.atDebug().log("Disposing ImageCaptureServiceImpl");
         try {
-            outToSocket.close();
-            inFromSocket.close();
-            socket.close();
+            synchronized (socket) {
+                outToSocket.close();
+                inFromSocket.close();
+                socket.close();
+            }
         }
         catch (IOException e) {
             sendError("mediaplayer.macos.bm.error.close.content", e);
