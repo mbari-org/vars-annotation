@@ -109,6 +109,7 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
                             framegrab.setVideoIndex(new VideoIndex(now));
                         } catch (Exception e) {
                             log.warn("Image capture failed. Unable to read image back off disk", e);
+                            sendError("mediaplayer.macos.bm.error.nofg.content", e);
                         }
                     }
                     framegrabs.offer(framegrab);
