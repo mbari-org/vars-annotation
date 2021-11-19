@@ -19,6 +19,13 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ResourceBundle;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class ImageCaptureServiceImpl implements ImageCaptureService {
@@ -30,12 +37,15 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
     private final Duration timeout;
     private final EventBus eventBus;
     private final ResourceBundle i18n;
-    private Socket socket;
-    private Writer outToSocket;
-    private BufferedReader inFromSocket;
+    private volatile boolean doDispose = false;
 
     // TODO - Create a runnable/queue like commandmanager so that 
-    // all socket requests are done on the same thread
+    //        all socket requests are done on the same thread
+    private final BlockingQueue<File> pendingQueue = new LinkedBlockingQueue<>();
+    private final AtomicReference<CompletableFuture<Framegrab>> lastFramegrab = new AtomicReference<>();
+    private final Thread thread;
+
+    
 
 
     public ImageCaptureServiceImpl(String host,
@@ -50,104 +60,19 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
         this.timeout = timeout;
         this.eventBus = eventBus;
         this.i18n = i18n;
+
+        thread = new Thread(buildRunnable(), getClass().getName());
+        thread.setDaemon(true);
+        thread.start();
     }
 
+    private Runnable buildRunnable() {
+        return () -> {
 
-    @Override
-    public Framegrab capture(File file) {
-        Framegrab framegrab = new Framegrab();
-        synchronized (socket) {
-            var path = file.toPath().toAbsolutePath().normalize();
-            
-            // TODO - verify that the framegrab and video align at this index.
-            //       if not, maybe index before and after framegrab and average the time
-            //      we don't need to request time from the mediaplayer as this
-            //      class is only used for real-time capture
-            framegrab.setVideoIndex(new VideoIndex(Instant.now()));
-            var success = requestFramegrab(path);
-            if (success) {
-                try {
-                    BufferedImage image = ImageIO.read(file);
-                    framegrab.setImage(image);
-                } catch (Exception e) {
-                    log.warn("Image capture failed. Unable to read image back off disk", e);
-                }
-            }
-        }
-        return framegrab;
-    }
-
-
-    /**
-     * This methods blocks waiting for a response from the remote server
-     * @param path
-     * @return
-     */
-    private boolean requestFramegrab(Path path) {
-        boolean success = false;
-        initSocket();
-        if (isSocketConnected(socket)) {
-            var cmd = apiKey + "," + path + "\n"; // \n terminated CSV string
-
-            try {
-                log.atDebug().log(() -> "Sending command: " + cmd);
-                outToSocket.write(cmd);
-                outToSocket.flush();
-            }
-            catch (IOException e) {
-                log.atWarn()
-                    .setCause(e)
-                    .log(() -> "Unable to send command to remote server: " + cmd);
-                sendError("mediaplayer.macos.bm.error.out.content", e);
-            }
-
-            try {
-                String response = null;
-                while (response == null) {
-                    response =  inFromSocket.readLine();
-                }
-                log.atDebug().log("Received response: " + response);
-                success = response.endsWith("OK");
-            }
-            catch (IOException e) {
-                log.atWarn()
-                    .setCause(e)
-                    .log(() -> "Unable to receive response from remote server");
-                sendError("mediaplayer.macos.bm.error.in.content", e);
-            }
-        }
-        return success;
-    }
-
-    @Override
-    public void dispose() {
-        log.atDebug().log("Disposing ImageCaptureServiceImpl");
-        try {
-            synchronized (socket) {
-                outToSocket.close();
-                inFromSocket.close();
-                socket.close();
-            }
-        }
-        catch (IOException e) {
-            sendError("mediaplayer.macos.bm.error.close.content", e);
-        }
-    }
-
-    private static boolean isSocketConnected(Socket socket) {
-        return socket != null && socket.isConnected() && !socket.isClosed();
-    }
-
-    private void sendError(String contentKey, Exception e) {
-        var title = i18n.getString("mediaplayer.macos.bm.error.title");
-        var content = i18n.getString(contentKey) + " " +
-                host + ":" + port;
-        var header = i18n.getString("mediaplayer.macos.bm.error.header");
-        eventBus.send(new ShowExceptionAlert(title, header, content,e));
-    }
-
-    private void initSocket() {
-        if (!isSocketConnected(socket)) {
+            // -- Connect Socket
+            Socket socket = null;
+            Writer outToSocket = null;
+            BufferedReader inFromSocket = null;
             try {
                 var inetAddress = InetAddress.getByName(host);
                 var address = new InetSocketAddress(inetAddress, port);
@@ -162,7 +87,120 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
             catch (Exception e) {
                 log.warn("Failed to connect to TCP socket at " + host + ":" + port);
             }
+
+            var ok = isSocketConnected(socket);
+    
+            while (ok) {
+                File file = null;
+                try {
+                    file = pendingQueue.poll(timeout.toSeconds(), TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    // TODO handle error via event
+                }
+                if (file != null) {
+                    var future = new CompletableFuture<Framegrab>();
+                    lastFramegrab.set(future);
+                    var framegrab = new Framegrab();
+                    framegrab.setVideoIndex(new VideoIndex(Instant.now()));
+                    var path = file.toPath().toAbsolutePath().normalize();
+                    var success = requestFramegrab(socket, outToSocket, inFromSocket, path);
+                    if (success) {
+                        try {
+                            BufferedImage image = ImageIO.read(file);
+                            framegrab.setImage(image);
+                            future.complete(framegrab);
+                        } catch (Exception e) {
+                            log.warn("Image capture failed. Unable to read image back off disk", e);
+                            future.completeExceptionally(e);
+                        }
+                    }
+                }
+                ok = isSocketConnected(socket) && !doDispose;
+            }
+
+            
+            try {
+                outToSocket.close();
+                inFromSocket.close();
+                socket.close();
+            } catch (IOException e) {
+                log.atError().setCause(e).log("Failed to close socket");
+            }
+
+
+        };
+    }
+
+    @Override
+    public Framegrab capture(File file) {
+        pendingQueue.offer(file);
+        try {
+            return lastFramegrab.getAndSet(null)
+                .get(timeout.toSeconds(), TimeUnit.SECONDS);
+
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            log.atError().setCause(e).log("Image capture failed");
+            return new Framegrab();
         }
+    }
+
+
+    /**
+     * This methods blocks waiting for a response from the remote server
+     * @param path
+     * @return
+     */
+    private boolean requestFramegrab(Socket socket, Writer outToSocket, BufferedReader inFromSocket, Path path) {
+        boolean success = false;
+
+        var cmd = apiKey + "," + path + "\n"; // \n terminated CSV string
+
+        try {
+            log.atDebug().log(() -> "Sending command: " + cmd);
+            outToSocket.write(cmd);
+            outToSocket.flush();
+        }
+        catch (IOException e) {
+            log.atWarn()
+                .setCause(e)
+                .log(() -> "Unable to send command to remote server: " + cmd);
+            sendError("mediaplayer.macos.bm.error.out.content", e);
+        }
+
+        try {
+            String response = null;
+            while (response == null) {
+                response =  inFromSocket.readLine();
+            }
+            log.atDebug().log("Received response: " + response);
+            success = response.endsWith("OK");
+        }
+        catch (IOException e) {
+            log.atWarn()
+                .setCause(e)
+                .log(() -> "Unable to receive response from remote server");
+            sendError("mediaplayer.macos.bm.error.in.content", e);
+        }
+        
+        return success;
+    }
+
+    @Override
+    public void dispose() {
+        log.atDebug().log("Disposing ImageCaptureServiceImpl");
+        doDispose = true;
+    }
+
+    private static boolean isSocketConnected(Socket socket) {
+        return socket != null && socket.isConnected() && !socket.isClosed();
+    }
+
+    private void sendError(String contentKey, Exception e) {
+        var title = i18n.getString("mediaplayer.macos.bm.error.title");
+        var content = i18n.getString(contentKey) + " " +
+                host + ":" + port;
+        var header = i18n.getString("mediaplayer.macos.bm.error.header");
+        eventBus.send(new ShowExceptionAlert(title, header, content,e));
     }
 
     public static ImageCaptureServiceImpl newInstance() {
