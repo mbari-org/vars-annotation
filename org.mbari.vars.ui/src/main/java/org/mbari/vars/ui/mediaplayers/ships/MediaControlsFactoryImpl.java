@@ -11,7 +11,7 @@ import org.mbari.vars.services.ImageCaptureService;
 import org.mbari.vars.services.MediaService;
 import mbarix4j.util.SystemUtilities;
 import org.mbari.vars.ui.mediaplayers.*;
-import org.mbari.vars.ui.mediaplayers.macos.bm.ImageCaptureServiceImpl;
+import org.mbari.vars.ui.mediaplayers.macos.bm.RXImageCaptureServiceImpl;
 import org.mbari.vcr4j.SimpleVideoError;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
@@ -59,7 +59,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
         ImageCaptureService imageCaptureService = new NoopImageCaptureService();
         if (SystemUtilities.isMacOS()) {
 //            imageCaptureService = new MacImageCaptureServiceRef();
-            imageCaptureService = ImageCaptureServiceImpl.newInstance();
+            imageCaptureService = RXImageCaptureServiceImpl.newInstance();
         }
 
 

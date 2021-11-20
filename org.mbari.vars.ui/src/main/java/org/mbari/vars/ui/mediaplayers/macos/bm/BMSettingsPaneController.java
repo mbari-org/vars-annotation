@@ -73,7 +73,7 @@ public class BMSettingsPaneController implements SettingsPane {
             new Thread(() -> {
                 try {
                     var file = File.createTempFile("trashme", ".png");
-                    var ics = ImageCaptureServiceImpl.newInstance();
+                    var ics = RXImageCaptureServiceImpl.newInstance();
                     var framegrab = ics.capture(file);
                     var msg = framegrab.getImage().isPresent() ? 
                         resources.getString("mediaplayer.macos.bm.test.success") :
