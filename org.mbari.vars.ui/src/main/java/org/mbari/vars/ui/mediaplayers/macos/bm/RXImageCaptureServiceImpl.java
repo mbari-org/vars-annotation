@@ -60,6 +60,8 @@ public class RXImageCaptureServiceImpl implements ImageCaptureService {
         thread = new Thread(buildRunnable(), getClass().getName());
         thread.setDaemon(true);
         thread.start();
+
+        framegrabs.doOnComplete(() -> log.atDebug().log(() -> "Closing framegrabs RX subject"));
     }
 
     @Override
@@ -71,8 +73,9 @@ public class RXImageCaptureServiceImpl implements ImageCaptureService {
                 .subscribe(future::complete, future::completeExceptionally);
         var framegrab = new Framegrab();
         try {
-            pendingQueue.offer(file);
-            framegrab = future.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+            if (pendingQueue.offer(file)) {
+                framegrab = future.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+            }
         }
         catch (Exception e) {
             log.atWarn().setCause(e).log("Failed to capture framegrab");
@@ -85,7 +88,8 @@ public class RXImageCaptureServiceImpl implements ImageCaptureService {
     public void dispose() {
         log.atDebug().log("Disposing ImageCaptureServiceImpl");
         doDispose = true;
-        thread.interrupt();
+        framegrabs.onComplete();
+//        thread.interrupt();
     }
 
     private Runnable buildRunnable() {
@@ -123,10 +127,10 @@ public class RXImageCaptureServiceImpl implements ImageCaptureService {
                     var now = Instant.now();
                     var framegrab = new Framegrab();
                     var path = file.toPath().toAbsolutePath().normalize();
-                    var success = requestFramegrab(socket, outToSocket, inFromSocket, path);
+                    var success = requestFramegrab(outToSocket, inFromSocket, path);
                     if (success) {
                         try {
-                            Thread.sleep(1000); // HACK. libbmagic doesn't finish writing the file before sending OK
+//                            Thread.sleep(1000); // HACK. libbmagic doesn't finish writing the file before sending OK
                             BufferedImage image = ImageIO.read(file);
                             framegrab.setImage(image);
                             framegrab.setVideoIndex(new VideoIndex(now));
@@ -170,7 +174,7 @@ public class RXImageCaptureServiceImpl implements ImageCaptureService {
      * @param path
      * @return
      */
-    private boolean requestFramegrab(Socket socket, Writer outToSocket, BufferedReader inFromSocket, Path path) {
+    private boolean requestFramegrab(Writer outToSocket, BufferedReader inFromSocket, Path path) {
         boolean success = false;
 
         var cmd = apiKey + "," + path + "\n"; // \n terminated CSV string
