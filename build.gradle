@@ -35,6 +35,10 @@ subprojects {
         }
     }
 
+    configurations {
+        testCompile
+    }
+
     test {
         useJUnitPlatform()
         moduleOptions {
