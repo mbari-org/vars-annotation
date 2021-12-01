@@ -14,14 +14,14 @@ import java.util.Map;
 public interface PrefWebService {
 
 
-    @GET("prefs/{name}")
-    Call<List<PreferenceNode>> findByName(@Path("name") String name);
+    @GET("prefs")
+    Call<List<PreferenceNode>> findByName(@Query("name") String name);
 
-    @GET("prefs/{name}/{key}")
-    Call<PreferenceNode> findByNameAndKey(@Path("name") String name, @Path("key") String key);
+    @GET("prefs")
+    Call<PreferenceNode> findByNameAndKey(@Query("name") String name, @Query("key") String key);
 
-    @GET("prefs/startswith/{name}")
-    Call<List<PreferenceNode>> findByNameLike(@Path("name") String name);
+    @GET("prefs/startswith/")
+    Call<List<PreferenceNode>> findByNameLike(@Query("prefix") String name);
 
     @FormUrlEncoded
     @POST("prefs")
@@ -31,13 +31,13 @@ public interface PrefWebService {
                                 @HeaderMap Map<String, String> headers);
 
     @FormUrlEncoded
-    @PUT("prefs/{name}/{key}")
-    Call<PreferenceNode> update(@Path("name") String name,
-                                @Path("key") String key,
+    @PUT("prefs")
+    Call<PreferenceNode> update(@Query("name") String name,
+                                @Query("key") String key,
                                 @Field("value") String value,
                                 @HeaderMap Map<String, String> headers);
 
-    @DELETE("prefs/{name}/{key}")
-    Call<Void> delete(@Path("name") String name,
-                      @Path("key") String key);
+    @DELETE("prefs")
+    Call<Void> delete(@Query("name") String name,
+                      @Query("key") String key);
 }
