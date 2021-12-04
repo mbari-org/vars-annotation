@@ -20,7 +20,7 @@ public interface PrefWebService {
     @GET("prefs")
     Call<PreferenceNode> findByNameAndKey(@Query("name") String name, @Query("key") String key);
 
-    @GET("prefs/startswith/")
+    @GET("prefs/startswith")
     Call<List<PreferenceNode>> findByNameLike(@Query("prefix") String name);
 
     @FormUrlEncoded

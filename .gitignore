@@ -12,3 +12,4 @@ out/
 .metals/
 *.orig
 target/
+.history/
