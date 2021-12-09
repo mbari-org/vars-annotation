@@ -1,6 +1,6 @@
 module org.mbari.vars.ui {
 
-  requires com.fazecast.jSerialComm;
+//  requires com.fazecast.jSerialComm;
 //  requires com.google.common;
   requires com.google.gson;
 //  requires com.google.guice;
@@ -26,8 +26,8 @@ module org.mbari.vars.ui {
   requires typesafe.config;
   // requires vars.avfoundation;
   requires vcr4j.core;
-  requires vcr4j.jserialcomm;
-  requires vcr4j.rs422;
+//  requires vcr4j.jserialcomm;
+//  requires vcr4j.rs422;
   requires vcr4j.sharktopoda;
   requires vcr4j.sharktopoda.client;
 

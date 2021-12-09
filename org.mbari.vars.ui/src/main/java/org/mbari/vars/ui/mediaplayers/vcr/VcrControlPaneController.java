@@ -21,7 +21,7 @@ import org.mbari.vars.ui.javafx.Icons;
 import org.mbari.vcr4j.VideoController;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
-import org.mbari.vcr4j.rs422.commands.RS422VideoCommands;
+//import org.mbari.vcr4j.rs422.commands.RS422VideoCommands;
 
 /**
  * @author Brian Schlining
@@ -214,8 +214,8 @@ public class VcrControlPaneController {
     }
 
     private void doEject() {
-        Optional.ofNullable(videoController.get())
-                .ifPresent(vc -> vc.send(RS422VideoCommands.EJECT));
+//        Optional.ofNullable(videoController.get())
+//                .ifPresent(vc -> vc.send(RS422VideoCommands.EJECT));
     }
 
     public VideoController<? extends VideoState, ? extends VideoError> getVideoController() {

@@ -24,21 +24,16 @@ import org.mbari.vcr4j.commands.VideoCommands;
 import org.mbari.vcr4j.decorators.SchedulerVideoIO;
 import org.mbari.vcr4j.decorators.StatusDecorator;
 import org.mbari.vcr4j.decorators.VCRSyncDecorator;
-import org.mbari.vcr4j.jserialcomm.SerialCommVideoIO;
-import org.mbari.vcr4j.rs422.RS422Error;
-import org.mbari.vcr4j.rs422.RS422State;
-import org.mbari.vcr4j.rs422.decorators.UserbitsAsTimeDecorator;
+//import org.mbari.vcr4j.jserialcomm.SerialCommVideoIO;
+//import org.mbari.vcr4j.rs422.RS422Error;
+//import org.mbari.vcr4j.rs422.RS422State;
+//import org.mbari.vcr4j.rs422.decorators.UserbitsAsTimeDecorator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.prefs.Preferences;
@@ -52,11 +47,12 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final UIToolBox toolBox = Initializer.getToolBox();
-    public static Class PREF_NODE_KEY = MediaControlsFactoryImplOriginal.class;
+//    public static Class PREF_NODE_KEY = MediaControlsFactoryImplOriginal.class;
+    public static Class PREF_NODE_KEY = MediaControlsFactoryImpl.class;
     public static final String PREF_SERIALPORT_KEY = "serial-port";
     private final VcrControlPaneController vcrController = VcrControlPaneController.newInstance();
     private volatile String lastSerialPort;
-    private volatile VideoIO<RS422State, RS422Error> videoIO;
+//    private volatile VideoIO<RS422State, RS422Error> videoIO;
     private final Thread.UncaughtExceptionHandler uncaughtExceptionHandler = (th, ex) -> {
         ResourceBundle i18n = Initializer.getToolBox().getI18nBundle();
         String title = i18n.getString("mediaplayer.vcr.open.error.title");
@@ -67,18 +63,18 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
         Initializer.getToolBox()
                 .getEventBus()
                 .send(alert);
-        if (videoIO != null) {
-            VideoIO<RS422State, RS422Error> io = this.videoIO;
-            videoIO = null;
-            if (io != null) {
-                try {
-                    io.close();
-                }
-                catch (Exception e) {
-                    log.warn("Failed to close VideoIO object", e);
-                }
-            }
-        }
+//        if (videoIO != null) {
+//            VideoIO<RS422State, RS422Error> io = this.videoIO;
+//            videoIO = null;
+//            if (io != null) {
+//                try {
+//                    io.close();
+//                }
+//                catch (Exception e) {
+//                    log.warn("Failed to close VideoIO object", e);
+//                }
+//            }
+//        }
     };
 
     @Override
@@ -95,14 +91,16 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
     @Override
     public CompletableFuture<MediaControls<? extends VideoState, ? extends VideoError>> open(Media media) {
-        return openMediaPlayer(media).thenApply(mediaPlayer -> {
-            VideoIO<RS422State, RS422Error> io = mediaPlayer.getVideoIO();
-            VideoController<RS422State, RS422Error> videoController = new VideoController<>(io);
-            vcrController.setVideoController(videoController);
-            return new MediaControls<>(mediaPlayer, vcrController.getRoot());
-        });
+//        return openMediaPlayer(media).thenApply(mediaPlayer -> {
+//            VideoIO<RS422State, RS422Error> io = mediaPlayer.getVideoIO();
+//            VideoController<RS422State, RS422Error> videoController = new VideoController<>(io);
+//            vcrController.setVideoController(videoController);
+//            return new MediaControls<>(mediaPlayer, vcrController.getRoot());
+//        });
+        return CompletableFuture.failedFuture(new RuntimeException("VCRs are no longer supported"));
     }
 
+    /*
     private CompletableFuture<MediaPlayer<RS422State, RS422Error>> openMediaPlayer(Media media) {
         CompletableFuture<MediaPlayer<RS422State, RS422Error>> cf =
                 new CompletableFuture<>();
@@ -154,7 +152,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
         thread.start();
 
         return cf;
-    }
+    } */
 
     private void sendMissingSerialPortAlert() {
         //  send alert to pop up dialog
@@ -168,6 +166,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                 .send(alert);
     }
 
+    /*
     private VideoIO<RS422State, RS422Error> openVideoIO(String serialPort) {
 
         if (serialPort.equals(lastSerialPort)
@@ -204,7 +203,9 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
             return videoIO;
         }
     }
+     */
 
+    /*
     private VideoIO<RS422State, RS422Error> getVideoIOWithSpecialClose(VideoIO<RS422State, RS422Error> io,
             final Media media) {
         return new SimpleVideoIO<RS422State, RS422Error>(io.getConnectionID(),
@@ -229,7 +230,9 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
             }
         };
     }
+     */
 
+    /*
     private SerialCommVideoIO connectWithRetry(String serialPort, int retries) {
         SerialCommVideoIO io = null;
         int n = 0;
@@ -247,14 +250,17 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
         }
         return io;
     }
+     */
 
     /**
      *
      * @return All serial ports
      */
     public static List<String> getSerialPorts() {
-        return SerialCommVideoIO.getSerialPorts();
+//        return SerialCommVideoIO.getSerialPorts();
+        return Collections.emptyList();
     }
+
 
     /**
      * Retrieves the serialPort value from local preferences
@@ -276,7 +282,8 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
      * @param serialPort
      */
     public static void setSelectedSerialPort(String serialPort) {
-        Preferences prefs = Preferences.userNodeForPackage(MediaControlsFactoryImplOriginal.PREF_NODE_KEY);
-        prefs.put(MediaControlsFactoryImplOriginal.PREF_SERIALPORT_KEY, serialPort);
+//        Preferences prefs = Preferences.userNodeForPackage(MediaControlsFactoryImplOriginal.PREF_NODE_KEY);
+//        prefs.put(MediaControlsFactoryImplOriginal.PREF_SERIALPORT_KEY, serialPort);
+
     }
 }

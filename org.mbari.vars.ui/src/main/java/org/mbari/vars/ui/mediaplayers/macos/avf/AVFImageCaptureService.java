@@ -3,7 +3,7 @@ package org.mbari.vars.ui.mediaplayers.macos.avf;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.services.model.Framegrab;
-import org.mbari.vars.avfoundation.AVFImageCapture;
+//import org.mbari.vars.avfoundation.AVFImageCapture;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -28,18 +29,18 @@ import java.util.concurrent.TimeUnit;
 public class AVFImageCaptureService implements SelectableImageCaptureService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private AVFImageCapture imageCapture;
+//    private AVFImageCapture imageCapture;
     public static AVFImageCaptureService imageCaptureService;
     private String currentDevice = "";
     private volatile boolean capturing = false;
 
     protected AVFImageCaptureService() {
-        imageCapture = new AVFImageCapture();
+//        imageCapture = new AVFImageCapture();
     }
 
     public Collection<String> listDevices() {
-//        return Collections.emptyList();
-        return Arrays.asList(imageCapture.videoDevicesAsStrings());
+        return Collections.emptyList();
+//        return Arrays.asList(imageCapture.videoDevicesAsStrings());
     }
 
 
@@ -55,7 +56,7 @@ public class AVFImageCaptureService implements SelectableImageCaptureService {
         if (capturing) {
             try {
                 log.info("Stopping capture from " + currentDevice);
-                imageCapture.stopSession();
+//                imageCapture.stopSession();
             }
             catch (UnsatisfiedLinkError | Exception e) {
                 log.error("An error occurred while stopping the AVFoundation image capture", e);
@@ -67,7 +68,7 @@ public class AVFImageCaptureService implements SelectableImageCaptureService {
     private void start() {
         if (currentDevice != null && !capturing) {
             log.info("Starting capture using " + currentDevice);
-            imageCapture.startSessionWithNamedDevice(currentDevice);
+//            imageCapture.startSessionWithNamedDevice(currentDevice);
             capturing = true;
         }
     }
@@ -78,8 +79,8 @@ public class AVFImageCaptureService implements SelectableImageCaptureService {
     public Framegrab capture(File file) {
         Framegrab framegrab = new Framegrab();
         start();
-        Optional<Image> imageOpt = imageCapture.capture(file, Duration.ofSeconds(10));
-//        Optional<Image> imageOpt = Optional.empty();
+//        Optional<Image> imageOpt = imageCapture.capture(file, Duration.ofSeconds(10));
+        Optional<Image> imageOpt = Optional.empty();
         if (imageOpt.isPresent()) {
             framegrab.setImage(imageOpt.get());
 
@@ -136,7 +137,7 @@ public class AVFImageCaptureService implements SelectableImageCaptureService {
         return imageCaptureService;
     }
 
-    public AVFImageCapture getImageCapture() {
-        return imageCapture;
-    }
+//    public AVFImageCapture getImageCapture() {
+//        return imageCapture;
+//    }
 }

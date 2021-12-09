@@ -95,6 +95,7 @@ public class AppPaneController {
 
     public AppPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
+        // FIXME - Static ref to services. Needs to be dynamic so we can update services
         selectMediaDialog = new SelectMediaDialog(toolBox.getServices().getAnnotationService(),
                 toolBox.getServices().getMediaService(),
                 toolBox.getI18nBundle());
@@ -253,6 +254,7 @@ public class AppPaneController {
             observable.ofType(AnnotationsSelectedEvent.class)
                     .subscribe(e -> showAncillaryData(e.get()));
 
+            // FIXME - Static ref to services. Needs to be dynamic so we can update services
             SearchTreePaneController treeController = new SearchTreePaneController(toolBox.getServices().getConceptService(),
                     toolBox.getI18nBundle());
             observable.ofType(ShowConceptInTreeViewMsg.class)
@@ -434,7 +436,6 @@ public class AppPaneController {
     public ComboBox<String> getUsersComboBox() {
         if (usersComboBox == null) {
 
-            UserService userService = toolBox.getServices().getUserService();
             usersComboBox = new JFXComboBox<>();
             new FilteredComboBoxDecorator<>(usersComboBox, FilteredComboBoxDecorator.CONTAINS_CHARS_IN_ORDER);
             Comparator<String> sorter = Comparator.comparing(String::toString, String.CASE_INSENSITIVE_ORDER);
@@ -461,7 +462,9 @@ public class AppPaneController {
                     .selectedItemProperty()
                     .addListener((obs, oldv, newv) -> {
                 if (newv != null) {
-                    userService.findAllUsers()
+                    toolBox.getServices()
+                            .getUserService()
+                            .findAllUsers()
                             .thenAccept(users -> {
                                 Optional<User> opt = users.stream()
                                         .filter(u -> u.getUsername().equals(newv))
@@ -470,19 +473,12 @@ public class AppPaneController {
                             });
                 }
             });
-//            JavaFxObservable.valuesOf(usersComboBox.getSelectionModel().selectedItemProperty())
-//                    .subscribe(s -> {
-//                        userService.findAllUsers()
-//                                .thenAccept(users -> {
-//                                    Optional<User> opt = users.stream()
-//                                            .filter(u -> u.getUsername().equals(s))
-//                                            .findFirst();
-//                                    opt.ifPresent(user -> eventBus.send(new UserChangedEvent(user)));
-//                                });
-//                    });
 
+            // FIXME - Listen for new services event and update users after service is changed.
             // Populate the combobox and select the user form the OS
-            userService.findAllUsers()
+            toolBox.getServices()
+                    .getUserService()
+                    .findAllUsers()
                     .thenAccept(users -> {
                         List<String> usernames = users.stream()
                                 .map(User::getUsername)

@@ -1,35 +1,65 @@
 package org.mbari.vars.services.impl.raziel;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
+import com.google.gson.Gson;
+import okhttp3.*;
 import org.mbari.vars.services.ConfigurationService;
+import org.mbari.vars.services.model.Authorization;
 import org.mbari.vars.services.model.EndpointConfig;
 
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class RazielConfigurationService implements ConfigurationService {
 
-    @Override
-    public CompletableFuture<String> authenticate(URL baseUrl, String user, String password) {
-        var url = new URL(baseUrl.toExternalForm() + "/auth");
-        var credentials = user + ":" + password
-        var encodedCredentials =
-                new String(Base64.getEncoder().encode(credentials.getBytes(StandardCharsets.UTF_8)),
-                        StandardCharsets.UTF_8);
+    private final OkHttpClient client = new OkHttpClient();
+    private final Gson gson = new Gson();
 
-        var client = new OkHttpClient();
-        var request = new Request.Builder()
-                .url(url)
-                .addHeader("Authorizaton", "Basic " + encodedCredentials)
-                .build();
-        return null;
+    @Override
+    public CompletableFuture<Authorization> authenticate(URL baseUrl, String username, String password) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                var url = URI.create(baseUrl.toExternalForm() + "/auth").toURL();
+                var request = new Request.Builder()
+                        .url(url)
+                        .addHeader("Authorizaton", Credentials.basic(username, password))
+                        .addHeader("Accept", "application/json")
+                        .post(RequestBody.create(MediaType.parse("text/plain"), ""))
+                        .build();
+                try (var response = client.newCall(request).execute()) {
+                    var body = response.body().string();
+                    return gson.fromJson(body, Authorization.class);
+                }
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Override
-    public CompletableFuture<EndpointConfig> endpoints(URL baseUrl, String jwt) {
-        return null;
+    public CompletableFuture<List<EndpointConfig>> endpoints(URL baseUrl, String jwt) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                var url = URI.create(baseUrl.toExternalForm() + "/endpoints").toURL();
+                var request = new Request.Builder()
+                        .url(url)
+                        .addHeader("Authorization", "Bearer " + jwt)
+                        .get()
+                        .build();
+                try (var response = client.newCall(request).execute()) {
+                    var body = response.body().string();
+                    var array =  gson.fromJson(body, EndpointConfig[].class);
+                    return Arrays.asList(array);
+                }
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
