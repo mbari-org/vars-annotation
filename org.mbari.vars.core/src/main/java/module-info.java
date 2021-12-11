@@ -7,4 +7,5 @@ module org.mbari.vars.core {
 
   exports org.mbari.vars.core;
   exports org.mbari.vars.core.util;
+    exports org.mbari.vars.core.crypto;
 }

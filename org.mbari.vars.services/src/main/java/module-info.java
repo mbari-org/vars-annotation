@@ -31,4 +31,5 @@ module org.mbari.vars.services {
   exports org.mbari.vars.services.model;
   exports org.mbari.vars.services.util;
   exports org.mbari.vars.services;
+    exports org.mbari.vars.services.impl.raziel;
 }

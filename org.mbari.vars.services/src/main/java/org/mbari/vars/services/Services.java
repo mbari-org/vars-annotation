@@ -12,7 +12,6 @@ import org.mbari.vars.services.util.PreferencesFactory;
 public class Services {
 
     private final AnnotationService annotationService;
-    private final AnnoServiceV2 annoServiceV2;
     private final ConceptService conceptService;
     private final ImageArchiveService imageArchiveService;
     private final MediaService mediaService;
@@ -22,7 +21,6 @@ public class Services {
 
     @Inject
     public Services(AnnotationService annotationService,
-                    AnnoServiceV2 annoServiceV2,
                     ConceptService conceptService,
                     ImageArchiveService imageArchiveService,
                     MediaService mediaService,
@@ -30,7 +28,6 @@ public class Services {
                     PreferencesService preferencesService,
                     PreferencesFactory preferencesFactory) {
         this.annotationService = annotationService;
-        this.annoServiceV2 = annoServiceV2;
         this.conceptService = conceptService;
         this.imageArchiveService = imageArchiveService;
         this.mediaService = mediaService;
@@ -41,10 +38,6 @@ public class Services {
 
     public AnnotationService getAnnotationService() {
         return annotationService;
-    }
-
-    public AnnoServiceV2 getAnnoServiceV2() {
-        return annoServiceV2;
     }
 
     public ConceptService getConceptService() {

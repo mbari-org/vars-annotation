@@ -3,9 +3,11 @@ package org.mbari.vars.ui;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.mbari.vars.core.EventBus;
+import org.mbari.vars.core.crypto.AES;
 import org.mbari.vars.services.ServicesBuilder;
 import org.mbari.vars.services.Services;
-import org.mbari.vars.core.util.LessCSSLoader;
+import org.mbari.vars.services.impl.raziel.RazielConfigurationService;
+import org.mbari.vars.ui.domain.RazielConnectionParams;
 import org.mbari.vars.ui.mediaplayers.sharktopoda.SharktopodaSettingsPaneController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +17,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * JPMS didn't play well with dependency injection via Guice. I ripped it out
@@ -27,6 +32,7 @@ import java.util.concurrent.ForkJoinPool;
 public class Initializer {
 
     private static final Logger log = LoggerFactory.getLogger(Initializer.class);
+    private static final byte[] lock = {0};
 
     private static Path settingsDirectory;
     private static Path imageDirectory;
@@ -57,34 +63,69 @@ public class Initializer {
         return config;
     }
 
+    public static Services loadServices() {
+        var opt = loadConnectionParams();
+        if (opt.isPresent()) {
+            var rcp = opt.get();
+            final var service = new RazielConfigurationService();
+            var future = service.authenticate(rcp.url(), rcp.username(), rcp.password())
+                    .thenCompose(auth -> service.endpoints(rcp.url(), auth.getAccessToken()))
+                    .thenApply(ServicesBuilder::buildForUI)
+                    .handle((services, ex) -> {
+                        if (ex != null) {
+                            // TODO log it
+                            log.atWarn().setCause(ex).log(() -> "Failed to retrieve server configurations from Raziel at " + rcp.url());
+                            return ServicesBuilder.noop();
+                        }
+                        return services;
+                    });
+
+            try {
+                return future.get(10, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                log.atWarn().setCause(e).log(() -> "Failed to retrieve server configurations from Raziel at " + rcp.url());
+                return ServicesBuilder.noop();
+            }
+
+        }
+        return ServicesBuilder.noop();
+    }
+
 
     public static UIToolBox getToolBox() {
         if (toolBox == null) {
-            Services services = ServicesBuilder.build(Initializer.getConfig());
-            ResourceBundle bundle = ResourceBundle.getBundle("i18n",
-                    Locale.getDefault());
+            synchronized (lock) {
+                Services services = ServicesBuilder.build(Initializer.getConfig());
+                ResourceBundle bundle = ResourceBundle.getBundle("i18n",
+                        Locale.getDefault());
 
-            // We're using less!! Load it using our custom loader
-            // LessCSSLoader lessLoader = new LessCSSLoader();
-            // String stylesheet = lessLoader.loadLess(Initializer.class.getResource("/less/annotation.less"))
-            //         .toExternalForm();
-            String stylesheet = Initializer.class.getResource("/css/annotation.css").toExternalForm();
+                String stylesheet = Initializer.class.getResource("/css/annotation.css").toExternalForm();
 
-            //
-            Data data = new Data();
-            Integer timeJump = SharktopodaSettingsPaneController.getTimeJump();
-            log.info("Setting Time Jump to {} millis", timeJump);
-            data.setTimeJump(timeJump);
+                Data data = new Data();
+                Integer timeJump = SharktopodaSettingsPaneController.getTimeJump();
+                log.info("Setting Time Jump to {} millis", timeJump);
+                data.setTimeJump(timeJump);
 
-            toolBox = new UIToolBox(data,
-                    services,
-                    new EventBus(),
-                    bundle,
-                    getConfig(),
-                    Collections.singletonList(stylesheet),
-                    new ForkJoinPool());
+                toolBox = new UIToolBox(data,
+                        services,
+                        new EventBus(),
+                        bundle,
+                        getConfig(),
+                        Collections.singletonList(stylesheet),
+                        new ForkJoinPool(),
+                        new AES("brian@mbari.org 1993-08-21"));
+            }
         }
         return toolBox;
+    }
+
+    public static Optional<RazielConnectionParams> loadConnectionParams() {
+        var settingsDirectory = getSettingsDirectory();
+        var connectionParamFile = settingsDirectory.resolve("raziel.txt");
+        if (Files.exists(connectionParamFile)) {
+            return RazielConnectionParams.read(connectionParamFile, getToolBox().getAes());
+        }
+        return Optional.empty();
     }
 
 

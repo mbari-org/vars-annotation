@@ -30,9 +30,14 @@ public class ModifyingConceptService implements ConceptService {
     private List<Pattern> templateFilters;
     private static final String CONFIG_KEY = "concept.service.template.filters";
 
+    /**
+     *
+     * @param conceptService
+     * @param config
+     * @deprecated
+     */
     public ModifyingConceptService(ConceptService conceptService, Config config) {
         this.conceptService = conceptService;
-
         try {
             List<String> regex = config.getStringList(CONFIG_KEY);
             templateFilters = regex.stream()
@@ -45,6 +50,22 @@ public class ModifyingConceptService implements ConceptService {
             templateFilters = new ArrayList<>();
         }
     }
+
+    public ModifyingConceptService(ConceptService conceptService, List<String> associationFilterRegex) {
+        this.conceptService = conceptService;
+        try {
+            List<String> regex = associationFilterRegex;
+            templateFilters = regex.stream()
+                    .map(Pattern::compile)
+                    .collect(Collectors.toList());
+        }
+        catch (Exception e){
+            LoggerFactory.getLogger(getClass())
+                    .info("Error reading configuration defined for " + CONFIG_KEY, e);
+            templateFilters = new ArrayList<>();
+        }
+    }
+
 
     @Override
     public CompletableFuture<Concept> findRoot() {

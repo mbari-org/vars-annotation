@@ -1,8 +1,14 @@
 package org.mbari.vars.services;
 
 import com.typesafe.config.Config;
+
+import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.mbari.vars.services.impl.annosaurus.v1.AnnoService;
 import org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory;
 import org.mbari.vars.services.impl.annosaurus.v2.AnnoServiceV2;
@@ -18,6 +24,8 @@ import org.mbari.vars.services.impl.varsuserserver.v1.KBUserService;
 import org.mbari.vars.services.impl.varsuserserver.v1.PrefWebServiceFactory;
 import org.mbari.vars.services.impl.varsuserserver.v1.UserWebServiceFactory;
 import org.mbari.vars.services.model.Authorization;
+import org.mbari.vars.services.model.EndpointConfig;
+import org.mbari.vars.services.noop.*;
 import org.mbari.vars.services.util.PreferencesFactory;
 import org.mbari.vars.services.util.WebPreferencesFactory;
 
@@ -58,7 +66,6 @@ public class ServicesBuilder {
     Prefs prefs = buildPrefs();
     return new Services(
         buildAnnotationService(),
-        buildAnnotationV2Service(),
         buildConceptService(),
         buildImageArchiveService(),
         buildMediaService(),
@@ -67,33 +74,84 @@ public class ServicesBuilder {
         prefs.getPreferencesFactory());
   }
 
-  public AnnoService buildAnnotationService() {
-    ServiceConfig.ServiceParams params = appConfig.getAnnotationServiceParamsV1();
+  public static Services noop() {
+    return new Services(new NoopAnnotationService(),
+            new NoopConcepService(),
+            new NoopImageArchiveService(),
+            new NoopMediaService(),
+            new NoopUserService(),
+            new NoopPreferencesService(),
+            new NoopPreferencesFactory());
+  }
+
+  public static Services buildForUI(List<EndpointConfig> endpoints) {
+    if (endpoints.size() < 5) {
+      throw new IllegalArgumentException("Endpoints requires 5 items. Found " + endpoints.size());
+    }
+    var namedEndpoints = endpoints.stream()
+            .collect(Collectors.toMap(EndpointConfig::getName, Function.identity()));
+    var annoE = namedEndpoints.get("annosaurus");
+    var kbE = namedEndpoints.get("vars-kb-server");
+    var imgE = namedEndpoints.get("panoptes");
+    var mediaE = namedEndpoints.get("vampire-squid");
+    var userE = namedEndpoints.get("vars-user-server");
+    var prefs = buildPrefs(userE.getUrl().toExternalForm(), userE.getTimeout(), userE.getSecret());
+    return new Services(
+            buildAnnotationService(annoE.getUrl().toExternalForm(), annoE.getTimeout(), annoE.getSecret()),
+            buildConceptService(kbE.getUrl().toExternalForm(), kbE.getTimeout(), kbE.getSecret()),
+            buildImageArchiveService(imgE.getUrl().toExternalForm(), imgE.getTimeout(), imgE.getSecret()),
+            buildMediaService(mediaE.getUrl().toExternalForm(), mediaE.getTimeout(), mediaE.getSecret()),
+            buildUserService(userE.getUrl().toExternalForm(), userE.getTimeout(), userE.getSecret()),
+            prefs.getPreferencesService(),
+            prefs.getPreferencesFactory()
+    );
+  }
+
+  public static AnnoService buildAnnotationService(String endpoint, Duration timeout, String clientSecret) {
     AnnoWebServiceFactory factory =
-        new AnnoWebServiceFactory(params.getEndpoint(), params.getTimeout());
+            new AnnoWebServiceFactory(endpoint, timeout);
     AuthService authService =
-        new BasicJWTAuthService(factory, new Authorization("APIKEY", params.getClientSecret()));
-    // AnnoWebServiceFactory serviceFactory =
-    //     new AnnoWebServiceFactory(params.getEndpoint(), params.getTimeout());
+            new BasicJWTAuthService(factory, new Authorization("APIKEY", clientSecret));
     return new AnnoService(factory, authService);
   }
 
-  private AnnoServiceV2 buildAnnotationV2Service() {
-    ServiceConfig.ServiceParams params = appConfig.getAnnotationServiceParamsV2();
-    AnnoWebServiceFactoryV2 factory =
-        new AnnoWebServiceFactoryV2(params.getEndpoint(), params.getTimeout());
+  public AnnoService buildAnnotationService() {
+    ServiceConfig.ServiceParams params = appConfig.getAnnotationServiceParamsV1();
+    return buildAnnotationService(params.getEndpoint(), params.getTimeout(), params.getClientSecret());
+  }
+
+  public static MediaService buildMediaService(String endpoint, Duration timeout, String clientSecret) {
+    VamWebServiceFactory factory =
+            new VamWebServiceFactory(endpoint, timeout);
     AuthService authService =
-        new BasicJWTAuthService(factory, new Authorization("APIKEY", params.getClientSecret()));
-    return new AnnoServiceV2(factory, authService);
+            new BasicJWTAuthService(factory, new Authorization("APIKEY", clientSecret));
+    return new VamService(factory, authService);
   }
 
   public MediaService buildMediaService() {
     ServiceConfig.ServiceParams params = appConfig.getMediaServiceParamsV1();
-    VamWebServiceFactory factory =
-        new VamWebServiceFactory(params.getEndpoint(), params.getTimeout());
-    AuthService authService =
-        new BasicJWTAuthService(factory, new Authorization("APIKEY", params.getClientSecret()));
-    return new VamService(factory, authService);
+    return buildMediaService(params.getEndpoint(), params.getTimeout(), params.getClientSecret());
+  }
+
+  public static ConceptService buildConceptService(String endpoint, Duration timeout, String clientSecret) {
+    KBWebServiceFactory factory =
+            new KBWebServiceFactory(endpoint, timeout, new ForkJoinPool());
+    KBConceptService service = new KBConceptService(factory);
+    // --- Using a local cache
+    return new CachedConceptService(service);
+  }
+
+  public ConceptService buildConceptService(String endpoint,
+                             Duration timeout,
+                             String clientSecret,
+                             List<String> associationTemplateFilterRegex) {
+    KBWebServiceFactory factory =
+            new KBWebServiceFactory(endpoint, timeout, defaultExecutor);
+    KBConceptService service = new KBConceptService(factory);
+    // --- Create a service that munges the data from the service for a better UI experience.
+    ModifyingConceptService modService = new ModifyingConceptService(service, associationTemplateFilterRegex);
+    // --- Using a local cache
+    return new CachedConceptService(modService);
   }
 
   public ConceptService buildConceptService() {
@@ -107,39 +165,51 @@ public class ServicesBuilder {
     return new CachedConceptService(modService);
   }
 
-  private Prefs buildPrefs() {
-    ServiceConfig.ServiceParams params = appConfig.getPreferencesServiceParamsV1();
+  public static Prefs buildPrefs(String endpoint, Duration timeout, String clientSecret) {
     PrefWebServiceFactory factory =
-        new PrefWebServiceFactory(params.getEndpoint(), params.getTimeout());
+            new PrefWebServiceFactory(endpoint, timeout);
     RetrofitServiceFactory authFactory =
-        new BasicJWTAuthServiceFactorySC(params.getEndpoint(), params.getTimeout());
+            new BasicJWTAuthServiceFactorySC(endpoint, timeout);
     AuthService authService =
-        new BasicJWTAuthService(authFactory, new Authorization("APIKEY", params.getClientSecret()));
+            new BasicJWTAuthService(authFactory, new Authorization("APIKEY", clientSecret));
     KBPrefService prefService = new KBPrefService(factory, authService);
     PreferencesFactory prefsFactory =
-        new WebPreferencesFactory(prefService, params.getTimeout().toMillis());
+            new WebPreferencesFactory(prefService, timeout.toMillis());
     return new Prefs(prefsFactory, prefService);
+  }
+
+  private Prefs buildPrefs() {
+    ServiceConfig.ServiceParams params = appConfig.getPreferencesServiceParamsV1();
+    return buildPrefs(params.getEndpoint(), params.getTimeout(), params.getClientSecret());
+  }
+
+  public static UserService buildUserService(String endpoint, Duration timeout, String clientSecret) {
+    UserWebServiceFactory factory =
+            new UserWebServiceFactory(endpoint, timeout);
+    RetrofitServiceFactory authFactory =
+            new BasicJWTAuthServiceFactorySC(endpoint, timeout);
+    AuthService authService =
+            new BasicJWTAuthService(authFactory, new Authorization("APIKEY", clientSecret));
+    return new KBUserService(factory, authService);
   }
 
   private UserService buildUserService() {
     ServiceConfig.ServiceParams params = appConfig.getAccountsServiceParamsV1();
-    UserWebServiceFactory factory =
-        new UserWebServiceFactory(params.getEndpoint(), params.getTimeout());
+    return buildUserService(params.getEndpoint(), params.getTimeout(), params.getClientSecret());
+  }
+
+  public static ImageArchiveService buildImageArchiveService(String endpoint, Duration timeout, String clientSecret) {
+    PanoptesWebServiceFactory factory =
+            new PanoptesWebServiceFactory(endpoint, timeout);
     RetrofitServiceFactory authFactory =
-        new BasicJWTAuthServiceFactorySC(params.getEndpoint(), params.getTimeout());
+            new BasicJWTAuthServiceFactorySC(endpoint, timeout);
     AuthService authService =
-        new BasicJWTAuthService(authFactory, new Authorization("APIKEY", params.getClientSecret()));
-    return new KBUserService(factory, authService);
+            new BasicJWTAuthService(authFactory, new Authorization("APIKEY", clientSecret));
+    return new PanoptesService(factory, authService);
   }
 
   private ImageArchiveService buildImageArchiveService() {
     ServiceConfig.ServiceParams params = appConfig.getPanoptesServiceParamsV1();
-    PanoptesWebServiceFactory factory =
-        new PanoptesWebServiceFactory(params.getEndpoint(), params.getTimeout());
-    RetrofitServiceFactory authFactory =
-        new BasicJWTAuthServiceFactorySC(params.getEndpoint(), params.getTimeout());
-    AuthService authService =
-        new BasicJWTAuthService(authFactory, new Authorization("APIKEY", params.getClientSecret()));
-    return new PanoptesService(factory, authService);
+    return buildImageArchiveService(params.getEndpoint(), params.getTimeout(), params.getClientSecret());
   }
 }
