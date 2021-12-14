@@ -37,13 +37,13 @@ module org.mbari.vars.ui {
       with 
       org.mbari.vars.ui.mediaplayers.macos.bm.MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.sharktopoda.MediaControlsFactoryImpl,
-      org.mbari.vars.ui.mediaplayers.ships.MediaControlsFactoryImpl,
-      org.mbari.vars.ui.mediaplayers.vcr.MediaControlsFactoryImpl;
+      org.mbari.vars.ui.mediaplayers.ships.MediaControlsFactoryImpl;
 
   opens org.mbari.vars.ui to javafx.graphics;
   opens org.mbari.vars.ui.javafx to javafx.fxml;
   opens org.mbari.vars.ui.javafx.abpanel to javafx.fxml;
   opens org.mbari.vars.ui.javafx.mediadialog to javafx.fxml;
+  opens org.mbari.vars.ui.javafx.raziel to javafx.fxml;
   opens org.mbari.vars.ui.javafx.rectlabel to javafx.fxml;
   opens org.mbari.vars.ui.javafx.roweditor to javafx.fxml;
   opens org.mbari.vars.ui.javafx.shared to javafx.fxml;
@@ -60,12 +60,13 @@ module org.mbari.vars.ui {
   exports org.mbari.vars.ui.javafx.cbpanel;
   exports org.mbari.vars.ui.javafx.concepttree;
   exports org.mbari.vars.ui.javafx.mediadialog;
+  exports org.mbari.vars.ui.javafx.raziel;
   exports org.mbari.vars.ui.javafx.rectlabel;
   exports org.mbari.vars.ui.javafx.roweditor;
   exports org.mbari.vars.ui.javafx.shared;
   exports org.mbari.vars.ui.javafx;
-  exports org.mbari.vars.ui.mediaplayers.sharktopoda;
   exports org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
+  exports org.mbari.vars.ui.mediaplayers.sharktopoda;
   exports org.mbari.vars.ui.mediaplayers.ships;
   exports org.mbari.vars.ui.messages;
   exports org.mbari.vars.ui.services;

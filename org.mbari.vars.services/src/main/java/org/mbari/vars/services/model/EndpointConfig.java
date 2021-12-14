@@ -1,11 +1,15 @@
 package org.mbari.vars.services.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.net.URL;
 import java.time.Duration;
 
 public class EndpointConfig {
     private String name;
     private URL url;
+
+    @SerializedName("timeoutMillis")
     private Duration timeout;
     private String proxyPath;
     private String secret;

@@ -119,11 +119,15 @@ public class Initializer {
         return toolBox;
     }
 
-    public static Optional<RazielConnectionParams> loadConnectionParams() {
+    public static Path getConnectionParamsPath() {
         var settingsDirectory = getSettingsDirectory();
-        var connectionParamFile = settingsDirectory.resolve("raziel.txt");
-        if (Files.exists(connectionParamFile)) {
-            return RazielConnectionParams.read(connectionParamFile, getToolBox().getAes());
+        return settingsDirectory.resolve("raziel.txt");
+    }
+
+    public static Optional<RazielConnectionParams> loadConnectionParams() {
+        var path = getConnectionParamsPath();
+        if (Files.exists(path)) {
+            return RazielConnectionParams.read(path, getToolBox().getAes());
         }
         return Optional.empty();
     }

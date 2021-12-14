@@ -21,6 +21,7 @@ public enum Icons {
     AV_TIMER(Material.AV_TIMER),
     CACHED(Material.CACHED),
     CANCEL(Material.CANCEL),
+    CHECK(Material.CHECK),
     CLEAR(Material.CLEAR),
     CREATE(Material.CREATE),
     DELETE(Material.DELETE),

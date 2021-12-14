@@ -25,11 +25,11 @@ module org.mbari.vars.services {
   exports org.mbari.vars.services.impl.annosaurus.v1;
   exports org.mbari.vars.services.impl.annosaurus.v2;
   exports org.mbari.vars.services.impl.panoptes.v1;
+  exports org.mbari.vars.services.impl.raziel;
   exports org.mbari.vars.services.impl.vampiresquid.v1;
   exports org.mbari.vars.services.impl.varskbserver.v1;
   exports org.mbari.vars.services.impl.varsuserserver.v1;
   exports org.mbari.vars.services.model;
   exports org.mbari.vars.services.util;
   exports org.mbari.vars.services;
-    exports org.mbari.vars.services.impl.raziel;
 }

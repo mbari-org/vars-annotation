@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<GridPane fx:id="root" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17" fx:controller="org.mbari.vars.ui.javafx.raziel.RazielSettingsPaneController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="NEVER" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <Label text="%raziel.pane.url" />
+      <TextField fx:id="urlTextfield" promptText="%raziel.prompt" GridPane.columnIndex="1" />
+      <TextField fx:id="usernameTextfield" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <PasswordField fx:id="passwordTextfield" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <Label text="%raziel.pane.username" GridPane.rowIndex="1" />
+      <Label text="raziel.pane.password" GridPane.rowIndex="2" />
+      <VBox fx:id="endpointStatusPane" prefHeight="200.0" prefWidth="100.0" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+      <JFXButton fx:id="testButton" text="%mediaplayer.macos.bm.test" GridPane.rowIndex="3" />
+      <Label fx:id="msgLabel" text="Label" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+   </children>
+</GridPane>

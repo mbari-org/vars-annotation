@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXTabPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.javafx.raziel.RazielSettingsPaneController;
 import org.mbari.vars.ui.mediaplayers.sharktopoda.localization.LocalizationSettingsPaneController;
 import org.mbari.vars.ui.mediaplayers.MediaPlayers;
 import org.mbari.vars.ui.mediaplayers.SettingsPane;
@@ -30,6 +31,7 @@ public class PreferencesPaneController implements IPrefs {
         if (root == null) {
             root = new JFXTabPane();
             root.setPrefSize(600, 600);
+            loadConfigurationServerSettingsPane();
             loadLocalizationSettingsPane();
             loadMediaControlsSettingsPanes();
         }
@@ -41,6 +43,15 @@ public class PreferencesPaneController implements IPrefs {
         Tab tab = new Tab(controller.getName());
         tab.setClosable(false);
         tab.setContent(controller.getRoot());
+        root.getTabs().add(tab);
+        prefs.add(controller);
+    }
+
+    private void loadConfigurationServerSettingsPane() {
+        var controller = RazielSettingsPaneController.newInstance();
+        var tab = new Tab(controller.getName());
+        tab.setClosable(false);
+        tab.setContent(controller.getPane());
         root.getTabs().add(tab);
         prefs.add(controller);
     }
