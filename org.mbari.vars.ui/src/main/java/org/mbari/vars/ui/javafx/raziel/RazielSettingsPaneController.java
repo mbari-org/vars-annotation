@@ -83,7 +83,7 @@ public class RazielSettingsPaneController implements SettingsPane {
                     urlText = "http://" + urlText;
                 }
                 URL url = new URL(urlText);
-                var rcp = new RazielConnectionParams(url, urlText, pwdText);
+                var rcp = new RazielConnectionParams(url, userText, pwdText);
                 return Optional.of(rcp);
             }
         }
@@ -105,6 +105,7 @@ public class RazielSettingsPaneController implements SettingsPane {
         var opt = parseRazielConnectionParams();
         if (opt.isEmpty()) {
             var msg = resources.getString("raziel.pane.msg.invalidparams");
+            log.atDebug().log("Invalid raziel connection params");
             Platform.runLater(() -> msgLabel.setText(msg));
             return;
         }
@@ -124,7 +125,11 @@ public class RazielSettingsPaneController implements SettingsPane {
                                         .stream()
                                         .map(EndpointStatusPaneController::getRoot)
                                         .collect(Collectors.toList());
-                                endpointStatusPane.getChildren().addAll(panes);
+                                Platform.runLater(() -> {
+                                    msgLabel.setText(null);
+                                    endpointStatusPane.getChildren().addAll(panes);
+                                });
+
                             }
                             return null;
                         });

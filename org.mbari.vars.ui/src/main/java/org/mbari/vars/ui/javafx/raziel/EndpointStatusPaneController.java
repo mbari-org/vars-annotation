@@ -4,42 +4,39 @@ import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import org.mbari.vars.services.model.EndpointStatus;
-import org.mbari.vars.services.model.HealthStatusCheck;
 import org.mbari.vars.ui.javafx.Icons;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class EndpointStatusPaneController {
     private final ObjectProperty<EndpointStatus> endpointStatuses = new SimpleObjectProperty<>();
-    private VBox root = new VBox();
-    private Label nameLabel = new Label();
-    private Label statusLabel = new Label();
-    private Label urlLabel = new Label();
-    private Text okIcon = Icons.CHECK.standardSize();
-    private Text failIcon = Icons.CLEAR.standardSize();
+    private final HBox root = new HBox();
+    private final Label nameLabel = new Label();
+    private final Label statusLabel = new Label();
+    private final Tooltip urlTooltip = new Tooltip();
+    private final Text okIcon = Icons.CHECK.standardSize();
+    private final Text failIcon = Icons.CLEAR.standardSize();
 
     public EndpointStatusPaneController() {
         init();
     }
 
-    public VBox getRoot() {
+    public HBox getRoot() {
         return root;
     }
 
     private void init() {
-        var hbox = new HBox();
-        hbox.getChildren().addAll(statusLabel, nameLabel);
-        root.getChildren().addAll(hbox, urlLabel);
-        okIcon.setFill(Color.GREEN);
-        failIcon.setFill(Color.RED);
+        nameLabel.setTooltip(urlTooltip);
+        root.getChildren().addAll(statusLabel, nameLabel);
+        okIcon.setStroke(Color.GREEN);
+        failIcon.setStroke(Color.RED);
         endpointStatuses.addListener(((observable, oldValue, newValue) -> update(newValue)));
     }
 
@@ -60,13 +57,13 @@ public class EndpointStatusPaneController {
                 healthStatus.getVersion(),
                 healthStatus.getJdkVersion());
         nameLabel.setText(s);
-        urlLabel.setText(es.getEndpointConfig().getUrl().toExternalForm());
+        urlTooltip.setText(es.getEndpointConfig().getUrl().toExternalForm());
     }
 
     private void updateAsFail(EndpointStatus es) {
         statusLabel.setGraphic(failIcon);
         nameLabel.setText(es.getEndpointConfig().getName());
-        urlLabel.setText(null);
+        urlTooltip.setText(null);
     }
 
 

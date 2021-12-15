@@ -3,6 +3,7 @@ package org.mbari.vars.ui.javafx.prefs;
 import com.jfoenix.controls.JFXTabPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.BorderPane;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.javafx.raziel.RazielSettingsPaneController;
 import org.mbari.vars.ui.mediaplayers.sharktopoda.localization.LocalizationSettingsPaneController;
