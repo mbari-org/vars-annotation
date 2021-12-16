@@ -8,7 +8,7 @@ import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.commands.CreateAnnotationFromConceptCmd;
 import org.mbari.vars.ui.events.MediaPlayerChangedEvent;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
-import org.mbari.vars.ui.messages.ClearCacheMsg;
+import org.mbari.vars.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.ui.messages.NewAnnotationMsg;
 import org.mbari.vars.ui.javafx.Icons;
 import org.mbari.vars.services.model.Media;
@@ -28,7 +28,7 @@ public class NewAnnotationBC extends AbstractBC {
         loadDefaultConcept();
         toolBox.getEventBus()
                 .toObserverable()
-                .ofType(ClearCacheMsg.class)
+                .ofType(ReloadServicesMsg.class)
                 .subscribe(m -> loadDefaultConcept());
 
         // Listen for things other than the button to trigger a new annotation

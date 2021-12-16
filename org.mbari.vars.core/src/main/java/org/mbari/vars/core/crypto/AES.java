@@ -19,12 +19,11 @@ public class AES {
     }
 
     private void setKey(String myKey) {
-        MessageDigest sha = null;
         try {
-            key = myKey.getBytes("UTF-8");
-            sha = MessageDigest.getInstance("SHA-256");
-            key = sha.digest(key);
-            key = Arrays.copyOf(key, 16);
+            var key0 = myKey.getBytes("UTF-8");
+            var sha = MessageDigest.getInstance("SHA-256");
+            var key1 = sha.digest(key0);
+            key = Arrays.copyOf(key1, 16);
             secretKey = new SecretKeySpec(key, "AES");
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);

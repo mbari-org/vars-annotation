@@ -138,9 +138,7 @@ public class BulkEditorPaneController {
                 .findRoot()
                 .thenAccept(c -> conceptDialogController.setConcept(c.getName()));
 
-        selectMediaDialog = new SelectMediaDialog(
-                toolBox.getServices().getAnnotationService(),
-                toolBox.getServices().getMediaService(),
+        selectMediaDialog = new SelectMediaDialog(toolBox,
                 toolBox.getI18nBundle());
         selectMediaDialog.getDialogPane()
                 .getStylesheets()

@@ -95,7 +95,8 @@ public class Initializer {
     public static UIToolBox getToolBox() {
         if (toolBox == null) {
             synchronized (lock) {
-                Services services = ServicesBuilder.build(Initializer.getConfig());
+//                Services services = ServicesBuilder.build(Initializer.getConfig());
+                Services services = loadServices();
                 ResourceBundle bundle = ResourceBundle.getBundle("i18n",
                         Locale.getDefault());
 
@@ -113,10 +114,14 @@ public class Initializer {
                         getConfig(),
                         Collections.singletonList(stylesheet),
                         new ForkJoinPool(),
-                        new AES("brian@mbari.org 1993-08-21"));
+                        getAes());
             }
         }
         return toolBox;
+    }
+
+    public static AES getAes() {
+        return new AES("brian@mbari.org 1993-08-21");
     }
 
     public static Path getConnectionParamsPath() {
@@ -127,7 +132,7 @@ public class Initializer {
     public static Optional<RazielConnectionParams> loadConnectionParams() {
         var path = getConnectionParamsPath();
         if (Files.exists(path)) {
-            return RazielConnectionParams.read(path, getToolBox().getAes());
+            return RazielConnectionParams.read(path, getAes());
         }
         return Optional.empty();
     }

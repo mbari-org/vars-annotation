@@ -2,7 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
+<?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -26,11 +26,11 @@
       <Label text="%raziel.pane.url" />
       <JFXTextField fx:id="urlTextfield" prefWidth="500.0" promptText="%raziel.prompt" GridPane.columnIndex="1" />
       <JFXTextField fx:id="usernameTextfield" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <PasswordField fx:id="passwordTextfield" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <JFXPasswordField fx:id="passwordTextfield" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <Label text="%raziel.pane.username" GridPane.rowIndex="1" />
       <Label text="%raziel.pane.password" GridPane.rowIndex="2" />
       <VBox fx:id="endpointStatusPane" prefHeight="300.0" GridPane.columnSpan="2" GridPane.rowIndex="5" />
       <JFXButton fx:id="testButton" text="%mediaplayer.macos.bm.test" GridPane.rowIndex="3" />
-      <Label fx:id="msgLabel" text="Label" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+      <Label fx:id="msgLabel" text="" GridPane.columnSpan="2" GridPane.rowIndex="4" />
    </children>
 </GridPane>

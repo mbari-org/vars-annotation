@@ -110,12 +110,15 @@ public class AppController {
         eventObservable.ofType(UserChangedEvent.class)
                 .subscribe(e -> data.setUser(e.get()));
 
-        eventObservable.ofType(ClearCacheMsg.class)
+        eventObservable.ofType(ReloadServicesMsg.class)
                 .subscribe(e -> {
+                    // Clear KB cache
                     ConceptService conceptService = toolBox.getServices().getConceptService();
                     if (conceptService instanceof CachedConceptService) {
                         ((CachedConceptService) conceptService).clear();
                     }
+                    // Close open media
+                    eventBus.send(new MediaChangedEvent(AppController.this, null));
                 });
 
         eventObservable.ofType(MediaPlayerChangedEvent.class)
@@ -132,6 +135,7 @@ public class AppController {
 
         eventObservable.ofType(ShowAlert.class)
                 .subscribe(alerts::showAlert);
+
 
     }
 

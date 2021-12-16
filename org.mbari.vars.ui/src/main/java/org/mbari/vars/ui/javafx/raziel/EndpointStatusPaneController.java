@@ -3,6 +3,7 @@ package org.mbari.vars.ui.javafx.raziel;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
@@ -11,6 +12,7 @@ import javafx.scene.text.Text;
 import org.mbari.vars.services.model.EndpointStatus;
 import org.mbari.vars.ui.javafx.Icons;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,6 +36,8 @@ public class EndpointStatusPaneController {
 
     private void init() {
         nameLabel.setTooltip(urlTooltip);
+        root.setAlignment(Pos.CENTER_LEFT);
+        root.setSpacing(10);
         root.getChildren().addAll(statusLabel, nameLabel);
         okIcon.setStroke(Color.GREEN);
         failIcon.setStroke(Color.RED);
@@ -42,7 +46,12 @@ public class EndpointStatusPaneController {
 
     public void update(EndpointStatus es) {
         if (es.isHealthy()) {
-            updateAsOK(es);
+            if (es.getEndpointConfig().getSecret() != null) {
+                updateAsOK(es);
+            }
+            else {
+                updateAsBadAuth(es);
+            }
         }
         else {
             updateAsFail(es);
@@ -52,7 +61,24 @@ public class EndpointStatusPaneController {
     private void updateAsOK(EndpointStatus es) {
         var healthStatus = es.getHealthStatusCheck().getHealthStatus();
         statusLabel.setGraphic(okIcon);
-        var s = String.format("%s v%s on JDK %s",
+        statusLabel.setTextFill(Color.GREEN);
+        statusLabel.setText(null);
+        var s = String.format("%s - %s v%s on JDK %s",
+                healthStatus.getDescription(),
+                es.getEndpointConfig().getName(),
+                healthStatus.getVersion(),
+                healthStatus.getJdkVersion());
+        nameLabel.setText(s);
+        urlTooltip.setText(es.getEndpointConfig().getUrl().toExternalForm());
+    }
+
+    private void updateAsBadAuth(EndpointStatus es) {
+        var healthStatus = es.getHealthStatusCheck().getHealthStatus();
+        statusLabel.setGraphic(failIcon);
+        statusLabel.setTextFill(Color.RED);
+        statusLabel.setText("ACCESS DENIED");
+        var s = String.format("%s - %s v%s on JDK %s",
+                healthStatus.getDescription(),
                 es.getEndpointConfig().getName(),
                 healthStatus.getVersion(),
                 healthStatus.getJdkVersion());
@@ -62,6 +88,8 @@ public class EndpointStatusPaneController {
 
     private void updateAsFail(EndpointStatus es) {
         statusLabel.setGraphic(failIcon);
+        statusLabel.setTextFill(Color.RED);
+        statusLabel.setText("NOT FOUND");
         nameLabel.setText(es.getEndpointConfig().getName());
         urlTooltip.setText(null);
     }
@@ -79,7 +107,7 @@ public class EndpointStatusPaneController {
         this.endpointStatuses.set(endpointStatuses);
     }
 
-    public static List<EndpointStatusPaneController> from(Set<EndpointStatus> statuses) {
+    public static List<EndpointStatusPaneController> from(Collection<EndpointStatus> statuses) {
         return statuses.stream()
                 .map(es -> {
                     var pane = new EndpointStatusPaneController();

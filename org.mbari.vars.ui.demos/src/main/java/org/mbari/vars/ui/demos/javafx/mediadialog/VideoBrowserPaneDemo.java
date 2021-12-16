@@ -27,9 +27,7 @@ public class VideoBrowserPaneDemo extends Application {
     public void start(Stage primaryStage) throws Exception {
         AnnotationService annotationService = DemoConstants.newAnnotationService();
         MediaService mediaService = DemoConstants.newMediaService();
-
-        VideoBrowserPaneController controller = new VideoBrowserPaneController(
-                annotationService, mediaService, uiBundle);
+        VideoBrowserPaneController controller = new VideoBrowserPaneController(DemoConstants.getToolBox(), uiBundle);
         Scene scene = new Scene(controller.getRoot());
         scene.getStylesheets().addAll(Initializer.getToolBox().getStylesheets());
         //scene.getStylesheets().add("/css/common.css");

@@ -6,6 +6,7 @@ import javafx.scene.control.Dialog;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.MediaService;
+import org.mbari.vars.ui.UIToolBox;
 
 import java.util.ResourceBundle;
 
@@ -17,18 +18,16 @@ import java.util.ResourceBundle;
  */
 public class SelectMediaDialog extends Dialog<Media> {
 
-    private final AnnotationService annotationService;
-    private final MediaService mediaService;
+//    private final AnnotationService annotationService;
+//    private final MediaService mediaService;
     private final ResourceBundle uiBundle;
 
-    public SelectMediaDialog(AnnotationService annotationService,
-            MediaService mediaService,
-            ResourceBundle uiBundle) {
-        this.annotationService = annotationService;
-        this.mediaService = mediaService;
+    public SelectMediaDialog(UIToolBox toolBox,
+                             ResourceBundle uiBundle) {
+//        this.annotationService = annotationService;
+//        this.mediaService = mediaService;
         this.uiBundle = uiBundle;
-        VideoBrowserPaneController controller = new VideoBrowserPaneController(annotationService,
-                mediaService, uiBundle);
+        VideoBrowserPaneController controller = new VideoBrowserPaneController(toolBox, uiBundle);
         getDialogPane().setContent(controller.getRoot());
         ButtonType ok = new ButtonType(uiBundle.getString("global.ok"), ButtonBar.ButtonData.OK_DONE);
         ButtonType cancel = new ButtonType(uiBundle.getString("global.cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);

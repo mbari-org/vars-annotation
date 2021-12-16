@@ -11,10 +11,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.messages.ClearCacheMsg;
+import org.mbari.vars.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.services.model.ConceptAssociationTemplate;
 import org.mbari.vars.core.util.ListUtils;
-import org.mbari.vars.ui.util.JFXUtilities;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +48,7 @@ public class AssocSelectionDialogController {
         toolBox = Initializer.getToolBox();
         toolBox.getEventBus()
                 .toObserverable()
-                .ofType(ClearCacheMsg.class)
+                .ofType(ReloadServicesMsg.class)
                 .subscribe(m -> updateControls());
 
         // Trigger search when enter is pressed in search field

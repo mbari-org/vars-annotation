@@ -8,11 +8,19 @@ public class HealthStatus {
     private Long totalMemory;
     private String application;
     private String version;
+    private String description;
 
     public HealthStatus() {
     }
 
-    public HealthStatus(String jdkVersion, Integer availableProcessors, Long freeMemory, Long maxMemory, Long totalMemory, String application, String version) {
+    public HealthStatus(String jdkVersion,
+                        Integer availableProcessors,
+                        Long freeMemory,
+                        Long maxMemory,
+                        Long totalMemory,
+                        String application,
+                        String version,
+                        String description) {
         this.jdkVersion = jdkVersion;
         this.availableProcessors = availableProcessors;
         this.freeMemory = freeMemory;
@@ -20,6 +28,7 @@ public class HealthStatus {
         this.totalMemory = totalMemory;
         this.application = application;
         this.version = version;
+        this.description = description;
     }
 
     public String getJdkVersion() {
@@ -48,5 +57,9 @@ public class HealthStatus {
 
     public String getVersion() {
         return version;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

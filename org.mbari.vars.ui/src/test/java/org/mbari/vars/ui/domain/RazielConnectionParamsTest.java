@@ -18,6 +18,8 @@ public class RazielConnectionParamsTest {
 
             var path = Files.createTempFile("vars-raziel-test", ".txt");
             rcp.write(path, aes);
+//            var msg = String.join("\n", Files.readAllLines(path));
+//            System.out.println(msg);
 
             var opt = RazielConnectionParams.read(path, aes);
             assertTrue(opt.isPresent());

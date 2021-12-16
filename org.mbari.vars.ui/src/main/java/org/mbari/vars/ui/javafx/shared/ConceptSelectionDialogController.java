@@ -7,7 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.messages.ClearCacheMsg;
+import org.mbari.vars.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.services.model.Concept;
 
 /**
@@ -24,7 +24,7 @@ public class ConceptSelectionDialogController {
     public ConceptSelectionDialogController(UIToolBox toolBox) {
         this.toolBox = toolBox;
         Observable<Object> observable = toolBox.getEventBus().toObserverable();
-        observable.ofType(ClearCacheMsg.class)
+        observable.ofType(ReloadServicesMsg.class)
                 .subscribe(m -> refresh());
     }
 

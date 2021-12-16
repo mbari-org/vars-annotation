@@ -29,6 +29,7 @@ public interface ConfigurationService {
         return authenticate(baseUrl, user, password)
                 .thenCompose(authorization ->
                     endpoints(baseUrl, authorization.getAccessToken())
+                            .thenApply(EndpointConfig::decoratedNoWriteEndpoints)
                             .thenCompose(endpointConfigs ->
                                     healthStatus(baseUrl)
                                             .thenApply(healthStatusChecks -> EndpointStatus.collate(endpointConfigs, healthStatusChecks))

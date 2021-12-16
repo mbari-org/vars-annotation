@@ -1,5 +1,8 @@
 package org.mbari.vars.core.util;
 
+import java.net.URL;
+import java.util.Optional;
+
 /**
  * @author Brian Schlining
  * @since 2017-06-29T08:56:00
@@ -34,5 +37,14 @@ public class StringUtils {
             return false;
         }
 
+    }
+
+    public static Optional<URL> asUrl(final String s) {
+        try {
+            return Optional.of(new URL(s));
+        }
+        catch (Exception e) {
+            return Optional.empty();
+        }
     }
 }

@@ -5,7 +5,6 @@ import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTabPane;
 import io.reactivex.Observable;
-import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -36,7 +35,6 @@ import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.model.User;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.ui.services.FileBrowsingDecorator;
-import org.mbari.vars.services.UserService;
 import org.mbari.vars.ui.javafx.annotable.AnnotationTableController;
 import org.mbari.vars.ui.javafx.cbpanel.ConceptButtonPanesController;
 import org.mbari.vars.ui.javafx.concepttree.SearchTreePaneController;
@@ -96,8 +94,7 @@ public class AppPaneController {
     public AppPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
         // FIXME - Static ref to services. Needs to be dynamic so we can update services
-        selectMediaDialog = new SelectMediaDialog(toolBox.getServices().getAnnotationService(),
-                toolBox.getServices().getMediaService(),
+        selectMediaDialog = new SelectMediaDialog(toolBox,
                 toolBox.getI18nBundle());
         selectMediaDialog.getDialogPane()
                 .getStylesheets()
@@ -307,7 +304,7 @@ public class AppPaneController {
             Text refreshIcon = Icons.CACHED.standardSize();
             Button refreshButton = new JFXButton();
             refreshButton.setGraphic(refreshIcon);
-            refreshButton.setOnAction(e -> toolBox.getEventBus().send(new ClearCacheMsg()));
+            refreshButton.setOnAction(e -> toolBox.getEventBus().send(new ReloadServicesMsg()));
             refreshButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.refresh")));
 
             Text prefsIcon = Icons.SETTINGS.standardSize();
@@ -474,27 +471,40 @@ public class AppPaneController {
                 }
             });
 
-            // FIXME - Listen for new services event and update users after service is changed.
-            // Populate the combobox and select the user form the OS
-            toolBox.getServices()
-                    .getUserService()
-                    .findAllUsers()
-                    .thenAccept(users -> {
-                        List<String> usernames = users.stream()
-                                .map(User::getUsername)
-                                .sorted(sorter)
-                                .collect(Collectors.toList());
-                        Platform.runLater(() -> {
-                            usersComboBox.setItems(FXCollections.observableList(usernames));
-                            String defaultUser = System.getProperty("user.name");
-                            if (usernames.contains(defaultUser)) {
-                                usersComboBox.getSelectionModel().select(defaultUser);
-                            }
-                        });
-                    });
+            loadUsers();
+
+            // Listen for new services event and update users after service is changed.
+            toolBox.getEventBus()
+                    .toObserverable()
+                    .ofType(ReloadServicesMsg.class)
+                    .subscribe(evt -> loadUsers());
 
         }
         return usersComboBox;
+    }
+
+    /**
+     * Populate the user combobox and select the user from the OS
+     */
+    private void loadUsers() {
+        Comparator<String> sorter = Comparator.comparing(String::toString, String.CASE_INSENSITIVE_ORDER);
+        usersComboBox.setItems(FXCollections.observableList(new ArrayList<>()));
+        toolBox.getServices()
+                .getUserService()
+                .findAllUsers()
+                .thenAccept(users -> {
+                    List<String> usernames = users.stream()
+                            .map(User::getUsername)
+                            .sorted(sorter)
+                            .collect(Collectors.toList());
+                    Platform.runLater(() -> {
+                        usersComboBox.setItems(FXCollections.observableList(usernames));
+                        String defaultUser = System.getProperty("user.name");
+                        if (usernames.contains(defaultUser)) {
+                            usersComboBox.getSelectionModel().select(defaultUser);
+                        }
+                    });
+                });
     }
 
     public StatusBar getUtilityPane() {

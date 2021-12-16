@@ -10,6 +10,7 @@ import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.MediaService;
+import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.javafx.shared.DateTimePickerController;
 import org.mbari.vars.ui.util.FXMLUtils;
 import org.mbari.vars.ui.util.JFXUtilities;
@@ -28,8 +29,9 @@ import java.util.ResourceBundle;
 public class VideoBrowserPaneController {
 
     private final BorderPane root;
-    private final AnnotationService annotationService;
-    private final MediaService mediaService;
+//    private final AnnotationService annotationService;
+//    private final MediaService mediaService;
+    private final UIToolBox toolBox;
     private DateTimePickerController fromDateController;
     private DateTimePickerController toDateController;
     private ListView<String> cameraIdListView;
@@ -46,19 +48,14 @@ public class VideoBrowserPaneController {
     private Logger log = LoggerFactory.getLogger(getClass());
 
 
-    public VideoBrowserPaneController(AnnotationService annotationService,
-            MediaService mediaService,
-            ResourceBundle uiBundle) {
+    public VideoBrowserPaneController(UIToolBox toolBox, ResourceBundle uiBundle) {
+        this.toolBox = toolBox;
         this.uiBundle = uiBundle;
-        this.annotationService = annotationService;
-        this.mediaService = mediaService;
         fromLabel.setText(uiBundle.getString("mediadialog.fromlabel"));
         toLabel.setText(uiBundle.getString("mediadialog.tolabel"));
         root = new BorderPane(getCenterPane());
         root.setTop(getTopPane());
         root.setRight(getMediaPaneController().getRoot());
-
-
     }
 
     public StackPane getCenterPane() {
@@ -104,7 +101,9 @@ public class VideoBrowserPaneController {
             cameraIdListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
             // Populate the cameraIds
-            mediaService.findAllCameraIds()
+            toolBox.getServices()
+                    .getMediaService()
+                    .findAllCameraIds()
                     .thenAccept(cameras -> {
                         Platform.runLater(() -> {
                             cameraIdListView.setItems(FXCollections.observableArrayList(cameras));
@@ -116,7 +115,9 @@ public class VideoBrowserPaneController {
             cameraIdListView.getSelectionModel()
                     .selectedItemProperty()
                     .addListener(((observable, oldValue, newValue) -> {
-                        mediaService.findVideoSequenceNamesByCameraId(newValue)
+                        toolBox.getServices()
+                                .getMediaService()
+                                .findVideoSequenceNamesByCameraId(newValue)
                                 .thenAccept(vs -> Platform.runLater(() -> {
                                     getVideoSequenceListView().setItems(FXCollections.observableArrayList(vs));
                                     if (vs.size() == 1) {
@@ -140,7 +141,9 @@ public class VideoBrowserPaneController {
             videoSequenceListView.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldValue, newValue) -> {
-                        mediaService.findVideoNamesByVideoSequenceName(newValue)
+                        toolBox.getServices()
+                                .getMediaService()
+                                .findVideoNamesByVideoSequenceName(newValue)
                                 .thenAccept(vs -> Platform.runLater(() -> {
                                     getVideoListView().setItems(FXCollections.observableArrayList(vs));
                                     if (vs.size() == 1) {
@@ -166,7 +169,9 @@ public class VideoBrowserPaneController {
                     .selectedItemProperty()
                     .addListener((obs, oldValue, newValue) -> {
                         if (newValue != null) {
-                            mediaService.findByVideoName(newValue)
+                            toolBox.getServices()
+                                    .getMediaService()
+                                    .findByVideoName(newValue)
                                     .thenAccept(vs -> JFXUtilities.runOnFXThread(() -> {
                                         getMediaListView().setItems(FXCollections.observableArrayList(vs));
                                         if (vs.size() == 1) {
@@ -196,12 +201,12 @@ public class VideoBrowserPaneController {
             mediaListView.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldValue, newValue) -> {
-                        getMediaPaneController().setMedia(newValue, annotationService);
+                        getMediaPaneController().setMedia(newValue, toolBox.getServices().getAnnotationService());
                     });
 
             mediaListView.getSelectionModel()
                     .selectedItemProperty()
-                    .addListener(obs -> getMediaPaneController().setMedia(null, annotationService));
+                    .addListener(obs -> getMediaPaneController().setMedia(null, toolBox.getServices().getAnnotationService()));
         }
         return mediaListView;
     }

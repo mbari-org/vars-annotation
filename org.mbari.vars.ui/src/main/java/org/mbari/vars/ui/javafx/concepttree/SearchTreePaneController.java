@@ -12,7 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.javafx.shared.FilterableTreeItem;
-import org.mbari.vars.ui.messages.ClearCacheMsg;
+import org.mbari.vars.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.services.model.Concept;
 import org.mbari.vars.services.ConceptService;
 
@@ -48,7 +48,7 @@ public class SearchTreePaneController {
 
         toolBox.getEventBus()
                 .toObserverable()
-                .ofType(ClearCacheMsg.class)
+                .ofType(ReloadServicesMsg.class)
                 .subscribe(msg -> {
                    // TODO implement refresh
                 });
