@@ -12,9 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.javafx.shared.FilterableTreeItem;
-import org.mbari.vars.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.services.model.Concept;
-import org.mbari.vars.services.ConceptService;
 
 
 import java.util.List;
@@ -27,31 +25,22 @@ import java.util.stream.Collectors;
  */
 public class SearchTreePaneController {
 
-    private ConceptService conceptService;
+    private final UIToolBox toolBox;
     private ResourceBundle uiBundle;
     private BorderPane root;
     private TextField textField;
     private TreeViewController treeViewController;
 
-    public SearchTreePaneController(ConceptService conceptService, ResourceBundle uiBundle) {
-        this.conceptService = conceptService;
+    public SearchTreePaneController(UIToolBox toolBox, ResourceBundle uiBundle) {
+        this.toolBox = toolBox;
         this.uiBundle = uiBundle;
-
-        // TODO constructor should take toolbox
 
         // TODO listen to ShowConceptInTreeViewMsg then select/scrollTo that node
     }
 
     public SearchTreePaneController(UIToolBox toolBox) {
-        this(toolBox.getServices().getConceptService(),
-                toolBox.getI18nBundle());
+        this(toolBox, toolBox.getI18nBundle());
 
-        toolBox.getEventBus()
-                .toObserverable()
-                .ofType(ReloadServicesMsg.class)
-                .subscribe(msg -> {
-                   // TODO implement refresh
-                });
     }
 
     public BorderPane getRoot() {
@@ -70,7 +59,7 @@ public class SearchTreePaneController {
 
     private TreeView<Concept> getTreeView() {
         if (treeViewController == null) {
-            treeViewController = new TreeViewController(conceptService);
+            treeViewController = new TreeViewController(toolBox);
             TreeView<Concept> treeView = treeViewController.getTreeView();
 
             /*

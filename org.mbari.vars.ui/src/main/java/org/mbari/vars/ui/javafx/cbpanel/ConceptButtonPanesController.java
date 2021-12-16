@@ -157,10 +157,7 @@ public class ConceptButtonPanesController {
                                 Preferences tabPrefs = tabsPrefs.node(tabName);
                                 String name = tabPrefs.get(PREFKEY_TABNAME, "dummy");
                                 ConceptButtonPaneController controller = new ConceptButtonPaneController(
-                                        toolBox.getServices().getConceptService(),
-                                        tabsPrefs.node(tabName),
-                                        toolBox.getEventBus(),
-                                        i18n);
+                                        toolBox, tabsPrefs.node(tabName));
                                 controller.setLocked(lockProperty.get());
                                 Tab tab = new Tab(name, controller.getPane());
                                 tab.setClosable(true);
@@ -279,10 +276,8 @@ public class ConceptButtonPanesController {
                     if (!alreadyThere) {
                         final Preferences newTabPrefs = cpPrefs.node(TAB_PREFIX + cpTabs.length);
                         newTabPrefs.put(PREFKEY_TABNAME, tabName);
-                        ConceptButtonPaneController dropPanel = new ConceptButtonPaneController(toolBox.getServices().getConceptService(),
-                                newTabPrefs,
-                                toolBox.getEventBus(),
-                                toolBox.getI18nBundle());
+                        ConceptButtonPaneController dropPanel = new ConceptButtonPaneController(toolBox,
+                                newTabPrefs);
                         dropPanel.setLocked(lockProperty.get());
                         Tab tab = new Tab(tabName, dropPanel.getPane());
                         tab.setClosable(true);

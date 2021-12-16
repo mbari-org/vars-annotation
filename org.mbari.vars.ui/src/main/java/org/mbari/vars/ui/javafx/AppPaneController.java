@@ -252,7 +252,7 @@ public class AppPaneController {
                     .subscribe(e -> showAncillaryData(e.get()));
 
             // FIXME - Static ref to services. Needs to be dynamic so we can update services
-            SearchTreePaneController treeController = new SearchTreePaneController(toolBox.getServices().getConceptService(),
+            SearchTreePaneController treeController = new SearchTreePaneController(toolBox,
                     toolBox.getI18nBundle());
             observable.ofType(ShowConceptInTreeViewMsg.class)
                     .subscribe(msg -> treeController.setSearchText(msg.getName()));

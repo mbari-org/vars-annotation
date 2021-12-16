@@ -7,7 +7,6 @@ import javafx.scene.control.TreeView;
 import javafx.stage.Stage;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.demos.javafx.DemoConstants;
-import org.mbari.vars.services.ConceptService;
 import org.mbari.vars.services.model.Concept;
 import org.mbari.vars.ui.javafx.concepttree.TreeViewController;
 
@@ -17,8 +16,7 @@ import org.mbari.vars.ui.javafx.concepttree.TreeViewController;
  */
 public class TreeViewDemo extends Application {
 
-    private ConceptService conceptService = DemoConstants.newConceptService();
-    private TreeViewController controller = new TreeViewController(conceptService);
+    private TreeViewController controller = new TreeViewController(DemoConstants.getToolBox());
 
     public static void main(String[] args) {
         launch(args);

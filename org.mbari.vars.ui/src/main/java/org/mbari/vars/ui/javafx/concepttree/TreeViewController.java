@@ -10,8 +10,10 @@ import javafx.scene.layout.BorderPane;
 import org.mbari.vars.services.model.Concept;
 import org.mbari.vars.services.model.ConceptMedia;
 import org.mbari.vars.services.ConceptService;
+import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.javafx.shared.ImageStage;
 import org.mbari.vars.ui.javafx.shared.FilterableTreeItem;
+import org.mbari.vars.ui.messages.ReloadServicesMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,14 +23,18 @@ import org.slf4j.LoggerFactory;
  */
 public class TreeViewController {
 
-    private ConceptService conceptService;
     private ContextMenu contextMenu;
     private ImageStage imageStage;
     private TreeView<Concept> treeView;
     private final Logger log = LoggerFactory.getLogger(getClass());
+    private final UIToolBox toolBox;
 
-    public TreeViewController(ConceptService conceptService) {
-        this.conceptService = conceptService;
+    public TreeViewController(UIToolBox toolBox) {
+        this.toolBox = toolBox;
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(ReloadServicesMsg.class)
+                .subscribe(evt -> loadRoot());
     }
 
     private FilterableTreeItem<Concept> buildTreeItem(Concept concept, FilterableTreeItem<Concept> parent) {
@@ -81,21 +87,27 @@ public class TreeViewController {
 
     public TreeView<Concept> getTreeView() {
         if (treeView == null) {
-            TreeCellFactory cellFactory = new TreeCellFactory(conceptService);
+            TreeCellFactory cellFactory = new TreeCellFactory(toolBox);
             treeView = new TreeView<>();
             treeView.getStyleClass().add("concepttree-treeview");
             treeView.setEditable(false);
             treeView.setCellFactory(tv -> cellFactory.build());
             treeView.setContextMenu(getContextMenu());
-            conceptService.findRoot()
-                    .thenAccept(root -> {
-                        Platform.runLater(() -> {
-                            log.debug("Using root '" + root.getName() + "' to build tree");
-                            TreeItem<Concept> rootItem = buildTreeItem(root, null);
-                            treeView.setRoot(rootItem);
-                        });
-                    });
+            loadRoot();
         }
         return treeView;
+    }
+
+    private void loadRoot() {
+        toolBox.getServices()
+                .getConceptService()
+                .findRoot()
+                .thenAccept(root -> {
+                    Platform.runLater(() -> {
+                        log.debug("Using root '" + root.getName() + "' to build tree");
+                        TreeItem<Concept> rootItem = buildTreeItem(root, null);
+                        getTreeView().setRoot(rootItem);
+                    });
+                });
     }
 }

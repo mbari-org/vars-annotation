@@ -20,7 +20,6 @@ import java.util.ResourceBundle;
  */
 public class DragAndDropDemo extends Application {
 
-    private static ConceptService conceptService = DemoConstants.newConceptService();
     private static EventBus eventBus = DemoConstants.EVENT_BUS;
     private static ResourceBundle uiBundle = DemoConstants.UI_BUNDLE;
 
@@ -31,11 +30,11 @@ public class DragAndDropDemo extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Platform.setImplicitExit(true);
-        SearchTreePaneController paneBuilder = new SearchTreePaneController(conceptService, uiBundle);
+        SearchTreePaneController paneBuilder = new SearchTreePaneController(DemoConstants.getToolBox(), uiBundle);
         BorderPane node = paneBuilder.getRoot();
         FlowPane pane = new FlowPane();
         pane.setPrefSize(800, 250);
-        DragPaneDecorator dragPaneDecorator = new DragPaneDecorator(conceptService, eventBus, uiBundle);
+        DragPaneDecorator dragPaneDecorator = new DragPaneDecorator(DemoConstants.getToolBox());
         dragPaneDecorator.decorate(pane);
         node.setBottom(pane);
         Scene scene = new Scene(node, 800, 800);

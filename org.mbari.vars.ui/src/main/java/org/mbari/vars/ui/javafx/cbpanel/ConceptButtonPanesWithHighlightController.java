@@ -55,10 +55,8 @@ public class ConceptButtonPanesWithHighlightController {
                                     Preferences tabPrefs = tabsPrefs.node(tabName);
                                     String name = tabPrefs.get(ConceptButtonPanesController.PREFKEY_TABNAME, "dummy");
                                     ConceptButtonPaneWithHighlightController controller = new ConceptButtonPaneWithHighlightController(name,
-                                            toolBox.getServices().getConceptService(),
-                                            tabsPrefs.node(tabName),
-                                            toolBox.getEventBus(),
-                                            i18n);
+                                            toolBox,
+                                            tabsPrefs.node(tabName));
                                     controller.setLocked(true);
                                     getRoot().getChildren().add(controller.getPane());
                                 });

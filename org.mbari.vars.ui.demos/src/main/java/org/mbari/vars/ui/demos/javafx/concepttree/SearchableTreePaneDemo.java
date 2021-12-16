@@ -29,7 +29,7 @@ public class SearchableTreePaneDemo extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Platform.setImplicitExit(true);
-        SearchTreePaneController controller = new SearchTreePaneController(conceptService, uiBundle);
+        SearchTreePaneController controller = new SearchTreePaneController(DemoConstants.getToolBox(), uiBundle);
         BorderPane node = controller.getRoot();
         Scene scene = new Scene(node, 800, 800);
         scene.getStylesheets().addAll(Initializer.getToolBox().getStylesheets());

@@ -10,6 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.ConceptService;
+import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.util.JFXUtilities;
 
 import java.util.ResourceBundle;
@@ -37,11 +38,9 @@ public class ConceptButtonPaneWithHighlightController extends ConceptButtonPaneC
     };
 
     public ConceptButtonPaneWithHighlightController(String name,
-                                                    ConceptService conceptService,
-                                                    Preferences panePreferences,
-                                                    EventBus eventBus,
-                                                    ResourceBundle i18n) {
-        super(conceptService, panePreferences, eventBus, i18n);
+                                                    UIToolBox toolBox,
+                                                    Preferences panePreferences) {
+        super(toolBox, panePreferences);
         Label label = new Label(name);
         label.setUnderline(true);
         label.getStyleClass().add(STYLE_CLASS);

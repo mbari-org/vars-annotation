@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import org.mbari.vars.core.EventBus;
+import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.services.ConceptService;
 import org.slf4j.Logger;
@@ -23,7 +24,8 @@ import java.util.stream.IntStream;
 public class ConceptButtonPaneController {
     protected Pane pane;
     private final Preferences panePreferences;
-    private final ConceptService conceptService;
+    private final UIToolBox toolBox;
+
     private final EventBus eventBus;
     private final ResourceBundle i18n;
     private DragPaneDecorator dragPaneDecorator;
@@ -36,20 +38,18 @@ public class ConceptButtonPaneController {
 
     /**
      *
-     * @param conceptService
+     * @param toolBox
      * @param panePreferences Holds the button preferences for this tab
-     * @param eventBus
-     * @param i18n
      */
-    public ConceptButtonPaneController(ConceptService conceptService,
-                                       Preferences panePreferences,
-                                       EventBus eventBus,
-                                       ResourceBundle i18n) {
-        this.conceptService = conceptService;
+    public ConceptButtonPaneController(UIToolBox toolBox,
+                                       Preferences panePreferences) {
+        this.toolBox = toolBox;
         this.panePreferences = panePreferences;
-        this.eventBus = eventBus;
-        this.i18n = i18n;
-        dragPaneDecorator = new DragPaneDecorator(conceptService, eventBus, i18n);
+        this.eventBus = toolBox.getEventBus();
+        this.i18n = toolBox.getI18nBundle();
+
+
+        dragPaneDecorator = new DragPaneDecorator(toolBox);
     }
 
     public void setLocked(boolean locked) {
@@ -81,7 +81,7 @@ public class ConceptButtonPaneController {
     protected void loadButtonsFromPreferences() {
         // TODO show a loading symbol
         ConceptButtonFactory factory =
-                new ConceptButtonFactory(conceptService, eventBus, i18n);
+                new ConceptButtonFactory(toolBox);
         try {
             List<Button> buttons = Arrays.stream(panePreferences.childrenNames())
                     .map(nodeName -> {

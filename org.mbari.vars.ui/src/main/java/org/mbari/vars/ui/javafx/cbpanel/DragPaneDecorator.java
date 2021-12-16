@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.ConceptService;
+import org.mbari.vars.ui.UIToolBox;
 
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -27,13 +28,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DragPaneDecorator {
 
     private final ConceptButtonFactory conceptButtonFactory;
-    private final ConceptService conceptService;
-
+    private final UIToolBox toolBox;
     private volatile boolean locked = false;
 
-    public DragPaneDecorator(ConceptService conceptService, EventBus eventBus, ResourceBundle i18n) {
-        this.conceptService = conceptService;
-        conceptButtonFactory = new ConceptButtonFactory(conceptService, eventBus, i18n);
+    public DragPaneDecorator(UIToolBox toolBox) {
+        this.toolBox = toolBox;
+        conceptButtonFactory = new ConceptButtonFactory(toolBox);
     }
 
 
@@ -113,7 +113,9 @@ public class DragPaneDecorator {
         t.setOnFinished(event -> button.setStyle(""));
         t.play();
 
-        conceptService.findAllNames()
+        toolBox.getServices()
+                .getConceptService()
+                .findAllNames()
                 .thenApply(names -> {
                     if (!names.contains(name)) {
                         pane.getChildren().remove(button);

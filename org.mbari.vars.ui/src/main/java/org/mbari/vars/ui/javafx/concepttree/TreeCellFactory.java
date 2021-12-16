@@ -7,6 +7,7 @@ import javafx.scene.input.*;
 import org.mbari.vars.services.model.Concept;
 import org.mbari.vars.services.model.ConceptDetails;
 import org.mbari.vars.services.ConceptService;
+import org.mbari.vars.ui.UIToolBox;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,10 +23,10 @@ class TreeCellFactory {
 
     private String styleClassPlain = "concepttree-treecell";
     private String styleClassWithMedia = "concepttree-treecell-media";
-    private final ConceptService conceptService;
+    private final UIToolBox toolBox;
 
-    TreeCellFactory(ConceptService conceptService) {
-        this.conceptService = conceptService;
+    TreeCellFactory(UIToolBox toolBox) {
+        this.toolBox = toolBox;
     }
 
     TreeCell<Concept> build() {
@@ -60,7 +61,9 @@ class TreeCellFactory {
             else {
                 updateCell();
                 if (item.getConceptDetails() == null) {
-                    conceptService.findDetails(item.getName())
+                    toolBox.getServices()
+                            .getConceptService()
+                            .findDetails(item.getName())
                             .thenAccept(opt -> {
                                 opt.ifPresent(cd -> {
 //                                    System.out.println("Loaded details for " + item.getName());

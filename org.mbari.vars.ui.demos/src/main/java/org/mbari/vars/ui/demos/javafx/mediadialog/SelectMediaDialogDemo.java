@@ -37,8 +37,7 @@ public class SelectMediaDialogDemo extends Application {
 
         Label label = new Label();
         Button button = new JFXButton("Browse");
-        Dialog<Media> dialog = new SelectMediaDialog(annotationService,
-                mediaService, uiBundle);
+        Dialog<Media> dialog = new SelectMediaDialog(DemoConstants.getToolBox(), uiBundle);
         button.setOnAction(e -> {
             Optional<Media> media = dialog.showAndWait();
             media.ifPresent(m -> label.setText(m.getUri().toString()));

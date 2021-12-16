@@ -10,6 +10,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import org.mbari.vars.core.EventBus;
+import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.commands.CreateAnnotationFromConceptCmd;
 import org.mbari.vars.ui.messages.ShowConceptInTreeViewMsg;
 import org.mbari.vars.services.ConceptService;
@@ -22,16 +23,16 @@ import java.util.ResourceBundle;
  */
 public class ConceptButtonFactory {
 
+    private final UIToolBox toolBox;
     private final EventBus eventBus;
     private final ResourceBundle i18n;
-    private final ConceptService conceptService;
     // We use the userdata field to let us know that this is a conceptbutton.
     public static final String USERDATA = ConceptButtonFactory.class.getSimpleName();
 
-    public ConceptButtonFactory(ConceptService conceptService, EventBus eventBus, ResourceBundle i18n) {
-        this.eventBus = eventBus;
-        this.i18n = i18n;
-        this.conceptService = conceptService;
+    public ConceptButtonFactory(UIToolBox toolBox) {
+        this.toolBox = toolBox;
+        this.eventBus = toolBox.getEventBus();
+        this.i18n = toolBox.getI18nBundle();
     }
 
     public Button build(String name) {
@@ -66,7 +67,9 @@ public class ConceptButtonFactory {
             }
         });
 
-        conceptService.findAllNames()
+        toolBox.getServices()
+                .getConceptService()
+                .findAllNames()
                 .thenAccept(names -> {
                     if (!names.contains(name)) {
                         Platform.runLater(() -> {
@@ -75,15 +78,6 @@ public class ConceptButtonFactory {
                         });
                     }
                 });
-//        conceptService.findDetails(name)
-//                .thenAccept(opt -> {
-//                    if (!opt.isPresent()) {
-//                        Platform.runLater(() -> {
-//                            button.getStyleClass().add("button-invalid");
-//                            button.setOnAction(e -> {});
-//                        });
-//                    }
-//                });
 
         return button;
     }
