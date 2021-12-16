@@ -12,6 +12,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.ui.javafx.Icons;
 import org.mbari.vars.services.model.Association;
@@ -50,6 +51,10 @@ public class AssocButtonPaneController {
         toolBox.getData()
                 .userProperty()
                 .addListener(e -> loadButtonsFromPreferences());
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(ReloadServicesMsg.class)
+                .subscribe(msg -> loadButtonsFromPreferences());
     }
 
     public AssocSelectionDialogController getController() {
@@ -68,7 +73,7 @@ public class AssocButtonPaneController {
                     .getPreferencesFactory()
                     .remoteUserRoot(user.getUsername());
             prefs = userPreferences.node(PREF_AP_NODE);
-            log.debug("Using ");
+            log.debug("Using {}", prefs);
         }
         return Optional.ofNullable(prefs);
     }

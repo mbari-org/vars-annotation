@@ -109,7 +109,6 @@ public class MultiAnnotationDecorator {
 
     private Observable<List<Annotation>> loadAnnotations(Media media, MultiRequestCount count) {
         PublishSubject<List<Annotation>> subject = PublishSubject.create();
-        Subject<List<Annotation>> serializedSubject = subject.toSerialized();
         AtomicInteger loadedCount = new AtomicInteger(0);
         RequestPager.Runner<List<Annotation>> runner = buildRequestRunner(count);
         return Observable.defer(() -> {

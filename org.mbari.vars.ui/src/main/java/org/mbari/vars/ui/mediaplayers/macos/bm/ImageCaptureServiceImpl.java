@@ -39,8 +39,6 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
     private final ResourceBundle i18n;
     private volatile boolean doDispose = false;
 
-    // TODO - Create a runnable/queue like commandmanager so that 
-    //        all socket requests are done on the same thread
     private final BlockingQueue<File> pendingQueue = new LinkedBlockingQueue<>();
     private final BlockingQueue<Framegrab> framegrabs = new LinkedBlockingQueue<>();
     private final Thread thread;

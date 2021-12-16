@@ -106,7 +106,7 @@ public class TreeViewController {
                     Platform.runLater(() -> {
                         log.debug("Using root '" + root.getName() + "' to build tree");
                         TreeItem<Concept> rootItem = buildTreeItem(root, null);
-                        getTreeView().setRoot(rootItem);
+                        treeView.setRoot(rootItem);
                     });
                 });
     }

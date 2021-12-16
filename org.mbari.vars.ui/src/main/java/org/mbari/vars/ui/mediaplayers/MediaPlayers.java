@@ -33,7 +33,6 @@ public class MediaPlayers {
                 .ofType(MediaChangedEvent.class)
                 .subscribe(e -> open(e.get()));
 
-        // TODO change UI on new MediaPlayerChangedEvent., WHere??
         // Convert MediaControlsChangedEvent to MediaPlayerChangedEvent so that I don't have
         // to change all prexisting usages
         eventBus.toObserverable()

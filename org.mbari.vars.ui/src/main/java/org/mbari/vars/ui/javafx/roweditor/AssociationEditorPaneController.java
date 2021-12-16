@@ -131,7 +131,7 @@ public class AssociationEditorPaneController {
 
         // Add decorator to populate combobox with all children of given concept
         toConceptComboBoxDecorator = new HierarchicalConceptComboBoxDecorator(toConceptComboBox,
-                toolBox.getServices().getConceptService());
+                toolBox);
 
         // Set values in fields when an association is selected
         associationComboBox.getSelectionModel()

@@ -75,8 +75,8 @@ public class EndpointStatusPaneController {
     private void updateAsBadAuth(EndpointStatus es) {
         var healthStatus = es.getHealthStatusCheck().getHealthStatus();
         statusLabel.setGraphic(failIcon);
-        statusLabel.setTextFill(Color.RED);
         statusLabel.setText("ACCESS DENIED");
+        statusLabel.setTextFill(Color.RED);
         var s = String.format("%s - %s v%s on JDK %s",
                 healthStatus.getDescription(),
                 es.getEndpointConfig().getName(),
@@ -88,8 +88,8 @@ public class EndpointStatusPaneController {
 
     private void updateAsFail(EndpointStatus es) {
         statusLabel.setGraphic(failIcon);
-        statusLabel.setTextFill(Color.RED);
         statusLabel.setText("NOT FOUND");
+        statusLabel.setTextFill(Color.RED);
         nameLabel.setText(es.getEndpointConfig().getName());
         urlTooltip.setText(null);
     }

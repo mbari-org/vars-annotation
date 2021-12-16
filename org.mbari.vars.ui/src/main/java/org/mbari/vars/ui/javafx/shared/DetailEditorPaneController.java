@@ -107,7 +107,7 @@ public class DetailEditorPaneController {
                 "/fxml/DetailEditorPane.fxml",
                 i18n);
         controller.toConceptComboBoxDecorator = new HierarchicalConceptComboBoxDecorator(controller.toConceptComboBox,
-                toolBox.getServices().getConceptService());
+                toolBox);
         return controller;
     }
 }

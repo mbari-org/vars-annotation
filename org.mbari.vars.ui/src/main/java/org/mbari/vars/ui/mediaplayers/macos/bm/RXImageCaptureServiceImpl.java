@@ -36,7 +36,7 @@ public class RXImageCaptureServiceImpl implements ImageCaptureService {
     private final PublishSubject<ExtendedFramegrab> framegrabs = PublishSubject.create();
     private volatile boolean doDispose = false;
 
-    // TODO - Create a runnable/queue like commandmanager so that
+    // Create a runnable/queue like commandmanager so that
     //        all socket requests are done on the same thread
     private final BlockingQueue<File> pendingQueue = new LinkedBlockingQueue<>();
 

@@ -32,6 +32,9 @@ public class ConceptButtonPanesWithHighlightController {
         toolBox.getData()
                 .userProperty()
                 .addListener(e -> loadTabsFromPreferences());
+        toolBox.getEventBus()
+                .toObserverable()
+                .subscribe(msg -> loadTabsFromPreferences());
 
     }
 

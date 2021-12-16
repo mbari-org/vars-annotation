@@ -40,6 +40,7 @@ import org.mbari.vars.ui.javafx.mediadialog.SelectMediaDialog;
 import org.mbari.vars.ui.javafx.shared.ConceptSelectionDialogController;
 import org.mbari.vars.ui.javafx.shared.DetailsDialog;
 import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
+import org.mbari.vars.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.ui.messages.ShowExceptionAlert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,10 +134,12 @@ public class BulkEditorPaneController {
 
         toolBox = Initializer.getToolBox();
         conceptDialogController = new ConceptSelectionDialogController(toolBox);
-        toolBox.getServices()
-                .getConceptService()
-                .findRoot()
-                .thenAccept(c -> conceptDialogController.setConcept(c.getName()));
+        loadRootConcept(false);
+
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(ReloadServicesMsg.class)
+                .subscribe(msg -> loadRootConcept(true));
 
         selectMediaDialog = new SelectMediaDialog(toolBox,
                 toolBox.getI18nBundle());
@@ -216,6 +219,17 @@ public class BulkEditorPaneController {
                 .selectedItemProperty()
                 .addListener((obs, oldv, newv) -> updateSearchLabelFn.run());
 
+    }
+
+    /**
+     *
+     * @param force true if we want to fetch a fresh tree from the KB
+     */
+    private void loadRootConcept(boolean force) {
+        toolBox.getServices()
+                .getConceptService()
+                .findRoot()
+                .thenAccept(c -> conceptDialogController.setConcept(c.getName(), force));
     }
 
 

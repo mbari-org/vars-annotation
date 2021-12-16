@@ -1,5 +1,6 @@
 package org.mbari.vars.ui.javafx.cbpanel;
 
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -7,12 +8,15 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
+import org.mbari.vars.ui.messages.*;
 import org.mbari.vars.services.ConceptService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -28,7 +32,7 @@ public class ConceptButtonPaneController {
 
     private final EventBus eventBus;
     private final ResourceBundle i18n;
-    private DragPaneDecorator dragPaneDecorator;
+    private final DragPaneDecorator dragPaneDecorator;
 
     private static final String PREF_BUTTON_NAME = "name";
     private static final String PREF_BUTTON_ORDER = "order";
@@ -48,8 +52,8 @@ public class ConceptButtonPaneController {
         this.eventBus = toolBox.getEventBus();
         this.i18n = toolBox.getI18nBundle();
 
-
         dragPaneDecorator = new DragPaneDecorator(toolBox);
+
     }
 
     public void setLocked(boolean locked) {
@@ -79,31 +83,35 @@ public class ConceptButtonPaneController {
     }
 
     protected void loadButtonsFromPreferences() {
-        // TODO show a loading symbol
         ConceptButtonFactory factory =
                 new ConceptButtonFactory(toolBox);
-        try {
-            List<Button> buttons = Arrays.stream(panePreferences.childrenNames())
-                    .map(nodeName -> {
-                        Preferences buttonPreferences = panePreferences.node(nodeName);
-                        String conceptName = buttonPreferences.get(PREF_BUTTON_NAME, BAD_KEY);
-                        int order = buttonPreferences.getInt(PREF_BUTTON_ORDER, 0);
-                        Button button = factory.build(conceptName);
-                        return new ButtonPref(button, order);
-                    })
-                    .filter(buttonPref -> !buttonPref.getButton().getText().equals(BAD_KEY))
-                    .sorted(Comparator.comparingInt(ButtonPref::getOrder))
-                    .map(ButtonPref::getButton)
-                    .collect(Collectors.toList());
-            getPane().getChildren().addAll(buttons);
-        }
-        catch (Exception e) {
-            eventBus.send(new ShowNonfatalErrorAlert(
-                    i18n.getString("cbpanel.alert.prefsfail.load.title"),
-                    i18n.getString("cbpanel.alert.prefsfail.load.header"),
-                    i18n.getString("cbpanel.alert.prefsfail.load.content"),
-                    e));
-        }
+        var eventBus = toolBox.getEventBus();
+        // Load async so we don't block ui
+        toolBox.getExecutorService().submit(() -> {
+            try {
+                // NOTE: Don't add any progress bar. That's done in ConceptButtonPanesController
+                List<Button> buttons = Arrays.stream(panePreferences.childrenNames())
+                        .map(nodeName -> {
+                            Preferences buttonPreferences = panePreferences.node(nodeName);
+                            String conceptName = buttonPreferences.get(PREF_BUTTON_NAME, BAD_KEY);
+                            int order = buttonPreferences.getInt(PREF_BUTTON_ORDER, 0);
+                            Button button = factory.build(conceptName);
+                            return new ButtonPref(button, order);
+                        })
+                        .filter(buttonPref -> !buttonPref.getButton().getText().equals(BAD_KEY))
+                        .sorted(Comparator.comparingInt(ButtonPref::getOrder))
+                        .map(ButtonPref::getButton)
+                        .collect(Collectors.toList());
+                Platform.runLater(() -> getPane().getChildren().addAll(buttons));
+            }
+            catch (Exception e) {
+                eventBus.send(new ShowNonfatalErrorAlert(
+                        i18n.getString("cbpanel.alert.prefsfail.load.title"),
+                        i18n.getString("cbpanel.alert.prefsfail.load.header"),
+                        i18n.getString("cbpanel.alert.prefsfail.load.content"),
+                        e));
+            }
+        });
 
     }
 

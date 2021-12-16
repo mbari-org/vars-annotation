@@ -48,6 +48,25 @@ class TreeCellFactory {
                 }
             });
             getStyleClass().add(styleClassPlain);
+            itemProperty().addListener((obs, oldItem, newItem) -> {
+                if (newItem.getConceptDetails() == null) {
+                    toolBox.getServices()
+                            .getConceptService()
+                            .findDetails(newItem.getName())
+                            .thenAccept(opt -> {
+                                opt.ifPresent(cd -> {
+//                                    item.setConceptDetails(cd);
+                                    // as we are async, the cell may or may not contain the item
+                                    // We'll update it just in case it's the same item.
+                                    // The CachedConceptService adds the details to the concept.
+                                    // the 'newItem' is just a reference to the concept in the cache
+                                    // so we shouldn't have to do anything other than redraw the cell
+                                    Platform.runLater(this::updateCell);
+                                });
+                            });
+                }
+            });
+
         }
 
         @Override
@@ -60,20 +79,6 @@ class TreeCellFactory {
             }
             else {
                 updateCell();
-                if (item.getConceptDetails() == null) {
-                    toolBox.getServices()
-                            .getConceptService()
-                            .findDetails(item.getName())
-                            .thenAccept(opt -> {
-                                opt.ifPresent(cd -> {
-//                                    System.out.println("Loaded details for " + item.getName());
-                                    item.setConceptDetails(cd);
-                                    // as we are async, the cell may or may not contain the item
-                                    // We'll update it just in case it's the same item.
-                                    Platform.runLater(this::updateCell);
-                                });
-                            });
-                }
             }
         }
 

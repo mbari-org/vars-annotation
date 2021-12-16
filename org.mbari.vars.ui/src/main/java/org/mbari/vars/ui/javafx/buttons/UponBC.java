@@ -34,7 +34,7 @@ public class UponBC extends AbstractBC {
                 .getString("app.annotation.upon.linkname");
         this.uponRoot = toolBox.getConfig().getString("app.annotation.upon.root");
         dialogController = new ConceptSelectionDialogController(toolBox);
-        dialogController.setConcept(this.uponRoot);
+        dialogController.setConcept(this.uponRoot, false);
     }
 
     protected void init() {

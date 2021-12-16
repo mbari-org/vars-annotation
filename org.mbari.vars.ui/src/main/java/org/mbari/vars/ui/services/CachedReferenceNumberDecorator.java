@@ -25,8 +25,6 @@ public class CachedReferenceNumberDecorator {
 
 
     private final UIToolBox toolBox;
-    private final AnnotationService annotationService;
-    private final MediaService mediaService;
     private final List<Media> medias = new CopyOnWriteArrayList<>();
     private final String associationKey;
     private final List<ConceptAssociation> conceptAssociations = new CopyOnWriteArrayList<>();
@@ -34,8 +32,6 @@ public class CachedReferenceNumberDecorator {
 
     public CachedReferenceNumberDecorator(UIToolBox toolBox) {
         this.toolBox = toolBox;
-        this.annotationService = toolBox.getServices().getAnnotationService();
-        this.mediaService = toolBox.getServices().getMediaService();
         associationKey = toolBox.getConfig()
                 .getString("app.annotation.identity.reference");
         toolBox.getEventBus()
@@ -56,13 +52,14 @@ public class CachedReferenceNumberDecorator {
         }
 
         if (medias.isEmpty()) {
-           return  mediaService.findByVideoSequenceName(media.getVideoSequenceName())
+            return toolBox.getServices()
+                    .getMediaService()
+                    .findByVideoSequenceName(media.getVideoSequenceName())
                     .thenApply(ms -> {
-                       medias.addAll(ms);
-                       return ms;
+                        medias.addAll(ms);
+                        return ms;
                     });
-        }
-        else {
+        } else {
             return CompletableFuture.completedFuture(medias);
         }
     }
@@ -75,14 +72,15 @@ public class CachedReferenceNumberDecorator {
                                 .map(Media::getVideoReferenceUuid)
                                 .collect(Collectors.toList());
                         ConceptAssociationRequest request = new ConceptAssociationRequest(associationKey, videoReferenceUuids);
-                        return annotationService.findByConceptAssociationRequest(request)
+                        return toolBox.getServices()
+                                .getAnnotationService()
+                                .findByConceptAssociationRequest(request)
                                 .thenApply(response -> {
                                     conceptAssociations.addAll(response.getConceptAssociations());
                                     return conceptAssociations;
                                 });
                     });
-        }
-        else {
+        } else {
             return CompletableFuture.completedFuture(conceptAssociations);
         }
     }
@@ -138,8 +136,6 @@ public class CachedReferenceNumberDecorator {
                 .filter(a -> a.getLinkName().equals(associationKey))
                 .collect(Collectors.toList());
     }
-
-
 
 
 }

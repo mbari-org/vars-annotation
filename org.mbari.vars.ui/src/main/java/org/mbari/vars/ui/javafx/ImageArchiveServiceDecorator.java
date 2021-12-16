@@ -53,7 +53,6 @@ public class ImageArchiveServiceDecorator {
 
 
     private final UIToolBox toolBox;
-    private final ImageArchiveService imageArchiveService;
     private final String copyrightOwner;
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final Duration timeout;
@@ -61,7 +60,6 @@ public class ImageArchiveServiceDecorator {
 
     public ImageArchiveServiceDecorator(UIToolBox toolBox) {
         this.toolBox = toolBox;
-        this.imageArchiveService = toolBox.getServices().getImageArchiveService();
         copyrightOwner = toolBox.getConfig().getString("app.image.copyright.owner");
         timeout = toolBox.getConfig().getDuration("annotation.service.timeout");
     }
@@ -107,7 +105,9 @@ public class ImageArchiveServiceDecorator {
             String name = ImageArchiveServiceDecorator.buildName(media.getVideoReferenceUuid(), framegrab.getVideoIndex().get(), extension);
             String deploymentId = CommandUtil.getDeploymentId(media);
 
-            CompletableFuture<org.mbari.vars.services.model.Image> future = imageArchiveService.upload(media.getCameraId(), deploymentId, name, imagePath)
+            CompletableFuture<org.mbari.vars.services.model.Image> future = toolBox.getServices()
+                    .getImageArchiveService()
+                    .upload(media.getCameraId(), deploymentId, name, imagePath)
                     .thenCompose(imageUploadResults -> {
                         createdImageData.setImageUploadResults(imageUploadResults);
                         return createImageInDatastore(media, framegrab, toUrl(imageUploadResults.getUri()));
@@ -153,9 +153,7 @@ public class ImageArchiveServiceDecorator {
     public void refreshRelatedAnnotations(UUID imageReferenceUuid, boolean deleteImage) {
         final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         final EventBus eventBus = toolBox.getEventBus();
-
-        // We have to block to make this work. So call in separate thread
-        Thread thread = new Thread(() -> {
+        toolBox.getExecutorService().submit(() -> {
             try {
 
                 // Blocking call
@@ -179,8 +177,6 @@ public class ImageArchiveServiceDecorator {
                 throw new RuntimeException(e);
             }
         });
-
-        thread.start();
 
     }
 

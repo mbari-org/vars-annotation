@@ -38,6 +38,7 @@ class IncomingController implements Closeable {
      * nor updates
      */
     private final ListChangeListener<Localization> changeListener = c -> {
+        // TODO add support for delete/update
         while (c.next()) {
             if (c.wasAdded()) {
                 List<? extends Localization> addedSubList = c.getAddedSubList();

@@ -68,6 +68,8 @@ public class AppPaneController {
     private ToolBar toolBar;
     private final UIToolBox toolBox;
     private ComboBox<String> usersComboBox;
+    ComboBox<String> groupCombobox = new JFXComboBox<>();
+    ComboBox<String> activityCombobox = new JFXComboBox<>();
     private CheckBox showConcurrentCheckBox;
     private PopOver openPopOver;
     private StatusBar utilityPane;
@@ -93,7 +95,6 @@ public class AppPaneController {
 
     public AppPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
-        // FIXME - Static ref to services. Needs to be dynamic so we can update services
         selectMediaDialog = new SelectMediaDialog(toolBox,
                 toolBox.getI18nBundle());
         selectMediaDialog.getDialogPane()
@@ -127,6 +128,11 @@ public class AppPaneController {
         annotationViewController = new AnnotationViewController(toolBox);
         rectLabelStageController = new RectLabelStageController(toolBox);
         rectLabelStageController.getStage().setOnCloseRequest(evt -> rectLabelStageController.hide());
+
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(ReloadServicesMsg.class)
+                .subscribe(msg -> reload());
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             saveDividerPositions(masterPaneKey, getMasterPane());
@@ -251,7 +257,6 @@ public class AppPaneController {
             observable.ofType(AnnotationsSelectedEvent.class)
                     .subscribe(e -> showAncillaryData(e.get()));
 
-            // FIXME - Static ref to services. Needs to be dynamic so we can update services
             SearchTreePaneController treeController = new SearchTreePaneController(toolBox,
                     toolBox.getI18nBundle());
             observable.ofType(ShowConceptInTreeViewMsg.class)
@@ -528,14 +533,14 @@ public class AppPaneController {
             Label groupLabel = new Label(toolBox.getI18nBundle()
                     .getString("apppane.statusbar.label.group"));
             groupLabel.getStyleClass().add("utility-label");
-            ComboBox<String> groupCombobox = new JFXComboBox<>();
+//            ComboBox<String> groupCombobox = new JFXComboBox<>();
             groupCombobox.setEditable(true);
-            toolBox.getServices()
-                    .getAnnotationService()
-                    .findGroups()
-                    .thenAccept(groups ->
-                        Platform.runLater(() ->
-                            groupCombobox.getItems().addAll(groups)));
+//            toolBox.getServices()
+//                    .getAnnotationService()
+//                    .findGroups()
+//                    .thenAccept(groups ->
+//                        Platform.runLater(() ->
+//                            groupCombobox.getItems().addAll(groups)));
             groupCombobox.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldv, newv) -> toolBox.getData().setGroup(newv));
@@ -556,17 +561,17 @@ public class AppPaneController {
             Label activityLabel = new Label(toolBox.getI18nBundle()
                     .getString("apppane.statusbar.label.activity"));
             activityLabel.getStyleClass().add("utility-label");
-            ComboBox<String> activityCombobox = new JFXComboBox<>();
+//            ComboBox<String> activityCombobox = new JFXComboBox<>();
             activityCombobox.setEditable(true);
 
-            toolBox.getServices()
-                    .getAnnotationService()
-                    .findActivities()
-                    .thenAccept(activities -> {
-                        Platform.runLater(() -> {
-                            activityCombobox.getItems().addAll(activities);
-                        });
-                    });
+//            toolBox.getServices()
+//                    .getAnnotationService()
+//                    .findActivities()
+//                    .thenAccept(activities -> {
+//                        Platform.runLater(() -> {
+//                            activityCombobox.getItems().addAll(activities);
+//                        });
+//                    });
             activityCombobox.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldv, newv) -> toolBox.getData().setActivity(newv));
@@ -602,9 +607,24 @@ public class AppPaneController {
                             spacer1,
                             checkBox);
 
-
+            reload();
         }
         return utilityPane;
+    }
+
+    private void reload() {
+        toolBox.getServices()
+                .getAnnotationService()
+                .findActivities()
+                .thenAccept(activities ->
+                        Platform.runLater(() ->
+                                activityCombobox.getItems().addAll(activities)));
+        toolBox.getServices()
+                .getAnnotationService()
+                .findGroups()
+                .thenAccept(groups ->
+                        Platform.runLater(() ->
+                                groupCombobox.getItems().addAll(groups)));
     }
 
     private CheckBox getShowConcurrentCheckBox() {

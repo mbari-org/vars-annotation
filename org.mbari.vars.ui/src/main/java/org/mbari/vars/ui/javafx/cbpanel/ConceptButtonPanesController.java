@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.IntStream;
@@ -54,10 +55,14 @@ public class ConceptButtonPanesController {
         this.toolBox = toolBox;
         this.i18n = toolBox.getI18nBundle();
         overviewController = new ConceptButtonPanesWithHighlightController(toolBox);
-        // TODO add listener to Data.user. When changed remove all panes and reload
+        // add listener to Data.user. When changed remove all panes and reload
         toolBox.getData()
                 .userProperty()
                 .addListener(e -> loadTabsFromPreferences());
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(ReloadServicesMsg.class)
+                .subscribe(msg -> loadTabsFromPreferences());
     }
 
     public BorderPane getRoot() {
@@ -150,25 +155,40 @@ public class ConceptButtonPanesController {
         Optional<Preferences> tabsPrefsOpt = getTabsPreferences();
         if (tabsPrefsOpt.isPresent()) {
             Preferences tabsPrefs = tabsPrefsOpt.get();
-            Platform.runLater(() -> {
+
+            toolBox.getExecutorService().submit(() -> {
+                var eventBus = toolBox.getEventBus();
                 try {
+                    eventBus.send(new ShowProgress());                  // Progress
+                    eventBus.send(new SetProgress(0));                  // Progress
+                    var childNames = tabsPrefs.childrenNames();
+                    var progress = new AtomicReference<>(0D); // Progress
+                    var inc = 1 / (double) childNames.length;           // Progress
                     Arrays.stream(tabsPrefs.childrenNames())
                             .forEach(tabName -> {
                                 Preferences tabPrefs = tabsPrefs.node(tabName);
                                 String name = tabPrefs.get(PREFKEY_TABNAME, "dummy");
-                                ConceptButtonPaneController controller = new ConceptButtonPaneController(
-                                        toolBox, tabsPrefs.node(tabName));
-                                controller.setLocked(lockProperty.get());
-                                Tab tab = new Tab(name, controller.getPane());
-                                tab.setClosable(true);
-                                tab.setOnClosed(e -> removeTab(tab));
-                                getTabPane().getTabs().add(tab);
+                                Platform.runLater(() -> {
+                                    ConceptButtonPaneController controller = new ConceptButtonPaneController(
+                                            toolBox, tabsPrefs.node(tabName));
+                                    controller.setLocked(lockProperty.get());
+                                    Tab tab = new Tab(name, controller.getPane());
+                                    tab.setClosable(true);
+                                    tab.setOnClosed(e -> removeTab(tab));
+                                    getTabPane().getTabs().add(tab);
+                                    var p = progress.accumulateAndGet(inc, Double::sum); // Progress
+                                    eventBus.send(new SetProgress(p));   // Progress
+                                });
+
                             });
+                    eventBus.send(new HideProgress());                   // Progress
                 }
                 catch (BackingStoreException e) {
+                    eventBus.send(new HideProgress());                   // Progress
                     log.error("VARS had a problem loading user tabs for user: " + toolBox.getData().getUser());
                 }
             });
+
         }
     }
 

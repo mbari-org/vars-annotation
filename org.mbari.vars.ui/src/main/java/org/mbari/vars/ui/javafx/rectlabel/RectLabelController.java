@@ -329,7 +329,7 @@ public class RectLabelController {
         toolBox.getServices()
                 .getConceptService()
                 .findRoot()
-                .thenAccept(rootConcept -> dialogController.setConcept(rootConcept.getName()));
+                .thenAccept(rootConcept -> dialogController.setConcept(rootConcept.getName(), false));
 
         toolBox.getEventBus()
                 .toObserverable()

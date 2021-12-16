@@ -13,6 +13,7 @@ import javafx.scene.layout.Priority;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.javafx.shared.FilterableTreeItem;
 import org.mbari.vars.services.model.Concept;
+import org.mbari.vars.ui.messages.ReloadServicesMsg;
 
 
 import java.util.List;
@@ -40,7 +41,6 @@ public class SearchTreePaneController {
 
     public SearchTreePaneController(UIToolBox toolBox) {
         this(toolBox, toolBox.getI18nBundle());
-
     }
 
     public BorderPane getRoot() {
@@ -79,40 +79,32 @@ public class SearchTreePaneController {
                 expand(selectedItem);
             });
 
-            /*
-              The KB tree is lazy loaded. So we have to listen for when the root is added before
-              we can bind to it.
-             */
-            ChangeListener<TreeItem<Concept>> rootListener = new ChangeListener<TreeItem<Concept>>() {
-
-                private boolean completed = false;
-
-                @Override
-                public void changed(ObservableValue<? extends TreeItem<Concept>> observable, TreeItem<Concept> oldValue, TreeItem<Concept> newValue) {
-                    if (!completed) {
-                        TextField tf = getTextField();
-                        FilterableTreeItem<Concept> root = (FilterableTreeItem<Concept>) newValue;
-                        root.predicateProperty().bind(Bindings.createObjectBinding(() -> {
-                            if (tf.getText() == null || tf.getText().isEmpty()) {
-                                return (Concept c) -> true;
-                            }
-                            else {
-                                return (Concept c) -> {
-                                    String t = c.getName();
-                                    List<String> alternativeNames = c.getAlternativeNames();
-                                    if (alternativeNames != null && !alternativeNames.isEmpty()) {
-                                        t = t + alternativeNames.stream().collect(Collectors.joining());
-                                    }
-                                    return t.toLowerCase().contains(tf.getText().toLowerCase());
-                                };
-
-                            }
-                        }, tf.textProperty()));
-                        completed = true;
-                    }
+            treeView.rootProperty().addListener(((observable, oldValue, newValue) -> {
+                if (oldValue != null) {
+                    var oldRoot = (FilterableTreeItem<Concept>) oldValue;
+                    oldRoot.predicateProperty().unbind();
                 }
-            };
-            treeView.rootProperty().addListener(rootListener);
+                if (newValue != null) {
+                    var newRoot = (FilterableTreeItem<Concept>) newValue;
+                    TextField tf = getTextField();
+                    newRoot.predicateProperty().bind(Bindings.createObjectBinding(() -> {
+                        if (tf.getText() == null || tf.getText().isEmpty()) {
+                            return (Concept c) -> true;
+                        }
+                        else {
+                            return (Concept c) -> {
+                                String t = c.getName();
+                                List<String> alternativeNames = c.getAlternativeNames();
+                                if (alternativeNames != null && !alternativeNames.isEmpty()) {
+                                    t = t + alternativeNames.stream().collect(Collectors.joining());
+                                }
+                                return t.toLowerCase().contains(tf.getText().toLowerCase());
+                            };
+
+                        }
+                    }, tf.textProperty()));
+                }
+            }));
         }
         return treeViewController.getTreeView();
     }

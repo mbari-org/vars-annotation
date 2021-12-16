@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import org.mbari.vars.services.ConceptService;
+import org.mbari.vars.ui.UIToolBox;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,11 +17,11 @@ import java.util.List;
 public class HierarchicalConceptComboBoxDecorator {
 
     private final ComboBox<String> comboBox;
-    private final ConceptService conceptService;
+    private final UIToolBox toolBox;
 
-    public HierarchicalConceptComboBoxDecorator(ComboBox<String> comboBox, ConceptService conceptService) {
+    public HierarchicalConceptComboBoxDecorator(ComboBox<String> comboBox, UIToolBox toolBox) {
         this.comboBox = comboBox;
-        this.conceptService = conceptService;
+        this.toolBox = toolBox;
         comboBox.setItems(FXCollections.observableArrayList());
     }
 
@@ -28,7 +29,9 @@ public class HierarchicalConceptComboBoxDecorator {
         Platform.runLater(() -> {
 
             if (concept != null) {
-                conceptService.findConcept(concept)
+                toolBox.getServices()
+                        .getConceptService()
+                        .findConcept(concept)
                         .handle((opt, ex) -> {
                             Platform.runLater(() -> {
                                 ObservableList<String> items = FXCollections.observableArrayList();

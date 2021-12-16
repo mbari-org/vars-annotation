@@ -36,8 +36,8 @@ public class ConceptSelectionDialogController {
         return concept;
     }
 
-    public void setConcept(String concept) {
-        boolean doRefresh = concept != null && !concept.equals(this.concept);
+    public void setConcept(String concept, boolean force) {
+        boolean doRefresh = force || concept != null && !concept.equals(this.concept);
         this.concept = concept;
         if (doRefresh) {
             refresh();

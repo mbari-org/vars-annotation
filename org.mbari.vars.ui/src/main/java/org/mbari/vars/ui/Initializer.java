@@ -17,10 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 /**
  * JPMS didn't play well with dependency injection via Guice. I ripped it out
@@ -113,7 +110,7 @@ public class Initializer {
                         bundle,
                         getConfig(),
                         Collections.singletonList(stylesheet),
-                        new ForkJoinPool(),
+                        Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2),
                         getAes());
             }
         }

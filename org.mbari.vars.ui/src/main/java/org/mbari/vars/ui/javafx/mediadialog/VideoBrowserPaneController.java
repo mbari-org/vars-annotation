@@ -12,6 +12,7 @@ import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.MediaService;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.javafx.shared.DateTimePickerController;
+import org.mbari.vars.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.ui.util.FXMLUtils;
 import org.mbari.vars.ui.util.JFXUtilities;
 import org.slf4j.Logger;
@@ -56,6 +57,10 @@ public class VideoBrowserPaneController {
         root = new BorderPane(getCenterPane());
         root.setTop(getTopPane());
         root.setRight(getMediaPaneController().getRoot());
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(ReloadServicesMsg.class)
+                .subscribe(msg -> loadCameraIds());
     }
 
     public StackPane getCenterPane() {
@@ -95,20 +100,27 @@ public class VideoBrowserPaneController {
         return toDateController;
     }
 
+    private void loadCameraIds() {
+        // Populate the cameraIds
+        toolBox.getServices()
+                .getMediaService()
+                .findAllCameraIds()
+                .thenAccept(cameras -> {
+                    Platform.runLater(() -> {
+                        if (cameraIdListView != null) {
+                            cameraIdListView.setItems(FXCollections.observableArrayList(cameras));
+                        }
+                    });
+                });
+    }
+
     public ListView getCameraIdListView() {
         if (cameraIdListView == null) {
             cameraIdListView = new ListView<>();
             cameraIdListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
             // Populate the cameraIds
-            toolBox.getServices()
-                    .getMediaService()
-                    .findAllCameraIds()
-                    .thenAccept(cameras -> {
-                        Platform.runLater(() -> {
-                            cameraIdListView.setItems(FXCollections.observableArrayList(cameras));
-                        });
-                    });
+            loadCameraIds();
 
             // When a camera_id is selected set the next list to all the videosequence names
             // for that camera_id.
