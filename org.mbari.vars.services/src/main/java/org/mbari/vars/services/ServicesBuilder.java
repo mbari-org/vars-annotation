@@ -19,10 +19,7 @@ import org.mbari.vars.services.impl.vampiresquid.v1.VamService;
 import org.mbari.vars.services.impl.vampiresquid.v1.VamWebServiceFactory;
 import org.mbari.vars.services.impl.varskbserver.v1.KBConceptService;
 import org.mbari.vars.services.impl.varskbserver.v1.KBWebServiceFactory;
-import org.mbari.vars.services.impl.varsuserserver.v1.KBPrefService;
-import org.mbari.vars.services.impl.varsuserserver.v1.KBUserService;
-import org.mbari.vars.services.impl.varsuserserver.v1.PrefWebServiceFactory;
-import org.mbari.vars.services.impl.varsuserserver.v1.UserWebServiceFactory;
+import org.mbari.vars.services.impl.varsuserserver.v1.*;
 import org.mbari.vars.services.model.Authorization;
 import org.mbari.vars.services.model.EndpointConfig;
 import org.mbari.vars.services.noop.*;
@@ -173,9 +170,10 @@ public class ServicesBuilder {
     AuthService authService =
             new BasicJWTAuthService(authFactory, new Authorization("APIKEY", clientSecret));
     KBPrefService prefService = new KBPrefService(factory, authService);
+    var cachePrefService = new CachedKBPrefService(prefService);
     PreferencesFactory prefsFactory =
-            new WebPreferencesFactory(prefService, timeout.toMillis());
-    return new Prefs(prefsFactory, prefService);
+            new WebPreferencesFactory(cachePrefService, timeout.toMillis());
+    return new Prefs(prefsFactory, cachePrefService);
   }
 
   private Prefs buildPrefs() {

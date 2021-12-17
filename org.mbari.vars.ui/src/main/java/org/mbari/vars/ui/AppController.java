@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import mbarix4j.io.IOUtilities;
 import org.mbari.vars.core.EventBus;
+import org.mbari.vars.services.PreferencesService;
+import org.mbari.vars.services.impl.varsuserserver.v1.CachedKBPrefService;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.ui.mediaplayers.MediaPlayers;
 import org.mbari.vars.ui.mediaplayers.sharktopoda.localization.LocalizationLifecycleController;
@@ -116,6 +118,11 @@ public class AppController {
                     ConceptService conceptService = toolBox.getServices().getConceptService();
                     if (conceptService instanceof CachedConceptService) {
                         ((CachedConceptService) conceptService).clear();
+                    }
+                    // Clear pref cache
+                    var preferenceService = toolBox.getServices().getPreferencesService();
+                    if (preferenceService instanceof CachedKBPrefService) {
+                        ((CachedKBPrefService) preferenceService).clear();
                     }
                     // Close open media
                     eventBus.send(new MediaChangedEvent(AppController.this, null));
