@@ -113,12 +113,13 @@ public class LocalizationSettingsPaneController implements IPrefs {
             if (!Objects.equals(newSettings, oldSettings)) {
                 LocalizationPrefs.save(newSettings);
 
+                // Raziel sends a ReloadServicesMsg which close the open media
                 // Relaunch media player if one is opened
-                Media media = toolBox.getData().getMedia();
-                if (media != null) {
-                    toolBox.getEventBus()
-                            .send(new MediaChangedEvent(this, media));
-                }
+//                Media media = toolBox.getData().getMedia();
+//                if (media != null) {
+//                    toolBox.getEventBus()
+//                            .send(new MediaChangedEvent(this, media));
+//                }
             }
         });
     }

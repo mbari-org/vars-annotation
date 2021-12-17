@@ -5,6 +5,9 @@ import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Brian Schlining
@@ -32,22 +35,17 @@ public interface MediaControlsFactory {
      */
     CompletableFuture<MediaControls<? extends VideoState, ? extends VideoError>> open(Media media);
 
-    default CompletableFuture<MediaControls<? extends VideoState, ? extends VideoError>> safeOpen(Media media) {
-        CompletableFuture<MediaControls<? extends VideoState, ? extends VideoError>> cf = new CompletableFuture<>();
+    default MediaControls<? extends VideoState, ? extends VideoError> safeOpen(Media media) {
         if (canOpen(media)) {
             try {
-                open(media).thenAccept(cf::complete);
-            }
-            catch (Exception e) {
-                cf.completeExceptionally(e);
+                return open(media).get(10, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to open " + media + " using " + this);
             }
         }
         else {
-            cf.completeExceptionally(new RuntimeException(getClass().getName() +
-                    " is unable to open media"));
+            throw new RuntimeException(getClass().getName() + " is unable to open media");
         }
-
-        return cf;
     }
 
 }

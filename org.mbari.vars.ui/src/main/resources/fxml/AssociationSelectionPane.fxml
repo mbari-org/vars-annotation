@@ -7,20 +7,26 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.javafx.abpanel.AssocSelectionDialogController">
-  <columnConstraints>
-    <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
-    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
-  </columnConstraints>
-  <rowConstraints>
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-  </rowConstraints>
-   <children>
-      <Label fx:id="assocLabel" text="%abpane.selection" GridPane.rowIndex="1" />
-      <JFXTextField fx:id="searchTextField" promptText="%abpane.search" GridPane.columnSpan="2147483647" />
-      <JFXComboBox fx:id="assocComboBox" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
-      <JFXTextField fx:id="nicknameTextField" promptText="%abpane.nickname" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
-   </children>
+<GridPane fx:id="root" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="500" vgap="10.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.javafx.abpanel.AssocSelectionDialogController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" minWidth="40.0"/>
+        <ColumnConstraints hgrow="ALWAYS" minWidth="100.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+    </rowConstraints>
+    <children>
+        <Label text="%abpane.selection" GridPane.rowIndex="1"/>
+        <JFXTextField fx:id="searchTextField" promptText="%abpane.search" GridPane.columnSpan="2"/>
+        <JFXComboBox fx:id="assocComboBox" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1"/>
+        <Label text="%abpane.toconcept" GridPane.rowIndex="2"/>
+        <JFXComboBox fx:id="toConceptComboBox" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2"/>
+        <Label text="%abpane.linkvalue" GridPane.rowIndex="3"/>
+        <JFXTextField fx:id="linkValueTextField"  GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+        <JFXTextField fx:id="nicknameTextField" promptText="%abpane.nickname" GridPane.columnSpan="2" GridPane.rowIndex="4"/>
+    </children>
 </GridPane>

@@ -5,9 +5,7 @@ import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
 import java.util.prefs.Preferences;
 
-import com.typesafe.config.Config;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
@@ -150,11 +148,12 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         prefs.putInt(TIME_JUMP, timeJump);
         toolBox.getData().setTimeJump(timeJump);
 
-        Media media = toolBox.getData()
-                .getMedia();
-        if (media != null) {
-            toolBox.getEventBus()
-                    .send(new MediaChangedEvent(this, media));
-        }
+        // Raziel sends a ReloadServicesMsg which close the open media
+//        Media media = toolBox.getData()
+//                .getMedia();
+//        if (media != null) {
+//            toolBox.getEventBus()
+//                    .send(new MediaChangedEvent(this, media));
+//        }
     }
 }

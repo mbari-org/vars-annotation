@@ -9,8 +9,12 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import org.mbari.vars.core.util.StringUtils;
+import org.mbari.vars.services.model.ConceptDetails;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
+import org.mbari.vars.ui.javafx.shared.HierarchicalConceptComboBoxDecorator;
 import org.mbari.vars.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.services.model.ConceptAssociationTemplate;
 import org.mbari.vars.core.util.ListUtils;
@@ -18,6 +22,7 @@ import org.mbari.vars.core.util.ListUtils;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Brian Schlining
@@ -32,7 +37,10 @@ public class AssocSelectionDialogController {
     private GridPane root;
 
     @FXML
-    private Label assocLabel;
+    ComboBox<String> toConceptComboBox;
+
+    @FXML
+    TextField linkValueTextField;
 
     @FXML
     private TextField searchTextField;
@@ -57,6 +65,24 @@ public class AssocSelectionDialogController {
                 searchTemplates(searchTextField.getText());
             }
         });
+
+        var decorator = new HierarchicalConceptComboBoxDecorator(toConceptComboBox, Initializer.getToolBox());
+        new FilteredComboBoxDecorator<>(toConceptComboBox, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
+
+        assocComboBox.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, oldv, newv) -> {
+                    if (newv == null) {
+                        toConceptComboBox.setItems(FXCollections.observableArrayList());
+                        linkValueTextField.setText(null);
+                    }
+                    else {
+                        decorator.setConcept(newv.getToConcept());
+                        linkValueTextField.setText(newv.getLinkValue());
+                    }
+                });
+
+
     }
 
     public void reset() {
@@ -87,7 +113,22 @@ public class AssocSelectionDialogController {
                     ConceptAssociationTemplate item = assocComboBox.getSelectionModel().getSelectedItem();
                     String name = nicknameTextField.getText();
                     if (item != null && name != null && !name.isEmpty()) {
-                        na = new NamedAssociation(item, name);
+                        var customToConcept = toConceptComboBox.getSelectionModel().getSelectedItem();
+                        String mappedToConcept;
+                        try {
+                            mappedToConcept = toolBox.getServices()
+                                    .getConceptService()
+                                    .findDetails(customToConcept)
+                                    .get(5, TimeUnit.SECONDS)
+                                    .map(ConceptDetails::getName)
+                                    .orElse(item.getToConcept());
+                        }
+                        catch (Exception e) {
+                            mappedToConcept = item.getToConcept();
+                        }
+                        var customLinkValue = linkValueTextField.getText();
+                        var customItem = new ConceptAssociationTemplate(item.getLinkName(), mappedToConcept, customLinkValue);
+                        na = new NamedAssociation(customItem, name);
                     }
                 }
                 return na;

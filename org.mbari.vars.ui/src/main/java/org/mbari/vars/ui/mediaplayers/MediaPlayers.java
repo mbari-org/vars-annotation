@@ -24,6 +24,7 @@ public class MediaPlayers {
     private final UIToolBox toolBox;
     private final Logger log = LoggerFactory.getLogger(getClass());
     private ServiceLoader<MediaControlsFactory> serviceLoader;
+    private final Object lock = new byte[]{};
 
     public MediaPlayers(UIToolBox toolBox) {
         this.toolBox = toolBox;
@@ -55,25 +56,33 @@ public class MediaPlayers {
     private void open(Media media) {
 
         // Close the old one
-        close();
+        synchronized (lock) {
+            close();
 
-        try {
-            StreamUtilities.toStream(serviceLoader.iterator())
-                    .peek(factory -> log.debug("ServiceLoader found a factory: {}", factory))
-                    .filter(factory -> factory.canOpen(media))
-                    .peek(factory -> log.debug("ServiceLoader using a factory: {}", factory))
-                    .findFirst()
-                    .ifPresent(factory -> factory.safeOpen(media)
-                            .thenAccept(mediaControls -> {
+            try {
+                StreamUtilities.toStream(serviceLoader.iterator())
+                        .peek(factory -> log.debug("ServiceLoader found a factory: {}", factory))
+                        .filter(factory -> factory.canOpen(media))
+                        .peek(factory -> log.debug("ServiceLoader using a factory: {}", factory))
+                        .findFirst()
+                        .ifPresent(factory -> {
+                            try {
+                                var mediaControls = factory.safeOpen(media);
                                 toolBox.getEventBus()
                                         .send(new MediaControlsChangedEvent(MediaPlayers.this,
                                                 mediaControls));
-                            }));
-        }
-        catch (ServiceConfigurationError e) {
-            log.error("Unable to load services", e);
-            toolBox.getEventBus()
-                    .send(new MediaPlayerChangedEvent(null, null));
+                            } catch (Exception e) {
+                                log.error("Unable to load services", e);
+                                toolBox.getEventBus()
+                                        .send(new MediaPlayerChangedEvent(null, null));
+                            }
+                        });
+
+            } catch (ServiceConfigurationError e) {
+                log.error("Unable to load services", e);
+                toolBox.getEventBus()
+                        .send(new MediaPlayerChangedEvent(null, null));
+            }
         }
     }
 

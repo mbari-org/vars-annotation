@@ -157,13 +157,7 @@ public class ConceptButtonPanesController {
             Preferences tabsPrefs = tabsPrefsOpt.get();
 
             toolBox.getExecutorService().submit(() -> {
-                var eventBus = toolBox.getEventBus();
                 try {
-                    eventBus.send(new ShowProgress());                  // Progress
-                    eventBus.send(new SetProgress(0));                  // Progress
-                    var childNames = tabsPrefs.childrenNames();
-                    var progress = new AtomicReference<>(0D); // Progress
-                    var inc = 1 / (double) childNames.length;           // Progress
                     Arrays.stream(tabsPrefs.childrenNames())
                             .forEach(tabName -> {
                                 Preferences tabPrefs = tabsPrefs.node(tabName);
@@ -176,15 +170,11 @@ public class ConceptButtonPanesController {
                                     tab.setClosable(true);
                                     tab.setOnClosed(e -> removeTab(tab));
                                     getTabPane().getTabs().add(tab);
-                                    var p = progress.accumulateAndGet(inc, Double::sum); // Progress
-                                    eventBus.send(new SetProgress(p));   // Progress
                                 });
 
                             });
-                    eventBus.send(new HideProgress());                   // Progress
                 }
                 catch (BackingStoreException e) {
-                    eventBus.send(new HideProgress());                   // Progress
                     log.error("VARS had a problem loading user tabs for user: " + toolBox.getData().getUser());
                 }
             });
