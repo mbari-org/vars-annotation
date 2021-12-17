@@ -146,13 +146,12 @@ public class RXImageCaptureServiceImpl implements ImageCaptureService {
 
 
             try {
-                outToSocket.close();
-                inFromSocket.close();
-                socket.close();
+                if (outToSocket != null) outToSocket.close();
+                if (inFromSocket != null) inFromSocket.close();
+                if (socket != null) socket.close();
             } catch (IOException e) {
                 log.atError().setCause(e).log("Failed to close socket");
             }
-
 
         };
     }

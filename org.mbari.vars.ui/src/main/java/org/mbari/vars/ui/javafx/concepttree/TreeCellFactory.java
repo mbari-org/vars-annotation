@@ -49,7 +49,7 @@ class TreeCellFactory {
             });
             getStyleClass().add(styleClassPlain);
             itemProperty().addListener((obs, oldItem, newItem) -> {
-                if (newItem.getConceptDetails() == null) {
+                if (newItem != null && newItem.getConceptDetails() == null) {
                     toolBox.getServices()
                             .getConceptService()
                             .findDetails(newItem.getName())
