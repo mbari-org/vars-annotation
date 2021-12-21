@@ -18,7 +18,7 @@ import java.time.Duration;
  */
 public class LocalizationController implements Closeable {
 
-    private final IncomingController incomingController;
+    private final IncomingController2 incomingController;
     private final OutgoingController outgoingController;
     private final IO io;
     public static final String EVENT_SOURCE = LocalizationController.class.getName();
@@ -35,13 +35,13 @@ public class LocalizationController implements Closeable {
      * @param toolBox Full of all the goodies needed to constructor controllers
      */
     public LocalizationController(LocalizationSettings settings, UIToolBox toolBox) {
-        log.debug("Creating new instance using " + gson.toJson(settings));
+        log.info("Creating new instance using " + gson.toJson(settings));
         io = new IO(settings.getIncomingPort(),
                 settings.getOutgoingPort(),
                 settings.getIncomingTopic(),
                 settings.getOutgoingTopic());
 
-        incomingController = new IncomingController(io, gson, toolBox);
+        incomingController = new IncomingController2(io, gson, toolBox);
         outgoingController = new OutgoingController(toolBox.getEventBus(), io, gson);
 
     }

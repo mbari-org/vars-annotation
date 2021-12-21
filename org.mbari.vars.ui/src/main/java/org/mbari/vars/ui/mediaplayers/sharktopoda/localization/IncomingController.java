@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 /**
  * Controller that handles inbound traffic from remote app that's creating localizations.
+ * @deprecated  Use IncomingController2 instead
  */
 class IncomingController implements Closeable {
     private final UIToolBox toolBox;
@@ -105,7 +106,6 @@ class IncomingController implements Closeable {
             }
 
         }
-
     }
 
     private Association toAssociation(Localization x) {

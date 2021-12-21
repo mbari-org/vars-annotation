@@ -50,7 +50,7 @@ module org.mbari.vars.ui {
   opens org.mbari.vars.ui.javafx.userdialog to javafx.fxml;
   opens org.mbari.vars.ui.mediaplayers.macos.bm to javafx.fxml;
   opens org.mbari.vars.ui.mediaplayers.sharktopoda to javafx.fxml;
-  opens org.mbari.vars.ui.mediaplayers.sharktopoda.localization to javafx.fxml;
+  opens org.mbari.vars.ui.mediaplayers.sharktopoda.localization to com.google.gson, javafx.fxml;
   opens org.mbari.vars.ui.mediaplayers.ships to javafx.fxml;
   opens org.mbari.vars.ui.mediaplayers.vcr to javafx.fxml;
 

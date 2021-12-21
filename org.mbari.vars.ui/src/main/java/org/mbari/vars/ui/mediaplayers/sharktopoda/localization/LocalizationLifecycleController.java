@@ -20,9 +20,8 @@ public class LocalizationLifecycleController {
     private final UIToolBox toolBox;
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final long THREAD_SLEEP_MILLIS = 1000L;
-    private volatile int threadCounter = 0;
     private static final AtomicReference<LocalizationController> controllerRef = new AtomicReference<>();
-    private static final Lock lock = new ReentrantLock();
+    private static final Object lock = new byte[]{};
 
     public LocalizationLifecycleController(UIToolBox toolBox) {
         this.toolBox = toolBox;
@@ -42,49 +41,44 @@ public class LocalizationLifecycleController {
         return scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("file");
     }
 
-    private void manageControllerLifecycle(Media media) {
+    private void manageControllerLifecycle(final Media media) {
         // Manage lifecylce in it's own thread as it needs to block for a second to allow
         // ZeroMQ to spin down/up.
 
-        Runnable runnable = () -> {
-            lock.lock();
-            boolean pause = false;
-            LocalizationController controller = controllerRef.get();
-            LocalizationSettings settings = LocalizationPrefs.load(toolBox.getAppConfig());
-            if (controller == null) {
-                if (media == null) {
-                    // Nothing to do. Let's get out of here.
-                    return;
-                }
-                else if (isFileMedia(media) &&
-                    settings.isEnabled()) {
-                    log.debug("Creating a LocalizationController for " + media.getUri());
-                    controller = new LocalizationController(settings, toolBox);
-                    controllerRef.set(controller);
-                    pause = true;
-                }
-            }
-            else {
-                if (media == null) {
-                    // What to do?
-                }
-                else if (!isFileMedia(media)) {
+
+//        Runnable runnable = () -> {
+            synchronized (controllerRef) {
+                LocalizationController controller = controllerRef.get();
+                LocalizationSettings settings = LocalizationPrefs.load(toolBox.getAppConfig());
+                if (controller != null) {
                     controller.close();
                     controllerRef.set(null);
-                    pause = true;
+                    try {
+                        Thread.sleep(THREAD_SLEEP_MILLIS);
+                    } catch (InterruptedException e) {
+                        log.warn("A thread was interrupted while cycling the state of the LocalizationController");
+                    }
                 }
-            }
-            if (pause) {
+
+                var isFile = isFileMedia(media);
+                if (media == null || !isFile) {
+                    return;
+                }
+
+                log.debug("Creating a LocalizationController for " + media.getUri());
+                controller = new LocalizationController(settings, toolBox);
+                controllerRef.set(controller);
+                log.debug("Controller created");
                 try {
                     Thread.sleep(THREAD_SLEEP_MILLIS);
                 } catch (InterruptedException e) {
                     log.warn("A thread was interrupted while cycling the state of the LocalizationController");
                 }
             }
-            lock.unlock();
-        };
 
-        toolBox.getExecutorService().submit(runnable);
+//        };
+//
+//        toolBox.getExecutorService().submit(runnable);
 
     }
 }
