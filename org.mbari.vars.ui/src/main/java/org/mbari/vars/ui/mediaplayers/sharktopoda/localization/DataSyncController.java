@@ -82,6 +82,11 @@ public class DataSyncController implements Closeable  {
     }
 
     private Optional<Localization> searchRemote(LocalizedAnnotation a) {
+        return io.getController()
+                .getLocalizations()
+                .stream()
+                .filter(ass -> ass.getLocalizationUuid().equals(a.association().getUuid()))
+                .findFirst();
 
     }
 
