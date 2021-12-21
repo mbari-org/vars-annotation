@@ -330,14 +330,14 @@ public class ImageArchiveServiceDecorator {
         Optional<Instant> timestamp = videoIndex.getTimestamp();
         String idx;
 
-        if (timecode.isPresent()) {
-            idx = timecode.get().toString().replace(':', '_');
+        if (timestamp.isPresent()) {
+            idx = timeFormat.format(timestamp.get());
         }
         else if (elapsedTime.isPresent()) {
             idx = elapsedTime.get().toMillis() + "";
         }
-        else if (timestamp.isPresent()) {
-            idx = timeFormat.format(timestamp.get());
+        else if (timecode.isPresent()) {
+            idx = timecode.get().toString().replace(':', '_');
         }
         else {
             idx = timeFormat.format(Instant.now());
