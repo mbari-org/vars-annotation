@@ -18,8 +18,9 @@ import java.time.Duration;
  */
 public class LocalizationController implements Closeable {
 
-    private final IncomingController2 incomingController;
-    private final OutgoingController outgoingController;
+//    private final IncomingController2 incomingController;
+//    private final OutgoingController outgoingController;
+    private final DataSyncController syncController;
     private final IO io;
     public static final String EVENT_SOURCE = LocalizationController.class.getName();
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -40,9 +41,9 @@ public class LocalizationController implements Closeable {
                 settings.getOutgoingPort(),
                 settings.getIncomingTopic(),
                 settings.getOutgoingTopic());
-
-        incomingController = new IncomingController2(io, gson, toolBox);
-        outgoingController = new OutgoingController(toolBox.getEventBus(), io, gson);
+        syncController = new DataSyncController(toolBox, io);
+//        incomingController = new IncomingController2(io, gson, toolBox);
+//        outgoingController = new OutgoingController(toolBox.getEventBus(), io, gson);
 
     }
 
@@ -50,8 +51,9 @@ public class LocalizationController implements Closeable {
      * Free resources. Important to call this when you're done
      */
     public void close() {
-        incomingController.close();
-        outgoingController.close();
+//        incomingController.close();
+//        outgoingController.close();
+        syncController.close();
         io.close();
     }
 

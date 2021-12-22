@@ -2,6 +2,7 @@ package org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import mbarix4j.util.Tuple2;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vcr4j.sharktopoda.client.gson.DurationConverter;
@@ -18,7 +19,7 @@ public record LocalizedAnnotation(Annotation annotation, Association association
             .create();
 
     public Optional<Localization> localization() {
-        if (association.getLinkName().equalsIgnoreCase("bounding box") &&
+        if (association.getLinkName().equalsIgnoreCase(BoundingBox.LINK_NAME) &&
                 association.getMimeType().equalsIgnoreCase("application/json")) {
             BoundingBox box = gson.fromJson(association.getLinkValue(), BoundingBox.class);
             Localization x = new Localization(annotation.getConcept(),
@@ -48,6 +49,18 @@ public record LocalizedAnnotation(Annotation annotation, Association association
         return xs;
     }
 
+    public static LocalizedAnnotation from(Localization x) {
+        var annotation = new Annotation();
+        annotation.setObservationUuid(x.getAnnotationUuid());
+        annotation.setElapsedTime(x.getElapsedTime());
+        annotation.setDuration(x.getDuration());
+
+        var association = toAssociation(x);
+        annotation.setAssociations(List.of(association));
+        return new LocalizedAnnotation(annotation, association);
+
+    }
+
     public static Association toAssociation(Localization x) {
         BoundingBox bb = new BoundingBox(x.getX(), x.getY(), x.getWidth(), x.getHeight(), "VARS Annotation");
         String json = gson.toJson(bb);
@@ -59,13 +72,14 @@ public record LocalizedAnnotation(Annotation annotation, Association association
                 x.getLocalizationUuid());
     }
 
-    public static Optional<LocalizedAnnotation> search(List<LocalizedAnnotation> xs, UUID associationUuid) {
+    public static Tuple2<Integer, Optional<LocalizedAnnotation>> search(List<LocalizedAnnotation> xs, UUID associationUuid) {
+
         var ass = new Association(associationUuid, Association.NIL);
         var key = new LocalizedAnnotation(null, ass);
-        int idx = Collections.binarySearch(xs, key, Comparator.comparing(a -> a.association().getUuid());
+        int idx = Collections.binarySearch(xs, key, Comparator.comparing(a -> a.association().getUuid()));
         if (idx >= 0) {
-            return Optional.of(xs.get(idx));
+            return new Tuple2<>(idx, Optional.of(xs.get(idx)));
         }
-        return Optional.empty();
+        return new Tuple2<>(idx, Optional.empty());
     }
 }
