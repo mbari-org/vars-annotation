@@ -5,7 +5,7 @@ module org.mbari.vars.ui {
   requires com.google.gson;
 //  requires com.google.guice;
   requires com.jfoenix;
-  requires io.reactivex.rxjava2;
+//  requires io.reactivex.rxjava2;
   requires java.desktop;
   requires java.logging;
   requires java.prefs;
@@ -22,7 +22,7 @@ module org.mbari.vars.ui {
   requires org.mbari.vars.services;
   requires org.reactivestreams;
   requires org.slf4j;
-  requires rxjavafx;
+//  requires rxjavafx;
   requires typesafe.config;
   // requires vars.avfoundation;
   requires vcr4j.core;

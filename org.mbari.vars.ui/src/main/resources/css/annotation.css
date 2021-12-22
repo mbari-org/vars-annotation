@@ -31,6 +31,7 @@
   -fx-hgap: 10;
   -fx-vgap: 10;
 }
+
 .button {
   -fx-background-radius: 5 5 5 5;
   -fx-background-color: -default-color;

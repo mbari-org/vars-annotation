@@ -22,7 +22,7 @@ public class ConceptSelectionDialogControllerDemo extends Application {
     public void start(Stage primaryStage) throws Exception {
         UIToolBox toolBox = Initializer.getToolBox();
         ConceptSelectionDialogController controller = new ConceptSelectionDialogController(toolBox);
-        controller.setConcept(toolBox.getConfig().getString("app.annotation.upon.root"));
+        controller.setConcept(toolBox.getConfig().getString("app.annotation.upon.root"), true);
         Button button = new Button("Show dialog");
         button.setOnAction(e -> controller.getDialog().showAndWait());
         Scene scene = new Scene(button);

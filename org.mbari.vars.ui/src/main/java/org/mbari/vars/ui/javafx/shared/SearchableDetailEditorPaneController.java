@@ -21,8 +21,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import io.reactivex.rxjavafx.observables.JavaFxObservable;
+//import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Platform;
+import javafx.beans.binding.DoubleBinding;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
@@ -60,8 +61,19 @@ public class SearchableDetailEditorPaneController {
     @FXML
     void initialize() {
 
-        JavaFxObservable.valuesOf(root.widthProperty())
-                .subscribe(n -> associationComboBox.setPrefWidth(n.doubleValue() - 20D));
+//        JavaFxObservable.valuesOf(root.widthProperty())
+//                .subscribe(n -> associationComboBox.setPrefWidth(n.doubleValue() - 20D));
+
+        new DoubleBinding() {
+            {
+                super.bind(associationComboBox.prefWidthProperty(), root.widthProperty());
+            }
+
+            @Override
+            protected double computeValue() {
+                return root.getWidth() - 20D;
+            }
+        };
 
         // Set values in fields when an association is selected
         associationComboBox.getSelectionModel()
@@ -87,8 +99,18 @@ public class SearchableDetailEditorPaneController {
         this.editorPaneController = editorPaneController;
         GridPane editorPane = editorPaneController.getRoot();
         this.root.getChildren().add(editorPane);
-        JavaFxObservable.valuesOf(root.widthProperty())
-                .subscribe(n -> editorPane.setPrefWidth(n.doubleValue() - 20D));
+        new DoubleBinding() {
+            {
+                super.bind(editorPane.prefWidthProperty(), root.widthProperty());
+            }
+
+            @Override
+            protected double computeValue() {
+                return root.getWidth() - 20D;
+            }
+        };
+//        JavaFxObservable.valuesOf(root.widthProperty())
+//                .subscribe(n -> editorPane.setPrefWidth(n.doubleValue() - 20D));
     }
 
     private void setSelectedDetailsTemplate(Details details) {

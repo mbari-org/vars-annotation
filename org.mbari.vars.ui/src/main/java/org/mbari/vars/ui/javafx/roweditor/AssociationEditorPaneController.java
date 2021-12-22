@@ -9,18 +9,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import io.reactivex.rxjavafx.observables.JavaFxObservable;
+//import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.Initializer;
@@ -53,6 +51,9 @@ public class AssociationEditorPaneController {
     private Label linkValueLabel;
 
     @FXML
+    private Label linkNameLabel;
+
+    @FXML
     private Label toConceptLabel;
 
     @FXML
@@ -71,7 +72,7 @@ public class AssociationEditorPaneController {
     private JFXTextField linkNameTextField;
 
     @FXML
-    private JFXComboBox<String> toConceptComboBox;
+    private ComboBox<String> toConceptComboBox;
 
     @FXML
     private JFXTextField linkValueTextField;
@@ -83,6 +84,11 @@ public class AssociationEditorPaneController {
     private volatile Association selectedAssociation;
     private static final ConceptAssociationTemplate nil = ConceptAssociationTemplate.NIL;
     private final Logger log = LoggerFactory.getLogger(getClass());
+
+    // HACK, I pulled these colors out of annotation.css
+    private final Color selectedTextColor = Color.web("#F0544C");
+    private final Color defaultTextColor = Color.web("#B3A9A3");
+
 
 
     @FXML
@@ -113,8 +119,34 @@ public class AssociationEditorPaneController {
 
     @FXML
     void initialize() {
-        JavaFxObservable.valuesOf(root.widthProperty())
-                .subscribe(n -> associationComboBox.setPrefWidth(n.doubleValue()));
+        associationComboBox.prefWidthProperty().bind(root.widthProperty());
+        toConceptComboBox.focusedProperty().addListener((obs, oldv, newv) -> {
+            if (newv) {
+                toConceptLabel.setTextFill(selectedTextColor);
+            }
+            else {
+                toConceptLabel.setTextFill(defaultTextColor);
+            }
+        });
+
+        linkValueTextField.focusedProperty().addListener((obs, oldv, newv) -> {
+            if (newv) {
+                linkValueLabel.setTextFill(selectedTextColor);
+            }
+            else {
+                linkValueLabel.setTextFill(defaultTextColor);
+            }
+        });
+
+        searchTextField.focusedProperty().addListener((obs, oldv, newv) -> {
+            if (newv) {
+                searchLabel.setTextFill(selectedTextColor);
+            }
+            else {
+                searchLabel.setTextFill(defaultTextColor);
+            }
+        });
+
 
         Text addIcon = Icons.ADD.standardSize();
         addButton.setText(null);
@@ -143,9 +175,11 @@ public class AssociationEditorPaneController {
                     else {
                         linkNameTextField.setText(newv.getLinkName());
                         linkValueTextField.setText(newv.getLinkValue());
-                        toConceptComboBoxDecorator.setConcept(newv.getToConcept());
+//                        toConceptComboBoxDecorator.setConcept(newv.getToConcept());
                     }
                 });
+
+
 
         // Trigger search when enter is pressed in search field
         searchTextField.setOnKeyPressed(event -> {
@@ -229,14 +263,14 @@ public class AssociationEditorPaneController {
                                 associationComboBox.getItems().add(cat);
                             }
                             associationComboBox.getSelectionModel().select(cat);
-                            setAssociation(annotation.getConcept(), cat);
+                            setAssociation(annotation.getConcept(), cat, templates);
                         });
                         return null;
                     });
         }
     }
 
-    private void setAssociation(String name, ConceptAssociationTemplate cat) {
+    private void setAssociation(String name, ConceptAssociationTemplate cat, List<ConceptAssociationTemplate> templates) {
         linkNameTextField.setText(cat.getLinkName());
         linkValueTextField.setText(cat.getLinkValue());
         String concept = cat.getToConcept();
@@ -244,18 +278,18 @@ public class AssociationEditorPaneController {
             ObservableList<String> items = FXCollections.observableArrayList();
             items.add(concept);
             toConceptComboBox.setItems(items);
-
         }
         else {
-            // TODO look up the link templates. Find a match linkvalue and set it's toconcept, then select the cat's toConcept
-//            toolBox.getServices()
-//                    .getConceptService()
-//                    .findTemplates(name, cat.getLinkName())
-//                    .thenAccept(cats -> {
-//
-//                    });
-            toConceptComboBoxDecorator.setConcept(concept);
-            toConceptComboBox.getSelectionModel().select(cat.getToConcept());
+            // Look up the link templates. Find a match linkvalue and set it's toconcept, then select the cat's toConcept
+            var opt = templates.stream()
+                    .filter(t -> t.getLinkName().equals(cat.getLinkName()))
+                    .findFirst();
+            if (opt.isPresent()) {
+                toConceptComboBoxDecorator.setConcept(opt.get().getToConcept(), cat.getToConcept());
+            }
+            else {
+                toConceptComboBoxDecorator.setConcept(concept);
+            }
         }
     }
 

@@ -10,7 +10,7 @@ dependencies {
 
     implementation 'com.jfoenix:jfoenix'
     implementation 'com.typesafe:config'
-    implementation 'io.reactivex.rxjava2:rxjava'
+//    implementation 'io.reactivex.rxjava2:rxjava'
     implementation 'org.kordamp.ikonli:ikonli-javafx'
     implementation 'org.kordamp.ikonli:ikonli-material-pack'
 //    implementation 'org.mbari.vars:vars-avfoundation'
@@ -26,12 +26,12 @@ dependencies {
 //        exclude group: 'org.checkerframework', module: 'checker-compat-qual'
 //    }
 
-    implementation('io.reactivex.rxjava2:rxjavafx') {
-        exclude group: 'org.openjfx', module: 'javafx-base'
-        exclude group: 'org.openjfx', module: 'javafx-controls'
-        exclude group: 'org.openjfx', module: 'javafx-graphics'
-        because("If not excluded we end up with both mac and linux javafx jars which cause jlink to fail")
-    }
+//    implementation('io.reactivex.rxjava2:rxjavafx') {
+//        exclude group: 'org.openjfx', module: 'javafx-base'
+//        exclude group: 'org.openjfx', module: 'javafx-controls'
+//        exclude group: 'org.openjfx', module: 'javafx-graphics'
+//        because("If not excluded we end up with both mac and linux javafx jars which cause jlink to fail")
+//    }
 
     implementation('org.controlsfx:controlsfx') {
         exclude group: 'org.openjfx', module: 'javafx-base'
