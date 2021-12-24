@@ -23,6 +23,7 @@ import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.ui.events.MediaChangedEvent;
 import org.mbari.vars.ui.events.UserAddedEvent;
 import org.mbari.vars.ui.events.UserChangedEvent;
+import org.mbari.vars.ui.javafx.mediadialog.MediaDescriptionEditorPane2Controller;
 import org.mbari.vars.ui.javafx.mediadialog.MediaDescriptionEditorPaneController;
 import org.mbari.vars.ui.mediaplayers.ships.MediaParams;
 import org.mbari.vars.ui.mediaplayers.ships.OpenRealTimeDialog;
@@ -80,7 +81,7 @@ public class AppPaneController {
     private final OpenTapeDialog tapeDialog;
     private ControlsPaneController controlsPaneController;
     private MediaPaneController mediaPaneController;
-    private MediaDescriptionEditorPaneController mediaDescriptionEditorPaneController;
+    private MediaDescriptionEditorPane2Controller mediaDescriptionEditorPaneController;
     private BulkEditorPaneController bulkEditorPaneController;
     private AncillaryDataPaneController ancillaryDataPaneController;
     private RectLabelStageController rectLabelStageController;
@@ -119,7 +120,7 @@ public class AppPaneController {
         imageViewController = new ImageViewController(toolBox);
         controlsPaneController = new ControlsPaneController(toolBox);
         mediaPaneController = MediaPaneController.newInstance();
-        mediaDescriptionEditorPaneController = MediaDescriptionEditorPaneController.newInstance();
+        mediaDescriptionEditorPaneController = new MediaDescriptionEditorPane2Controller(toolBox);
         bulkEditorPaneController = BulkEditorPaneController.newInstance(toolBox,
                 toolBox.getData().getAnnotations(),
                 toolBox.getData().getSelectedAnnotations(),
@@ -289,7 +290,10 @@ public class AppPaneController {
             toolBox.getData()
                     .mediaProperty()
                     .addListener((obs, oldv, newv) -> {
-                        if (newv != null) {
+                        if (newv == null) {
+                            JFXUtilities.attractAttention(openButton);
+                        }
+                        else {
                             JFXUtilities.removeAttention(openButton);
                         }
                     });
@@ -298,7 +302,11 @@ public class AppPaneController {
             Button closeButton = new JFXButton();
             closeButton.setGraphic(closeIcon);
             closeButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.close")));
-            closeButton.setOnAction(e -> toolBox.getEventBus().send(new MediaChangedEvent(AppPaneController.this, null)));
+            closeButton.setOnAction(e -> {
+                if (toolBox.getData().getMedia() != null) {
+                    toolBox.getEventBus().send(new MediaChangedEvent(AppPaneController.this, null));
+                }
+            });
 
             Text undoIcon = Icons.UNDO.standardSize();
             Button undoButton = new JFXButton();
@@ -661,6 +669,7 @@ public class AppPaneController {
         final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         if (annotations == null || annotations.size() != 1) {
             mediaPaneController.setMedia(null, annotationService);
+            mediaDescriptionEditorPaneController.setMedia(null);
         }
         else {
             Annotation annotation = annotations.iterator().next();
@@ -669,6 +678,7 @@ public class AppPaneController {
                     annotation.getVideoReferenceUuid().equals(media.getVideoReferenceUuid())) {
                 mediaPaneController.setMedia(media,
                         annotationService);
+                mediaDescriptionEditorPaneController.setMedia(media);
             }
             else {
                 toolBox.getServices()
