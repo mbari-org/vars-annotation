@@ -23,6 +23,7 @@ public enum Icons {
     CANCEL(Material.CANCEL),
     CHECK(Material.CHECK),
     CLEAR(Material.CLEAR),
+    CLOSE(Material.CLOSE),
     CREATE(Material.CREATE),
     DELETE(Material.DELETE),
     DIRECTIONS_BOAT(Material.DIRECTIONS_BOAT),

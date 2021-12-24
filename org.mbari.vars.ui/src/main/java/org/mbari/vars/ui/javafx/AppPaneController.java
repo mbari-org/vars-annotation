@@ -294,6 +294,12 @@ public class AppPaneController {
                         }
                     });
 
+            Text closeIcon = Icons.CLOSE.standardSize();
+            Button closeButton = new JFXButton();
+            closeButton.setGraphic(closeIcon);
+            closeButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.close")));
+            closeButton.setOnAction(e -> toolBox.getEventBus().send(new MediaChangedEvent(AppPaneController.this, null)));
+
             Text undoIcon = Icons.UNDO.standardSize();
             Button undoButton = new JFXButton();
             undoButton.setGraphic(undoIcon);
@@ -367,6 +373,7 @@ public class AppPaneController {
 
 
             toolBar = new ToolBar(openButton,
+                    closeButton,
                     undoButton,
                     redoButton,
                     refreshButton,

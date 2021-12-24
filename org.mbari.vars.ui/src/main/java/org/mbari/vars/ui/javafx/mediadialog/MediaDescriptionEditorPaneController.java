@@ -12,8 +12,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.Initializer;
+import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.events.MediaChangedEvent;
 import org.mbari.vars.ui.util.FXMLUtils;
 
+/**
+ * UI component for editing the 3 description fields associated with
+ * a Media object.
+ */
 public class MediaDescriptionEditorPaneController {
 
     @FXML
@@ -46,12 +52,13 @@ public class MediaDescriptionEditorPaneController {
     @FXML
     private JFXTextArea videoReferenceTextArea;
 
-    ObjectProperty<Media> media = new SimpleObjectProperty<>();
+    private final ObjectProperty<Media> media = new SimpleObjectProperty<>();
 
+    private UIToolBox toolBox;
 
     @FXML
     void initialize() {
-        mediaProperty().addListener((obs, oldValue, newValue) -> {
+        media.addListener((obs, oldValue, newValue) -> {
             updateView(newValue);
         });
 
@@ -59,16 +66,24 @@ public class MediaDescriptionEditorPaneController {
         videoTextArea.textProperty().addListener(change -> checkDisable());
         videoSequenceTextArea.textProperty().addListener(change -> checkDisable());
 
+        saveButton.setOnAction(e -> updateMedia());
         updateView(null);
     }
 
+    private void setToolBox(UIToolBox toolBox) {
+        this.toolBox = toolBox;
+    }
+
     private void checkDisable() {
-        var disable = media == null
-                || media.get() == null
+        var disable = media.get() == null
                 || (videoReferenceTextArea.getText().equals(media.get().getDescription())
                     && videoTextArea.getText().equals(media.get().getVideoDescription())
                     && videoSequenceTextArea.getText().equals(media.get().getVideoSequenceDescription()));
         saveButton.setDisable(disable);
+    }
+
+    public void setMedia(Media m) {
+        media.set(m);
     }
 
     private void updateView(Media media) {
@@ -93,26 +108,27 @@ public class MediaDescriptionEditorPaneController {
         return root;
     }
 
-    public JFXButton getSaveButton() {
-        return saveButton;
+    private void updateMedia() {
+        var m = media.get();
+        if (m != null) {
+            m.setVideoSequenceDescription(videoSequenceTextArea.getText());
+            m.setVideoDescription(videoTextArea.getText());
+            m.setDescription(videoReferenceTextArea.getText());
+            toolBox.getServices()
+                    .getMediaService()
+                    .update(m)
+                    .thenAccept(this::setMedia);
+        }
     }
 
-    public Media getMedia() {
-        return media.get();
-    }
-
-    public ObjectProperty<Media> mediaProperty() {
-        return media;
-    }
-
-    public void setMedia(Media media) {
-        this.media.set(media);
-    }
 
     public static MediaDescriptionEditorPaneController newInstance() {
-        ResourceBundle i18n = Initializer.getToolBox().getI18nBundle();
-        return FXMLUtils.newInstance(MediaDescriptionEditorPaneController.class,
+        var toolbox = Initializer.getToolBox();
+        ResourceBundle i18n = toolbox.getI18nBundle();
+        var controller = FXMLUtils.newInstance(MediaDescriptionEditorPaneController.class,
                 "/fxml/MediaDescriptionEditorPane.fxml",
                 i18n);
+        controller.setToolBox(toolbox);
+        return controller;
     }
 }

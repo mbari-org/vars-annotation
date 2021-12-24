@@ -38,8 +38,6 @@ import java.util.List;
  */
 public class AnnotationViewController {
 
-
-
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final UIToolBox toolBox;
     private Stage stage;
