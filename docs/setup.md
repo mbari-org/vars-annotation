@@ -22,7 +22,7 @@ This should include the URL to your config server and the login (username, pwd) 
 
 ![Configuration Dialog](assets/images/ConfigServerDialog.png)
 
-### Test you configuration
+### Test your configuration
 
 Click the test button to verify that VARS is configured. If your dialog looks like the image below, just click the 'OK' button.
 
