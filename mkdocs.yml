@@ -1,0 +1,21 @@
+site_name: "VARS Annotation"
+theme:
+    # name: 'readthedocs'
+    name: 'material'
+    logo: https://docs.mbari.org/imgs/mbari-logo.png
+extra_css:
+    - https://docs.mbari.org/css/mbari.css
+    - assets/css/extra.css
+
+plugins:
+  - search
+  - mermaid2
+
+markdown_extensions:
+  - footnotes
+  - toc:
+      permalink: True
+
+nav:
+  - Home: index.md
+  - MBARI Docs: "https://docs.mbari.org"
