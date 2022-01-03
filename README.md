@@ -1,6 +1,6 @@
 # vars-annotation
 
-![MBARI logo](docs/resources/images/mbari-logo.png)
+![MBARI logo](docs/assets/images/mbari-logo.png)
 
 [![Build Status](https://travis-ci.org/mbari-media-management/vars-annotation.svg?branch=master)](https://travis-ci.org/mbari-media-management/vars-annotation)  [![DOI](https://zenodo.org/badge/90881605.svg)](https://zenodo.org/badge/latestdoi/90881605)
 
