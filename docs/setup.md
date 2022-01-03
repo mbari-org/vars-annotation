@@ -5,10 +5,10 @@
 VARS requires that you have setup a microservice stack needed to power VARS. Once that's done you can do the following:
 
 1. Download VARS from [GitHub](https://github.com/mbari-media-management/vars-annotation/releases)
-2. If you're running on macOS, and you get a message that VARS is corrupted, you can ignore that message. That's Apple's super aggressive security. To fix that:
+2. If you're running on macOS, and you get a message that VARS is damaged and can't be opened, you can ignore that message. That's Apple's super aggressive security. To fix that:
     1. Open a terminal (The Terminal.app is located in /Application/Utilities). 
     2. cd to where VARS is downloaded. e.g. `cd ~/Downloads`
-    3. Run `xattr -d com.apple.quarantine "VARS Annotation.app"`
+    3. Run `xattr -d -r com.apple.quarantine "VARS Annotation.app"`
     4. Relaunch VARS Annotation
 3. Point VARS at your [configuration server](https://github.com/mbari-media-management/raziel).
 
