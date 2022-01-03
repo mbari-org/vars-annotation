@@ -14,7 +14,7 @@ VARS requires that you have setup a microservice stack needed to power VARS. Onc
 
 ### First, click on the settings button
 
-![VARS Annotation 1](assets/images/VARSAnnotation1.jpg)
+![VARS Annotation 1](assets/images/VARSAnnotation1.jpeg)
 
 ### Add your configuration server
 
