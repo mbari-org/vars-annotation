@@ -8,6 +8,7 @@ import org.mbari.vars.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.reactivex.internal.operators.flowable.FlowableAllSingle;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Button;
@@ -125,37 +126,42 @@ public class MediaDescriptionEditorPane2Controller {
       resetView();
     } 
     else {
-      videoSequenceTextArea.setText(m.getVideoSequenceDescription());
-      videoSequenceTitledPane.setText(m.getVideoSequenceName());
-      videoTextArea.setText(m.getVideoDescription());
-      videoTitledPane.setText(m.getVideoName());
-      videoReferenceTextArea.setText(m.getDescription());
+      Platform.runLater(() -> {
+        videoSequenceTextArea.setText(m.getVideoSequenceDescription());
+        videoSequenceTitledPane.setText(m.getVideoSequenceName());
+        videoTextArea.setText(m.getVideoDescription());
+        videoTitledPane.setText(m.getVideoName());
+        videoReferenceTextArea.setText(m.getDescription());
 
-      var uri = m.getUri();
-      var scheme = uri.getScheme();
-      String name = uri.toString();
-      if (scheme.startsWith("http") || scheme.startsWith("file")) {
-        try {
-          name = URLUtilities.toFilename(uri.toURL());
-        } catch (MalformedURLException e) {
-          // TODO Auto-generated catch block
+        var uri = m.getUri();
+        var scheme = uri.getScheme();
+        String name = uri.toString();
+        if (scheme.startsWith("http") || scheme.startsWith("file")) {
+          try {
+            name = URLUtilities.toFilename(uri.toURL());
+          } catch (MalformedURLException e) {
+            // TODO Auto-generated catch block
+          }
+          
         }
-        
-      }
-      videoReferenceTitledPane.setText(name);
+        videoReferenceTitledPane.setText(name);
 
-      checkDisable();
+        checkDisable();
+      });
+      
     }
   }
 
   private void resetView() {
-    videoSequenceTextArea.setText("");
-    videoSequenceTitledPane.setText("Video Sequence");
-    videoTextArea.setText("");
-    videoTitledPane.setText("Video");
-    videoReferenceTextArea.setText("");
-    videoReferenceTitledPane.setText("Video Reference");
-    saveButton.setDisable(true);
+    Platform.runLater(() -> {
+      videoSequenceTextArea.setText("");
+      videoSequenceTitledPane.setText("Video Sequence");
+      videoTextArea.setText("");
+      videoTitledPane.setText("Video");
+      videoReferenceTextArea.setText("");
+      videoReferenceTitledPane.setText("Video Reference");
+      saveButton.setDisable(true);
+    });
   }
 
   private void updateMedia() {
