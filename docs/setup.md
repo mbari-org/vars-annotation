@@ -30,7 +30,7 @@ Click the test button to verify that VARS is configured. If your dialog looks li
 
 ![Configuration Dialog Success](assets/images/ConfigServerDialogSuccess.png)
 
-### Sharktopoda/Cthulu/jsharktopoda configuration
+### Video Player Configuration
 
 VARS communicates with custom external video players via [UDP](https://en.wikipedia.org/wiki/User_Datagram_Protocol). Both VARS and the video player (e.g. Sharktopoda) need to have the UDP port number set to the same value:
 
@@ -38,13 +38,13 @@ VARS communicates with custom external video players via [UDP](https://en.wikipe
 
 ![Sharktopoda Port](assets/images/SharktopodaDialogPort.jpeg)
 
-### Sharktopoda Port Setting
+#### Sharktopoda Port Setting
 
 Under __Sharktopoda > Preferences__:
 
 ![Sharktopoda Preferences](assets/images/SharktopodaPrefs.png)
 
-### Cthulhu Port Setting
+#### Cthulhu Port Setting
 
 Open the prefereces by clicking on the gear icon:
 
