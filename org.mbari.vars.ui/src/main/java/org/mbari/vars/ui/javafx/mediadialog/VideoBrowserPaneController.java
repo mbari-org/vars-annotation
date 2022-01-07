@@ -55,7 +55,7 @@ public class VideoBrowserPaneController {
         fromLabel.setText(uiBundle.getString("mediadialog.fromlabel"));
         toLabel.setText(uiBundle.getString("mediadialog.tolabel"));
         root = new BorderPane(getCenterPane());
-        root.setTop(getTopPane());
+        // root.setTop(getTopPane()); // Not used yet
         root.setRight(getMediaPaneController().getRoot());
         toolBox.getEventBus()
                 .toObserverable()
