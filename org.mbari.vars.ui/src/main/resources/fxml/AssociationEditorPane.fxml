@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXComboBox?>
-<?import com.jfoenix.controls.JFXTextField?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<GridPane id="association-editor-grid" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.javafx.roweditor.AssociationEditorPaneController">
+<GridPane id="association-editor-grid" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.javafx.roweditor.AssociationEditorPaneController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -32,8 +27,8 @@
       <Label fx:id="linkValueLabel" focusTraversable="false" text="%roweditor.asseditor.value.label" GridPane.hgrow="NEVER" GridPane.rowIndex="4" />
       <HBox GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4">
          <children>
-            <JFXButton fx:id="addButton" defaultButton="true" onAction="#onAdd" />
-            <JFXButton fx:id="cancelButton" cancelButton="true" onAction="#onCancel" text="Button" />
+            <JFXButton fx:id="addButton" defaultButton="true" onAction="#onAdd" styleClass="ok-button" />
+            <JFXButton fx:id="cancelButton" cancelButton="true" onAction="#onCancel" styleClass="cancel-button" text="Button" />
          </children>
       </HBox>
       <JFXTextField fx:id="searchTextField" GridPane.columnIndex="1" GridPane.columnSpan="５" />

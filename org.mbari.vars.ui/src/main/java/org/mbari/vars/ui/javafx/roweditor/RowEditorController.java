@@ -3,6 +3,8 @@ package org.mbari.vars.ui.javafx.roweditor;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -68,6 +70,8 @@ public class RowEditorController {
             associationController.requestFocus();
         });
 
+        // -- IF either the edit button is pressed or enter is hit when
+        // an association is selected, start edit
         rowController.getEditButton().setOnAction(v -> {
             rowController.getSelectedAssociations()
                     .stream()
@@ -80,6 +84,22 @@ public class RowEditorController {
                     });
         });
 
+        rowController.getAssociationListView().addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+            if (event.getCode() == KeyCode.ENTER &&
+                    rowController.getAssociationListView().getSelectionModel().getSelectedItem() != null ) {
+
+                rowController.getSelectedAssociations()
+                        .stream()
+                        .findFirst()
+                        .ifPresent(ass -> {
+                            associationController.setTarget(annotation, ass);
+                            this.root.getChildren().remove(rowPane);
+                            this.root.getChildren().add(associationPane);
+                            associationController.requestFocus();
+                        });
+            }
+        });
+
         rowController.getRemoveButton().setOnAction(v -> {
             ObservableList<Association> selectedAssociations = rowController.getSelectedAssociations();
             Map<Association, UUID> map = new HashMap<>();
@@ -90,6 +110,7 @@ public class RowEditorController {
                         .send(cmd);
             }
         });
+
 
 
         associationController.getAddButton().setOnAction(v -> doAction());

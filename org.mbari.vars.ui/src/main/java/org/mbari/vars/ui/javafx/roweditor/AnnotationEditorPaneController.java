@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
@@ -142,6 +143,7 @@ public class AnnotationEditorPaneController {
                     removeButton.setDisable(disable);
                 });
 
+
         // -- Configure combobox autocomplete
         //new AutoCompleteComboBoxListener<>(conceptComboBox);
         new FilteredComboBoxDecorator<>(conceptComboBox, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
@@ -183,6 +185,10 @@ public class AnnotationEditorPaneController {
 //                .subscribe(c -> loadComboBoxData());
 
         setAnnotation(null);
+    }
+
+    public ListView<Association> getAssociationListView() {
+        return associationListView;
     }
 
     public ObservableList<Association> getSelectedAssociations() {

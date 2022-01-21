@@ -15,6 +15,9 @@
   -selected-color: #F0544C;
   -selected-text: #FFFFFF;
 
+  -cancel-color: #FF6663;
+  -accept-color: #DDF093;
+
   -fx-base: -default-color;
   -fx-background: -default-color;
   -fx-background: #2b3940;
@@ -376,4 +379,12 @@
 }
 .attention-icon {
   -fx-fill: -default-color;
+}
+
+.ok-button {
+  -fx-text-fill: -accept-color;
+}
+
+.cancel-button {
+  -fx-text-fill: -cancel-color;
 }
