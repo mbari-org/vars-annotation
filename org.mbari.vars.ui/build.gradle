@@ -136,8 +136,14 @@ tasks.withType(JavaExec) {
  */
 application {
     mainModule = "org.mbari.vars.ui"
-    mainClassName = "org.mbari.vars.ui.App"
+//    mainClassName = "org.mbari.vars.ui.App"
+    mainClassName = project.hasProperty("mainClass") ? project.getProperty("mainClass") : "org.mbari.vars.ui.App"
     applicationDefaultJvmArgs = runtimeJvmArgs
+}
+
+task execute(type:JavaExec) {
+//    mainClass = project.hasProperty("mainClass") ? getProperty("mainClass") : "org.mbari.vars.ui.App"
+    classpath = sourceSets.main.runtimeClasspath
 }
 
 

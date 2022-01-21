@@ -417,17 +417,18 @@ public class AppPaneController {
             localButton.setOnAction(e ->
                 decorator.apply(AppPaneController.this.getRoot().getScene().getWindow()));
 
-            Text tapeIcon = Icons.LIVE_TV.standardSize();
-            Button tapeButton = new JFXButton(null, tapeIcon);
-            tapeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.tape")));
-            tapeButton.setOnAction(e -> {
-                tapeDialog.refresh();
-                Optional<org.mbari.vars.ui.mediaplayers.vcr.MediaParams> opt = tapeDialog.showAndWait();
-                opt.ifPresent(mediaParams -> {
-                    OpenTapeService ots = new OpenTapeService(toolBox);
-                    ots.open(mediaParams);
-                });
-            });
+            // Tape is no longer used at MBARI. Remove this on 2022-01-21
+//            Text tapeIcon = Icons.LIVE_TV.standardSize();
+//            Button tapeButton = new JFXButton(null, tapeIcon);
+//            tapeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.tape")));
+//            tapeButton.setOnAction(e -> {
+//                tapeDialog.refresh();
+//                Optional<org.mbari.vars.ui.mediaplayers.vcr.MediaParams> opt = tapeDialog.showAndWait();
+//                opt.ifPresent(mediaParams -> {
+//                    OpenTapeService ots = new OpenTapeService(toolBox);
+//                    ots.open(mediaParams);
+//                });
+//            });
 
             Text realtimeIcon = Icons.DIRECTIONS_BOAT.standardSize();
             Button realtimeButton = new JFXButton(null, realtimeIcon);
@@ -442,7 +443,7 @@ public class AppPaneController {
 
             });
 
-            VBox vbox = new VBox(remoteButton, localButton, tapeButton, realtimeButton);
+            VBox vbox = new VBox(remoteButton, localButton, realtimeButton);
 
             openPopOver = new PopOver(vbox);
 

@@ -15,5 +15,6 @@ open module org.mbari.vars.ui.demos {
   requires org.slf4j;
   requires vcr4j.core;
   requires io.reactivex.rxjava2;
+  requires eu.hansolo.medusa;
 
 }

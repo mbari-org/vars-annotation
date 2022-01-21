@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 //import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Platform;
@@ -256,14 +257,21 @@ public class AssociationEditorPaneController {
             final ConceptAssociationTemplate cat = defaultAssociation; // final to satisfy lambda
             cs.findTemplates(annotation.getConcept())
                     .thenApply(templates -> {
+
+                        // Filter out templates starting with "dsg-". dsg is used to add info
+                        // that for the deep sea guide and not for annotating.
+                        var noDsgTemplates = templates.stream()
+                                .filter(t -> !t.getLinkName().startsWith("dsg-"))
+                                .collect(Collectors.toList());
+
                         Platform.runLater(() -> {
                             associationComboBox.getItems().clear();
-                            associationComboBox.getItems().addAll(templates);
+                            associationComboBox.getItems().addAll(noDsgTemplates);
                             if (!associationComboBox.getItems().contains(cat)) {
                                 associationComboBox.getItems().add(cat);
                             }
                             associationComboBox.getSelectionModel().select(cat);
-                            setAssociation(annotation.getConcept(), cat, templates);
+                            setAssociation(annotation.getConcept(), cat, noDsgTemplates);
                         });
                         return null;
                     });
@@ -273,11 +281,13 @@ public class AssociationEditorPaneController {
     private void setAssociation(String name, ConceptAssociationTemplate cat, List<ConceptAssociationTemplate> templates) {
         linkNameTextField.setText(cat.getLinkName());
         linkValueTextField.setText(cat.getLinkValue());
-        String concept = cat.getToConcept();
-        if (concept.equals(Association.VALUE_NIL) || concept.equals(Association.VALUE_SELF)) {
+        String toConcept = cat.getToConcept();
+        log.debug("Setting toConcept to " + toConcept);
+        if (toConcept.equals(Association.VALUE_NIL) || toConcept.equals(Association.VALUE_SELF)) {
             ObservableList<String> items = FXCollections.observableArrayList();
-            items.add(concept);
+            items.add(toConcept);
             toConceptComboBox.setItems(items);
+            toConceptComboBox.getSelectionModel().select(toConcept);
         }
         else {
             // Look up the link templates. Find a match linkvalue and set it's toconcept, then select the cat's toConcept
@@ -288,7 +298,7 @@ public class AssociationEditorPaneController {
                 toConceptComboBoxDecorator.setConcept(opt.get().getToConcept(), cat.getToConcept());
             }
             else {
-                toConceptComboBoxDecorator.setConcept(concept);
+                toConceptComboBoxDecorator.setConcept(toConcept);
             }
         }
     }

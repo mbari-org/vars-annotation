@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
+import org.mbari.vars.services.model.Association;
 import org.mbari.vars.ui.UIToolBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,58 +30,33 @@ public class HierarchicalConceptComboBoxDecorator {
 
     public void setConcept(String concept) {
         setConcept(concept, concept);
-//        log.debug("Setting concept to " + concept);
-//        Platform.runLater(() -> {
-//
-//            if (concept != null) {
-//                toolBox.getServices()
-//                        .getConceptService()
-//                        .findConcept(concept)
-//                        .handle((opt, ex) -> {
-//                            Platform.runLater(() -> {
-//                                ObservableList<String> items = FXCollections.observableArrayList();
-//                                if (ex != null) {
-//                                    log.warn("Failed to look up " + concept, ex);
-//                                    items.add(concept);
-//                                } else {
-//                                    List<String> names = opt.isPresent() ? opt.get().flatten() : Arrays.asList(concept);
-//                                    items.addAll(names);
-//                                }
-//                                comboBox.setItems(items);
-//                                comboBox.getSelectionModel().select(concept);
-//
-//                            });
-//                            return null;
-//                        });
-//            }
-//        });
     }
 
     public void setConcept(String concept, String selectedConcept) {
-        log.debug("Setting concept to " + concept);
+//        log.debug("Setting concept to " + concept);
         Platform.runLater(() -> {
-
             if (concept != null) {
                 toolBox.getServices()
                         .getConceptService()
                         .findConcept(concept)
                         .handle((opt, ex) -> {
+
+                            // Build list of concepts to display
+                            ObservableList<String> items = FXCollections.observableArrayList();
+                            if (ex != null) {
+                                log.warn("Failed to look up " + concept, ex);
+                                items.add(concept);
+                            } else {
+                                List<String> names = opt.isPresent() ? opt.get().flatten() : List.of(concept);
+//                                log.debug("Adding " + names);
+                                items.addAll(names);
+                            }
+
                             Platform.runLater(() -> {
-                                ObservableList<String> items = FXCollections.observableArrayList();
-                                if (ex != null) {
-                                    log.warn("Failed to look up " + concept, ex);
-                                    items.add(concept);
-                                } else {
-                                    List<String> names = opt.isPresent() ? opt.get().flatten() : Arrays.asList(concept);
-                                    items.addAll(names);
-                                }
                                 comboBox.setItems(items);
-                                if (items.contains(selectedConcept)) {
-                                    comboBox.getSelectionModel().select(selectedConcept);
-                                }
-                                else {
-                                    comboBox.getSelectionModel().select(concept);
-                                }
+                                String selected = items.contains(selectedConcept) ? selectedConcept : concept;
+//                                log.debug("Selecting " + selected);
+                                comboBox.getSelectionModel().select(selected);
                             });
                             return null;
                         });

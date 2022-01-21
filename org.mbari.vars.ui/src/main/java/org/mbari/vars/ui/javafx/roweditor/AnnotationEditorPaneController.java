@@ -212,6 +212,7 @@ public class AnnotationEditorPaneController {
             Platform.runLater(() -> {
                 conceptComboBox.getSelectionModel().select(annotation.getConcept());
                 ObservableList<Association> ass = FXCollections.observableArrayList(annotation.getAssociations());
+                ass.sort(Comparator.comparing(Association::toString));
                 associationListView.setItems(ass);
                 requestFocus();
             });

@@ -1,4 +1,4 @@
-package org.mbari.m3.vars.annotation.mediaplayers.ships;
+package org.mbari.vars.ui.demos.mediaplayers.ships;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
