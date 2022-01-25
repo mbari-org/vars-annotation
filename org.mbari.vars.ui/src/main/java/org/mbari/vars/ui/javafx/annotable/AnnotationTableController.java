@@ -13,6 +13,7 @@ import org.mbari.vars.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
 import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.ui.javafx.shared.TableViewExt;
 import org.mbari.vars.ui.messages.SeekMsg;
 import org.mbari.vars.ui.javafx.shared.AnnotationTableViewFactory;
 import org.mbari.vars.ui.UIToolBox;
@@ -34,6 +35,7 @@ import java.util.prefs.Preferences;
 public class AnnotationTableController {
 
     private TableView<Annotation> tableView;
+//    private TableViewExt tableViewExt;
     private final ResourceBundle i18n;
     private final EventBus eventBus;
     private final Data data;
@@ -126,15 +128,21 @@ public class AnnotationTableController {
     public TableView<Annotation> getTableView() {
         if (tableView == null) {
             tableView = AnnotationTableViewFactory.newTableView(i18n);
+//            tableViewExt = new TableViewExt(tableView);
 
             tableView.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldv, newv) -> {
                         JFXUtilities.runOnFXThread(() -> {
-                            int[] visibleRows = getVisibleRows();
-                            int i = tableView.getItems().indexOf(newv);
-                            if (i < visibleRows[0] || i > visibleRows[1]) {
-                                tableView.scrollTo(newv);
+                            if (newv != null) {
+                                int[] visibleRows = getVisibleRows();
+                                int i = tableView.getItems().indexOf(newv);
+                                if (i >= 0) {
+                                    System.out.println("WANTED: " + i + ", VISIBLE: " + visibleRows[0] + " to " + visibleRows[1]);
+                                    if (i < visibleRows[0] || i > visibleRows[1]) {
+                                        tableView.scrollTo(newv);
+                                    }
+                                }
                             }
                         });
                     });
@@ -207,7 +215,7 @@ public class AnnotationTableController {
         return new int[]{idxFirst, idxLast};
 
         // This TableViewExt appears to be buggy
-        //return tableViewExt.getVisibleRows();
+//        return tableViewExt.getVisibleRows();
     }
 
 }
