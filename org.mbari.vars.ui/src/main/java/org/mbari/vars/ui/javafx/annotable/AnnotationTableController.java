@@ -135,10 +135,10 @@ public class AnnotationTableController {
                     .addListener((obs, oldv, newv) -> {
                         JFXUtilities.runOnFXThread(() -> {
                             if (newv != null) {
-                                int[] visibleRows = getVisibleRows();
                                 int i = tableView.getItems().indexOf(newv);
                                 if (i >= 0) {
-                                    System.out.println("WANTED: " + i + ", VISIBLE: " + visibleRows[0] + " to " + visibleRows[1]);
+                                    int[] visibleRows = getVisibleRows();
+//                                    System.out.println("WANTED: " + i + ", VISIBLE: " + visibleRows[0] + " to " + visibleRows[1]);
                                     if (i < visibleRows[0] || i > visibleRows[1]) {
                                         tableView.scrollTo(newv);
                                     }
