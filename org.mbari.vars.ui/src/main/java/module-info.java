@@ -1,9 +1,6 @@
 module org.mbari.vars.ui {
 
-//  requires com.fazecast.jSerialComm;
-//  requires com.google.common;
   requires com.google.gson;
-//  requires com.google.guice;
   requires com.jfoenix;
   requires io.reactivex.rxjava2;
   requires java.desktop;
@@ -18,16 +15,14 @@ module org.mbari.vars.ui {
   requires org.kordamp.ikonli.core;
   requires org.kordamp.ikonli.javafx;
   requires org.kordamp.ikonli.material;
+  requires org.mbari.imgfx;
   requires org.mbari.vars.core;
   requires transitive org.mbari.vars.services;
   requires org.reactivestreams;
   requires org.slf4j;
-//  requires rxjavafx;
   requires typesafe.config;
-  // requires vars.avfoundation;
   requires vcr4j.core;
-//  requires vcr4j.jserialcomm;
-//  requires vcr4j.rs422;
+
   requires vcr4j.sharktopoda;
   requires transitive vcr4j.sharktopoda.client;
 
@@ -42,6 +37,7 @@ module org.mbari.vars.ui {
   opens org.mbari.vars.ui to javafx.graphics;
   opens org.mbari.vars.ui.javafx to javafx.fxml;
   opens org.mbari.vars.ui.javafx.abpanel to javafx.fxml;
+  opens org.mbari.vars.ui.javafx.imgfx to javafx.fxml;
   opens org.mbari.vars.ui.javafx.mediadialog to javafx.fxml;
   opens org.mbari.vars.ui.javafx.raziel to javafx.fxml;
   opens org.mbari.vars.ui.javafx.rectlabel to javafx.fxml;
@@ -71,5 +67,4 @@ module org.mbari.vars.ui {
   exports org.mbari.vars.ui.messages;
   exports org.mbari.vars.ui.services;
   exports org.mbari.vars.ui;
-  // opens org.mbari.vars.ui.mediaplayers.macos.avf to javafx.fxml;
 }

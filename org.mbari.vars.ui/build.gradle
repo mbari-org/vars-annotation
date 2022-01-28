@@ -10,23 +10,17 @@ dependencies {
 
     implementation 'com.jfoenix:jfoenix'
     implementation 'com.typesafe:config'
-//    implementation 'io.reactivex.rxjava2:rxjava'
     implementation 'javax.inject:javax.inject'
     implementation 'org.kordamp.ikonli:ikonli-javafx'
     implementation 'org.kordamp.ikonli:ikonli-material-pack'
-//    implementation 'org.mbari.vars:vars-avfoundation'
     implementation 'org.zeromq:jeromq'
+    implementation 'org.mbari:imgfx'
     implementation 'org.mbari.vcr4j:vcr4j-core'
-//    implementation 'org.mbari.vcr4j:vcr4j-jserialcomm'
     implementation 'org.mbari.vcr4j:vcr4j-sharktopoda'
     implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client'
     implementation 'org.mbari:mbarix4j'
     implementation 'org.slf4j:slf4j-api'
 
-//    implementation('com.google.inject:guice') {
-//        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-//        exclude group: 'org.checkerframework', module: 'checker-compat-qual'
-//    }
 
 //    implementation('io.reactivex.rxjava2:rxjavafx') {
 //        exclude group: 'org.openjfx', module: 'javafx-base'
@@ -41,11 +35,6 @@ dependencies {
         exclude group: 'org.openjfx', module: 'javafx-graphics'
         because("If not excluded we end up with both mac and linux javafx jars which cause jlink to fail")
     }
-
-//    implementation('org.mbari.m3:vars-blackmagic') {
-//        exclude group: 'org.slf4j', module: 'slf4j-simple'
-//        because("Do not want this slf4j provider included on classpath")
-//    }
 
     runtimeOnly('ch.qos.logback:logback-classic') {
         exclude group: 'javax.activation'

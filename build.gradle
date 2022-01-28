@@ -24,6 +24,7 @@ subprojects {
 
     repositories {
 //        jcenter()
+        mavenLocal()
         mavenCentral()
         maven {
             name = "MBARI"
@@ -80,6 +81,7 @@ subprojects {
             implementation 'org.kordamp.ikonli:ikonli-javafx:12.3.0'
             implementation 'org.kordamp.ikonli:ikonli-material-pack:12.3.0'
             implementation 'org.zeromq:jeromq:0.5.2'
+            implementation 'org.mbari:imgfx:0.0.1'
             implementation 'org.mbari.vcr4j:vcr4j-core:4.4.1.jre11'
             implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client:4.4.1.jre11'
             implementation 'org.mbari.vcr4j:vcr4j-sharktopoda:4.4.1.jre11'

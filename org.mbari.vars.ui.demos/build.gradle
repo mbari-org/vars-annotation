@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
     implementation project(':org.mbari.vars.services')
-    implementation project(':org.mbari.vars.javafx')
     implementation project(':org.mbari.vars.ui')
     implementation project(':org.mbari.vars.core')
 
@@ -12,22 +11,15 @@ dependencies {
     implementation 'com.google.inject:guice'
     implementation 'com.jfoenix:jfoenix'
     implementation 'com.typesafe:config'
-//    implementation 'eu.hansolo:Medusa'
     implementation 'io.reactivex.rxjava2:rxjava'
-//    implementation 'io.reactivex.rxjava2:rxjavafx'
     implementation 'org.controlsfx:controlsfx'
     implementation 'org.kordamp.ikonli:ikonli-javafx'
     implementation 'org.kordamp.ikonli:ikonli-material-pack'
     implementation 'org.mbari:mbarix4j'
-    // implementation 'org.mbari.vars:vars-avfoundation'
     implementation 'org.mbari.vcr4j:vcr4j-core'
-//    implementation 'org.mbari.vcr4j:vcr4j-jserialcomm'
     implementation 'org.mbari.vcr4j:vcr4j-sharktopoda'
+    implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client'
     implementation 'org.slf4j:slf4j-api'
-
-//    implementation('org.mbari.m3:vars-blackmagic') {
-//        exclude group: 'org.slf4j', module: 'slf4j-simple'
-//    }
 
     implementation('eu.hansolo:Medusa') {
         exclude group: 'org.openjfx'
