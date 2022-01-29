@@ -49,6 +49,9 @@ public class IFXStageController {
                     if (getStage().isShowing()) {
                         setMedia(newv);
                     }
+                    else {
+                        setMedia(null);
+                    }
                 });
 
 
@@ -108,8 +111,6 @@ public class IFXStageController {
                     .getAnnotationService()
                     .findImagesByVideoReferenceUuid(media.getVideoReferenceUuid())
                     .thenAccept(toolBox.getData().getImages()::setAll);
-
-
 
         }
     }

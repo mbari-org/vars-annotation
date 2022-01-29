@@ -9,6 +9,7 @@ public class IFXPaneController {
 
     private final IFXToolBox toolBox;
     private AnnotationPaneController annotationPaneController;
+    private IFXVarsPaneController varsPaneController;
 
     public IFXPaneController(IFXToolBox toolBox) {
         this.toolBox = toolBox;
@@ -17,6 +18,8 @@ public class IFXPaneController {
 
     private void init() {
         annotationPaneController = new AnnotationPaneController(toolBox.getEventBus());
+        varsPaneController = IFXVarsPaneController.newInstance(toolBox, annotationPaneController.getAutoscalePaneController().getView());
+        annotationPaneController.getPane().setRight(varsPaneController.getRoot());
         loadConcepts();
 
         var appEventBus = toolBox.getUIToolBox()

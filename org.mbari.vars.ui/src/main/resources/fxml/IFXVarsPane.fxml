@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.SplitPane?>
@@ -13,41 +14,39 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
-<VBox fx:id="root" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="482.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.javafx.imgfx.IFXVarsPaneController">
+<VBox fx:id="root" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.javafx.imgfx.IFXVarsPaneController">
    <children>
-      <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-      <Spinner fx:id="magnificationSpinner" />
-      <Separator prefWidth="200.0" />
-      <SplitPane dividerPositions="0.46153846153846156" prefHeight="160.0" prefWidth="200.0">
+      <ImageView fx:id="imageView" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="NEVER" />
+      <Spinner fx:id="magnificationSpinner" VBox.vgrow="NEVER" />
+      <Separator />
+      <ComboBox fx:id="imageTypeComboBox" VBox.vgrow="NEVER" />
+      <SplitPane dividerPositions="0.46153846153846156" VBox.vgrow="ALWAYS">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0">
                <children>
-                  <ScrollPane fx:id="imageScrollPane" layoutX="37.0" layoutY="-21.0" prefHeight="200.0" prefWidth="200.0">
-                     <content>
-                        <ListView fx:id="imageListView" prefHeight="200.0" prefWidth="200.0" />
-                     </content>
-                  </ScrollPane>
+                  <ListView fx:id="imageListView" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                </children>
             </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0">
                <children>
-                  <ScrollPane fx:id="annoScrollPane" layoutX="60.0" layoutY="-27.0" prefHeight="200.0" prefWidth="200.0">
-                     <content>
-                        <ListView fx:id="annoListView" prefHeight="200.0" prefWidth="200.0" />
-                     </content>
-                  </ScrollPane>
+                  <ListView fx:id="annoListView" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                </children>
             </AnchorPane>
         </items>
       </SplitPane>
-      <VBox prefHeight="200.0" prefWidth="100.0">
+      <VBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
          <children>
             <CheckBox fx:id="annoExistingCb" mnemonicParsing="false" text="%ifx.annotate.existing" />
             <CheckBox fx:id="addCommentCb" mnemonicParsing="false" text="%ifx.add.comment" />
          </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <padding>
+            <Insets left="5.0" top="5.0" />
+         </padding>
       </VBox>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="NEVER">
          <children>
             <TextField fx:id="mlUrlTextField" />
             <Button fx:id="mlButton" mnemonicParsing="false" />
