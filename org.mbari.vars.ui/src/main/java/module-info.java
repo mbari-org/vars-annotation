@@ -10,6 +10,7 @@ module org.mbari.vars.ui {
   requires javafx.fxml;
   requires javafx.graphics;
   requires javax.inject;
+  requires javafx.media;
   requires mbarix4j;
   requires org.controlsfx.controls;
   requires org.kordamp.ikonli.core;
@@ -25,6 +26,7 @@ module org.mbari.vars.ui {
 
   requires vcr4j.sharktopoda;
   requires transitive vcr4j.sharktopoda.client;
+  requires io.reactivex.rxjava3;
 
   uses org.mbari.vars.ui.mediaplayers.MediaControlsFactory;
 

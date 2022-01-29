@@ -1,12 +1,8 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
 import javafx.application.Platform;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import org.mbari.imgfx.etc.rx.EventBus;
-import org.mbari.imgfx.etc.rx.events.Event;
 import org.mbari.imgfx.imageview.editor.AnnotationPaneController;
-import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.messages.ReloadServicesMsg;
 
 public class IFXPaneController {
@@ -23,7 +19,7 @@ public class IFXPaneController {
         annotationPaneController = new AnnotationPaneController(toolBox.getEventBus());
         loadConcepts();
 
-        var appEventBus = toolBox.getToolBox()
+        var appEventBus = toolBox.getUIToolBox()
                 .getEventBus()
                 .toObserverable();
 
@@ -37,7 +33,7 @@ public class IFXPaneController {
     }
 
     private void loadConcepts() {
-        toolBox.getToolBox()
+        toolBox.getUIToolBox()
                 .getServices()
                 .getConceptService()
                 .findAllNames()
@@ -50,5 +46,9 @@ public class IFXPaneController {
         annotationPaneController.getAutoscalePaneController()
                 .getView()
                 .setImage(jfxImage);
+    }
+
+    public AnnotationPaneController getAnnotationPaneController() {
+        return annotationPaneController;
     }
 }

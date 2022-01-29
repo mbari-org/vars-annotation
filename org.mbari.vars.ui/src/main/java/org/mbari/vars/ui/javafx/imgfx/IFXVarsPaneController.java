@@ -11,6 +11,7 @@ import org.mbari.vars.ui.util.FXMLUtils;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+// Multiplie imageview on image: https://www.youtube.com/watch?v=bWQGIIzl0Vc
 // Model server front end: https://adamant.tator.io:8082/
 // https://stackoverflow.com/questions/44432343/javafx-scrollpane-in-splitpane-cannot-scroll
 public class IFXVarsPaneController {
@@ -62,14 +63,14 @@ public class IFXVarsPaneController {
     }
 
     public static IFXVarsPaneController newInstance(IFXToolBox toolBox) {
-            ResourceBundle i18n = Initializer.getToolBox().getI18nBundle();
-            var controller = FXMLUtils.newInstance(IFXVarsPaneController.class,
-                    "/fxml/IFXVarsPane.fxml",
-                    i18n);
-            controller.toolBox = toolBox;
-            return controller;
-        }
+        ResourceBundle i18n = Initializer.getToolBox().getI18nBundle();
+        var controller = FXMLUtils.newInstance(IFXVarsPaneController.class,
+                "/fxml/IFXVarsPane.fxml",
+                i18n);
+        controller.toolBox = toolBox;
+        return controller;
     }
+
 }
 
 
