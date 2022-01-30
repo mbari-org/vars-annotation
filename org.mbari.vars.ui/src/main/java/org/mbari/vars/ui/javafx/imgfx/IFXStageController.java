@@ -20,10 +20,14 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
+import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
 public class IFXStageController {
 
+    private static final String PREF_KEY_WIDTH = "stage-width";
+    private static final String PREF_KEY_HEIGHT = "stage-height";
+    private static final int MIN_DIMENSION = 400;
     private static final Logger log = LoggerFactory.getLogger(IFXStageController.class);
 
     private Stage stage;
@@ -62,7 +66,7 @@ public class IFXStageController {
                     }
                 });
 
-
+        Runtime.getRuntime().addShutdownHook(new Thread(this::save));
     }
 
     public Stage getStage() {
@@ -72,6 +76,7 @@ public class IFXStageController {
             var scene = new Scene(borderPane);
             scene.getStylesheets().addAll(toolBox.getStylesheets());
             stage.setScene(scene);
+            load();
         }
         return stage;
     }
@@ -144,6 +149,24 @@ public class IFXStageController {
 //                            .sorted(imageComparator)::setAll);
 
         }
+    }
+
+    private void save() {
+        var prefs = Preferences.userNodeForPackage(IFXStageController.class);
+        var width = Math.max(stage.getWidth(), MIN_DIMENSION);
+        var height = Math.max(stage.getHeight(), MIN_DIMENSION);
+        prefs.putDouble(PREF_KEY_WIDTH, width);
+        prefs.putDouble(PREF_KEY_HEIGHT, height);
+    }
+
+    private void load() {
+        var prefs = Preferences.userNodeForPackage(IFXStageController.class);
+        var defaultWidth = Math.max(stage.getWidth(), MIN_DIMENSION);
+        var defaultHeight = Math.max(stage.getHeight(), MIN_DIMENSION);
+        var width = prefs.getDouble(PREF_KEY_WIDTH, defaultWidth);
+        var height = prefs.getDouble(PREF_KEY_HEIGHT, defaultHeight);
+        stage.setWidth(width);
+        stage.setHeight(height);
     }
 
 

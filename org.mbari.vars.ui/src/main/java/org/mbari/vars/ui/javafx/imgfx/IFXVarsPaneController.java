@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
-import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
@@ -15,10 +14,12 @@ import org.mbari.imgfx.imageview.ImageViewAutoscale;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Image;
 import org.mbari.vars.ui.Initializer;
+import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.ui.util.FXMLUtils;
 import org.mbari.vars.ui.util.URLUtils;
 
 import java.net.URL;
+import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -97,6 +98,7 @@ public class IFXVarsPaneController {
             }
         });
 
+//        annoListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         annoListView.setCellFactory(new Callback<ListView<Annotation>, ListCell<Annotation>>() {
             @Override
             public ListCell<Annotation> call(ListView<Annotation> param) {
@@ -126,10 +128,6 @@ public class IFXVarsPaneController {
 
     private void postInitialize() {
 
-        toolBox.getUIToolBox()
-                .getData()
-                .getSelectedAnnotations();
-
         var allImages = toolBox.getData().getImages();
 
         // Only show images of the desired type
@@ -141,6 +139,29 @@ public class IFXVarsPaneController {
                 .addListener((ListChangeListener<? super Image>) c -> {
                     var selected = imageListView.getSelectionModel().getSelectedItem();
                     toolBox.getData().setSelectedImage(selected);
+                });
+
+        // When an annotation is selected. Set its selection in UIToolbox
+        annoListView.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, oldv, newv) -> {
+                    if (newv != null) {
+                        var event = new AnnotationsSelectedEvent(IFXVarsPaneController.this,
+                                List.of(newv));
+                        toolBox.getUIToolBox()
+                                .getEventBus()
+                                .send(event);
+                    }
+                });
+
+        toolBox.getUIToolBox()
+                .getEventBus()
+                .toObserverable()
+                .ofType(AnnotationsSelectedEvent.class)
+                .subscribe(event -> {
+                    if (event.getEventSource() != IFXVarsPaneController.this) {
+                        setSelectedAnnotations(event.get());
+                    }
                 });
 
         // Populate the filter combobox
@@ -164,8 +185,6 @@ public class IFXVarsPaneController {
                 .selectedImageProperty()
                 .addListener((obs, oldv, newv) -> {
                     if (newv != null) {
-                        var i = new javafx.scene.image.Image(newv.getUrl().toExternalForm());
-                        imageView.setImage(i);
                         setSelectedImage(newv);
                     }
                     else {
@@ -205,19 +224,27 @@ public class IFXVarsPaneController {
     }
 
     private void setSelectedImage(Image image) {
-        toolBox.getUIToolBox()
-                .getServices()
-                .getAnnotationService()
-                .findByImageReference(image.getImageReferenceUuid())
-                .thenAccept(annos -> {
-                    Platform.runLater(() -> {
-                        annoListView.getItems().clear();
-                        annoListView.getItems().addAll(annos);
-                    });
-                });
+        // Set image in magnified view
+        var i = new javafx.scene.image.Image(image.getUrl().toExternalForm());
+        imageView.setImage(i);
+        var annos = toolBox.getAnnotationsForImage(image);
+        annoListView.setItems(annos);
     }
 
-    private void setSelectedAnnotation(Annotation annotation) {
+
+    private void setSelectedAnnotations(Collection<Annotation> annotations) {
+
+        toolBox.getImagesForAnnotations(annotations)
+                .stream()
+                .filter(this::showImageType)
+                .findFirst()
+                .ifPresent(image -> toolBox.getData().setSelectedImage(image));
+
+        var selectedAnno = annotations.size() == 1 ?
+                annotations.iterator().next() : null;
+
+        annoListView.getSelectionModel()
+                .select(selectedAnno);
 
     }
 

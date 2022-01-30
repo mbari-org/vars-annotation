@@ -2,6 +2,7 @@ package org.mbari.vars.ui.javafx.imgfx;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Shape;
 import org.mbari.imgfx.etc.rx.events.AddLocalizationEvent;
@@ -15,10 +16,11 @@ import org.mbari.vcr4j.VideoIndex;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
-public class AnnotationBridge {
+public class AnnotationBuilder {
     private final IFXToolBox toolBox;
     private final BooleanProperty localizeExistingAnnotation = new SimpleBooleanProperty();
     private final BooleanProperty addComment = new SimpleBooleanProperty();
@@ -28,7 +30,7 @@ public class AnnotationBridge {
     private final RoiMarker roiMarker = new RoiMarker();
     private final RoiPolygon roiPolygon = new RoiPolygon();
 
-    public AnnotationBridge(IFXToolBox toolBox) {
+    public AnnotationBuilder(IFXToolBox toolBox) {
         this.toolBox = toolBox;
         init();
     }
@@ -43,10 +45,9 @@ public class AnnotationBridge {
     private void addNewLocalization(Localization<? extends DataView<? extends Data, ? extends Shape>, ImageView> localization) {
         var image = toolBox.getData().getSelectedImage();
         if (image != null) {
-            String comment = null;
-            if (addComment.get()) {
-                // TODO show comment dialog
-            }
+            // If needed, show comment dialog
+            String comment = addComment.get() ? showCommentDialog().orElse(null) :
+                    null;
             if (localizeExistingAnnotation.get()) {
                 var annos = new ArrayList<>(toolBox.getUIToolBox()
                         .getData()
@@ -63,9 +64,22 @@ public class AnnotationBridge {
                 }
             } else {
                 // Create new annotation and association
-                handleNewAnnotation(localization, image.getImageReferenceUuid(), comment, image.toVideoIndex());
+                createNewAnnotation(localization, image.getImageReferenceUuid(), comment, image.toVideoIndex());
             }
         }
+    }
+
+    private Optional<String> showCommentDialog() {
+        var i18n = toolBox.getUIToolBox().getI18nBundle();
+        var dialog = new TextInputDialog();
+        dialog.setTitle(i18n.getString("ifx.comment.dialog.title"));
+        dialog.setHeaderText("ifx.comment.dialog.header");
+        dialog.setContentText("ifx.comment.dialog.content");
+        return dialog.showAndWait();
+    }
+
+    private void showNoAnnotationSelectedDialog() {
+
     }
 
     private void addToExistingAnnotation(Annotation annotation,
@@ -82,7 +96,7 @@ public class AnnotationBridge {
 
     }
 
-    private void handleNewAnnotation(
+    private void createNewAnnotation(
             Localization<? extends DataView<? extends Data, ? extends Shape>, ImageView> localization,
             UUID imageReferenceUuid,
             String comment,

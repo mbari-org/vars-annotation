@@ -2,11 +2,17 @@ package org.mbari.vars.ui.javafx.imgfx;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.mbari.imgfx.etc.rx.EventBus;
+import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.services.model.Image;
 import org.mbari.vars.ui.UIToolBox;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class IFXToolBox {
 
@@ -58,6 +64,51 @@ public class IFXToolBox {
 
     public BooleanProperty activeProperty() {
         return active;
+    }
+
+    /**
+     * @return A readonly ObservableList of annotations that have the
+     * same imagedMomentUuid as the selected image.
+     */
+    public ObservableList<Annotation> getAnnotationsForImage(Image image) {
+        if (image == null) {
+            return FXCollections.emptyObservableList();
+        }
+        else {
+            var imagedMomentUuid = image.getImagedMomentUuid();
+            return getUIToolBox()
+                    .getData()
+                    .getAnnotations()
+                    .filtered(a -> a.getImagedMomentUuid() == imagedMomentUuid);
+        }
+    }
+
+    /**
+     * Find the images for the given annotations. If the annotations do not all
+     * belong to the same imagedMoment, and empty collection is returned
+     * @param annotations The annotations of interest
+     * @return The matching collection of images, all with the same imagedMomentUuid.
+     *  Otherwise, an empty collection
+     */
+    public List<Image> getImagesForAnnotations(Collection<Annotation> annotations) {
+        // Make sure they all belong to same imagedMoment
+        var uniqueImagedMomentUuids = annotations.stream()
+                .map(Annotation::getImagedMomentUuid)
+                .distinct()
+                .collect(Collectors.toList());
+        System.out.println("Found: " + uniqueImagedMomentUuids);
+        if (uniqueImagedMomentUuids.size() != 1) {
+            return  Collections.emptyList();
+        }
+
+        var imagedMomentUuid = uniqueImagedMomentUuids.get(0);
+        // Find matching image
+        return getData()
+                .getImages()
+                .stream()
+                .filter(i -> i.getImagedMomentUuid().equals(imagedMomentUuid))
+                .collect(Collectors.toList());
+
     }
 
 
