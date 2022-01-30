@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
@@ -19,22 +20,30 @@
       <ImageView fx:id="imageView" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="NEVER" />
       <Spinner fx:id="magnificationSpinner" VBox.vgrow="NEVER" />
       <Separator />
-      <ComboBox fx:id="imageTypeComboBox" VBox.vgrow="NEVER" />
+      <HBox alignment="CENTER" spacing="5.0" VBox.vgrow="NEVER">
+         <children>
+            <Label text="%ifx.image.filter" />
+            <ComboBox fx:id="imageTypeComboBox" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" top="5.0" />
+         </padding>
+      </HBox>
       <SplitPane dividerPositions="0.46153846153846156" VBox.vgrow="ALWAYS">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0">
                <children>
-                  <ListView fx:id="imageListView" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                  <ListView fx:id="imageListView" prefWidth="150.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0">
                <children>
-                  <ListView fx:id="annoListView" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                  <ListView fx:id="annoListView" prefWidth="150.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                </children>
             </AnchorPane>
         </items>
       </SplitPane>
-      <VBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
+      <VBox alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
          <children>
             <CheckBox fx:id="annoExistingCb" mnemonicParsing="false" text="%ifx.annotate.existing" />
             <CheckBox fx:id="addCommentCb" mnemonicParsing="false" text="%ifx.add.comment" />
@@ -46,7 +55,7 @@
             <Insets left="5.0" top="5.0" />
          </padding>
       </VBox>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="NEVER">
+      <HBox alignment="CENTER" VBox.vgrow="NEVER">
          <children>
             <TextField fx:id="mlUrlTextField" />
             <Button fx:id="mlButton" mnemonicParsing="false" />

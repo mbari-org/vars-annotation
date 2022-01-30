@@ -140,6 +140,11 @@
 .headers-region, .tab-header-background {
   -fx-background-color: -default-color;
 }
+
+.ifx-localized-annotation {
+  -fx-background-color: -emphais-color;
+}
+
 .jfx-check-box {
   -jfx-checked-color: -selected-color;
   -fx-text-fill: -default-text;

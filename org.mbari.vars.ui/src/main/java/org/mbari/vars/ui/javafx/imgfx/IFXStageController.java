@@ -12,6 +12,10 @@ import org.mbari.vars.services.model.Image;
 import org.mbari.vars.services.model.ImageReference;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.javafx.imgfx.model.Json;
+import org.mbari.vars.ui.util.URLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -20,11 +24,15 @@ import java.util.stream.Collectors;
 
 public class IFXStageController {
 
+    private static final Logger log = LoggerFactory.getLogger(IFXStageController.class);
+
     private Stage stage;
 
     private final IFXToolBox toolBox;
     private final IFXPaneController paneController;
     private final BooleanProperty visible = new SimpleBooleanProperty();
+    private final Comparator<Image> imageComparator =
+            Comparator.comparing(a -> URLUtils.filename(a.getUrl()));
 
     public IFXStageController(UIToolBox toolBox) {
         this.toolBox = initializeToolBox(toolBox);
@@ -106,11 +114,34 @@ public class IFXStageController {
                     .setAll(Collections.emptyList());
         }
         else {
+            // Add all the images sorted by name
             toolBox.getUIToolBox()
                     .getServices()
                     .getAnnotationService()
                     .findImagesByVideoReferenceUuid(media.getVideoReferenceUuid())
-                    .thenAccept(toolBox.getData().getImages()::setAll);
+                    .thenAccept(images -> {
+                       log.info("Found " + images.size() + " images");
+                       var sortedImages = images
+                               .stream()
+                               .sorted(imageComparator)
+                               .collect(Collectors.toList());
+
+//                       String msg = images
+//                               .stream()
+//                               .map(Object::toString)
+//                               .collect(Collectors.joining("\n"));
+//                       log.info(msg);
+
+                       try {
+                           toolBox.getData().getImages().setAll(sortedImages);
+                       }
+                       catch (Exception e) {
+                           log.error("BOOM!", e);
+                       }
+                    });
+//                    .thenAccept(toolBox.getData()
+//                            .getImages()
+//                            .sorted(imageComparator)::setAll);
 
         }
     }

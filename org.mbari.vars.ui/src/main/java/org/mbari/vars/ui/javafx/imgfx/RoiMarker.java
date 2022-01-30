@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class RoiMarker implements Roi<MarkerView> {
 
-    private static final String LINK_NAME = "localization-point";
+    public static final String LINK_NAME = "localization-point";
 
     @Override
     public Optional<Localization<MarkerView, ImageView>> fromAssociation(String concept, Association association, AutoscalePaneController<ImageView> paneController) {

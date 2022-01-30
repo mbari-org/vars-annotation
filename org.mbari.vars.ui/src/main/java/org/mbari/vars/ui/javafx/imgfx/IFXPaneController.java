@@ -18,7 +18,7 @@ public class IFXPaneController {
 
     private void init() {
         annotationPaneController = new AnnotationPaneController(toolBox.getEventBus());
-        varsPaneController = IFXVarsPaneController.newInstance(toolBox, annotationPaneController.getAutoscalePaneController().getView());
+        varsPaneController = IFXVarsPaneController.newInstance(toolBox, annotationPaneController.getAutoscalePaneController().getAutoscale());
         annotationPaneController.getPane().setRight(varsPaneController.getRoot());
         loadConcepts();
 
@@ -45,10 +45,14 @@ public class IFXPaneController {
     }
 
     private void setImage(org.mbari.vars.services.model.Image image) {
+
         var jfxImage = image == null ? null : new Image(image.getUrl().toExternalForm());
-        annotationPaneController.getAutoscalePaneController()
-                .getView()
-                .setImage(jfxImage);
+        annotationPaneController.resetUsingImage(jfxImage);
+
+//
+//        annotationPaneController.getAutoscalePaneController()
+//                .getView()
+//                .setImage(jfxImage);
     }
 
     public AnnotationPaneController getAnnotationPaneController() {
