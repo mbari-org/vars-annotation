@@ -79,7 +79,7 @@ public class IFXToolBox {
             return getUIToolBox()
                     .getData()
                     .getAnnotations()
-                    .filtered(a -> a.getImagedMomentUuid() == imagedMomentUuid);
+                    .filtered(a -> a.getImagedMomentUuid().equals(imagedMomentUuid));
         }
     }
 
@@ -96,7 +96,6 @@ public class IFXToolBox {
                 .map(Annotation::getImagedMomentUuid)
                 .distinct()
                 .collect(Collectors.toList());
-        System.out.println("Found: " + uniqueImagedMomentUuids);
         if (uniqueImagedMomentUuids.size() != 1) {
             return  Collections.emptyList();
         }

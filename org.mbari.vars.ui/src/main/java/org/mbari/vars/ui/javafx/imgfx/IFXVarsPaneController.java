@@ -17,6 +17,8 @@ import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.ui.util.FXMLUtils;
 import org.mbari.vars.ui.util.URLUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.Collection;
@@ -72,6 +74,8 @@ public class IFXVarsPaneController {
     private Autoscale<ImageView> originalAutoscale;
     private final List<String> localizedLinkValues = List.of(RoiBoundingBox.LINK_NAME,
             RoiLine.LINK_NAME, RoiMarker.LINK_NAME, RoiPolygon.LINK_NAME);
+
+    private static final Logger log = LoggerFactory.getLogger(IFXVarsPaneController.class);
 
     @FXML
     void initialize() {
