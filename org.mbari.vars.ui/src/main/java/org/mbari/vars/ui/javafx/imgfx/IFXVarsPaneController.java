@@ -53,7 +53,7 @@ public class IFXVarsPaneController {
     private ImageView imageView;
 
     @FXML
-    private Spinner<?> magnificationSpinner;
+    private Slider magnificationSlider;
 
     @FXML
     private Button mlButton;
@@ -104,7 +104,7 @@ public class IFXVarsPaneController {
                     @Override
                     protected void updateItem(Annotation item, boolean empty) {
                         super.updateItem(item, empty);
-                        setStyle(null);
+                        getStyleClass().remove("ifx-localized-annotation");
                         if (item == null || empty) {
                             setText("");
                             setTooltip(null);
@@ -114,7 +114,7 @@ public class IFXVarsPaneController {
                             setText(s);
                             setTooltip(new Tooltip(s));
                             if (!isLocalized(item)) {
-                                setStyle("ifx-localized-annotation");
+                                getStyleClass().add("ifx-localized-annotation");
                             }
 
                         }
