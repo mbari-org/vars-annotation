@@ -7,22 +7,22 @@ public class BoundingBox {
     private Integer y;
     private Integer width;
     private Integer height;
-    private UUID imageReferenceUuuid;
+    private UUID imageReferenceUuid;
     private String comment;
 
     public BoundingBox() {
     }
 
-    public BoundingBox(Integer x, Integer y, Integer width, Integer height, UUID imageReferenceUuuid) {
-        this(x, y, width, height, imageReferenceUuuid, null);
+    public BoundingBox(Integer x, Integer y, Integer width, Integer height, UUID imageReferenceUuid) {
+        this(x, y, width, height, imageReferenceUuid, null);
     }
 
-    public BoundingBox(Integer x, Integer y, Integer width, Integer height, UUID imageReferenceUuuid, String comment) {
+    public BoundingBox(Integer x, Integer y, Integer width, Integer height, UUID imageReferenceUuid, String comment) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.imageReferenceUuuid = imageReferenceUuuid;
+        this.imageReferenceUuid = imageReferenceUuid;
         this.comment = comment;
     }
 
@@ -58,12 +58,12 @@ public class BoundingBox {
         this.height = height;
     }
 
-    public UUID getImageReferenceUuuid() {
-        return imageReferenceUuuid;
+    public UUID getImageReferenceUuid() {
+        return imageReferenceUuid;
     }
 
-    public void setImageReferenceUuuid(UUID imageReferenceUuuid) {
-        this.imageReferenceUuuid = imageReferenceUuuid;
+    public void setImageReferenceUuid(UUID imageReferenceUuid) {
+        this.imageReferenceUuid = imageReferenceUuid;
     }
 
     public String getComment() {

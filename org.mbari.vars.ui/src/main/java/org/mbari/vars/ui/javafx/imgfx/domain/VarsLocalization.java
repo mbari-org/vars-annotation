@@ -88,12 +88,13 @@ public class VarsLocalization {
                                                   AutoscalePaneController<ImageView> autoscalePaneController) {
         if (AnnotationLifecycleDecorator.LINK_VALUES_TO_ROI_MAP.containsKey(association.getLinkName())) {
             // verify that the annotation contains the association
-            var ok = annotation.getAssociations()
-                    .stream()
-                    .anyMatch(a -> a.getUuid().equals(association.getUuid()));
+//            var ok = annotation.getAssociations()
+//                    .stream()
+//                    .anyMatch(a -> a.getUuid().equals(association.getUuid()));
 
-            if (ok) {
+//            if (ok) {
                 final Roi<? extends DataView<? extends org.mbari.imgfx.roi.Data, ? extends Shape>> roi = AnnotationLifecycleDecorator.LINK_VALUES_TO_ROI_MAP.get(association.getLinkValue());
+                log.debug("Building ROI using " + association);
                 return roi.fromAssociation(annotation.getConcept(),
                                 association,
                                 autoscalePaneController)
@@ -102,12 +103,12 @@ public class VarsLocalization {
                             localization.setUuid(association.getUuid());
                             return new VarsLocalization(annotation, association, localization);
                         });
-            }
-            else {
-                log.warn("Annotation {} does not contain Association {}",
-                        annotation.getObservationUuid(),
-                        association.getUuid());
-            }
+//            }
+//            else {
+//                log.warn("Annotation {} does not contain Association {}",
+//                        annotation.getObservationUuid(),
+//                        association.getUuid());
+//            }
         }
         return Optional.empty();
     }

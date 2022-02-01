@@ -19,6 +19,7 @@ public class IFXPaneController {
     private AnnotationPaneController annotationPaneController;
     private IFXVarsPaneController varsPaneController;
     private AnnotationLifecycleDecorator annotationLifecycleDecorator;
+    private LocalizationLifecycleDecorator localizationLifecycleDecorator;
 
     public IFXPaneController(IFXToolBox toolBox) {
         this.toolBox = toolBox;
@@ -32,6 +33,8 @@ public class IFXPaneController {
         annotationPaneController.getPane().setRight(varsPaneController.getRoot());
         annotationLifecycleDecorator = new AnnotationLifecycleDecorator(toolBox,
                 autoscalaPane,
+                annotationPaneController.getLocalizations());
+        localizationLifecycleDecorator = new LocalizationLifecycleDecorator(toolBox,
                 annotationPaneController.getLocalizations());
 
         loadConcepts();

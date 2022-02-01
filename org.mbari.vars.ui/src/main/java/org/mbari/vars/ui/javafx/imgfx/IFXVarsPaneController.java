@@ -1,5 +1,6 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
@@ -86,16 +87,18 @@ public class IFXVarsPaneController {
                 return new ListCell<>() {
                     @Override
                     protected void updateItem(Image item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item == null || empty) {
-                            setText("");
-                            setTooltip(null);
-                        }
-                        else {
-                            var s = URLUtils.filename(item.getUrl());
-                            setText(s);
-                            setTooltip(new Tooltip(s));
-                        }
+                        Platform.runLater(() -> {
+                            super.updateItem(item, empty);
+                            if (item == null || empty) {
+                                setText("");
+                                setTooltip(null);
+                            }
+                            else {
+                                var s = URLUtils.filename(item.getUrl());
+                                setText(s);
+                                setTooltip(new Tooltip(s));
+                            }
+                        });
                     }
                 };
             }
@@ -108,21 +111,23 @@ public class IFXVarsPaneController {
                 return new ListCell<>() {
                     @Override
                     protected void updateItem(Annotation item, boolean empty) {
-                        super.updateItem(item, empty);
-                        getStyleClass().remove("ifx-localized-annotation");
-                        if (item == null || empty) {
-                            setText("");
-                            setTooltip(null);
-                        }
-                        else {
-                            var s = item.getConcept();
-                            setText(s);
-                            setTooltip(new Tooltip(s));
-                            if (!isLocalized(item)) {
-                                getStyleClass().add("ifx-localized-annotation");
+                        Platform.runLater(() -> {
+                            super.updateItem(item, empty);
+                            getStyleClass().remove("ifx-localized-annotation");
+                            if (item == null || empty) {
+                                setText("");
+                                setTooltip(null);
                             }
+                            else {
+                                var s = item.getConcept();
+                                setText(s);
+                                setTooltip(new Tooltip(s));
+                                if (!isLocalized(item)) {
+                                    getStyleClass().add("ifx-localized-annotation");
+                                }
 
-                        }
+                            }
+                        });
                     }
                 };
             }
@@ -173,7 +178,7 @@ public class IFXVarsPaneController {
                             .map(i -> URLUtils.extension(i.getUrl()))
                             .distinct()
                             .collect(Collectors.toList());
-                    imageTypeComboBox.getItems().setAll(exts);
+                    Platform.runLater(() -> imageTypeComboBox.getItems().setAll(exts));
                 });
 
         // When a filter is selected apply it
@@ -192,7 +197,7 @@ public class IFXVarsPaneController {
                         setSelectedImage(newv);
                     }
                     else {
-                        annoListView.getItems().clear();
+                        Platform.runLater(() -> annoListView.getItems().clear());
                     }
                 });
 
@@ -224,7 +229,9 @@ public class IFXVarsPaneController {
     private void applyImageType() {
         var filteredImages = toolBox.getData().getImages()
                 .filtered(this::showImageType);
-        imageListView.setItems(filteredImages);
+
+        Platform.runLater(() -> imageListView.setItems(filteredImages));
+
     }
 
     private void setSelectedImage(Image image) {
@@ -232,7 +239,8 @@ public class IFXVarsPaneController {
         var i = new javafx.scene.image.Image(image.getUrl().toExternalForm());
         imageView.setImage(i);
         var annos = toolBox.getAnnotationsForImage(image);
-        annoListView.setItems(annos);
+
+        Platform.runLater(() -> annoListView.setItems(annos));
     }
 
 
@@ -247,8 +255,10 @@ public class IFXVarsPaneController {
         var selectedAnno = annotations.size() == 1 ?
                 annotations.iterator().next() : null;
 
-        annoListView.getSelectionModel()
-                .select(selectedAnno);
+        Platform.runLater(() -> {
+            annoListView.getSelectionModel()
+                    .select(selectedAnno);
+        });
 
     }
 

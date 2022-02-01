@@ -1,5 +1,6 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.mbari.imgfx.etc.rx.events.RemoveLocalizationEvent;
@@ -40,8 +41,6 @@ public class ImageLifecycleDecorator {
         this.toolBox = toolBox;
         init();
     }
-
-    // TODO when an images is selected, get its annotations and parsee the localizations
 
     private void init() {
 
@@ -112,7 +111,8 @@ public class ImageLifecycleDecorator {
 
     private void removeImagesByUuids(List<UUID> imageReferenceUuids) {
         var images = toolBox.getData().getImages();
-        images.removeIf(image -> imageReferenceUuids.contains(image.getImageReferenceUuid()));
+        Platform.runLater(() ->
+                images.removeIf(image -> imageReferenceUuids.contains(image.getImageReferenceUuid())));
     }
 
 

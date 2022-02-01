@@ -9,7 +9,7 @@ module org.mbari.vars.ui {
   requires javafx.controls;
   requires javafx.fxml;
   requires javafx.graphics;
-  requires javax.inject;
+//  requires javax.inject;
   requires javafx.media;
   requires mbarix4j;
   requires org.controlsfx.controls;

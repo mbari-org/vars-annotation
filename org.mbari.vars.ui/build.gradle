@@ -78,6 +78,7 @@ def runtimeJvmArgs = [
         '--add-opens', 'java.base/java.lang.invoke=vars.annotation.merged.module',
         '--add-opens', 'java.base/java.lang.reflect=com.jfoenix',
         '--add-opens', 'org.mbari.vars.services/org.mbari.vars.services.model=com.google.gson',
+        '--add-opens', 'org.mbari.vars.ui/org.mbari.vars.ui.javafx.imgfx.domain=com.google.gson',
         '--add-reads', 'vars.annotation.merged.module=org.slf4j'
 ]
 
