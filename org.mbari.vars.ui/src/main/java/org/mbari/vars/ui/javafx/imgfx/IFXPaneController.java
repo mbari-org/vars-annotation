@@ -36,6 +36,7 @@ public class IFXPaneController {
         // TODO listen to selected image. Add listeners to all labels so that when they
         // change an updated annotation command is published.
 
+
         // TODO listen to selected annotation and select the correct image (if different than current image)
 
         // TODO liste to selected image. Get it's annotations with localizations and display them

@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.imgfx.model;
+package org.mbari.vars.ui.javafx.imgfx.domain;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;

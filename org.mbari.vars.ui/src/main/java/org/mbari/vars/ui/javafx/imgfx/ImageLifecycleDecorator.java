@@ -1,15 +1,18 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import org.mbari.imgfx.etc.rx.events.RemoveLocalizationEvent;
 import org.mbari.vars.core.util.AsyncUtils;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Image;
 import org.mbari.vars.services.model.ImageReference;
 import org.mbari.vars.ui.events.MediaChangedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -19,9 +22,10 @@ import java.util.stream.Collectors;
  * When annotations change update our data images collection with new or removed images from
  * the VARS side of annotation.
  */
-public class IFXDataDecorator {
-    private final IFXToolBox toolBox;
+public class ImageLifecycleDecorator {
 
+    private static final Logger log = LoggerFactory.getLogger(ImageLifecycleDecorator.class);
+    private final IFXToolBox toolBox;
 
     /**
      * To make things fast we track which annotations are deleted in IFX, those dont' require any
@@ -29,8 +33,10 @@ public class IFXDataDecorator {
      * image references to see if they still exist.
      */
     private SortedSet<UUID> droppedObservationUuids = Collections.synchronizedSortedSet(new TreeSet<>());
+    private ObservableList<Annotation> annotationsForSelectedImage;
 
-    public IFXDataDecorator(IFXToolBox toolBox) {
+
+    public ImageLifecycleDecorator(IFXToolBox toolBox) {
         this.toolBox = toolBox;
         init();
     }
@@ -67,7 +73,11 @@ public class IFXDataDecorator {
                         }
                     }
                 });
+
+
     }
+
+
 
     private void syncDroppedAnnotations(Collection<? extends Annotation> annotations) {
         if (annotations != null && !annotations.isEmpty()) {

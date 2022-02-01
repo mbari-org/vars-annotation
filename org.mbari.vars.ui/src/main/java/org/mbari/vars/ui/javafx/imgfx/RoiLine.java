@@ -1,14 +1,12 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
-import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.roi.LineView;
 import org.mbari.imgfx.roi.Localization;
-import org.mbari.imgfx.roi.MarkerView;
 import org.mbari.vars.services.model.Association;
-import org.mbari.vars.ui.javafx.imgfx.model.Json;
-import org.mbari.vars.ui.javafx.imgfx.model.Points;
+import org.mbari.vars.ui.javafx.imgfx.domain.Json;
+import org.mbari.vars.ui.javafx.imgfx.domain.Points;
 
 import java.util.List;
 import java.util.Optional;

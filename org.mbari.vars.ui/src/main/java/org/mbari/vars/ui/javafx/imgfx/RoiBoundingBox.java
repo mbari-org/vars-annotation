@@ -1,13 +1,12 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
-import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.RectangleView;
 import org.mbari.vars.services.model.Association;
-import org.mbari.vars.ui.javafx.imgfx.model.BoundingBox;
-import org.mbari.vars.ui.javafx.imgfx.model.Json;
+import org.mbari.vars.ui.javafx.imgfx.domain.BoundingBox;
+import org.mbari.vars.ui.javafx.imgfx.domain.Json;
 
 import java.util.Optional;
 import java.util.UUID;

@@ -72,8 +72,7 @@ public class IFXVarsPaneController {
     private String imageExt = "";
     private Autoscale<ImageView> copyAutoscale;
     private Autoscale<ImageView> originalAutoscale;
-    private final List<String> localizedLinkValues = List.of(RoiBoundingBox.LINK_NAME,
-            RoiLine.LINK_NAME, RoiMarker.LINK_NAME, RoiPolygon.LINK_NAME);
+    private final List<String> localizedLinkValues = AnnotationLifecycleDecorator.LINK_NAMES_FOR_LOCALIZATIONS;
 
     private static final Logger log = LoggerFactory.getLogger(IFXVarsPaneController.class);
 
@@ -184,6 +183,7 @@ public class IFXVarsPaneController {
                     imageExt = newv;
                     applyImageType();
                 });
+
 
         toolBox.getData()
                 .selectedImageProperty()

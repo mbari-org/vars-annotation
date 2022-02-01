@@ -21,7 +21,7 @@ public class IFXToolBox {
     /** URL to the stylesheet used for the apps */
     private final Collection<String> stylesheets;
     private final EventBus eventBus;
-    private final IFXDataDecorator dataDecorator;
+    private final ImageLifecycleDecorator dataDecorator;
 
     private final BooleanProperty active = new SimpleBooleanProperty();
 
@@ -35,7 +35,8 @@ public class IFXToolBox {
         this.eventBus = eventBus;
         this.stylesheets = Collections.unmodifiableCollection(stylesheets);
 
-        this.dataDecorator = new IFXDataDecorator(this);
+        this.dataDecorator = new ImageLifecycleDecorator(this);
+
     }
 
     public UIToolBox getUIToolBox() {
@@ -110,5 +111,7 @@ public class IFXToolBox {
 
     }
 
-
+    public ImageLifecycleDecorator getDataDecorator() {
+        return dataDecorator;
+    }
 }
