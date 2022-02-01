@@ -50,6 +50,15 @@ public class IFXStageController {
             }
         });
 
+        toolBox.getEventBus()
+                .toObserverable()
+                .subscribe(event -> log.debug("IFX Event: " + event));
+
+        toolBox.getUIToolBox()
+                .getEventBus()
+                .toObserverable()
+                .subscribe(event -> log.debug("VARS Event: " + event));
+
         Runtime.getRuntime().addShutdownHook(new Thread(this::save));
     }
 
