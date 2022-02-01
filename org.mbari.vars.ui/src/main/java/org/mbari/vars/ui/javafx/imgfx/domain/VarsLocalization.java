@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Shape;
 import org.mbari.imgfx.AutoscalePaneController;
+import org.mbari.imgfx.etc.rx.events.AddLocalizationEvent;
 import org.mbari.imgfx.roi.Data;
 import org.mbari.imgfx.roi.DataView;
 import org.mbari.imgfx.roi.Localization;
@@ -110,5 +111,6 @@ public class VarsLocalization {
         }
         return Optional.empty();
     }
+
 
 }

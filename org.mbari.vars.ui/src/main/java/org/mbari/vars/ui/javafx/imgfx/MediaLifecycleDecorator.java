@@ -31,7 +31,9 @@ public class MediaLifecycleDecorator {
                 .mediaProperty()
                 .addListener((obs, oldv, newv) -> {
                     if (stage.isShowing()) {
-                        // When the stage is hidden we don't want it responding to any events
+                        // When the stage is hidden we don't want it responding to any events.
+                        // By setting media to null all other data values become null, so
+                        // no events/work is triggered
                         setMedia(newv);
                     }
                     else {

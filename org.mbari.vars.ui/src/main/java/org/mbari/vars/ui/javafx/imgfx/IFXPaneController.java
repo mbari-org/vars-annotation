@@ -1,15 +1,24 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
 import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.scene.image.Image;
+import org.mbari.imgfx.etc.rx.events.AddLocalizationEvent;
+import org.mbari.imgfx.etc.rx.events.RemoveLocalizationEvent;
 import org.mbari.imgfx.imageview.editor.AnnotationPaneController;
+import org.mbari.imgfx.roi.Localization;
+import org.mbari.vars.ui.javafx.imgfx.domain.VarsLocalization;
 import org.mbari.vars.ui.messages.ReloadServicesMsg;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class IFXPaneController {
 
     private final IFXToolBox toolBox;
     private AnnotationPaneController annotationPaneController;
     private IFXVarsPaneController varsPaneController;
+    private AnnotationLifecycleDecorator annotationLifecycleDecorator;
 
     public IFXPaneController(IFXToolBox toolBox) {
         this.toolBox = toolBox;
@@ -18,8 +27,13 @@ public class IFXPaneController {
 
     private void init() {
         annotationPaneController = new AnnotationPaneController(toolBox.getEventBus());
-        varsPaneController = IFXVarsPaneController.newInstance(toolBox, annotationPaneController.getAutoscalePaneController().getAutoscale());
+        var autoscalaPane = annotationPaneController.getAutoscalePaneController();
+        varsPaneController = IFXVarsPaneController.newInstance(toolBox, autoscalaPane.getAutoscale());
         annotationPaneController.getPane().setRight(varsPaneController.getRoot());
+        annotationLifecycleDecorator = new AnnotationLifecycleDecorator(toolBox,
+                autoscalaPane,
+                annotationPaneController.getLocalizations());
+
         loadConcepts();
 
         var appEventBus = toolBox.getUIToolBox()
@@ -33,9 +47,6 @@ public class IFXPaneController {
                 .selectedImageProperty()
                 .addListener((obs, oldv, newv) -> setImage(newv));
 
-        // TODO listen to selected image. Add listeners to all labels so that when they
-        // change an updated annotation command is published.
-
 
         // TODO listen to selected annotation and select the correct image (if different than current image)
 
@@ -47,6 +58,7 @@ public class IFXPaneController {
 
     }
 
+
     private void loadConcepts() {
         toolBox.getUIToolBox()
                 .getServices()
@@ -56,16 +68,10 @@ public class IFXPaneController {
 
     }
 
-    private void setImage(org.mbari.vars.services.model.Image image) {
 
+    private void setImage(org.mbari.vars.services.model.Image image) {
         var jfxImage = image == null ? null : new Image(image.getUrl().toExternalForm());
         annotationPaneController.resetUsingImage(jfxImage);
-
-
-//
-//        annotationPaneController.getAutoscalePaneController()
-//                .getView()
-//                .setImage(jfxImage);
     }
 
     public AnnotationPaneController getAnnotationPaneController() {
