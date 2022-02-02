@@ -1,7 +1,9 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.PolygonView;
@@ -22,7 +24,8 @@ public class RoiPolygon implements Roi<PolygonView>{
     @Override
     public Optional<Localization<PolygonView, ImageView>> fromAssociation(String concept,
           Association association,
-          AutoscalePaneController<ImageView> paneController) {
+          AutoscalePaneController<ImageView> paneController,
+          ObjectProperty<Color> editedColor) {
         var points = Json.GSON.fromJson(association.getLinkValue(), Points.class);
         var points2D = IntStream.range(0, points.getX().size())
                 .mapToObj(i -> {

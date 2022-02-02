@@ -2,11 +2,14 @@ package org.mbari.vars.ui.javafx.imgfx;
 
 
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.image.ImageView;
 import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.etc.rx.events.RemoveLocalizationEvent;
 import org.mbari.imgfx.imageview.editor.Localizations;
 
+import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.ui.javafx.imgfx.domain.VarsLocalization;
 import org.mbari.vars.ui.javafx.imgfx.events.AddLocalizationEventBuilder;
 import org.mbari.vars.ui.javafx.imgfx.events.DrawVarsLocalizationEvent;
@@ -19,7 +22,6 @@ public class AnnotationLifecycleDecorator {
 
     private final IFXToolBox toolBox;
     private final AutoscalePaneController<ImageView> autoscalePaneController;
-    private final Localizations localizations;
     private static final Logger log = LoggerFactory.getLogger(AnnotationLifecycleDecorator.class);
 
 
@@ -28,7 +30,6 @@ public class AnnotationLifecycleDecorator {
                                         Localizations localizations) {
         this.toolBox = toolBox;
         this.autoscalePaneController = autoscalePaneController;
-        this.localizations = localizations;
         init();
     }
 

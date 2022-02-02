@@ -1,6 +1,8 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.roi.LineView;
 import org.mbari.imgfx.roi.Localization;
@@ -19,7 +21,8 @@ public class RoiLine implements Roi<LineView> {
     @Override
     public Optional<Localization<LineView, ImageView>> fromAssociation(String concept,
              Association association,
-             AutoscalePaneController<ImageView> paneController) {
+             AutoscalePaneController<ImageView> paneController,
+             ObjectProperty<Color> editedColor) {
         var points = Json.GSON.fromJson(association.getLinkValue(), Points.class);
         return LineView.fromImageCoords(points.getX().get(0),
                 points.getY().get(0),

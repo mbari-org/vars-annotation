@@ -1,24 +1,19 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.shape.Shape;
+import javafx.scene.paint.Color;
 import org.mbari.imgfx.etc.rx.EventBus;
-import org.mbari.imgfx.roi.Data;
-import org.mbari.imgfx.roi.DataView;
 import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.Image;
 import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.imgfx.domain.VarsLocalization;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class IFXToolBox {
 
@@ -29,10 +24,11 @@ public class IFXToolBox {
     /** URL to the stylesheet used for the apps */
     private final Collection<String> stylesheets;
     private final EventBus eventBus;
-    private final ImageLifecycleDecorator dataDecorator;
+
+    private ObjectProperty<Color> editedColor = new SimpleObjectProperty<>();
+
 
     private final BooleanProperty active = new SimpleBooleanProperty();
-
 
 
     public IFXToolBox(UIToolBox toolBox,
@@ -44,7 +40,7 @@ public class IFXToolBox {
         this.eventBus = eventBus;
         this.stylesheets = Collections.unmodifiableCollection(stylesheets);
 
-        this.dataDecorator = new ImageLifecycleDecorator(this);
+//        this.dataDecorator = new ImageLifecycleDecorator(this);
 
     }
 
@@ -76,6 +72,14 @@ public class IFXToolBox {
         return active;
     }
 
+    public Color getEditedColor() {
+        return editedColor.get();
+    }
+
+    public ObjectProperty<Color> editedColorProperty() {
+        return editedColor;
+    }
+
     /**
      * @return A readonly ObservableList of annotations that have the
      * same imagedMomentUuid as the selected image.
@@ -91,13 +95,10 @@ public class IFXToolBox {
                     .getAnnotations()
                     .filtered(a -> a.getImagedMomentUuid().equals(imagedMomentUuid));
         }
+
+
     }
 
 
 
-
-
-    public ImageLifecycleDecorator getDataDecorator() {
-        return dataDecorator;
-    }
 }

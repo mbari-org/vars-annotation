@@ -1,8 +1,10 @@
 package org.mbari.vars.ui.javafx.imgfx.domain;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.etc.rx.events.AddLocalizationEvent;
@@ -86,7 +88,8 @@ public class VarsLocalization {
 
     public static Optional<VarsLocalization> from(Annotation annotation,
                                                   Association association,
-                                                  AutoscalePaneController<ImageView> autoscalePaneController) {
+                                                  AutoscalePaneController<ImageView> autoscalePaneController,
+                                                  ObjectProperty<Color> editedColor) {
         if (LookupUtil.LINK_VALUES_TO_ROI_MAP.containsKey(association.getLinkName())) {
             log.debug("Found ROI in " + association);
             // verify that the annotation contains the association
@@ -99,7 +102,8 @@ public class VarsLocalization {
                 log.debug("Building ROI using " + roi);
                 return roi.fromAssociation(annotation.getConcept(),
                                 association,
-                                autoscalePaneController)
+                                autoscalePaneController,
+                                editedColor)
                         .map(localization -> {
                             // IMPORTANT: the localizations and it's association have the same UUID!!!
                             localization.setUuid(association.getUuid());

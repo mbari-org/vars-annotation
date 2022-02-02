@@ -1,12 +1,11 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
 import javafx.application.Platform;
-import javafx.collections.ListChangeListener;
 import javafx.scene.image.Image;
-import org.mbari.imgfx.etc.rx.events.AddLocalizationEvent;
 import org.mbari.imgfx.etc.rx.events.RemoveLocalizationEvent;
 import org.mbari.imgfx.imageview.editor.AnnotationPaneController;
-import org.mbari.imgfx.roi.Localization;
+import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.ui.javafx.imgfx.domain.VarsLocalization;
 import org.mbari.vars.ui.javafx.imgfx.events.AddLocalizationEventBuilder;
 import org.mbari.vars.ui.javafx.imgfx.events.DrawVarsLocalizationEvent;
@@ -14,9 +13,7 @@ import org.mbari.vars.ui.messages.ReloadServicesMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class IFXPaneController {
 
@@ -35,6 +32,8 @@ public class IFXPaneController {
 
     private void init() {
         annotationPaneController = new AnnotationPaneController(toolBox.getEventBus());
+        // We need to bind this to the editor color in annotation properties so it's globally accessible.
+        toolBox.editedColorProperty().bind(annotationPaneController.getAnnotationColors().editedColorProperty());
         var autoscalaPane = annotationPaneController.getAutoscalePaneController();
         varsPaneController = IFXVarsPaneController.newInstance(toolBox, autoscalaPane.getAutoscale());
         annotationPaneController.getPane().setRight(varsPaneController.getRoot());
@@ -53,12 +52,23 @@ public class IFXPaneController {
         appEventBus.ofType(ReloadServicesMsg.class)
                 .subscribe(msg -> loadConcepts());
 
-        appEventBus.ofType(DrawVarsLocalizationEvent.class)
+        appEventBus.ofType(AnnotationsSelectedEvent.class)
+                .subscribe(event -> {
+                    var annotations = event.get();
+                    if (annotations.size() == 1) {
+                        annotationPaneController.setSelectedConcept(annotations.iterator().next().getConcept());
+                    }
+                });
+
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(DrawVarsLocalizationEvent.class)
                 .subscribe(event -> addVarsLocalizationToView(event.varsLocalization()));
 
         toolBox.getData()
                 .selectedImageProperty()
                 .addListener((obs, oldv, newv) -> setImage(newv));
+
 
 
 
@@ -86,7 +96,8 @@ public class IFXPaneController {
 
     private void setImage(org.mbari.vars.services.model.Image image) {
         var jfxImage = image == null ? null : new Image(image.getUrl().toExternalForm());
-        annotationPaneController.resetUsingImage(jfxImage);
+        annotationPaneController.getAutoscalePaneController().getView().setImage(jfxImage);
+//        annotationPaneController.resetUsingImage(jfxImage);
     }
 
     public AnnotationPaneController getAnnotationPaneController() {
@@ -116,7 +127,7 @@ public class IFXPaneController {
 
         // If a localization with the same UUID already exists remove it first
         if (match.isPresent()) {
-            eventBus.publish(new RemoveLocalizationEvent(match.get()));
+//            eventBus.publish(new RemoveLocalizationEvent(match.get()));
         }
 
         var loc = vloc.getLocalization();

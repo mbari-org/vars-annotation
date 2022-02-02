@@ -36,7 +36,6 @@ public class ImageLifecycleDecorator {
     private SortedSet<UUID> droppedObservationUuids = Collections.synchronizedSortedSet(new TreeSet<>());
     private ObservableList<Annotation> annotationsForSelectedImage;
 
-
     public ImageLifecycleDecorator(IFXToolBox toolBox) {
         this.toolBox = toolBox;
         init();
