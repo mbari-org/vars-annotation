@@ -13,6 +13,7 @@ import org.mbari.imgfx.roi.RectangleView;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.ui.javafx.imgfx.AnnotationLifecycleDecorator;
+import org.mbari.vars.ui.javafx.imgfx.LookupUtil;
 import org.mbari.vars.ui.javafx.imgfx.Roi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,15 +87,16 @@ public class VarsLocalization {
     public static Optional<VarsLocalization> from(Annotation annotation,
                                                   Association association,
                                                   AutoscalePaneController<ImageView> autoscalePaneController) {
-        if (AnnotationLifecycleDecorator.LINK_VALUES_TO_ROI_MAP.containsKey(association.getLinkName())) {
+        if (LookupUtil.LINK_VALUES_TO_ROI_MAP.containsKey(association.getLinkName())) {
+            log.debug("Found ROI in " + association);
             // verify that the annotation contains the association
 //            var ok = annotation.getAssociations()
 //                    .stream()
 //                    .anyMatch(a -> a.getUuid().equals(association.getUuid()));
 
 //            if (ok) {
-                final Roi<? extends DataView<? extends org.mbari.imgfx.roi.Data, ? extends Shape>> roi = AnnotationLifecycleDecorator.LINK_VALUES_TO_ROI_MAP.get(association.getLinkValue());
-                log.debug("Building ROI using " + association);
+                final Roi<? extends DataView<? extends org.mbari.imgfx.roi.Data, ? extends Shape>> roi = LookupUtil.LINK_VALUES_TO_ROI_MAP.get(association.getLinkName());
+                log.debug("Building ROI using " + roi);
                 return roi.fromAssociation(annotation.getConcept(),
                                 association,
                                 autoscalePaneController)

@@ -1,6 +1,7 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
@@ -73,7 +74,6 @@ public class IFXVarsPaneController {
     private String imageExt = "";
     private Autoscale<ImageView> copyAutoscale;
     private Autoscale<ImageView> originalAutoscale;
-    private final List<String> localizedLinkValues = AnnotationLifecycleDecorator.LINK_NAMES_FOR_LOCALIZATIONS;
 
     private static final Logger log = LoggerFactory.getLogger(IFXVarsPaneController.class);
 
@@ -122,10 +122,6 @@ public class IFXVarsPaneController {
                                 var s = item.getConcept();
                                 setText(s);
                                 setTooltip(new Tooltip(s));
-                                if (!isLocalized(item)) {
-                                    getStyleClass().add("ifx-localized-annotation");
-                                }
-
                             }
                         });
                     }
@@ -238,15 +234,14 @@ public class IFXVarsPaneController {
         // Set image in magnified view
         var i = new javafx.scene.image.Image(image.getUrl().toExternalForm());
         imageView.setImage(i);
-        var annos = toolBox.getAnnotationsForImage(image);
-
+        var annos = LookupUtil.getAnnotationsForImage(toolBox, image);
         Platform.runLater(() -> annoListView.setItems(annos));
     }
 
 
     private void setSelectedAnnotations(Collection<Annotation> annotations) {
 
-        toolBox.getImagesForAnnotations(annotations)
+        LookupUtil.getImagesForAnnotations(toolBox, annotations)
                 .stream()
                 .filter(this::showImageType)
                 .findFirst()
@@ -260,12 +255,6 @@ public class IFXVarsPaneController {
                     .select(selectedAnno);
         });
 
-    }
-
-    private boolean isLocalized(Annotation annotation) {
-        return annotation.getAssociations()
-                .stream()
-                .anyMatch(a -> localizedLinkValues.contains(a.getLinkName()));
     }
 
     public VBox getRoot() {

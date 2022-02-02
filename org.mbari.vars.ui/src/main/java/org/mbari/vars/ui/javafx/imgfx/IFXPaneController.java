@@ -8,9 +8,14 @@ import org.mbari.imgfx.etc.rx.events.RemoveLocalizationEvent;
 import org.mbari.imgfx.imageview.editor.AnnotationPaneController;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.vars.ui.javafx.imgfx.domain.VarsLocalization;
+import org.mbari.vars.ui.javafx.imgfx.events.AddLocalizationEventBuilder;
+import org.mbari.vars.ui.javafx.imgfx.events.DrawVarsLocalizationEvent;
 import org.mbari.vars.ui.messages.ReloadServicesMsg;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class IFXPaneController {
@@ -20,6 +25,8 @@ public class IFXPaneController {
     private IFXVarsPaneController varsPaneController;
     private AnnotationLifecycleDecorator annotationLifecycleDecorator;
     private LocalizationLifecycleDecorator localizationLifecycleDecorator;
+
+    private static final Logger log = LoggerFactory.getLogger(IFXPaneController.class);
 
     public IFXPaneController(IFXToolBox toolBox) {
         this.toolBox = toolBox;
@@ -46,9 +53,14 @@ public class IFXPaneController {
         appEventBus.ofType(ReloadServicesMsg.class)
                 .subscribe(msg -> loadConcepts());
 
+        appEventBus.ofType(DrawVarsLocalizationEvent.class)
+                .subscribe(event -> addVarsLocalizationToView(event.varsLocalization()));
+
         toolBox.getData()
                 .selectedImageProperty()
                 .addListener((obs, oldv, newv) -> setImage(newv));
+
+
 
 
         // TODO listen to selected annotation and select the correct image (if different than current image)
@@ -79,5 +91,46 @@ public class IFXPaneController {
 
     public AnnotationPaneController getAnnotationPaneController() {
         return annotationPaneController;
+    }
+
+    /**
+     * Called when a new image is selected. Just redraws the existing localizations
+     * @param vlocs
+     */
+    private void addVarsLocalizationsToView(Collection<? extends VarsLocalization> vlocs) {
+        var eventBus = toolBox.getEventBus();
+        vlocs.stream()
+                .map(VarsLocalization::getLocalization)
+                .peek(loc -> loc.setVisible(true))
+                .map(AddLocalizationEventBuilder::build)
+                .forEach(eventBus::publish);
+    }
+
+    private void addVarsLocalizationToView(VarsLocalization vloc) {
+        var eventBus = toolBox.getEventBus();
+        var match = annotationPaneController.getLocalizations()
+                .getLocalizations()
+                .stream()
+                .filter(loc -> loc.getUuid().equals(vloc.getLocalization().getUuid()))
+                .findFirst();
+
+        // If a localization with the same UUID already exists remove it first
+        if (match.isPresent()) {
+            eventBus.publish(new RemoveLocalizationEvent(match.get()));
+        }
+
+        var loc = vloc.getLocalization();
+        log.info("Using localization dataview {}", loc.getDataView());
+
+
+        // FIXME is this working??
+        var event = AddLocalizationEventBuilder.build(vloc.getLocalization());
+        log.info("New builder event: " + event);
+        eventBus.publish(event);
+    }
+
+    private void removeVarsLocalizationFromView(VarsLocalization vloc) {
+        var eventBus = toolBox.getEventBus();
+        eventBus.publish(new RemoveLocalizationEvent(vloc.getLocalization()));
     }
 }
