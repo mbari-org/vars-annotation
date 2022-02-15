@@ -23,6 +23,7 @@ dependencies {
     implementation 'org.mbari.vcr4j:vcr4j-core'
 //    implementation 'org.mbari.vcr4j:vcr4j-jserialcomm'
     implementation 'org.mbari.vcr4j:vcr4j-sharktopoda'
+    implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client'
     implementation 'org.slf4j:slf4j-api'
 
 //    implementation('org.mbari.m3:vars-blackmagic') {
