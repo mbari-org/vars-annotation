@@ -62,9 +62,6 @@ public class MediaLifecycleDecorator {
                         log.debug("Found {} images for media: {}", sortedImages.size(), media.getUri());
                         try {
                             toolBox.getData().getImages().setAll(sortedImages);
-//                            if (!sortedImages.isEmpty()) {
-//                                toolBox.getData().setSelectedImage(sortedImages.get(0));
-//                            }
                         }
                         catch (Exception e) {
                             log.error("Failed to set images to IFXData object", e);

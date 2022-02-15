@@ -4,17 +4,25 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.shape.Shape;
 import org.mbari.imgfx.etc.rx.EventBus;
+import org.mbari.imgfx.roi.Data;
+import org.mbari.imgfx.roi.DataView;
 import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.Image;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.javafx.imgfx.domain.VarsLocalization;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class IFXToolBox {
+
+
 
     private final UIToolBox toolBox;
     private final IFXData data;
@@ -24,6 +32,7 @@ public class IFXToolBox {
     private final ImageLifecycleDecorator dataDecorator;
 
     private final BooleanProperty active = new SimpleBooleanProperty();
+
 
 
     public IFXToolBox(UIToolBox toolBox,
@@ -84,32 +93,9 @@ public class IFXToolBox {
         }
     }
 
-    /**
-     * Find the images for the given annotations. If the annotations do not all
-     * belong to the same imagedMoment, and empty collection is returned
-     * @param annotations The annotations of interest
-     * @return The matching collection of images, all with the same imagedMomentUuid.
-     *  Otherwise, an empty collection
-     */
-    public List<Image> getImagesForAnnotations(Collection<Annotation> annotations) {
-        // Make sure they all belong to same imagedMoment
-        var uniqueImagedMomentUuids = annotations.stream()
-                .map(Annotation::getImagedMomentUuid)
-                .distinct()
-                .collect(Collectors.toList());
-        if (uniqueImagedMomentUuids.size() != 1) {
-            return  Collections.emptyList();
-        }
 
-        var imagedMomentUuid = uniqueImagedMomentUuids.get(0);
-        // Find matching image
-        return getData()
-                .getImages()
-                .stream()
-                .filter(i -> i.getImagedMomentUuid().equals(imagedMomentUuid))
-                .collect(Collectors.toList());
 
-    }
+
 
     public ImageLifecycleDecorator getDataDecorator() {
         return dataDecorator;

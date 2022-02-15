@@ -1,5 +1,7 @@
 package org.mbari.vars.ui.javafx.imgfx.domain;
 
+import org.mbari.imgfx.roi.RectangleData;
+
 import java.util.UUID;
 
 public class BoundingBox {
@@ -72,6 +74,10 @@ public class BoundingBox {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public RectangleData toData() {
+        return new RectangleData(x, y, width, height);
     }
 }
 

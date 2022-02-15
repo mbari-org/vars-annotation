@@ -8,6 +8,6 @@ import org.mbari.vars.services.model.Association;
  * @param annotation The new annotation we're creating
  * @param association The association containing the localization info
  */
-public record CreateNewLocalizedAnnotation(Annotation annotation, Association association)
+public record CreateNewLocalizedAnnotationEvent(Annotation annotation, Association association)
     implements CreateLocalizationEvent {
 }

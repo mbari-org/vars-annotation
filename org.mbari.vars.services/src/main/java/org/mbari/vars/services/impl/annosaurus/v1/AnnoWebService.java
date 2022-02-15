@@ -175,4 +175,18 @@ public interface AnnoWebService {
     @PUT("annotations/tapetime")
     Call<Collection<Annotation>> updateRecordedTimestampForTapes(
             @Body Collection<Annotation> annotations, @HeaderMap Map<String, String> headers);
+
+            // videoReferenceUUID, platformName, missionID, missionContact
+    @FormUrlEncoded
+    @POST("videoreferences")
+    Call<CachedVideoReference> createVideoReferenceInfo(@Field("video_reference_uuid") UUID videoReferenceUuid,
+                @Field("platform_name") String platformName,
+                @Field("mission_id") String missionId,
+                @Field("mission_contact") String missionContact);
+
+    @GET("videoreferences/videoreference/{uuid}")
+    Call<CachedVideoReference> findVideoReferenceInfo(@Path("uuid") UUID videoReferenceUuid);
+
+
+
 }

@@ -6,6 +6,6 @@ import org.mbari.vars.services.model.Association;
 /**
  * Signal to add a new localized association to
  */
-public record AddLocalizationToAnnotation(Annotation annotation, Association association)
+public record AddLocalizationToAnnotationEvent(Annotation annotation, Association association)
         implements CreateLocalizationEvent {
 }
