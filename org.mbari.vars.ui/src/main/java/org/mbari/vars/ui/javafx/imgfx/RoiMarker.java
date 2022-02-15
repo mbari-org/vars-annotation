@@ -1,6 +1,8 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.MarkerView;
@@ -18,7 +20,10 @@ public class RoiMarker implements Roi<MarkerView> {
     private static final Double DEFAULT_RADIUS = 10D;
 
     @Override
-    public Optional<Localization<MarkerView, ImageView>> fromAssociation(String concept, Association association, AutoscalePaneController<ImageView> paneController) {
+    public Optional<Localization<MarkerView, ImageView>> fromAssociation(String concept,
+                                                                         Association association,
+                                                                         AutoscalePaneController<ImageView> paneController,
+                                                                         ObjectProperty<Color> editedColor) {
         var points = Json.GSON.fromJson(association.getLinkValue(), Points.class);
         return MarkerView.fromImageCoords(points.getX().get(0).doubleValue(),
                 points.getY().get(0).doubleValue(),

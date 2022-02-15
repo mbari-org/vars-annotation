@@ -11,7 +11,7 @@ module org.mbari.vars.services {
   requires com.auth0.jwt;
   requires java.prefs;
   requires java.sql;
-//  requires javax.inject;
+  requires javax.inject; 
   requires okhttp3.logging;
   requires okhttp3;
   requires org.mbari.vars.core;

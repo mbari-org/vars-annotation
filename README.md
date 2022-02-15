@@ -7,3 +7,10 @@
 MBARI's Video Annotation and Reference System's user interface for creating and editing video annotations. For more information, visit <https://docs.mbari.org/vars-annotation/>
 
 ![VARS Annotation](docs/assets/images/vars-annotation.png)
+
+## Debug
+
+```bash
+mvn install
+mvn javafx:run -pl org.mbari.vars.ui
+```

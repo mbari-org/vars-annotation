@@ -3,8 +3,13 @@ package org.mbari.vars.ui.javafx.imgfx;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.ListChangeListener;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.mbari.imgfx.roi.Data;
+import org.mbari.imgfx.roi.DataView;
+import org.mbari.imgfx.roi.Localization;
 import org.mbari.vars.services.model.Image;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.UIToolBox;
@@ -50,14 +55,24 @@ public class IFXStageController {
             }
         });
 
+        // For Debug
         toolBox.getEventBus()
                 .toObserverable()
                 .subscribe(event -> log.debug("IFX Event: " + event));
 
+        // For Debug
         toolBox.getUIToolBox()
                 .getEventBus()
                 .toObserverable()
                 .subscribe(event -> log.debug("VARS Event: " + event));
+
+        // For Debug
+        var localizations = paneController.getAnnotationPaneController()
+                        .getLocalizations()
+                        .getLocalizations();
+        localizations.addListener((ListChangeListener<? super Localization<? extends DataView<? extends Data,? extends Node>,? extends Node>>) c -> {
+                                    log.debug("Localizations were changed. Size = {}", localizations.size());
+                                });
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::save));
     }

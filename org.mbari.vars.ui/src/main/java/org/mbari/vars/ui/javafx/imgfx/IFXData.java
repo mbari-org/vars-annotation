@@ -56,6 +56,8 @@ public class IFXData {
             }
         });
 
+//        varsLocalizations.addListener((ListChangeListener<? super VarsLocalization>) );
+
     }
 
     public Image getSelectedImage() {

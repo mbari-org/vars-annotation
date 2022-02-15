@@ -1,6 +1,7 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
