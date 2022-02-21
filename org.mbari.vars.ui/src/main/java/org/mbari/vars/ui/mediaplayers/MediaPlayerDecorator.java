@@ -115,10 +115,12 @@ public class MediaPlayerDecorator {
 
     public void seekByVideoIndex(VideoIndex videoIndex) {
         EventBus eventBus = toolBox.getEventBus();
-        if (videoIndex.getTimecode().isPresent()) {
-            eventBus.send(new SeekMsg<>(videoIndex.getTimecode()));
-        }
-        else if (videoIndex.getElapsedTime().isPresent()) {
+        // HACK: Removing support for video tape.
+
+//        if (videoIndex.getTimecode().isPresent()) {
+//            eventBus.send(new SeekMsg<>(videoIndex.getTimecode()));
+//        }
+        if (videoIndex.getElapsedTime().isPresent()) {
             eventBus.send(new SeekMsg<>(videoIndex.getElapsedTime()));
         }
         else if (videoIndex.getTimestamp().isPresent()) {

@@ -27,13 +27,16 @@ public class SeekMsg<T> {
      * @param annotation The annotation that we want to seek to
      * @param eventBus Where the SeekMsg will be published
      */
-    public static void seek(Media media, Annotation annotation, EventBus eventBus) {
+    public static void  seek(Media media, Annotation annotation, EventBus eventBus) {
         if (media != null && annotation != null) {
             // If annotation is on it's native media, just use it's native index
             if (annotation.getVideoReferenceUuid().equals(media.getVideoReferenceUuid())) {
-                if (annotation.getTimecode() != null) {
-                    eventBus.send(new SeekMsg<>(annotation.getTimecode()));
-                } else if (annotation.getElapsedTime() != null) {
+                // HACK. Darc videos have some timecode info AND elapse time. DISABLE
+                // timecode seek as it messes up the rqular seek.
+                //                if (annotation.getTimecode() != null) {
+//                    eventBus.send(new SeekMsg<>(annotation.getTimecode()));
+//                } else
+                if (annotation.getElapsedTime() != null) {
                     eventBus.send(new SeekMsg<>(annotation.getElapsedTime()));
                 } else if (annotation.getRecordedTimestamp() != null) {
                     eventBus.send(new SeekMsg<>(annotation.getRecordedTimestamp()));

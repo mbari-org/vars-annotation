@@ -77,6 +77,7 @@ public class AppController {
         EventBus eventBus = toolBox.getEventBus();
         Data data = toolBox.getData();
         Observable<Object> eventObservable = eventBus.toObserverable();
+        eventObservable.subscribe(e -> log.debug(e.toString()));
         eventObservable.ofType(AnnotationsAddedEvent.class)
                 .subscribe(e -> {
                             if (e.get() != null) {
