@@ -20,8 +20,11 @@ import org.mbari.vars.services.model.Media;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
+import org.mbari.vcr4j.decorators.VideoIndexAsString;
 import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
 import org.mbari.vcr4j.sharktopoda.commands.SharkCommands;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -36,6 +39,7 @@ import java.util.Optional;
  * @since 2017-08-14T16:48:00
  */
 public class SharktoptodaControlPane extends Pane {
+    private static final Logger log = LoggerFactory.getLogger(SharktoptodaControlPane.class);
 
     private final UIToolBox toolBox;
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS'Z'")
@@ -237,6 +241,7 @@ public class SharktoptodaControlPane extends Pane {
             getScrubber().setDisable(true);
         }
         else {
+            // TODO when a video has no duration, disable the scrubber and notify the user (tooltip?)
             getScrubber().setDisable(false);
             Duration duration = mediaPlayer.getMedia().getDuration();
             if (duration != null) {
@@ -247,7 +252,7 @@ public class SharktoptodaControlPane extends Pane {
                 });
                 mediaPlayer.getVideoIO()
                         .getIndexObservable()
-                        .subscribe(new Observer<VideoIndex>() {
+                        .subscribe(new Observer<>() {
                             @Override
                             public void onSubscribe(Disposable disposable) {
                                 disposables.add(disposable);
@@ -255,6 +260,7 @@ public class SharktoptodaControlPane extends Pane {
 
                             @Override
                             public void onNext(VideoIndex videoIndex) {
+//                                log.info(new VideoIndexAsString(videoIndex).toString());
                                 videoIndex.getElapsedTime()
                                         .ifPresent(d -> {
                                             Platform.runLater(() -> {
