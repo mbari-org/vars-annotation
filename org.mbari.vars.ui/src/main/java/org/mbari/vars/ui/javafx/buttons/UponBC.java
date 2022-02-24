@@ -62,7 +62,7 @@ public class UponBC extends AbstractBC {
             log.debug("Select upon substrate of " + selectedItem);
             Association association = new Association(associationKey,
                     selectedItem,
-                    Association.VALUE_SELF);
+                    Association.VALUE_NIL);
             List<Annotation> selectedAnnotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
             toolBox.getEventBus()
                     .send(new CreateAssociationsCmd(association, selectedAnnotations));
