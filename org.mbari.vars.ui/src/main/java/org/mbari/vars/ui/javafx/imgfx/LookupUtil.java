@@ -91,7 +91,8 @@ public class LookupUtil {
                         .map(ass -> new RoiAssociation(a, ass)))
                 .map(roi -> VarsLocalization.from(roi.annotation(),
                         roi.association(),
-                        autoscalePaneController))
+                        autoscalePaneController,
+                        toolBox.editedColorProperty()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());

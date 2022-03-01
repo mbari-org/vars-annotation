@@ -6,28 +6,14 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-<<<<<<< HEAD
-import javafx.scene.shape.Shape;
-=======
 import javafx.scene.paint.Color;
->>>>>>> 0cded4b45f62468ad660758311b9bc3944015227
 import org.mbari.imgfx.etc.rx.EventBus;
-import org.mbari.imgfx.roi.Data;
-import org.mbari.imgfx.roi.DataView;
 import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.Image;
 import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.imgfx.domain.VarsLocalization;
 
 import java.util.Collection;
 import java.util.Collections;
-<<<<<<< HEAD
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-=======
->>>>>>> 0cded4b45f62468ad660758311b9bc3944015227
 
 public class IFXToolBox {
 
@@ -102,22 +88,14 @@ public class IFXToolBox {
     public ObservableList<Annotation> getAnnotationsForImage(Image image) {
         if (image == null) {
             return FXCollections.emptyObservableList();
-        }
-        else {
+        } else {
             var imagedMomentUuid = image.getImagedMomentUuid();
             return getUIToolBox()
                     .getData()
                     .getAnnotations()
                     .filtered(a -> a.getImagedMomentUuid().equals(imagedMomentUuid));
         }
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 0cded4b45f62468ad660758311b9bc3944015227
-
-
-
+    }
 
 
 }

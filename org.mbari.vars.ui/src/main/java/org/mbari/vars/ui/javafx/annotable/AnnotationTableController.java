@@ -35,7 +35,6 @@ import java.util.prefs.Preferences;
 public class AnnotationTableController {
 
     private TableView<Annotation> tableView;
-//    private TableViewExt tableViewExt;
     private final ResourceBundle i18n;
     private final EventBus eventBus;
     private final Data data;
@@ -138,7 +137,7 @@ public class AnnotationTableController {
                                 int i = tableView.getItems().indexOf(newv);
                                 if (i >= 0) {
                                     int[] visibleRows = getVisibleRows();
-//                                    System.out.println("WANTED: " + i + ", VISIBLE: " + visibleRows[0] + " to " + visibleRows[1]);
+                                    System.out.println("WANTED: " + i + ", VISIBLE: " + visibleRows[0] + " to " + visibleRows[1]);
                                     if (i < visibleRows[0] || i > visibleRows[1]) {
                                         tableView.scrollTo(newv);
                                     }

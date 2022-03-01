@@ -235,7 +235,8 @@ public class IFXVarsPaneController {
         var i = new javafx.scene.image.Image(image.getUrl().toExternalForm());
         imageView.setImage(i);
         var annos = LookupUtil.getAnnotationsForImage(toolBox, image);
-        Platform.runLater(() -> annoListView.setItems(annos));
+        var obsList = FXCollections.observableArrayList(annos);
+        Platform.runLater(() -> annoListView.setItems(obsList));
     }
 
 
