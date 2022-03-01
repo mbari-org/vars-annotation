@@ -94,7 +94,7 @@ public class MediaDescriptionEditorPane2Controller {
             && check(videoTextArea.getText(), media.get().getVideoDescription())
             && check(videoSequenceTextArea.getText(), media.get().getVideoSequenceDescription()));
     
-    log.debug("Disable: {}", disable);
+    log.trace("Disable: {}", disable);
     saveButton.setDisable(disable);
     if (!disable) {
       JFXUtilities.attractAttention(saveButton);
@@ -116,7 +116,7 @@ public class MediaDescriptionEditorPane2Controller {
   }
 
   public void setMedia(Media m) {
-    log.debug("Setting media: {}", m);
+    log.trace("Setting media: {}", m);
     media.set(m);
   }
 

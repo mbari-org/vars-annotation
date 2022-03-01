@@ -18,7 +18,7 @@ public interface ImageWebService {
     @GET("images/{uuid}")
     Call<Image> findByUuid(@Path("uuid") UUID imageReferenceUuid);
 
-    @GET("images/videoreference/{uuid}")
+    @GET("fast/images/videoreference/{uuid}")
     Call<List<Image>> findByVideoReferenceUuid(@Path("uuid") UUID videoReferenceUuid);
 
     @GET("images/url/{url}")

@@ -148,5 +148,20 @@ public class Image implements ImagedMoment, Cloneable {
                 Optional.ofNullable(timecode));
     }
 
-
+    @Override
+    public String toString() {
+        return "Image{" +
+                "imageReferenceUuid=" + imageReferenceUuid +
+                ", format='" + format + '\'' +
+                ", width=" + width +
+                ", height=" + height +
+                ", url=" + url +
+                ", description='" + description + '\'' +
+                ", videoReferenceUuid=" + videoReferenceUuid +
+                ", imagedMomentUuid=" + imagedMomentUuid +
+                ", timecode=" + timecode +
+                ", elapsedTime=" + elapsedTime +
+                ", recordedTimestamp=" + recordedTimestamp +
+                '}';
+    }
 }
