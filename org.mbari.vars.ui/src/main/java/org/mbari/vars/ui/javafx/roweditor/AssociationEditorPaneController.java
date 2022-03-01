@@ -176,7 +176,7 @@ public class AssociationEditorPaneController {
                     else {
                         linkNameTextField.setText(newv.getLinkName());
                         linkValueTextField.setText(newv.getLinkValue());
-//                        toConceptComboBoxDecorator.setConcept(newv.getToConcept());
+                        toConceptComboBoxDecorator.setConcept(newv.getToConcept());
                     }
                 });
 
