@@ -86,7 +86,7 @@ public class AppPaneController {
     private BulkEditorPaneController bulkEditorPaneController;
     private AncillaryDataPaneController ancillaryDataPaneController;
 //    private RectLabelStageController rectLabelStageController;
-    private IFXStageController ifxStageController;
+//    private IFXStageController ifxStageController;
     private final AnnotationViewController annotationViewController;
 
     private static final String masterPaneKey =  "master-split-pane";
@@ -129,8 +129,8 @@ public class AppPaneController {
                 toolBox.getEventBus());
         ancillaryDataPaneController = new AncillaryDataPaneController(toolBox);
         annotationViewController = new AnnotationViewController(toolBox);
-        ifxStageController = new IFXStageController(toolBox);
-        ifxStageController.getStage().setOnCloseRequest(evt -> ifxStageController.setVisible(false));
+//        ifxStageController = new IFXStageController(toolBox);
+//        ifxStageController.getStage().setOnCloseRequest(evt -> ifxStageController.setVisible(false));
 //        rectLabelStageController = new RectLabelStageController(toolBox);
 //        rectLabelStageController.getStage().setOnCloseRequest(evt -> rectLabelStageController.hide());
 
@@ -357,7 +357,7 @@ public class AppPaneController {
             Button rectLabelButton = new JFXButton();
             rectLabelButton.setGraphic(rectLabelIcon);
 //            rectLabelButton.setOnAction(e -> rectLabelStageController.show());
-            rectLabelButton.setOnAction(e -> ifxStageController.setVisible(true));
+//            rectLabelButton.setOnAction(e -> ifxStageController.setVisible(true));
             rectLabelButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.rectlabel")));
             rectLabelButton.setDisable(true);
 
