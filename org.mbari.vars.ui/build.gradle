@@ -88,7 +88,8 @@ def runtimeJvmArgs = [
         '--add-opens', 'java.base/java.lang.invoke=vars.annotation.merged.module',
         '--add-opens', 'java.base/java.lang.reflect=com.jfoenix',
         '--add-opens', 'org.mbari.vars.services/org.mbari.vars.services.model=com.google.gson',
-        '--add-reads', 'vars.annotation.merged.module=org.slf4j'
+        '--add-reads', 'vars.annotation.merged.module=org.slf4j',
+        '--add-reads', 'vars.annotation.merged.module=com.google.gson'
 ]
 
 // If any of these exist as environment variables add them as -Dkey=value to jvmArgs
@@ -239,30 +240,30 @@ tasks.jpackageImage.doLast {
               'Info.plist'
         }
 
-        exec {
-            println("MACOSX: Modifying Info.plist - Adding Microphone Entitlement")
-            workingDir "build/jpackage/VARS Annotation.app/Contents"
-
-            executable 'plutil'
-
-            args '-insert', 'NSMicrophoneUsageDescription', '-string',
-                    'VARS Annotation uses microphone access to avoid crashes with Apple GateKeeper',
-                    'Info.plist'
-        }
+//        exec {
+//            println("MACOSX: Modifying Info.plist - Adding Microphone Entitlement")
+//            workingDir "build/jpackage/VARS Annotation.app/Contents"
+//
+//            executable 'plutil'
+//
+//            args '-insert', 'NSMicrophoneUsageDescription', '-string',
+//                    'VARS Annotation uses microphone access to avoid crashes with Apple GateKeeper',
+//                    'Info.plist'
+//        }
 
         
         def signer = System.getenv("MAC_CODE_SIGNER")
         if (signer) {
-            exec {
-                println("MACOSX: Signing application")
-                workingDir "build/jpackage"
-
-                executable "codesign"
-
-                args "--entitlements", "${projectDir}/src/jpackage/macos/java.entitlements",
-                  "--options", "runtime", "--deep", "-vvv", "-f", "--sign", signer, 
-                  "VARS Annotation.app"
-            }
+//            exec {
+//                println("MACOSX: Signing application")
+//                workingDir "build/jpackage"
+//
+//                executable "codesign"
+//
+//                args "--entitlements", "${projectDir}/src/jpackage/macos/java.entitlements",
+//                  "--options", "runtime", "--deep", "-vvv", "-f", "--sign", signer,
+//                  "VARS Annotation.app"
+//            }
         }
     }
 }
