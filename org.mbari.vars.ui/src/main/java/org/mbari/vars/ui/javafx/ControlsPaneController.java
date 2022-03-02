@@ -122,6 +122,9 @@ public class ControlsPaneController {
             Button uponBtn = new JFXButton();
             new UponBC(uponBtn, toolBox);
 
+            Button pqBtn = new JFXButton();
+            new PopulationQuantityBC(pqBtn, toolBox);
+
             Button durationBtn = new JFXButton();
             new SetDurationBC(durationBtn, toolBox);
 
@@ -135,7 +138,7 @@ public class ControlsPaneController {
 //            new TempPopulationNinesBC(ninesBtn, toolBox);
 
             buttonPane.getChildren().addAll(newBtn, dupBtn, copyBtn, framegrabBtn,
-                    detachBtn, sampleBtn, newRefBtn, oldRefBtn, uponBtn,
+                    detachBtn, sampleBtn, newRefBtn, oldRefBtn, uponBtn, pqBtn,
                     commentBtn, durationBtn, deleteDurationBtn, deleteBtn);
 
         }

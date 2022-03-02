@@ -23,6 +23,7 @@ import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.ui.events.MediaChangedEvent;
 import org.mbari.vars.ui.events.UserAddedEvent;
 import org.mbari.vars.ui.events.UserChangedEvent;
+import org.mbari.vars.ui.javafx.imgfx.IFXStageController;
 import org.mbari.vars.ui.javafx.mediadialog.MediaDescriptionEditorPane2Controller;
 import org.mbari.vars.ui.javafx.mediadialog.MediaDescriptionEditorPaneController;
 import org.mbari.vars.ui.mediaplayers.ships.MediaParams;
@@ -84,7 +85,8 @@ public class AppPaneController {
     private MediaDescriptionEditorPane2Controller mediaDescriptionEditorPaneController;
     private BulkEditorPaneController bulkEditorPaneController;
     private AncillaryDataPaneController ancillaryDataPaneController;
-    private RectLabelStageController rectLabelStageController;
+//    private RectLabelStageController rectLabelStageController;
+    private IFXStageController ifxStageController;
     private final AnnotationViewController annotationViewController;
 
     private static final String masterPaneKey =  "master-split-pane";
@@ -127,8 +129,10 @@ public class AppPaneController {
                 toolBox.getEventBus());
         ancillaryDataPaneController = new AncillaryDataPaneController(toolBox);
         annotationViewController = new AnnotationViewController(toolBox);
-        rectLabelStageController = new RectLabelStageController(toolBox);
-        rectLabelStageController.getStage().setOnCloseRequest(evt -> rectLabelStageController.hide());
+        ifxStageController = new IFXStageController(toolBox);
+        ifxStageController.getStage().setOnCloseRequest(evt -> ifxStageController.setVisible(false));
+//        rectLabelStageController = new RectLabelStageController(toolBox);
+//        rectLabelStageController.getStage().setOnCloseRequest(evt -> rectLabelStageController.hide());
 
         toolBox.getEventBus()
                 .toObserverable()
@@ -352,8 +356,10 @@ public class AppPaneController {
             Text rectLabelIcon = Icons.PICTURE_IN_PICTURE.standardSize();
             Button rectLabelButton = new JFXButton();
             rectLabelButton.setGraphic(rectLabelIcon);
-            rectLabelButton.setOnAction(e -> rectLabelStageController.show());
+//            rectLabelButton.setOnAction(e -> rectLabelStageController.show());
+            rectLabelButton.setOnAction(e -> ifxStageController.setVisible(true));
             rectLabelButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.rectlabel")));
+            rectLabelButton.setDisable(true);
 
             Label videoLabel = new Label(toolBox.getI18nBundle().getString("apppane.label.media"));
             Label mediaLabel = new Label();

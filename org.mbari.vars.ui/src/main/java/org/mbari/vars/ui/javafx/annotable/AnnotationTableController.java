@@ -1,5 +1,6 @@
 package org.mbari.vars.ui.javafx.annotable;
 
+import javafx.application.Platform;
 import javafx.scene.control.skin.TableViewSkin;
 import javafx.scene.control.skin.VirtualFlow;
 import io.reactivex.Observable;
@@ -20,6 +21,8 @@ import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.ui.util.JFXUtilities;
 import org.mbari.vars.core.util.ListUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,10 +38,10 @@ import java.util.prefs.Preferences;
 public class AnnotationTableController {
 
     private TableView<Annotation> tableView;
-//    private TableViewExt tableViewExt;
     private final ResourceBundle i18n;
     private final EventBus eventBus;
     private final Data data;
+    private static final Logger log = LoggerFactory.getLogger(AnnotationTableController.class);
 
 
     public AnnotationTableController(UIToolBox toolBox) {
@@ -133,18 +136,17 @@ public class AnnotationTableController {
             tableView.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldv, newv) -> {
-                        JFXUtilities.runOnFXThread(() -> {
-                            if (newv != null) {
-                                int i = tableView.getItems().indexOf(newv);
-                                if (i >= 0) {
-                                    int[] visibleRows = getVisibleRows();
-//                                    System.out.println("WANTED: " + i + ", VISIBLE: " + visibleRows[0] + " to " + visibleRows[1]);
-                                    if (i < visibleRows[0] || i > visibleRows[1]) {
-                                        tableView.scrollTo(newv);
-                                    }
-                                }
-                            }
-                        });
+                        if (newv != null && oldv != newv) {
+                            Platform.runLater(() -> tableView.scrollTo(newv));
+//                            int i = tableView.getItems().indexOf(newv);
+//                            if (i >= 0) {
+//                                int[] visibleRows = getVisibleRows();
+//                                log.atWarn().log("WANTED: " + i + ", VISIBLE: " + visibleRows[0] + " to " + visibleRows[1]);
+//                                if (i < visibleRows[0] || i > visibleRows[1]) {
+//                                    Platform.runLater(() -> tableView.scrollTo(i));
+//                                }
+//                            }
+                        }
                     });
 
             TableView.TableViewSelectionModel<Annotation> selectionModel = tableView.getSelectionModel();
