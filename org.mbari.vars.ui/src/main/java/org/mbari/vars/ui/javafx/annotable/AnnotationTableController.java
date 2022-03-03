@@ -137,15 +137,15 @@ public class AnnotationTableController {
                     .selectedItemProperty()
                     .addListener((obs, oldv, newv) -> {
                         if (newv != null && oldv != newv) {
-                            Platform.runLater(() -> tableView.scrollTo(newv));
-//                            int i = tableView.getItems().indexOf(newv);
-//                            if (i >= 0) {
-//                                int[] visibleRows = getVisibleRows();
-//                                log.atWarn().log("WANTED: " + i + ", VISIBLE: " + visibleRows[0] + " to " + visibleRows[1]);
-//                                if (i < visibleRows[0] || i > visibleRows[1]) {
-//                                    Platform.runLater(() -> tableView.scrollTo(i));
-//                                }
-//                            }
+//                            Platform.runLater(() -> tableView.scrollTo(newv));
+                            int i = tableView.getItems().indexOf(newv);
+                            if (i >= 0) {
+                                int[] visibleRows = getVisibleRows();
+                                log.atWarn().log("WANTED: " + i + ", VISIBLE: " + visibleRows[0] + " to " + visibleRows[1]);
+                                if (i < visibleRows[0] || i > visibleRows[1]) {
+                                    Platform.runLater(() -> tableView.scrollTo(i));
+                                }
+                            }
                         }
                     });
 
