@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class AssociationsTableCell extends TableCell<Annotation, List<Association>> {
 
-    private ListView<Association> listView = new ListView<>();
+    private final ListView<Association> listView = new ListView<>();
     private static final Comparator<Association> alphabetical = Comparator.comparing(Association::toString);
 
     public AssociationsTableCell() {

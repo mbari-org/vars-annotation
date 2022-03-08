@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -78,6 +79,16 @@ public class AssocButtonPaneController {
         return Optional.ofNullable(prefs);
     }
 
+    private void deleteButton(String name) {
+        findPreferences().ifPresent(prefs -> {
+            try {
+                prefs.node(name).removeNode();
+            } catch (BackingStoreException e) {
+                log.warn("Failed to delete quick association button '" + name + "'");
+            }
+        });
+    }
+
     public Pane getPane() {
         if (pane == null) {
             pane = new FlowPane();
@@ -104,7 +115,7 @@ public class AssocButtonPaneController {
                 getController().requestFocus();
                 Optional<NamedAssociation> opt = dialog.showAndWait();
                 opt.ifPresent(namedAssociation -> {
-                    Button button = buttonFactory.build(namedAssociation);
+                    Button button = buttonFactory.build(namedAssociation, () -> deleteButton(namedAssociation.getName()));
                     if (!duplicateNameCheck(button)) {
                         getPane().getChildren().add(button);
                     }
@@ -148,7 +159,7 @@ public class AssocButtonPaneController {
                             int order = buttonPreferences.getInt(PREF_BUTTON_ORDER, 0);
                             String a = buttonPreferences.get(PREF_BUTTON_ASSOCIATION, nil.toString());
                             Association ass = Association.parse(a).orElse(nil);
-                            Button button = buttonFactory.build(name, ass);
+                            Button button = buttonFactory.build(name, ass, () -> deleteButton(name));
                             return new ButtonPref(button, order);
                         })
                         .filter(buttonPref -> !buttonPref.getButton().getText().equals(BAD_KEY))
@@ -200,30 +211,30 @@ public class AssocButtonPaneController {
                     });
 
             // Remove non-longer used buttons
-            try {
-                // Arrays.asList returns unmodifiable list. Need to create ArrayList.
-                List<String> storedButtons = new ArrayList<>(Arrays.asList(prefs.childrenNames()));
-                List<String> existingButtons = buttons.stream()
-                        .map(Button::getText)
-                        .collect(Collectors.toList());
-                storedButtons.removeAll(existingButtons);
-                storedButtons.forEach(s -> {
-                    try {
-                        prefs.node(s).removeNode();
-                    }
-                    catch (Exception e) {
-                        log.error("Failed to delete concept button named '" + s + "'.", e);
-                    }
-                });
-            }
-            catch (Exception e) {
-                ResourceBundle i18n = toolBox.getI18nBundle();
-                toolBox.getEventBus()
-                        .send(new ShowNonfatalErrorAlert(i18n.getString("abpanel.alert.prefsfail.save.title"),
-                                i18n.getString("abpanel.alert.prefsfail.save.header"),
-                                i18n.getString("abpanel.alert.prefsfail.save.content"),
-                                e));
-            }
+//            try {
+//                // Arrays.asList returns unmodifiable list. Need to create ArrayList.
+//                List<String> storedButtons = new ArrayList<>(Arrays.asList(prefs.childrenNames()));
+//                List<String> existingButtons = buttons.stream()
+//                        .map(Button::getText)
+//                        .collect(Collectors.toList());
+//                storedButtons.removeAll(existingButtons);
+//                storedButtons.forEach(s -> {
+//                    try {
+//                        prefs.node(s).removeNode();
+//                    }
+//                    catch (Exception e) {
+//                        log.error("Failed to delete concept button named '" + s + "'.", e);
+//                    }
+//                });
+//            }
+//            catch (Exception e) {
+//                ResourceBundle i18n = toolBox.getI18nBundle();
+//                toolBox.getEventBus()
+//                        .send(new ShowNonfatalErrorAlert(i18n.getString("abpanel.alert.prefsfail.save.title"),
+//                                i18n.getString("abpanel.alert.prefsfail.save.header"),
+//                                i18n.getString("abpanel.alert.prefsfail.save.content"),
+//                                e));
+//            }
         });
 
 

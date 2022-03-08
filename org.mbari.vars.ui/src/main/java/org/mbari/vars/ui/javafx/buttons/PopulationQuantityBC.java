@@ -62,7 +62,7 @@ public class PopulationQuantityBC extends AbstractBC {
             TextField textField = dialog.getEditor();
             // Only allow digits only
             textField.textProperty().addListener((obs, oldv, newv) -> {
-                if (!newv.matches("\\d*")) {
+                if (newv != null && !newv.matches("\\d*")) {
                     textField.setText(newv.replaceAll("[^\\d]", ""));
                 }
             });

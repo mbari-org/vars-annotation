@@ -123,7 +123,22 @@ public class AnnotationTableController {
         JFXUtilities.runOnFXThread(() -> {
             TableView.TableViewSelectionModel<Annotation> selectionModel = getTableView().getSelectionModel();
             selectionModel.clearSelection();
-            annotations.forEach(selectionModel::select);
+            if (!annotations.isEmpty()) {
+                annotations.forEach(selectionModel::select);
+                annotations.stream()
+                        .findFirst()
+                        .ifPresent(anno -> {
+                            int i = tableView.getItems().indexOf(anno);
+                            if (i >= 0) {
+                                int[] visibleRows = getVisibleRows();
+//                                log.atWarn().log("WANTED: " + i + ", VISIBLE: " + visibleRows[0] + " to " + visibleRows[1]);
+                                if (i < visibleRows[0] || i > visibleRows[1]) {
+                                    tableView.scrollTo(i);
+//                                    Platform.runLater(() -> tableView.scrollTo(i));
+                                }
+                            }
+                        });
+            }
         });
     }
 
@@ -131,13 +146,11 @@ public class AnnotationTableController {
     public TableView<Annotation> getTableView() {
         if (tableView == null) {
             tableView = AnnotationTableViewFactory.newTableView(i18n);
-//            tableViewExt = new TableViewExt(tableView);
-
-            tableView.getSelectionModel()
-                    .selectedItemProperty()
-                    .addListener((obs, oldv, newv) -> {
-                        if (newv != null && oldv != newv) {
-                            Platform.runLater(() -> tableView.scrollTo(newv));
+//            tableView.getSelectionModel()
+//                    .selectedItemProperty()
+//                    .addListener((obs, oldv, newv) -> {
+//                        if (newv != null && oldv != newv) {
+////                            Platform.runLater(() -> tableView.scrollTo(newv));
 //                            int i = tableView.getItems().indexOf(newv);
 //                            if (i >= 0) {
 //                                int[] visibleRows = getVisibleRows();
@@ -146,8 +159,8 @@ public class AnnotationTableController {
 //                                    Platform.runLater(() -> tableView.scrollTo(i));
 //                                }
 //                            }
-                        }
-                    });
+//                        }
+//                    });
 
             TableView.TableViewSelectionModel<Annotation> selectionModel = tableView.getSelectionModel();
             selectionModel.setSelectionMode(SelectionMode.MULTIPLE);
@@ -190,8 +203,6 @@ public class AnnotationTableController {
      * @return A 2 element ray with the start and end index of visible rows
      */
     private int[] getVisibleRows() {
-//        TableView<Annotation> tableView = getTableView();
-//        // TODO this does not work in Java 9
 //        // See https://stackoverflow.com/questions/46474385/how-to-find-the-indices-of-the-visible-rows-in-a-tableview-in-javafx-9/46474693#46474693
         TableViewSkin<?> skin = (TableViewSkin<?>) tableView.getSkin();
         if (skin == null) return new int[] {0, 0};

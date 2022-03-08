@@ -14,6 +14,7 @@ import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 /**
  * @author Brian Schlining
@@ -29,7 +30,7 @@ public class AssocButtonFactory {
         this.toolBox = toolBox;
     }
 
-    public Button build(String name, Association association) {
+    public Button build(String name, Association association, Runnable deleteAction) {
 
         EventBus eventBus = toolBox.getEventBus();
 
@@ -44,8 +45,10 @@ public class AssocButtonFactory {
 
         ContextMenu contextMenu = new ContextMenu();
         MenuItem deleteButton = new MenuItem(toolBox.getI18nBundle().getString("cbpanel.conceptbutton.delete"));
-        deleteButton.setOnAction(event ->
-                ((Pane) button.getParent()).getChildren().remove(button));
+        deleteButton.setOnAction(event -> {
+            ((Pane) button.getParent()).getChildren().remove(button);
+            deleteAction.run();
+        });
         contextMenu.getItems().addAll(deleteButton);
         button.setContextMenu(contextMenu);
 
@@ -53,8 +56,8 @@ public class AssocButtonFactory {
 
     }
 
-    Button build(NamedAssociation na) {
-        return build(na.getName(), na);
+    Button build(NamedAssociation na, Runnable deleteAction) {
+        return build(na.getName(), na, deleteAction);
     }
 
     public static boolean isAssocButton(Node node) {
