@@ -15,7 +15,7 @@ import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.ui.javafx.cbpanel.DragPaneDecorator;
+import org.mbari.vars.ui.javafx.abpanel.DragPaneDecorator;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.User;
 import org.slf4j.Logger;
