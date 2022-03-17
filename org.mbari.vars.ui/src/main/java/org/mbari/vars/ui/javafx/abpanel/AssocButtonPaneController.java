@@ -15,6 +15,7 @@ import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.ui.javafx.Icons;
+import org.mbari.vars.ui.javafx.abpanel.DragPaneDecorator;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.User;
 import org.slf4j.Logger;
@@ -33,9 +34,8 @@ public class AssocButtonPaneController {
 
     private Pane pane;
     private final UIToolBox toolBox;
-    private Button addButton;
-    private AssocSelectionDialogController controller;
     private final AssocButtonFactory buttonFactory;
+    private final DragPaneDecorator dragPaneDecorator;
 
     private static final String PREF_BUTTON_NAME = "name";
     private static final String PREF_BUTTON_ORDER = "order";
@@ -48,6 +48,7 @@ public class AssocButtonPaneController {
     public AssocButtonPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
         buttonFactory = new AssocButtonFactory(toolBox);
+        dragPaneDecorator = new DragPaneDecorator(toolBox);
         toolBox.getData()
                 .userProperty()
                 .addListener(e -> loadButtonsFromPreferences());
@@ -55,14 +56,6 @@ public class AssocButtonPaneController {
                 .toObserverable()
                 .ofType(ReloadServicesMsg.class)
                 .subscribe(msg -> loadButtonsFromPreferences());
-    }
-
-    public AssocSelectionDialogController getController() {
-        if (controller == null) {
-            controller = AssocSelectionDialogController.newInstance(toolBox);
-
-        }
-        return controller;
     }
 
     private Optional<Preferences> findPreferences() {
@@ -83,7 +76,7 @@ public class AssocButtonPaneController {
             pane = new FlowPane();
             pane.setUserData(this);
             pane.setPrefSize(300, 200);
-            pane.getChildren().add(getAddButton());
+            dragPaneDecorator.decorate(pane);
             loadButtonsFromPreferences();
             // Save everything when a new button is added or removed
             pane.getChildren()
@@ -92,28 +85,24 @@ public class AssocButtonPaneController {
         return pane;
     }
 
-    private Button getAddButton() {
-        if (addButton == null) {
-            addButton = new JFXButton();
-            String tooltip = toolBox.getI18nBundle().getString("abpane.addbutton");
-            Text icon = Icons.ADD.standardSize();
-            addButton.setTooltip(new Tooltip(tooltip));
-            addButton.setGraphic(icon);
-            addButton.setOnAction(v -> {
-                Dialog<NamedAssociation> dialog = getController().getDialog();
-                getController().requestFocus();
-                Optional<NamedAssociation> opt = dialog.showAndWait();
-                opt.ifPresent(namedAssociation -> {
-                    Button button = buttonFactory.build(namedAssociation);
-                    if (!duplicateNameCheck(button)) {
-                        getPane().getChildren().add(button);
-                    }
-                });
-                getController().reset();
-
-            });
+    public Button addButton(NamedAssociation namedAssociation) {
+        Button button = buttonFactory.build(namedAssociation);
+        if (!duplicateNameCheck(button)) {
+            getPane().getChildren().add(button);
         }
-        return addButton;
+        return button;
+    }
+
+    public void setLocked(boolean locked) {
+        dragPaneDecorator.setLocked(locked);
+    }
+
+    public boolean isLocked() {
+        return dragPaneDecorator.isLocked();
+    }
+
+    public DragPaneDecorator getDragPaneDecorator() {
+        return dragPaneDecorator;
     }
 
     private boolean duplicateNameCheck(Button button) {

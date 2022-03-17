@@ -15,7 +15,7 @@ import org.mbari.vars.ui.events.MediaControlsChangedEvent;
 import org.mbari.vars.ui.mediaplayers.MediaControls;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.ui.services.CachedReferenceNumberDecorator;
-import org.mbari.vars.ui.javafx.abpanel.AssocButtonPaneController;
+import org.mbari.vars.ui.javafx.abpanel.AssocButtonPanesController;
 import org.mbari.vars.ui.javafx.buttons.*;
 import org.mbari.vars.ui.javafx.roweditor.RowEditorController;
 
@@ -31,7 +31,7 @@ public class ControlsPaneController {
     private SplitPane root;
     private Pane emptyControlsPane;
     private RowEditorController rowEditorController;
-    private AssocButtonPaneController assocBtnPane;
+    private AssocButtonPanesController assocBtnPane;
     private final UIToolBox toolBox;
     private FlowPane buttonPane;
     private VBox rightPane;
@@ -74,7 +74,7 @@ public class ControlsPaneController {
             else {
                 root = new SplitPane(getRowEditorController().getRoot(),
                         getRightPane(),
-                        getAssocBtnPane().getPane());
+                        getAssocBtnPane().getRoot());
             }
             loadDividerPositions(splitPaneKey, root);
         }
@@ -165,9 +165,9 @@ public class ControlsPaneController {
         return rowEditorController;
     }
 
-    private AssocButtonPaneController getAssocBtnPane() {
+    private AssocButtonPanesController getAssocBtnPane() {
         if (assocBtnPane == null) {
-            assocBtnPane = new AssocButtonPaneController(toolBox);
+            assocBtnPane = new AssocButtonPanesController(toolBox);
         }
         return assocBtnPane;
     }
