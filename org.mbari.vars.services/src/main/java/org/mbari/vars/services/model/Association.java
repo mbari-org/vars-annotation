@@ -113,6 +113,7 @@ public class Association implements Cloneable, Details {
         return a;
     }
 
+
     /**
      * Function to convert an association containing an identity reference to
      * a integer. Note that this handles cases where the identity ref
