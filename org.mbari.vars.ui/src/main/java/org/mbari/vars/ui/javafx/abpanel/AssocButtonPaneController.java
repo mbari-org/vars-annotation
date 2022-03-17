@@ -136,6 +136,7 @@ public class AssocButtonPaneController {
                             String name = buttonPreferences.get(PREF_BUTTON_NAME, BAD_KEY);
                             int order = buttonPreferences.getInt(PREF_BUTTON_ORDER, 0);
                             String a = buttonPreferences.get(PREF_BUTTON_ASSOCIATION, nil.toString());
+                            log.warn("Loading association button " + a);
                             Association ass = Association.parse(a).orElse(nil);
                             Button button = buttonFactory.build(name, ass);
                             return new ButtonPref(button, order);
@@ -181,11 +182,21 @@ public class AssocButtonPaneController {
                     .forEach(i -> {
                         Button button = buttons.get(i);
                         String name = button.getText();
-                        Association userdata = (Association) button.getUserData();
                         Preferences buttonPrefs = prefs.node(name);
                         buttonPrefs.putInt(PREF_BUTTON_ORDER, i);
                         buttonPrefs.put(PREF_BUTTON_NAME, name);
-                        buttonPrefs.put(PREF_BUTTON_ASSOCIATION, userdata.toString());
+
+                        // This fixes an issue with pull request for issue #130. Previously
+                        // Assocation data was stored as the userdata. Now it's NamedAssocation,
+                        // which doesn't get parse correctly when loaded as it has an extra '\' segment
+                        // This fix forces all data to be stored as associations
+                        var userData = button.getUserData();
+                        if (userData instanceof Association a){
+                            buttonPrefs.put(PREF_BUTTON_ASSOCIATION, AssocToString.asString(a));
+                        }
+                        else {
+                            log.warn("Unable to store association button data using class: " + userData.getClass());
+                        }
                     });
 
             // Remove non-longer used buttons

@@ -42,7 +42,7 @@ public class AssocButtonFactory {
         EventBus eventBus = toolBox.getEventBus();
 
         String name = namedAssociation.getName();
-        Association association = (Association) namedAssociation;
+        Association association = namedAssociation.asAssociation();
 
         Button button = new JFXButton(name);
         button.setUserData(namedAssociation);
@@ -51,7 +51,8 @@ public class AssocButtonFactory {
             ArrayList<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
             eventBus.send(new CreateAssociationsCmd(association, annotations));
         });
-        button.setTooltip(new Tooltip(association.toString()));
+
+        button.setTooltip(new Tooltip(AssocToString.asString(namedAssociation)));
 
         ContextMenu contextMenu = new ContextMenu();
         MenuItem deleteButton = new MenuItem(toolBox.getI18nBundle().getString("cbpanel.conceptbutton.delete"));
@@ -65,6 +66,7 @@ public class AssocButtonFactory {
                 // Drag the string name to some target.
                 Dragboard db = button.startDragAndDrop(TransferMode.MOVE);
                 ClipboardContent content = new ClipboardContent();
+                // Drag contents are "linkName | toConcept | linkValue | buttonName"
                 content.putString(((NamedAssociation) button.getUserData()).toString());
                 db.setContent(content);
                 evt.consume();
