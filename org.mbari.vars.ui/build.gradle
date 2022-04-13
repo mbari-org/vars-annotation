@@ -68,6 +68,8 @@ javafx {
  */
 
 def runtimeJvmArgs = [
+        '-XX:+TieredCompilation',
+        '-XX:TieredStopAtLevel=1',
         '-Xms1g',
         '--add-exports', 'javafx.base/com.sun.javafx.binding=com.jfoenix',
         '--add-exports', 'javafx.base/com.sun.javafx.event=com.jfoenix',
