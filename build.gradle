@@ -51,7 +51,8 @@ subprojects {
     }
 
     ext {
-        javafxVersion = "17.0.2"
+        javafxVersion = "18"
+        // javafxVersion = "17.0.2"
 //        javafxVersion = "11.0.2"
     }
 
