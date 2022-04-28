@@ -15,13 +15,13 @@ import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.ui.javafx.Icons;
+import org.mbari.vars.ui.javafx.abpanel.DragPaneDecorator;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -34,14 +34,14 @@ public class AssocButtonPaneController {
 
     private Pane pane;
     private final UIToolBox toolBox;
-    private Button addButton;
-    private AssocSelectionDialogController controller;
     private final AssocButtonFactory buttonFactory;
+    private final DragPaneDecorator dragPaneDecorator;
+
+    private final AssocButtonPrefs assocButtonPrefs;
 
     private static final String PREF_BUTTON_NAME = "name";
     private static final String PREF_BUTTON_ORDER = "order";
     private static final String PREF_BUTTON_ASSOCIATION = "association";
-    private static final String PREF_AP_NODE = "org.mbari.m3.vars.annotation.ui.abpanel.AssocButtonPaneController";
     private static final String BAD_KEY = "__unknown__";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -49,6 +49,9 @@ public class AssocButtonPaneController {
     public AssocButtonPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
         buttonFactory = new AssocButtonFactory(toolBox);
+        assocButtonPrefs = new AssocButtonPrefs(toolBox);
+        dragPaneDecorator = new DragPaneDecorator(toolBox, assocButtonPrefs);
+
         toolBox.getData()
                 .userProperty()
                 .addListener(e -> loadButtonsFromPreferences());
@@ -58,43 +61,14 @@ public class AssocButtonPaneController {
                 .subscribe(msg -> loadButtonsFromPreferences());
     }
 
-    public AssocSelectionDialogController getController() {
-        if (controller == null) {
-            controller = AssocSelectionDialogController.newInstance(toolBox);
 
-        }
-        return controller;
-    }
-
-    private Optional<Preferences> findPreferences() {
-        Preferences prefs = null;
-        User user = toolBox.getData().getUser();
-        if (user != null) {
-            Preferences userPreferences = toolBox.getServices()
-                    .getPreferencesFactory()
-                    .remoteUserRoot(user.getUsername());
-            prefs = userPreferences.node(PREF_AP_NODE);
-            log.debug("Using {}", prefs);
-        }
-        return Optional.ofNullable(prefs);
-    }
-
-    private void deleteButton(String name) {
-        findPreferences().ifPresent(prefs -> {
-            try {
-                prefs.node(name).removeNode();
-            } catch (BackingStoreException e) {
-                log.warn("Failed to delete quick association button '" + name + "'");
-            }
-        });
-    }
 
     public Pane getPane() {
         if (pane == null) {
             pane = new FlowPane();
             pane.setUserData(this);
             pane.setPrefSize(300, 200);
-            pane.getChildren().add(getAddButton());
+            dragPaneDecorator.decorate(pane);
             loadButtonsFromPreferences();
             // Save everything when a new button is added or removed
             pane.getChildren()
@@ -103,28 +77,28 @@ public class AssocButtonPaneController {
         return pane;
     }
 
-    private Button getAddButton() {
-        if (addButton == null) {
-            addButton = new JFXButton();
-            String tooltip = toolBox.getI18nBundle().getString("abpane.addbutton");
-            Text icon = Icons.ADD.standardSize();
-            addButton.setTooltip(new Tooltip(tooltip));
-            addButton.setGraphic(icon);
-            addButton.setOnAction(v -> {
-                Dialog<NamedAssociation> dialog = getController().getDialog();
-                getController().requestFocus();
-                Optional<NamedAssociation> opt = dialog.showAndWait();
-                opt.ifPresent(namedAssociation -> {
-                    Button button = buttonFactory.build(namedAssociation, () -> deleteButton(namedAssociation.getName()));
-                    if (!duplicateNameCheck(button)) {
-                        getPane().getChildren().add(button);
-                    }
-                });
-                getController().reset();
-
-            });
+    public Button addButton(NamedAssociation namedAssociation) {
+        var opt = assocButtonPrefs.findPreferences();
+        if (opt.isEmpty()) {
+            throw new IllegalStateException("Unable to find preferences to store information about " + namedAssociation);
         }
-        return addButton;
+        Button button = buttonFactory.build(namedAssociation, opt.get());
+        if (!duplicateNameCheck(button)) {
+            getPane().getChildren().add(button);
+        }
+        return button;
+    }
+
+    public void setLocked(boolean locked) {
+        dragPaneDecorator.setLocked(locked);
+    }
+
+    public boolean isLocked() {
+        return dragPaneDecorator.isLocked();
+    }
+
+    public DragPaneDecorator getDragPaneDecorator() {
+        return dragPaneDecorator;
     }
 
     private boolean duplicateNameCheck(Button button) {
@@ -149,7 +123,7 @@ public class AssocButtonPaneController {
 
     private void loadButtonsFromPreferences() {
         Association nil = Association.NIL;
-        Optional<Preferences> opt = findPreferences();
+        Optional<Preferences> opt = assocButtonPrefs.findPreferences();
         opt.ifPresent(prefs -> {
             try {
                 List<Button> buttons = Arrays.stream(prefs.childrenNames())
@@ -158,8 +132,9 @@ public class AssocButtonPaneController {
                             String name = buttonPreferences.get(PREF_BUTTON_NAME, BAD_KEY);
                             int order = buttonPreferences.getInt(PREF_BUTTON_ORDER, 0);
                             String a = buttonPreferences.get(PREF_BUTTON_ASSOCIATION, nil.toString());
+                            log.warn("Loading association button " + a);
                             Association ass = Association.parse(a).orElse(nil);
-                            Button button = buttonFactory.build(name, ass, () -> deleteButton(name));
+                            Button button = buttonFactory.build(name, ass, prefs);
                             return new ButtonPref(button, order);
                         })
                         .filter(buttonPref -> !buttonPref.getButton().getText().equals(BAD_KEY))
@@ -190,7 +165,7 @@ public class AssocButtonPaneController {
 
     private void saveButtonsToPreferences() {
 
-        Optional<Preferences> opt = findPreferences();
+        Optional<Preferences> opt = assocButtonPrefs.findPreferences();
         opt.ifPresent(prefs -> {
             List<Button> buttons = getPane().getChildren()
                     .stream()
@@ -203,13 +178,24 @@ public class AssocButtonPaneController {
                     .forEach(i -> {
                         Button button = buttons.get(i);
                         String name = button.getText();
-                        Association userdata = (Association) button.getUserData();
                         Preferences buttonPrefs = prefs.node(name);
                         buttonPrefs.putInt(PREF_BUTTON_ORDER, i);
                         buttonPrefs.put(PREF_BUTTON_NAME, name);
-                        buttonPrefs.put(PREF_BUTTON_ASSOCIATION, userdata.toString());
+
+                        // This fixes an issue with pull request for issue #130. Previously
+                        // Assocation data was stored as the userdata. Now it's NamedAssocation,
+                        // which doesn't get parse correctly when loaded as it has an extra '\' segment
+                        // This fix forces all data to be stored as associations
+                        var userData = button.getUserData();
+                        if (userData instanceof Association a){
+                            buttonPrefs.put(PREF_BUTTON_ASSOCIATION, AssocToString.asString(a));
+                        }
+                        else {
+                            log.warn("Unable to store association button data using class: " + userData.getClass());
+                        }
                     });
 
+            //
             // Remove non-longer used buttons
 //            try {
 //                // Arrays.asList returns unmodifiable list. Need to create ArrayList.
