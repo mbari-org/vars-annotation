@@ -15,9 +15,12 @@ import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.commands.CreateAssociationsCmd;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
+import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 /**
  * @author Brian Schlining
@@ -33,11 +36,11 @@ public class AssocButtonFactory {
         this.toolBox = toolBox;
     }
 
-    public Button build(String name, Association association) {
-        return build(new NamedAssociation(association.getLinkName(), association.getToConcept(), association.getLinkValue(), name));
+    public Button build(String name, Association association, Preferences preferences) {
+        return build(new NamedAssociation(association.getLinkName(), association.getToConcept(), association.getLinkValue(), name), preferences);
     }
 
-    public Button build(NamedAssociation namedAssociation) {
+    public Button build(NamedAssociation namedAssociation, Preferences preferences) {
 
         EventBus eventBus = toolBox.getEventBus();
 
@@ -56,8 +59,9 @@ public class AssocButtonFactory {
 
         ContextMenu contextMenu = new ContextMenu();
         MenuItem deleteButton = new MenuItem(toolBox.getI18nBundle().getString("cbpanel.conceptbutton.delete"));
-        deleteButton.setOnAction(event ->
-                ((Pane) button.getParent()).getChildren().remove(button));
+//        deleteButton.setOnAction(event ->
+//                ((Pane) button.getParent()).getChildren().remove(button));
+        deleteButton.setOnAction(event -> delete(button, preferences));
         contextMenu.getItems().addAll(deleteButton);
         button.setContextMenu(contextMenu);
 
@@ -77,10 +81,25 @@ public class AssocButtonFactory {
 
     }
 
-    Optional<Button> buildFromString(String namedAssociationString) {
+    private void delete(Button button, Preferences preferences) {
+        ((Pane) button.getParent()).getChildren().remove(button);
+        try {
+            preferences.node(button.getText()).removeNode();
+        }
+        catch (Exception e) {
+            ResourceBundle i18n = toolBox.getI18nBundle();
+            toolBox.getEventBus()
+                    .send(new ShowNonfatalErrorAlert(i18n.getString("abpanel.alert.prefsfail.save.title"),
+                            i18n.getString("abpanel.alert.prefsfail.save.header"),
+                            i18n.getString("abpanel.alert.prefsfail.save.content"),
+                            e));
+        }
+    }
+
+    Optional<Button> buildFromString(String namedAssociationString, Preferences preferences) {
         Optional<NamedAssociation> opt = NamedAssociation.parseNamed(namedAssociationString);
         if (opt.isPresent()) {
-            return Optional.of(build(opt.get()));
+            return Optional.of(build(opt.get(), preferences));
         }
         return Optional.empty();
     }

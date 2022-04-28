@@ -37,10 +37,11 @@ public class AssocButtonPaneController {
     private final AssocButtonFactory buttonFactory;
     private final DragPaneDecorator dragPaneDecorator;
 
+    private final AssocButtonPrefs assocButtonPrefs;
+
     private static final String PREF_BUTTON_NAME = "name";
     private static final String PREF_BUTTON_ORDER = "order";
     private static final String PREF_BUTTON_ASSOCIATION = "association";
-    private static final String PREF_AP_NODE = "org.mbari.m3.vars.annotation.ui.abpanel.AssocButtonPaneController";
     private static final String BAD_KEY = "__unknown__";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -48,7 +49,9 @@ public class AssocButtonPaneController {
     public AssocButtonPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
         buttonFactory = new AssocButtonFactory(toolBox);
-        dragPaneDecorator = new DragPaneDecorator(toolBox);
+        assocButtonPrefs = new AssocButtonPrefs(toolBox);
+        dragPaneDecorator = new DragPaneDecorator(toolBox, assocButtonPrefs);
+
         toolBox.getData()
                 .userProperty()
                 .addListener(e -> loadButtonsFromPreferences());
@@ -58,18 +61,7 @@ public class AssocButtonPaneController {
                 .subscribe(msg -> loadButtonsFromPreferences());
     }
 
-    private Optional<Preferences> findPreferences() {
-        Preferences prefs = null;
-        User user = toolBox.getData().getUser();
-        if (user != null) {
-            Preferences userPreferences = toolBox.getServices()
-                    .getPreferencesFactory()
-                    .remoteUserRoot(user.getUsername());
-            prefs = userPreferences.node(PREF_AP_NODE);
-            log.debug("Using {}", prefs);
-        }
-        return Optional.ofNullable(prefs);
-    }
+
 
     public Pane getPane() {
         if (pane == null) {
@@ -86,7 +78,11 @@ public class AssocButtonPaneController {
     }
 
     public Button addButton(NamedAssociation namedAssociation) {
-        Button button = buttonFactory.build(namedAssociation);
+        var opt = assocButtonPrefs.findPreferences();
+        if (opt.isEmpty()) {
+            throw new IllegalStateException("Unable to find preferences to store information about " + namedAssociation);
+        }
+        Button button = buttonFactory.build(namedAssociation, opt.get());
         if (!duplicateNameCheck(button)) {
             getPane().getChildren().add(button);
         }
@@ -127,7 +123,7 @@ public class AssocButtonPaneController {
 
     private void loadButtonsFromPreferences() {
         Association nil = Association.NIL;
-        Optional<Preferences> opt = findPreferences();
+        Optional<Preferences> opt = assocButtonPrefs.findPreferences();
         opt.ifPresent(prefs -> {
             try {
                 List<Button> buttons = Arrays.stream(prefs.childrenNames())
@@ -138,7 +134,7 @@ public class AssocButtonPaneController {
                             String a = buttonPreferences.get(PREF_BUTTON_ASSOCIATION, nil.toString());
                             log.warn("Loading association button " + a);
                             Association ass = Association.parse(a).orElse(nil);
-                            Button button = buttonFactory.build(name, ass);
+                            Button button = buttonFactory.build(name, ass, prefs);
                             return new ButtonPref(button, order);
                         })
                         .filter(buttonPref -> !buttonPref.getButton().getText().equals(BAD_KEY))
@@ -169,7 +165,7 @@ public class AssocButtonPaneController {
 
     private void saveButtonsToPreferences() {
 
-        Optional<Preferences> opt = findPreferences();
+        Optional<Preferences> opt = assocButtonPrefs.findPreferences();
         opt.ifPresent(prefs -> {
             List<Button> buttons = getPane().getChildren()
                     .stream()
@@ -199,31 +195,32 @@ public class AssocButtonPaneController {
                         }
                     });
 
+            //
             // Remove non-longer used buttons
-            try {
-                // Arrays.asList returns unmodifiable list. Need to create ArrayList.
-                List<String> storedButtons = new ArrayList<>(Arrays.asList(prefs.childrenNames()));
-                List<String> existingButtons = buttons.stream()
-                        .map(Button::getText)
-                        .collect(Collectors.toList());
-                storedButtons.removeAll(existingButtons);
-                storedButtons.forEach(s -> {
-                    try {
-                        prefs.node(s).removeNode();
-                    }
-                    catch (Exception e) {
-                        log.error("Failed to delete concept button named '" + s + "'.", e);
-                    }
-                });
-            }
-            catch (Exception e) {
-                ResourceBundle i18n = toolBox.getI18nBundle();
-                toolBox.getEventBus()
-                        .send(new ShowNonfatalErrorAlert(i18n.getString("abpanel.alert.prefsfail.save.title"),
-                                i18n.getString("abpanel.alert.prefsfail.save.header"),
-                                i18n.getString("abpanel.alert.prefsfail.save.content"),
-                                e));
-            }
+//            try {
+//                // Arrays.asList returns unmodifiable list. Need to create ArrayList.
+//                List<String> storedButtons = new ArrayList<>(Arrays.asList(prefs.childrenNames()));
+//                List<String> existingButtons = buttons.stream()
+//                        .map(Button::getText)
+//                        .collect(Collectors.toList());
+//                storedButtons.removeAll(existingButtons);
+//                storedButtons.forEach(s -> {
+//                    try {
+//                        prefs.node(s).removeNode();
+//                    }
+//                    catch (Exception e) {
+//                        log.error("Failed to delete concept button named '" + s + "'.", e);
+//                    }
+//                });
+//            }
+//            catch (Exception e) {
+//                ResourceBundle i18n = toolBox.getI18nBundle();
+//                toolBox.getEventBus()
+//                        .send(new ShowNonfatalErrorAlert(i18n.getString("abpanel.alert.prefsfail.save.title"),
+//                                i18n.getString("abpanel.alert.prefsfail.save.header"),
+//                                i18n.getString("abpanel.alert.prefsfail.save.content"),
+//                                e));
+//            }
         });
 
 

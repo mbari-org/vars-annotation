@@ -21,10 +21,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DragPaneDecorator {
     private final AssocButtonFactory assocButtonFactory;
     private final UIToolBox toolBox;
+    private final AssocButtonPrefs assocButtonPrefs;
     private volatile boolean locked = false;
 
-    public DragPaneDecorator(UIToolBox toolBox) {
+    public DragPaneDecorator(UIToolBox toolBox, AssocButtonPrefs assocButtonPrefs) {
         this.toolBox = toolBox;
+        this.assocButtonPrefs = assocButtonPrefs;
         assocButtonFactory = new AssocButtonFactory(toolBox);
     }
 
@@ -100,7 +102,8 @@ public class DragPaneDecorator {
     }
 
     private Optional<Button> buildButton(String namedAssociationString) {
-        return assocButtonFactory.buildFromString(namedAssociationString);
+        return assocButtonPrefs.findPreferences()
+                .flatMap(prefs -> assocButtonFactory.buildFromString(namedAssociationString, prefs));
     }
 
     private int positionToButtonIndex(Pane pane, double screenX, double screenY) {
