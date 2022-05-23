@@ -359,7 +359,7 @@ public class AppPaneController {
 //            rectLabelButton.setOnAction(e -> rectLabelStageController.show());
             rectLabelButton.setOnAction(e -> ifxStageController.setVisible(true));
             rectLabelButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.rectlabel")));
-            rectLabelButton.setDisable(true);
+//            rectLabelButton.setDisable(true);
 
             Label videoLabel = new Label(toolBox.getI18nBundle().getString("apppane.label.media"));
             Label mediaLabel = new Label();
