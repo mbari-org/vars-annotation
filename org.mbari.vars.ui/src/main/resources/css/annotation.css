@@ -10,6 +10,7 @@
   -emphasis-color: #5D3D3D;
   -hover-color: #454545;
   -image-color: #1E88E5;
+  -json-color: #8E24AA;
   -sample-color: #00600f;
   -search-color: #388e3c;
   -selected-color: #F0544C;
@@ -370,6 +371,11 @@
   -fx-text-fill: -concurrent-color;
   -fx-fill: -concurrent-color;
 }
+.icon-active-json {
+  -fx-text-fill: -json-color;
+  -fx-fill: -json-color;
+}
+
 .bulkedit-search-label {
   -fx-text-fill: -attention-color;
 }

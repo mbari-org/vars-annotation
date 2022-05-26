@@ -37,6 +37,14 @@ public class FGSValue {
                         );
     }
 
+    boolean hasJson() {
+        return annotation != null &&
+                annotation.getAssociations() != null &&
+                annotation.getAssociations()
+                        .stream()
+                        .anyMatch(a -> "application/json".equals(a.getMimeType()));
+    }
+
     boolean isConcurrent() {
         Media media = Initializer.getToolBox().getData().getMedia();
         return media != null &&

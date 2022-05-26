@@ -37,6 +37,7 @@ public enum Icons {
     FLIP_TO_BACK(Material.FLIP_TO_BACK),
     FLIP_TO_FRONT(Material.FLIP_TO_FRONT),
     FOLDER(Material.FOLDER),
+    FORMAT_SHAPES(Material.FORMAT_SHAPES),
     GRAIN(Material.GRAIN),
     GRID_ON(Material.GRID_ON),
     IMAGE(Material.IMAGE),
