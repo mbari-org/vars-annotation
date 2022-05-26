@@ -23,14 +23,11 @@ import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.ui.events.MediaChangedEvent;
 import org.mbari.vars.ui.events.UserAddedEvent;
 import org.mbari.vars.ui.events.UserChangedEvent;
-import org.mbari.vars.ui.javafx.imgfx.IFXStageController;
 import org.mbari.vars.ui.javafx.mediadialog.MediaDescriptionEditorPane2Controller;
-import org.mbari.vars.ui.javafx.mediadialog.MediaDescriptionEditorPaneController;
 import org.mbari.vars.ui.mediaplayers.ships.MediaParams;
 import org.mbari.vars.ui.mediaplayers.ships.OpenRealTimeDialog;
 import org.mbari.vars.ui.mediaplayers.ships.OpenRealTimeService;
 import org.mbari.vars.ui.mediaplayers.vcr.OpenTapeDialog;
-import org.mbari.vars.ui.mediaplayers.vcr.OpenTapeService;
 import org.mbari.vars.ui.messages.*;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Media;
@@ -44,7 +41,6 @@ import org.mbari.vars.ui.javafx.deployeditor.AnnotationViewController;
 import org.mbari.vars.ui.javafx.mediadialog.MediaPaneController;
 import org.mbari.vars.ui.javafx.mediadialog.SelectMediaDialog;
 import org.mbari.vars.ui.javafx.prefs.PreferencesDialogController;
-import org.mbari.vars.ui.javafx.rectlabel.RectLabelStageController;
 import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
 import org.mbari.vars.ui.javafx.userdialog.CreateUserDialog;
 import org.mbari.vars.ui.util.JFXUtilities;
@@ -73,6 +69,8 @@ public class AppPaneController {
     ComboBox<String> groupCombobox = new JFXComboBox<>();
     ComboBox<String> activityCombobox = new JFXComboBox<>();
     private CheckBox showConcurrentCheckBox;
+    private CheckBox showJsonAssociationsCheckBox;
+    private CheckBox showCurrentGroupOnlyCheckBox;
     private PopOver openPopOver;
     private StatusBar utilityPane;
     private final ImageViewController imageViewController;
@@ -93,6 +91,8 @@ public class AppPaneController {
     private static final String topPaneKey = "top-split-pane";
     private static final String bottomPaneKey = "bottom-split-pane";
     private static final String concurrentStatusKey = "concurrent-status-key";
+    private static final String jsonStatusKey = "json-association-key";
+    private static final String currentGroupKey = "current-group-key";
     private final Logger log = LoggerFactory.getLogger(getClass());
 
 
@@ -144,6 +144,7 @@ public class AppPaneController {
             saveDividerPositions(bottomPaneKey, getBottomPane());
             saveDividerPositions(topPaneKey, getTopPane());
             saveBooleanPreference(concurrentStatusKey, getShowConcurrentCheckBox().isSelected());
+            saveBooleanPreference(jsonStatusKey, getShowJsonAssociationsCheckBox().isSelected());
         }));
 
 
@@ -614,11 +615,14 @@ public class AppPaneController {
 
 
             CheckBox checkBox = getShowConcurrentCheckBox();
+            CheckBox checkBox1 = getShowJsonAssociationsCheckBox();
 
             Pane spacer0 = new Pane();
             spacer0.setPrefSize(20, 5);
             Pane spacer1 = new Pane();
             spacer1.setPrefSize(20, 5);
+            Pane spacer2 = new Pane();
+            spacer2.setPrefSize(20, 5);
 
             utilityPane.getLeftItems()
                     .addAll(groupLabel,
@@ -627,7 +631,9 @@ public class AppPaneController {
                             activityLabel,
                             activityCombobox,
                             spacer1,
-                            checkBox);
+                            checkBox,
+                            spacer2,
+                            checkBox1);
 
             reload();
         }
@@ -667,6 +673,28 @@ public class AppPaneController {
         }
         return showConcurrentCheckBox;
     }
+
+    private CheckBox getShowJsonAssociationsCheckBox() {
+        if (showJsonAssociationsCheckBox == null) {
+            showJsonAssociationsCheckBox = new JFXCheckBox(toolBox.getI18nBundle()
+                    .getString("apppane.statusbar.label.json"));
+            showJsonAssociationsCheckBox.getStyleClass().add("utility-label");
+            Boolean isSelected = loadBooleanPreference(jsonStatusKey);
+            showJsonAssociationsCheckBox.setSelected(isSelected);
+            showJsonAssociationsCheckBox.selectedProperty()
+                    .addListener((obs, oldv, newv) ->
+                            toolBox.getEventBus().send(new ShowJsonAssociationsMsg(newv)));
+            toolBox.getEventBus().send(new ShowJsonAssociationsMsg(isSelected));
+        }
+        return showJsonAssociationsCheckBox;
+    }
+
+//    private CheckBox getShowCurrentGroupOnlyCheckBox() {
+//        if (showCurrentGroupOnlyCheckBox) {
+//
+//        }
+//        return showCurrentGroupOnlyCheckBox;
+//    }
 
     public AnnotationTableController getAnnotationTableController() {
         return annotationTableController;

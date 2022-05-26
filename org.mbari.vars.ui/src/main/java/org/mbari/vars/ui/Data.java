@@ -32,6 +32,8 @@ public class  Data {
 
     private final BooleanProperty showConcurrentAnnotations = new SimpleBooleanProperty(false);
 
+    private final BooleanProperty showJsonAssociations = new SimpleBooleanProperty(false);
+
     private final IntegerProperty timeJump = new SimpleIntegerProperty(1000);
 
     public Media getMedia() {
@@ -118,6 +120,18 @@ public class  Data {
 
     public void setShowConcurrentAnnotations(boolean showConcurrentAnnotations) {
         this.showConcurrentAnnotations.set(showConcurrentAnnotations);
+    }
+
+    public boolean isShowJsonAssociations() {
+        return showJsonAssociations.get();
+    }
+
+    public BooleanProperty showJsonAssociationsProperty() {
+        return showJsonAssociations;
+    }
+
+    public void setShowJsonAssociations(boolean showJsonAssociations) {
+        this.showJsonAssociations.set(showJsonAssociations);
     }
 
     public int getTimeJump() {

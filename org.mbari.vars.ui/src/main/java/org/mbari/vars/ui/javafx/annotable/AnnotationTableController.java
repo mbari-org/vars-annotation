@@ -83,6 +83,10 @@ public class AnnotationTableController {
                     });
                 });
 
+        toolBox.getData()
+                .showJsonAssociationsProperty()
+                .addListener((obs, oldv, newv) -> tableView.refresh());
+
 
         // Load the column visibility and width
         Preferences prefs = Preferences.userNodeForPackage(getClass());

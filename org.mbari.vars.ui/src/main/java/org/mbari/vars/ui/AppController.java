@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import mbarix4j.io.IOUtilities;
 import org.mbari.vars.core.EventBus;
-import org.mbari.vars.services.PreferencesService;
 import org.mbari.vars.services.impl.varsuserserver.v1.CachedKBPrefService;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.ui.mediaplayers.MediaPlayers;
@@ -133,7 +132,10 @@ public class AppController {
                 .subscribe(e -> toolBox.mediaPlayerProperty().set(e.get()));
 
         eventObservable.ofType(ShowConcurrentAnnotationsMsg.class)
-                .subscribe(e -> showConcurrentMedia(e.getShow()));
+                .subscribe(e -> showConcurrentMedia(e.show()));
+
+        eventObservable.ofType(ShowJsonAssociationsMsg.class)
+                .subscribe(e -> toolBox.getData().setShowJsonAssociations(e.show()));
 
         eventObservable.ofType(SeekMsg.class)
                 .subscribe(this::seek);

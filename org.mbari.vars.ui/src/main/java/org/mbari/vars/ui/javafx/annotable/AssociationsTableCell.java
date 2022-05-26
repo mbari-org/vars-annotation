@@ -1,11 +1,13 @@
 package org.mbari.vars.ui.javafx.annotable;
 
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
+import org.mbari.vars.ui.Initializer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +23,8 @@ public class AssociationsTableCell extends TableCell<Annotation, List<Associatio
     private final ListView<Association> listView = new ListView<>();
     private static final Comparator<Association> alphabetical = Comparator.comparing(Association::toString);
 
+    private final BooleanProperty showJsonAssociations;
+
     public AssociationsTableCell() {
         getStyleClass().add("annotable-association-cell");
         listView.setEditable(false);
@@ -29,6 +33,10 @@ public class AssociationsTableCell extends TableCell<Annotation, List<Associatio
                 .selectedIndexProperty()
                 .addListener((obs, oldv, newv) ->
                         Platform.runLater(() -> listView.getSelectionModel().clearSelection()));
+
+        // Bleck!! FIXME use toolbox in constructor. This is hacky spaghetti code.
+        showJsonAssociations = Initializer.getToolBox().getData().showJsonAssociationsProperty();
+
     }
 
     public ListView<Association> getListView() {
@@ -47,10 +55,13 @@ public class AssociationsTableCell extends TableCell<Annotation, List<Associatio
         }
         else {
             setText(null);
-            var sortedItems = FXCollections.observableArrayList(item);
+            var filteredItems = item.stream()
+                    .filter(a -> showJsonAssociations.get() || !"application/json".equalsIgnoreCase(a.getMimeType()))
+                    .toList();
+            var sortedItems = FXCollections.observableArrayList(filteredItems);
             sortedItems.sort(alphabetical);
             listView.setItems(sortedItems);
-            listView.setPrefSize(listView.getWidth(), item.size() * 26);
+            listView.setPrefSize(listView.getWidth(), filteredItems.size() * 26);
             setGraphic(listView);
         }
     }
