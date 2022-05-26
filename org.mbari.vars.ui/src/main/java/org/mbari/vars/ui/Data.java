@@ -20,6 +20,8 @@ public class  Data {
 
     private final ObjectProperty<Media> media = new SimpleObjectProperty<>();
 
+    private final BooleanProperty showCurrentGroupOnly = new SimpleBooleanProperty(false);
+
     private final ObservableList<Annotation> annotations = FXCollections.observableArrayList();
 
     private final ObservableList<Annotation> selectedAnnotations = FXCollections.observableArrayList();
@@ -33,6 +35,7 @@ public class  Data {
     private final BooleanProperty showConcurrentAnnotations = new SimpleBooleanProperty(false);
 
     private final BooleanProperty showJsonAssociations = new SimpleBooleanProperty(false);
+
 
     private final IntegerProperty timeJump = new SimpleIntegerProperty(1000);
 
@@ -132,6 +135,18 @@ public class  Data {
 
     public void setShowJsonAssociations(boolean showJsonAssociations) {
         this.showJsonAssociations.set(showJsonAssociations);
+    }
+
+    public boolean isShowCurrentGroupOnly() {
+        return showCurrentGroupOnly.get();
+    }
+
+    public BooleanProperty showCurrentGroupOnlyProperty() {
+        return showCurrentGroupOnly;
+    }
+
+    public void setShowCurrentGroupOnly(boolean showCurrentGroupOnly) {
+        this.showCurrentGroupOnly.set(showCurrentGroupOnly);
     }
 
     public int getTimeJump() {

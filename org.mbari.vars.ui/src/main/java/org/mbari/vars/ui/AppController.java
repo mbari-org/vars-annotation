@@ -137,6 +137,9 @@ public class AppController {
         eventObservable.ofType(ShowJsonAssociationsMsg.class)
                 .subscribe(e -> toolBox.getData().setShowJsonAssociations(e.show()));
 
+        eventObservable.ofType(ShowCurrentGroupOnlyMsg.class)
+                .subscribe(e -> toolBox.getData().setShowCurrentGroupOnly(e.show()));
+
         eventObservable.ofType(SeekMsg.class)
                 .subscribe(this::seek);
 

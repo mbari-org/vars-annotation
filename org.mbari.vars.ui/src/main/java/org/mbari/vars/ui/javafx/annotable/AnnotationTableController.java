@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
@@ -53,7 +54,8 @@ public class AnnotationTableController {
 
         observable.ofType(AnnotationsAddedEvent.class)
                 .subscribe(e -> JFXUtilities.runOnFXThread(() -> {
-                    getTableView().getItems().addAll(e.get());
+                    var filtered = filterAnnotations(e.get());
+                    getTableView().getItems().addAll(filtered);
                     getTableView().sort();
                 }));
 
@@ -87,6 +89,21 @@ public class AnnotationTableController {
                 .showJsonAssociationsProperty()
                 .addListener((obs, oldv, newv) -> tableView.refresh());
 
+        toolBox.getData()
+                .showCurrentGroupOnlyProperty()
+                .addListener((obs, oldv, newv) -> {
+                    var filteredAnnos = filterAnnotations(data.getAnnotations());
+                    getTableView().getItems().setAll(filteredAnnos);
+                });
+
+        toolBox.getData()
+                .groupProperty()
+                .addListener((obs, oldv, newv) -> {
+                    if (data.showCurrentGroupOnlyProperty().get()) {
+                        var filteredAnnos = filterAnnotations(data.getAnnotations());
+                        getTableView().getItems().setAll(filteredAnnos);
+                    }
+                });
 
         // Load the column visibility and width
         Preferences prefs = Preferences.userNodeForPackage(getClass());
@@ -121,6 +138,19 @@ public class AnnotationTableController {
                             });
                 }));
 
+    }
+
+    private Collection<Annotation> filterAnnotations(Collection<Annotation> annotations) {
+        var currentGroupOnly = data.isShowCurrentGroupOnly();
+        if (currentGroupOnly) {
+            var currentGroup = data.getGroup();
+            if (currentGroup != null) {
+                return annotations.stream()
+                        .filter(a -> a.getGroup() != null && a.getGroup().equalsIgnoreCase(currentGroup))
+                        .collect(Collectors.toList());
+            }
+        }
+        return annotations;
     }
 
     private void select(Collection<Annotation> annotations) {

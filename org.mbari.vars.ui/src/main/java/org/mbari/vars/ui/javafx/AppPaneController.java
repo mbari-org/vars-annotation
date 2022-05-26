@@ -145,6 +145,7 @@ public class AppPaneController {
             saveDividerPositions(topPaneKey, getTopPane());
             saveBooleanPreference(concurrentStatusKey, getShowConcurrentCheckBox().isSelected());
             saveBooleanPreference(jsonStatusKey, getShowJsonAssociationsCheckBox().isSelected());
+            saveBooleanPreference(currentGroupKey, getShowCurrentGroupOnlyCheckBox().isSelected());
         }));
 
 
@@ -616,6 +617,7 @@ public class AppPaneController {
 
             CheckBox checkBox = getShowConcurrentCheckBox();
             CheckBox checkBox1 = getShowJsonAssociationsCheckBox();
+            CheckBox checkBox2 = getShowCurrentGroupOnlyCheckBox();
 
             Pane spacer0 = new Pane();
             spacer0.setPrefSize(20, 5);
@@ -623,6 +625,8 @@ public class AppPaneController {
             spacer1.setPrefSize(20, 5);
             Pane spacer2 = new Pane();
             spacer2.setPrefSize(20, 5);
+            Pane spacer3 = new Pane();
+            spacer3.setPrefSize(20, 5);
 
             utilityPane.getLeftItems()
                     .addAll(groupLabel,
@@ -633,7 +637,9 @@ public class AppPaneController {
                             spacer1,
                             checkBox,
                             spacer2,
-                            checkBox1);
+                            checkBox1,
+                            spacer3,
+                            checkBox2);
 
             reload();
         }
@@ -689,12 +695,21 @@ public class AppPaneController {
         return showJsonAssociationsCheckBox;
     }
 
-//    private CheckBox getShowCurrentGroupOnlyCheckBox() {
-//        if (showCurrentGroupOnlyCheckBox) {
-//
-//        }
-//        return showCurrentGroupOnlyCheckBox;
-//    }
+    private CheckBox getShowCurrentGroupOnlyCheckBox() {
+        if (showCurrentGroupOnlyCheckBox == null) {
+            showCurrentGroupOnlyCheckBox = new JFXCheckBox(toolBox.getI18nBundle()
+                    .getString("apppane.statusbar.label.current"));
+            showCurrentGroupOnlyCheckBox.getStyleClass().add("utility-label");
+            Boolean isSelected = loadBooleanPreference(currentGroupKey);
+            showCurrentGroupOnlyCheckBox.setSelected(isSelected);
+            showCurrentGroupOnlyCheckBox.selectedProperty()
+                    .addListener((obs, oldv, newv) ->
+                            toolBox.getEventBus().send(new ShowCurrentGroupOnlyMsg(newv)));
+            toolBox.getEventBus().send(new ShowCurrentGroupOnlyMsg(isSelected));
+
+        }
+        return showCurrentGroupOnlyCheckBox;
+    }
 
     public AnnotationTableController getAnnotationTableController() {
         return annotationTableController;
