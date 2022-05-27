@@ -18,4 +18,5 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Setup: setup.md
+  - Status Bar: statusbar.md
   - MBARI Docs: "https://docs.mbari.org"

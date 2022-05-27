@@ -1,6 +1,7 @@
 package org.mbari.vars.ui.javafx.annotable;
 
 import javafx.scene.control.TableCell;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import org.mbari.vars.ui.javafx.Icons;
@@ -22,7 +23,9 @@ public class FGSTableCell extends TableCell<Annotation, FGSValue> {
     private Text jsonIcon = Icons.FORMAT_SHAPES.size(20);
 
 
+
     private final HBox graphic = new HBox();
+//    private final GridPane graphic = new GridPane();
 
 
     public FGSTableCell() {
@@ -42,6 +45,11 @@ public class FGSTableCell extends TableCell<Annotation, FGSValue> {
                 // Do nothing
             }
             else {
+//                graphic.add(imageIcon, 0, 0);
+//                graphic.add(sampleIcon, 0, 1);
+//                graphic.add(concurrentIcon, 1, 0);
+//                graphic.add(jsonIcon, 1, 1);
+
                 graphic.getChildren().addAll(imageIcon, sampleIcon, concurrentIcon, jsonIcon);
                 String imageStyle = (item == null || !item.hasImage()) ? "icon-inactive" : "icon-active-image";
                 String sampleStyle = (item == null || !item.hasSample()) ? "icon-inactive" : "icon-active-sample";
