@@ -2,6 +2,8 @@
 
 ![status bar](assets/images/statusbar/statusbar.png)
 
+The status bar contains controls that effect the creation and display of annotations in VARS.
+
 ## Group
 
 ![group](assets/images/statusbar/group.png)
