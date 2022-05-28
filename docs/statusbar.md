@@ -1,4 +1,4 @@
-# VARS Annotation's Status Bar
+# VARS Annotation Status Bar
 
 ![status bar](assets/images/statusbar/statusbar.png)
 
