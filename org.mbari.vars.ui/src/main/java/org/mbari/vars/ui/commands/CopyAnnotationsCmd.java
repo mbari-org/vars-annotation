@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class CopyAnnotationsCmd implements Command {
 
-    private final Collection<java.lang.annotation.Annotation> copiedAnnotations;
+    private final Collection<Annotation> copiedAnnotations;
 
     public CopyAnnotationsCmd(UUID videoReferenceUuid,
                               VideoIndex videoIndex,
@@ -130,6 +130,6 @@ public class CopyAnnotationsCmd implements Command {
 
     @Override
     public String getDescription() {
-        return "Copy " copiedAnnotations.size() + " annotations";
+        return "Copy " + copiedAnnotations.size() + " annotations";
     }
 }
