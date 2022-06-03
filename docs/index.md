@@ -2,7 +2,7 @@
 
 ![MBARI logo](assets/images/mbari-logo.png)
 
-# Overview
+## Overview
 
 [![Build Status](https://travis-ci.org/mbari-media-management/vars-annotation.svg?branch=master)](https://travis-ci.org/mbari-media-management/vars-annotation)  [![DOI](https://zenodo.org/badge/90881605.svg)](https://zenodo.org/badge/latestdoi/90881605)
 
@@ -12,7 +12,7 @@ This system is the main annotation application used at [MBARI](https://www.mbari
 
 ![VARS Annotation](assets/images/vars-annotation.png)
 
-## Video Playback
+### Video Playback
 
 VARS can be used to annotate video:
 
