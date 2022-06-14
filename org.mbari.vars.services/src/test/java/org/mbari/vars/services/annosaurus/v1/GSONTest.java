@@ -17,5 +17,10 @@ public class GSONTest {
         Annotation annotation = TestConstants.newTestAnnotation();
         assertTrue(annotation.getImages() != null);
         assertTrue(annotation.getImages().size() == 2);
+
+        var assoc0 = annotation.getAssociations().get(0);
+        assertNotNull(assoc0.getLastUpdatedTime());
     }
+
+   
 }

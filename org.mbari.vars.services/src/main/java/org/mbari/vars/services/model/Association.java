@@ -1,5 +1,6 @@
 package org.mbari.vars.services.model;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ public class Association implements Cloneable, Details {
     private String toConcept;
     private String linkValue;
     private String mimeType;
+    private Instant lastUpdatedTime;
 
     public static final String VALUE_NIL = "nil";
     public static final String VALUE_SELF = "self";
@@ -39,6 +41,15 @@ public class Association implements Cloneable, Details {
         this.linkValue = linkValue;
         this.mimeType = mimeType;
         this.uuid = uuid;
+    }
+
+    public Association(String linkName, String toConcept, String linkValue, String mimeType, UUID uuid, Instant lastUpdatedTime) {
+        this.linkName = linkName;
+        this.toConcept = toConcept;
+        this.linkValue = linkValue;
+        this.mimeType = mimeType;
+        this.uuid = uuid;
+        this.lastUpdatedTime = lastUpdatedTime;
     }
 
     public Association(Association a) {
@@ -90,6 +101,11 @@ public class Association implements Cloneable, Details {
 
     public String getMimeType() {
         return mimeType;
+    }
+
+
+    public Instant getLastUpdatedTime() {
+        return lastUpdatedTime;
     }
 
     @Override
