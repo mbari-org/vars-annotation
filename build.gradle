@@ -51,7 +51,7 @@ subprojects {
     }
 
     ext {
-        javafxVersion = "18"
+        javafxVersion = "19"
         // javafxVersion = "17.0.2"
 //        javafxVersion = "11.0.2"
     }
@@ -64,7 +64,7 @@ subprojects {
             implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.1'
             implementation 'com.github.ben-manes.caffeine:caffeine:3.1.1'
             implementation 'com.google.code.gson:gson:2.9.0'
-            implementation 'com.google.inject:guice:5.0.1'
+            implementation 'com.google.inject:guice:5.1.0'
             implementation 'com.jfoenix:jfoenix:9.0.10'
             implementation 'com.squareup.okhttp3:logging-interceptor:3.14.4'
             implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
@@ -87,17 +87,17 @@ subprojects {
             implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client:4.4.1.jre11'
             implementation 'org.mbari.vcr4j:vcr4j-sharktopoda:4.4.1.jre11'
             implementation 'org.mbari:mbarix4j:2.0.5.jre11'
-            implementation 'org.slf4j:slf4j-api:2.0.0-alpha7'
-            implementation 'org.slf4j:slf4j-jdk14:2.0.0-alpha7'
-            runtimeOnly 'ch.qos.logback:logback-classic:1.3.0-alpha16'
+            implementation 'org.slf4j:slf4j-api:2.0.0'
+            implementation 'org.slf4j:slf4j-jdk14:2.0.0'
+            runtimeOnly 'ch.qos.logback:logback-classic:1.4.0'
             runtimeOnly 'org.fusesource.jansi:jansi:2.4.0'
-            runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.0-alpha6'
+            runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.0'
         }
 
         testCompileOnly 'junit:junit:4.13.2'
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-        testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.8.2'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+        testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.9.0'
 
 
     }
