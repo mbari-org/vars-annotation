@@ -8,9 +8,14 @@ MBARI's Video Annotation and Reference System's user interface for creating and 
 
 ![VARS Annotation](docs/assets/images/vars-annotation.png)
 
-## Debug
+## Developers
 
 ```bash
+.\gradlew clean jpackage --info -P"gpr.user"=my_github_username -P"gpr.key"=my_github_token
+```
+
+```bash
+# Hacked in better debugging using Maven. Note it may be out of sync with gradlew build
 mvn install
 mvn javafx:run -pl org.mbari.vars.ui
 ```
