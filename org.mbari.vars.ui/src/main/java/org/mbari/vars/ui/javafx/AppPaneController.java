@@ -73,7 +73,7 @@ public class AppPaneController {
     private CheckBox showCurrentGroupOnlyCheckBox;
     private PopOver openPopOver;
     private StatusBar utilityPane;
-    private final ImageViewController imageViewController;
+    private final ImageViewController2 imageViewController;
     private final PreferencesDialogController preferencesDialogController;
     private final SelectMediaDialog selectMediaDialog;
     private final OpenRealTimeDialog realTimeDialog;
@@ -119,7 +119,7 @@ public class AppPaneController {
 
         annotationTableController = new AnnotationTableController(toolBox);
         preferencesDialogController = new PreferencesDialogController(toolBox);
-        imageViewController = new ImageViewController(toolBox);
+        imageViewController = new ImageViewController2(toolBox);
         controlsPaneController = new ControlsPaneController(toolBox);
         mediaPaneController = MediaPaneController.newInstance();
         mediaDescriptionEditorPaneController = new MediaDescriptionEditorPane2Controller(toolBox);

@@ -69,4 +69,6 @@ module org.mbari.vars.ui {
   exports org.mbari.vars.ui.messages;
   exports org.mbari.vars.ui.services;
   exports org.mbari.vars.ui;
+    exports org.mbari.vars.ui.javafx.imagestage;
+    opens org.mbari.vars.ui.javafx.imagestage to javafx.fxml;
 }

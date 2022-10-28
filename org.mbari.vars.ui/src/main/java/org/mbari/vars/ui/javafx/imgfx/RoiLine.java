@@ -7,7 +7,7 @@ import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.roi.LineView;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.vars.services.model.Association;
-import org.mbari.vars.ui.javafx.imgfx.domain.Json;
+import org.mbari.vars.ui.javafx.imagestage.Json;
 import org.mbari.vars.ui.javafx.imgfx.domain.Points;
 
 import java.util.List;

@@ -1,7 +1,13 @@
-package org.mbari.vars.ui.javafx.imgfx.domain;
+package org.mbari.vars.ui.javafx.imagestage;
 
+import javafx.scene.image.ImageView;
+import org.mbari.imgfx.AutoscalePaneController;
+import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.RectangleData;
+import org.mbari.imgfx.roi.RectangleView;
+import org.mbari.vars.services.model.Association;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class BoundingBox {
@@ -78,6 +84,28 @@ public class BoundingBox {
 
     public RectangleData toData() {
         return new RectangleData(x, y, width, height);
+    }
+
+    public static Optional<BoundingBox> fromAssociation(Association association) {
+        try {
+            var box = Json.GSON.fromJson(association.getLinkValue(), BoundingBox.class);
+            return Optional.of(box);
+        }
+        catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    public static Optional<Localization<RectangleView, ImageView>> fromAssociation(String concept,
+                                                                            Association association,
+                                                                            AutoscalePaneController<ImageView> paneController) {
+        var boundingBox = Json.GSON.fromJson(association.getLinkValue(), BoundingBox.class);
+        return RectangleView.fromImageCoords(boundingBox.getX().doubleValue(),
+                        boundingBox.getY().doubleValue(),
+                        boundingBox.getWidth().doubleValue(),
+                        boundingBox.getHeight().doubleValue(),
+                        paneController.getAutoscale())
+                .map(dataView -> new Localization<>(dataView, paneController, association.getUuid(), concept));
     }
 }
 
