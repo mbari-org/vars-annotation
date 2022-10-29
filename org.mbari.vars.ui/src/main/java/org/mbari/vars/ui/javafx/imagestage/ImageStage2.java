@@ -1,5 +1,7 @@
 package org.mbari.vars.ui.javafx.imagestage;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -16,7 +18,10 @@ import org.mbari.imgfx.roi.RectangleView;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.ui.util.JFXUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -24,6 +29,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ImageStage2 extends Stage {
     private ImagePaneController imagePaneController;
     private final List<Localization<RectangleView, ImageView>> localizations = new CopyOnWriteArrayList<>();
+    private static final Logger log = LoggerFactory.getLogger(ImageStage2.class);
+
+    ObjectProperty<Color> fill = new SimpleObjectProperty<>(Color.valueOf("#FF980030"));
 
     public ImageStage2() {
         init();
@@ -70,23 +78,27 @@ public class ImageStage2 extends Stage {
                     .map(a -> BoundingBox.fromAssociation(annotation.getConcept(), a, imagePaneController))
                     .flatMap(Optional::stream)
                     .toList();
-            localizations.addAll(boundingBoxes);
-            localizations.forEach(v -> v.setVisible(true));
+            if (!boundingBoxes.isEmpty()) {
+                log.atDebug().log(() -> "Displaying " + boundingBoxes.size() + " for " + annotation.getConcept());
+                localizations.addAll(boundingBoxes);
+                localizations.forEach(loc -> {
+                    loc.getDataView().getView().setFill(fill.get());
+                    loc.setVisible(true);
+                });
+            }
         });
 
     }
 
     private void clearLocalizations() {
 
-        var nodes = localizations.stream()
-                .map(v -> v.getDataView().getView())
-                .toList();
+
+        var locs = new ArrayList<>(localizations);
         localizations.clear();
         JFXUtilities.runOnFXThread(() -> {
             imagePaneController.getView().setImage(null);
-            imagePaneController.getPane()
-                    .getChildren()
-                    .removeAll(nodes);
+            // setVisible(false) actually removes all the localization nodes from their parents
+            locs.forEach(loc -> loc.setVisible(false));
         });
 
     }
