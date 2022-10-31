@@ -5,6 +5,7 @@ import javafx.collections.ListChangeListener;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
+import org.mbari.vars.services.model.BoundingBox;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.Data;
 import org.mbari.vars.ui.UIToolBox;
@@ -19,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 

@@ -14,6 +14,7 @@ import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.ConceptService;
 import org.mbari.vars.services.ImageCaptureService;
 import org.mbari.vars.ui.javafx.ImageArchiveServiceDecorator;
+import org.mbari.vars.ui.services.FrameCaptureService;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
@@ -141,7 +142,7 @@ public class FramegrabCmd implements Command {
 
         // -- Capture image
         File imageFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".png");
-        Optional<Framegrab> framegrabOpt = capture(imageFile, media, mediaPlayer);
+        Optional<Framegrab> framegrabOpt = FrameCaptureService.capture(imageFile, media, mediaPlayer);
 
         if (framegrabOpt.isEmpty()) {
             //log.warn("No framegrab was captured for {} at {}", media.getVideoName(), media.getUri());
@@ -220,27 +221,6 @@ public class FramegrabCmd implements Command {
         eventBus.send(alert);
     }
 
-    private static Optional<Framegrab> capture(File imageFile,
-                                               Media media,
-                                               MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer) {
-        try {
-            ImageCaptureService service = mediaPlayer.getImageCaptureService();
-            Framegrab framegrab = service.capture(imageFile);
-
-            // If there's an elapsed time, make sure the recordedTimestamp is
-            // set and correct
-            framegrab.getVideoIndex().ifPresent(videoIndex ->
-                videoIndex.getElapsedTime().ifPresent(elapsedTime -> {
-                    Instant recordedDate = media.getStartTimestamp().plus(elapsedTime);
-                    framegrab.setVideoIndex(new VideoIndex(elapsedTime, recordedDate));
-                }));
-            return Optional.of(framegrab);
-        }
-        catch (Exception e) {
-            // TODO show error
-            return Optional.empty();
-        }
-    }
 
     private CompletableFuture<Annotation> createAnnotationInDatastore(UIToolBox toolBox, VideoIndex videoIndex) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();

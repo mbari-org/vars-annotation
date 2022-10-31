@@ -5,6 +5,7 @@ import io.reactivex.disposables.Disposable;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
+import org.mbari.vars.services.model.BoundingBox;
 import org.mbari.vars.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.ui.events.AnnotationsRemovedEvent;

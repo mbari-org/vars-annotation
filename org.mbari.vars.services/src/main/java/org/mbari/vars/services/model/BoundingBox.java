@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
+package org.mbari.vars.services.model;
 
 /**
  * Bean class used for serializing/deserializing bounding box info into JSON

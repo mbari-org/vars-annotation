@@ -63,6 +63,7 @@ module org.mbari.vars.ui {
   exports org.mbari.vars.ui.javafx.roweditor;
   exports org.mbari.vars.ui.javafx.shared;
   exports org.mbari.vars.ui.javafx;
+  exports org.mbari.vars.ui.mediaplayers;
   exports org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
   exports org.mbari.vars.ui.mediaplayers.sharktopoda;
   exports org.mbari.vars.ui.mediaplayers.ships;
@@ -70,5 +71,6 @@ module org.mbari.vars.ui {
   exports org.mbari.vars.ui.services;
   exports org.mbari.vars.ui;
   exports org.mbari.vars.ui.javafx.imagestage;
+
   opens org.mbari.vars.ui.javafx.imagestage to com.google.gson, javafx.fxml;
 }
