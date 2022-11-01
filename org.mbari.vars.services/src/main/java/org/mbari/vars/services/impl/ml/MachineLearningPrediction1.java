@@ -1,4 +1,4 @@
-package org.mbari.vars.services.model;
+package org.mbari.vars.services.impl.ml;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -98,4 +98,5 @@ public class MachineLearningPrediction1 {
     public void setCoords(List<Double> coords) {
         this.coords = coords;
     }
+
 }
