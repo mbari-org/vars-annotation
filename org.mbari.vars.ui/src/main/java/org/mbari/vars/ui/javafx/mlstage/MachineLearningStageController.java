@@ -28,6 +28,13 @@ public class MachineLearningStageController {
             // Frame grab
             var imageFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".png");
             var opt = FrameCaptureService.capture(imageFile, media, mediaPlayer);
+            if (opt.isPresent()) {
+                // TODO handle image
+            }
+            else {
+                // TODO handle failure to capture image
+            }
+
             // TODO framecapture (but don't save)
             // TODO send image to Ml API
             // TODO convert API response to Localizations
