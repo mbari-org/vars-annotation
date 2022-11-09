@@ -24,6 +24,8 @@ import org.mbari.vars.ui.events.MediaChangedEvent;
 import org.mbari.vars.ui.events.UserAddedEvent;
 import org.mbari.vars.ui.events.UserChangedEvent;
 import org.mbari.vars.ui.javafx.mediadialog.MediaDescriptionEditorPane2Controller;
+import org.mbari.vars.ui.javafx.mlstage.MLSettingsPaneController;
+import org.mbari.vars.ui.javafx.mlstage.MachineLearningStageController;
 import org.mbari.vars.ui.mediaplayers.ships.MediaParams;
 import org.mbari.vars.ui.mediaplayers.ships.OpenRealTimeDialog;
 import org.mbari.vars.ui.mediaplayers.ships.OpenRealTimeService;
@@ -86,6 +88,7 @@ public class AppPaneController {
 //    private RectLabelStageController rectLabelStageController;
 //    private IFXStageController ifxStageController;
     private final AnnotationViewController annotationViewController;
+    private final MachineLearningStageController machineLearningStageController;
 
     private static final String masterPaneKey =  "master-split-pane";
     private static final String topPaneKey = "top-split-pane";
@@ -128,6 +131,7 @@ public class AppPaneController {
                 toolBox.getData().getSelectedAnnotations(),
                 toolBox.getEventBus());
         ancillaryDataPaneController = new AncillaryDataPaneController(toolBox);
+        machineLearningStageController = new MachineLearningStageController(toolBox);
         annotationViewController = new AnnotationViewController(toolBox);
 //        ifxStageController = new IFXStageController(toolBox);
 //        ifxStageController.getStage().setOnCloseRequest(evt -> ifxStageController.setVisible(false));

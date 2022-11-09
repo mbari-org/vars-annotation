@@ -1,46 +1,104 @@
 package org.mbari.vars.ui.javafx.mlstage;
 
+
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.transformation.FilteredList;
-import org.mbari.vars.services.model.Framegrab;
-import org.mbari.vars.services.model.Media;
+import mbarix4j.awt.image.ImageUtilities;
+import org.mbari.vars.services.impl.ml.MegalodonService;
+
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.javafx.ImageArchiveServiceDecorator;
 import org.mbari.vars.ui.services.FrameCaptureService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
+import javafx.embed.swing.SwingFXUtils;
 
 public class MachineLearningStageController {
 
     private final UIToolBox toolBox;
+    private static final Logger log = LoggerFactory.getLogger(MachineLearningStageController.class);
+    private MachineLearningStage machineLearningStage;
 
     public MachineLearningStageController(UIToolBox toolBox) {
         this.toolBox = toolBox;
+        this.machineLearningStage = new MachineLearningStage(toolBox);
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(ApplyMLToVideoCmd.class)
+                .forEach(e -> this.analyzeAsync());
     }
 
-    public void analyze() {
-        var media = toolBox.getData().getMedia();
-        var mediaPlayer = toolBox.getMediaPlayer();
-        if (mediaPlayer != null && media != null) {
-
-            // Frame grab
-            var imageFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".png");
-            var opt = FrameCaptureService.capture(imageFile, media, mediaPlayer);
-            if (opt.isPresent()) {
-                // TODO handle image
+    public void analyzeAsync() {
+        new Thread(() -> {
+            try {
+                analyze();
+            } catch (Exception e) {
+                log.atWarn()
+                        .setCause(e)
+                        .log("ML analysis failed.");
             }
-            else {
-                // TODO handle failure to capture image
-            }
+        }
+        ).start();
+    }
 
-            // TODO framecapture (but don't save)
-            // TODO send image to Ml API
-            // TODO convert API response to Localizations
-            // TODO handle actions from Stage (cancel, save localizations, save localization and image)
+    public void analyze() throws IOException {
+        log.atInfo().log("Starting analysis");
+        var mlRemoteUrl = MLSettingsPaneController.getRemoteUrl();
+
+        if (mlRemoteUrl.isPresent()) {
+            log.atInfo().log("Starting analysis using " + mlRemoteUrl.get());
+            var media = toolBox.getData().getMedia();
+            var mediaPlayer = toolBox.getMediaPlayer();
+            if (mediaPlayer != null && media != null) {
+
+                // Frame grab
+                var imageFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".png");
+                log.atInfo().log("Target: " + imageFile);
+                var opt = FrameCaptureService.capture(imageFile, media, mediaPlayer);
+                if (opt.isPresent()) {
+                    var framegrab = opt.get();
+                    if (framegrab.isComplete()) {
+                        log.atInfo().log("Got an image");
+                        // TODO handle image
+                        var service = new MegalodonService(mlRemoteUrl.get());
+                        var bufferedImage = ImageUtilities.toBufferedImage(framegrab.getImage().get());
+                        var localizations = service.predict(bufferedImage);
+                        log.atInfo().log("Found " + localizations.size() + " localizations");
+                        var fxImage = SwingFXUtils.toFXImage(bufferedImage, null);
+                        var locView = localizations.stream()
+                                .map(v -> MLUtil.toLocalization(v, machineLearningStage.getImagePaneController()))
+                                .flatMap(Optional::stream)
+                                .toList();
+
+                        Platform.runLater(() -> {
+                            machineLearningStage.setImage(fxImage);
+                            machineLearningStage.setLocalizations(locView);
+                            machineLearningStage.show();
+                        });
+
+
+                    }
+
+                } else {
+                    // TODO handle failure to capture image
+                }
+
+                // TODO framecapture (but don't save)
+                // TODO send image to Ml API
+                // TODO convert API response to Localizations
+                // TODO handle actions from Stage (cancel, save localizations, save localization and image)
+            }
+        }
+        else {
+            // TODO show dialog to indiacte URL has not been set.
         }
     }
+
+
+
+
 
 
 }

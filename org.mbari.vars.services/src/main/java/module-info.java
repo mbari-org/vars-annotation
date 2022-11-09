@@ -22,6 +22,8 @@ module org.mbari.vars.services {
   requires vcr4j.core;
   requires methanol;
 
+  opens org.mbari.vars.services.impl.ml to com.google.gson;
+
   exports org.mbari.vars.services.gson;
   exports org.mbari.vars.services.impl.annosaurus.v1;
   exports org.mbari.vars.services.impl.annosaurus.v2;

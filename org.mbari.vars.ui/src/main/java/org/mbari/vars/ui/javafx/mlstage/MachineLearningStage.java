@@ -3,6 +3,7 @@ package org.mbari.vars.ui.javafx.mlstage;
 
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -31,6 +32,7 @@ public class MachineLearningStage extends Stage {
 
     public MachineLearningStage(UIToolBox toolBox) {
         this.toolBox = toolBox;
+        init();
     }
 
     private void init() {
@@ -60,6 +62,14 @@ public class MachineLearningStage extends Stage {
 
     public BorderPane getRoot() {
         return (BorderPane) getScene().getRoot();
+    }
+
+    public void setImage(Image image) {
+        imagePaneController.getView().setImage(image);
+    }
+
+    public ImagePaneController getImagePaneController() {
+        return imagePaneController;
     }
 
     public synchronized void setLocalizations(Collection<Localization<RectangleView, ImageView>> locs) {

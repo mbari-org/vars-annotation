@@ -11,6 +11,7 @@ module org.mbari.vars.ui {
   requires javafx.graphics;
   requires javax.inject;
   requires javafx.media;
+  requires javafx.swing;
   requires mbarix4j;
   requires org.controlsfx.controls;
   requires org.kordamp.ikonli.core;
@@ -40,7 +41,9 @@ module org.mbari.vars.ui {
   opens org.mbari.vars.ui.javafx to javafx.fxml;
   opens org.mbari.vars.ui.javafx.abpanel to javafx.fxml;
   opens org.mbari.vars.ui.javafx.imgfx to javafx.fxml;
+  opens org.mbari.vars.ui.javafx.imagestage to com.google.gson, javafx.fxml;
   opens org.mbari.vars.ui.javafx.mediadialog to javafx.fxml;
+  opens org.mbari.vars.ui.javafx.mlstage to javafx.fxml;
   opens org.mbari.vars.ui.javafx.raziel to javafx.fxml;
   opens org.mbari.vars.ui.javafx.rectlabel to javafx.fxml;
   opens org.mbari.vars.ui.javafx.roweditor to javafx.fxml;
@@ -72,5 +75,5 @@ module org.mbari.vars.ui {
   exports org.mbari.vars.ui;
   exports org.mbari.vars.ui.javafx.imagestage;
 
-  opens org.mbari.vars.ui.javafx.imagestage to com.google.gson, javafx.fxml;
+
 }
