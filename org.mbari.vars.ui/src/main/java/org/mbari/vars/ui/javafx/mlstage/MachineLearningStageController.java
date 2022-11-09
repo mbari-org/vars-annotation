@@ -11,7 +11,9 @@ import org.mbari.vars.ui.services.FrameCaptureService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Optional;
 import javafx.embed.swing.SwingFXUtils;
 
@@ -44,28 +46,28 @@ public class MachineLearningStageController {
     }
 
     public void analyze() throws IOException {
-        log.atInfo().log("Starting analysis");
+        log.atDebug().log("Starting ML analysis");
         var mlRemoteUrl = MLSettingsPaneController.getRemoteUrl();
 
         if (mlRemoteUrl.isPresent()) {
-            log.atInfo().log("Starting analysis using " + mlRemoteUrl.get());
+            log.atInfo().log("Starting ML analysis using service at " + mlRemoteUrl.get());
             var media = toolBox.getData().getMedia();
             var mediaPlayer = toolBox.getMediaPlayer();
             if (mediaPlayer != null && media != null) {
 
                 // Frame grab
-                var imageFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".png");
-                log.atInfo().log("Target: " + imageFile);
+                var imageFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".jpg");
+//                log.atInfo().log("Target: " + imageFile);
                 var opt = FrameCaptureService.capture(imageFile, media, mediaPlayer);
                 if (opt.isPresent()) {
                     var framegrab = opt.get();
                     if (framegrab.isComplete()) {
-                        log.atInfo().log("Got an image");
+//                        log.atInfo().log("Got an image");
                         // TODO handle image
                         var service = new MegalodonService(mlRemoteUrl.get());
-                        var bufferedImage = ImageUtilities.toBufferedImage(framegrab.getImage().get());
+                        var bufferedImage = (BufferedImage) framegrab.getImage().get();
                         var localizations = service.predict(bufferedImage);
-                        log.atInfo().log("Found " + localizations.size() + " localizations");
+                        log.atDebug().log("Found " + localizations.size() + " localizations");
                         var fxImage = SwingFXUtils.toFXImage(bufferedImage, null);
                         var locView = localizations.stream()
                                 .map(v -> MLUtil.toLocalization(v, machineLearningStage.getImagePaneController()))
@@ -84,6 +86,7 @@ public class MachineLearningStageController {
                 } else {
                     // TODO handle failure to capture image
                 }
+                Files.delete(imageFile.toPath());
 
                 // TODO framecapture (but don't save)
                 // TODO send image to Ml API

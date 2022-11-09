@@ -67,6 +67,7 @@ public class MegalodonService implements MachineLearningService {
 
         try {
             var imageBytes = ImageUtils.toJpegByteArray(image);
+            log.atInfo().log("Using byte[" + imageBytes.length + "]");
 
             var imagePart = MoreBodyPublishers.ofMediaType(
                     HttpRequest.BodyPublishers.ofByteArray(imageBytes), MediaType.IMAGE_JPEG);
@@ -90,7 +91,7 @@ public class MegalodonService implements MachineLearningService {
 
     private List<MachineLearningLocalization> sendRequest(HttpRequest request) throws IOException, InterruptedException {
         var response = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
-        log.atInfo().log(response);
+        log.atDebug().log(response);
         var prediction = gson.fromJson(response, MachineLearningResponse1.class);
         return prediction.toMLStandard();
     }

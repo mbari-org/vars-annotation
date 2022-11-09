@@ -12,12 +12,9 @@ public class ImageUtils {
     }
 
     private static byte[] toImageByteArray(BufferedImage image, String format) throws IOException {
-        byte[] result = null;
-        try(var os = new ByteArrayOutputStream()) {
-            ImageIO.write(image, format, os);
-            result = os.toByteArray();
-        }
-        return result;
+        var baos = new ByteArrayOutputStream();
+        ImageIO.write(image, format, baos);
+        return baos.toByteArray();
     }
 
     public static byte[] toJpegByteArray(BufferedImage image) throws IOException {
