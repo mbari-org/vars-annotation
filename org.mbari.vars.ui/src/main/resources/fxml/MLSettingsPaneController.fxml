@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -16,6 +16,6 @@
   </rowConstraints>
    <children>
       <Label text="%ml.pane.url" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER" />
-      <TextField fx:id="urlTextField" GridPane.columnIndex="1" />
+      <JFXTextField fx:id="urlTextField" GridPane.columnIndex="1" />
    </children>
 </GridPane>

@@ -3,8 +3,8 @@ package org.mbari.vars.ui.javafx.prefs;
 import com.jfoenix.controls.JFXTabPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.layout.BorderPane;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.javafx.mlstage.MLSettingsPaneController;
 import org.mbari.vars.ui.javafx.raziel.RazielSettingsPaneController;
 import org.mbari.vars.ui.mediaplayers.sharktopoda.localization.LocalizationSettingsPaneController;
 import org.mbari.vars.ui.mediaplayers.MediaPlayers;
@@ -32,24 +32,15 @@ public class PreferencesPaneController implements IPrefs {
         if (root == null) {
             root = new JFXTabPane();
             root.setPrefSize(600, 600);
-            loadConfigurationServerSettingsPane();
-            loadLocalizationSettingsPane();
+            addTab(RazielSettingsPaneController.newInstance());
+            addTab(LocalizationSettingsPaneController.newInstance(toolBox));
+            addTab(MLSettingsPaneController.newInstance());
             loadMediaControlsSettingsPanes();
         }
         return root;
     }
 
-    private void loadLocalizationSettingsPane() {
-        LocalizationSettingsPaneController controller = LocalizationSettingsPaneController.newInstance(toolBox);
-        Tab tab = new Tab(controller.getName());
-        tab.setClosable(false);
-        tab.setContent(controller.getRoot());
-        root.getTabs().add(tab);
-        prefs.add(controller);
-    }
-
-    private void loadConfigurationServerSettingsPane() {
-        var controller = RazielSettingsPaneController.newInstance();
+    private void addTab(SettingsPane controller) {
         var tab = new Tab(controller.getName());
         tab.setClosable(false);
         tab.setContent(controller.getPane());
@@ -62,13 +53,7 @@ public class PreferencesPaneController implements IPrefs {
         List<SettingsPane> settingsPanes = mediaPlayers.getSettingsPanes();
         settingsPanes.stream()
                 .filter(Objects::nonNull)
-                .forEach(settingsPane -> {
-                    Tab tab = new Tab(settingsPane.getName());
-                    tab.setClosable(false);
-                    tab.setContent(settingsPane.getPane());
-                    root.getTabs().add(tab);
-                    prefs.add(settingsPane);
-                });
+                .forEach(this::addTab);
     }
 
     /**

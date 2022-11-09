@@ -67,7 +67,7 @@ public class MLSettingsPaneController implements SettingsPane {
     public static MLSettingsPaneController newInstance() {
         var i18n = Initializer.getToolBox().getI18nBundle();
         return FXMLUtils.newInstance(MLSettingsPaneController.class,
-                "/fxml/MLPrefsPanceController.fxml",
+                "/fxml/MLSettingsPaneController.fxml",
                 i18n);
     }
 

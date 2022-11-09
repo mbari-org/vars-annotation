@@ -41,6 +41,7 @@ public enum Icons {
     GRAIN(Material.GRAIN),
     GRID_ON(Material.GRID_ON),
     IMAGE(Material.IMAGE),
+    IMAGE_SEARCH(Material.IMAGE_SEARCH),
     INSERT_COMMENT(Material.INSERT_COMMENT),
     KEYBOARD_ARROW_RIGHT(Material.KEYBOARD_ARROW_RIGHT),
     LIVE_TV(Material.LIVE_TV),

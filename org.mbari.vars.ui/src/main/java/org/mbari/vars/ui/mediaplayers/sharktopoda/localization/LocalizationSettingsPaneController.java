@@ -6,12 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import org.mbari.vars.core.EventBus;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.App;
-import org.mbari.vars.ui.AppConfig;
 import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.MediaChangedEvent;
-import org.mbari.vars.ui.javafx.prefs.IPrefs;
+import org.mbari.vars.ui.mediaplayers.SettingsPane;
 import org.mbari.vars.ui.util.FXMLUtils;
 
 import java.util.Objects;
@@ -25,7 +21,7 @@ import java.util.function.UnaryOperator;
  * @author Brian Schlining
  * @since 2020-03-03T15:22:00
  */
-public class LocalizationSettingsPaneController implements IPrefs {
+public class LocalizationSettingsPaneController implements SettingsPane {
 
     @FXML
     private GridPane root;
@@ -91,7 +87,7 @@ public class LocalizationSettingsPaneController implements IPrefs {
 
     }
 
-    public GridPane getRoot() {
+    public GridPane getPane() {
         return root;
     }
 
