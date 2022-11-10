@@ -50,4 +50,15 @@ public class BoundingBox {
     public String getGenerator() {
         return generator;
     }
+
+    @Override
+    public String toString() {
+        return "BoundingBox[" +
+                "x=" + x +
+                ", y=" + y +
+                ", width=" + width +
+                ", height=" + height +
+                ", generator=" + generator +
+                ']';
+    }
 }

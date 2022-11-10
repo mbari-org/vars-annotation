@@ -5,9 +5,12 @@ import com.jfoenix.controls.JFXComboBox;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
+import javafx.geometry.Insets;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.RectangleView;
@@ -17,8 +20,8 @@ import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
 public class LocalizationEditorController {
 
     private HBox root;
-    private JFXCheckBox checkBox;
-    private JFXComboBox<String> conceptComboBox;
+    private CheckBox checkBox;
+    private ComboBox<String> conceptComboBox;
     private final UIToolBox toolBox;
     private final Localization<RectangleView, ImageView> localization;
 
@@ -40,15 +43,24 @@ public class LocalizationEditorController {
             }
         });
 
-        Color c = (Color) localization.getDataView().getView().getFill();
-        Color nonOpaque = Color.color(c.getRed(), c.getGreen(), c.getBlue());
-        checkBox.setCheckedColor(nonOpaque);
-        conceptComboBox.setFocusColor(nonOpaque);
+        checkBox = new JFXCheckBox();
+//        Color c = (Color) localization.getDataView().getView().getFill();
+//        Color nonOpaque = Color.color(c.getRed(), c.getGreen(), c.getBlue());
+//        checkBox.setCheckedColor(nonOpaque);
+//        conceptComboBox.focusedProperty().addListener((obs, oldv, newv) -> {
+//            if (newv) {
+//                conceptComboBox.setBorder(new Border(new BorderStroke(nonOpaque, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+//            }
+//            else {
+//                conceptComboBox.setBorder(null);
+//            }
+//        });
 
         checkBox.selectedProperty()
                 .addListener((obs, oldv, newv) -> localization.setVisible(newv));
         checkBox.setSelected(true);
 
+        root = new HBox();
         root.getChildren().addAll(checkBox, conceptComboBox);
 
         loadComboBoxData();

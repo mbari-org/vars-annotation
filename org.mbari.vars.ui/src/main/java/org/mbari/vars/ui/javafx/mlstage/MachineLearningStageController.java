@@ -2,7 +2,9 @@ package org.mbari.vars.ui.javafx.mlstage;
 
 
 import javafx.application.Platform;
-import mbarix4j.awt.image.ImageUtilities;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.paint.Color;
 import org.mbari.vars.services.impl.ml.MegalodonService;
 
 import org.mbari.vars.ui.UIToolBox;
@@ -22,6 +24,7 @@ public class MachineLearningStageController {
     private final UIToolBox toolBox;
     private static final Logger log = LoggerFactory.getLogger(MachineLearningStageController.class);
     private MachineLearningStage machineLearningStage;
+
 
     public MachineLearningStageController(UIToolBox toolBox) {
         this.toolBox = toolBox;
@@ -69,13 +72,15 @@ public class MachineLearningStageController {
                         var localizations = service.predict(bufferedImage);
                         log.atDebug().log("Found " + localizations.size() + " localizations");
                         var fxImage = SwingFXUtils.toFXImage(bufferedImage, null);
-                        var locView = localizations.stream()
-                                .map(v -> MLUtil.toLocalization(v, machineLearningStage.getImagePaneController()))
-                                .flatMap(Optional::stream)
-                                .toList();
 
                         Platform.runLater(() -> {
                             machineLearningStage.setImage(fxImage);
+                            // Don't add localizaitons unti the image has been set! Otherwise they will be cropped out of existence!
+                            var locView = localizations.stream()
+                                    .map(v -> MLUtil.toLocalization(v, machineLearningStage.getImagePaneController()))
+                                    .flatMap(Optional::stream)
+                                    .toList();
+                            log.atDebug().log("Created " + locView.size() + " Localization UI objects");
                             machineLearningStage.setLocalizations(locView);
                             machineLearningStage.show();
                         });
