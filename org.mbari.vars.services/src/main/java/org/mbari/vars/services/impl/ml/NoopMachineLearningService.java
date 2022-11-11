@@ -16,7 +16,7 @@ public class NoopMachineLearningService implements MachineLearningService {
     }
 
     @Override
-    public List<MachineLearningLocalization> predict(BufferedImage image) {
+    public List<MachineLearningLocalization> predict(byte[] image) {
         return Collections.emptyList();
     }
 }

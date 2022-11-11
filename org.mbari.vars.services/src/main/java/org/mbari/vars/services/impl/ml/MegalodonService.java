@@ -63,14 +63,13 @@ public class MegalodonService implements MachineLearningService {
     }
 
     @Override
-    public List<MachineLearningLocalization> predict(BufferedImage image) {
+    public List<MachineLearningLocalization> predict(byte[] jpegBytes) {
 
         try {
-            var imageBytes = ImageUtils.toJpegByteArray(image);
-            log.atInfo().log("Using byte[" + imageBytes.length + "]");
+            log.atDebug().log("Using byte[" + jpegBytes.length + "] for prediction");
 
             var imagePart = MoreBodyPublishers.ofMediaType(
-                    HttpRequest.BodyPublishers.ofByteArray(imageBytes), MediaType.IMAGE_JPEG);
+                    HttpRequest.BodyPublishers.ofByteArray(jpegBytes), MediaType.IMAGE_JPEG);
             var multipartBody = MultipartBodyPublisher.newBuilder()
                     .textPart("model_type", "image_queue_yolov5", StandardCharsets.UTF_8)
                     .formPart(
@@ -84,7 +83,7 @@ public class MegalodonService implements MachineLearningService {
         catch (Exception e) {
             log.atWarn()
                     .setCause(e)
-                    .log("Failed to run prediction on " + image.getWidth() + " x " + image.getHeight()  +" image");
+                    .log("Failed to run prediction on image");
         }
         return null;
     }

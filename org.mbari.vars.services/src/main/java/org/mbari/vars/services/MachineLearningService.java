@@ -10,6 +10,6 @@ public interface MachineLearningService {
 
     List<MachineLearningLocalization> predict(Path image);
 
-    List<MachineLearningLocalization> predict(BufferedImage image);
+    List<MachineLearningLocalization> predict(byte[] jpegBytes);
 
 }

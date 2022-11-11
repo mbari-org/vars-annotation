@@ -16,4 +16,9 @@ public class NoopImageArchiveService implements ImageArchiveService {
     public CompletableFuture<ImageUploadResults> locate(String cameraId, String deploymentId, String name) {
         return CompletableFuture.completedFuture(null);
     }
+
+    @Override
+    public CompletableFuture<ImageUploadResults> upload(String cameraId, String deploymentId, String name, byte[] imageByes) {
+        return CompletableFuture.failedFuture(new UnsupportedOperationException());
+    }
 }

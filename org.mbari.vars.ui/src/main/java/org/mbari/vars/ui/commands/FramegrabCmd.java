@@ -142,7 +142,7 @@ public class FramegrabCmd implements Command {
 
         // -- Capture image
         File imageFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".png");
-        Optional<Framegrab> framegrabOpt = FrameCaptureService.capture(imageFile, media, mediaPlayer);
+        Optional<ImageData> framegrabOpt = FrameCaptureService.capture(imageFile, media, mediaPlayer);
 
         if (framegrabOpt.isEmpty()) {
             //log.warn("No framegrab was captured for {} at {}", media.getVideoName(), media.getUri());
@@ -153,12 +153,12 @@ public class FramegrabCmd implements Command {
         }
         else {
 
-            Framegrab framegrab = framegrabOpt.get();
+            ImageData imageData = framegrabOpt.get();
             //log.info("Captured image at {}", framegrab.getVideoIndex());
 
             ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
             // -- 1. Upload image to server and register in annotation service
-            decorator.createImageFromExistingImagePath(media, framegrab, imageFile.toPath())
+            decorator.createImageFromExistingImagePath(media, imageData, imageFile.toPath())
                     .thenCompose(pngOpt -> {
                         if (pngOpt.isPresent()) {
                             CreatedImageData createdImageData = pngOpt.get();
@@ -171,7 +171,7 @@ public class FramegrabCmd implements Command {
                                 eventBus.send(new AnnotationsSelectedEvent(annotationRef));
                                 // -- 3. Create a jpeg
                                 return decorator.createdCompressedFramegrab(media,
-                                        framegrab,
+                                        imageData,
                                         createdImageData.getImageUploadResults())
                                         .thenApply(jpgOpt -> {
                                             jpgOpt.ifPresent(cid -> jpgImageRef = cid.getImage());

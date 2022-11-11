@@ -21,8 +21,9 @@ module org.mbari.vars.services {
   requires typesafe.config;
   requires vcr4j.core;
   requires methanol;
+    requires okio;
 
-  opens org.mbari.vars.services.impl.ml to com.google.gson;
+    opens org.mbari.vars.services.impl.ml to com.google.gson;
 
   exports org.mbari.vars.services.gson;
   exports org.mbari.vars.services.impl.annosaurus.v1;

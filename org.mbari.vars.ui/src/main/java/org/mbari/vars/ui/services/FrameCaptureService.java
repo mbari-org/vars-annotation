@@ -2,19 +2,25 @@ package org.mbari.vars.ui.services;
 
 import org.mbari.vars.services.ImageCaptureService;
 import org.mbari.vars.services.model.Framegrab;
+import org.mbari.vars.services.model.ImageData;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.time.Instant;
 import java.util.Optional;
 
 public class FrameCaptureService {
 
-    public static Optional<Framegrab> capture(File imageFile,
+    private static final Logger log = LoggerFactory.getLogger(FrameCaptureService.class);
+
+    public static Optional<ImageData> capture(File imageFile,
                                               Media media,
                                               MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer) {
         try {
@@ -29,10 +35,18 @@ public class FrameCaptureService {
                         Instant recordedDate = media.getStartTimestamp().plus(elapsedTime);
                         framegrab.setVideoIndex(new VideoIndex(elapsedTime, recordedDate));
                     });
-            return Optional.of(framegrab);
+            if (framegrab.isComplete()) {
+                var imageData = new ImageData(media.getVideoReferenceUuid(),
+                        framegrab.getVideoIndex().get(),
+                        (BufferedImage) framegrab.getImage().get());
+                return Optional.of(imageData);
+            }
+            return Optional.empty();
+
         } catch (Exception e) {
-            // TODO show error
+            log.atWarn().setCause(e).log("Failed capture image from " + media.getUri());
             return Optional.empty();
         }
     }
+
 }
