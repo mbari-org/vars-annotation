@@ -6,6 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -21,6 +22,7 @@ import org.mbari.vars.ui.javafx.imagestage.ImageStage2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -34,6 +36,9 @@ public class MachineLearningStage extends Stage {
     private VBox rightPane = new VBox();
     private final UIToolBox toolBox;
     private ObjectProperty<Color> fill = new SimpleObjectProperty<>(Color.valueOf("#FF980030"));
+    private Button saveAnnotationsButton;
+    private Button saveAllButton;
+    private Button cancelButton;
 
     public MachineLearningStage(UIToolBox toolBox) {
         this.toolBox = toolBox;
@@ -63,12 +68,18 @@ public class MachineLearningStage extends Stage {
 
         var expander = new Region();
         HBox.setHgrow(expander, Priority.ALWAYS);
-        var icon = Icons.SAVE.standardSize();
-        var button = new JFXButton(null, icon);
-        var hbox = new HBox(expander, button);
-        button.setOnAction(event -> {
-            log.atInfo().log("Save clicked");
-        });
+        var saveAnnotationsIcon = Icons.SAVE.standardSize();
+
+        saveAnnotationsButton = new JFXButton(null, saveAnnotationsIcon);
+
+
+        var saveAllIcon = Icons.UPLOAD_FILE.standardSize();
+        saveAllButton = new JFXButton(null, saveAllIcon);
+
+        var cancelIcon = Icons.CANCEL.standardSize();
+        cancelButton = new JFXButton(null, cancelIcon);
+        var hbox = new HBox(expander, cancelButton, saveAnnotationsButton, saveAllButton);
+
         root.setBottom(hbox);
 
         Scene scene = new Scene(root);
@@ -89,6 +100,18 @@ public class MachineLearningStage extends Stage {
         return imagePaneController;
     }
 
+    public Button getSaveAnnotationsButton() {
+        return saveAnnotationsButton;
+    }
+
+    public Button getSaveAllButton() {
+        return saveAllButton;
+    }
+
+    public Button getCancelButton() {
+        return cancelButton;
+    }
+
     public synchronized void setLocalizations(Collection<Localization<RectangleView, ImageView>> locs) {
         rightPane.getChildren().clear();
         localizations.forEach(loc -> loc.setVisible(false));
@@ -101,5 +124,9 @@ public class MachineLearningStage extends Stage {
             loc.getDataView().setColor(fill.get());
             loc.setVisible(true);
         });
+    }
+
+    public List<Localization<RectangleView, ImageView>> getLocalizations() {
+        return List.copyOf(localizations);
     }
 }

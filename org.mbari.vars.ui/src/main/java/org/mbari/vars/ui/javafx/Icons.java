@@ -61,6 +61,7 @@ public enum Icons {
     STOP(Material.STOP),
     TIMELINE(Material.TIMELINE),
     UNDO(Material.UNDO),
+    UPLOAD_FILE(Material.UPLOAD_FILE),
     VERTICAL_ALIGN_BOTTOM(Material.VERTICAL_ALIGN_BOTTOM),
     VIDEO_LIBRARY(Material.VIDEO_LIBRARY),
     VIEW_COLUMN(Material.VIEW_COLUMN);

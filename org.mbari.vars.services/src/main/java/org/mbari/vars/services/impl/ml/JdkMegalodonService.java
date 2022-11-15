@@ -32,8 +32,11 @@ import java.util.UUID;
  *   file@'/Users/brian/Downloads/testimages/20220302T214640Z--77cccf9c-691b-4eb4-bd74-49c290889dae.jpeg'
  *     </code>
  * </pre>
+ *
+ * FIXME: This is having an issue where it is only working when the Charles proxy is running.
+ * Then it works find. Otherwise it just seems to hang.  Use the OkHttp implementation instead.
  */
-public class MegalodonService implements MachineLearningService {
+public class JdkMegalodonService implements MachineLearningService {
 
     // Example: http://prometheus.shore.mbari.org:8082/predictor/
     private final String endpoint;
@@ -41,9 +44,9 @@ public class MegalodonService implements MachineLearningService {
     private final Gson gson = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create();
-    private static final Logger log = LoggerFactory.getLogger(MegalodonService.class);
+    private static final Logger log = LoggerFactory.getLogger(JdkMegalodonService.class);
 
-    public MegalodonService(String endpoint) {
+    public JdkMegalodonService(String endpoint) {
         this.endpoint = endpoint;
         this.client = Methanol
                 .newBuilder()
@@ -58,7 +61,8 @@ public class MegalodonService implements MachineLearningService {
         var mediaType = image.endsWith(".png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG;
 
         try {
-            var multipartBody = MultipartBodyPublisher.newBuilder(.textPart("model_type", "image_queue_yolov5", StandardCharsets.UTF_8)
+            var multipartBody = MultipartBodyPublisher.newBuilder()
+                    .textPart("model_type", "image_queue_yolov5", StandardCharsets.UTF_8)
                     .filePart("file", image, mediaType)
                     .build();
             var request = MutableRequest.POST(endpoint, multipartBody)
