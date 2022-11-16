@@ -26,6 +26,10 @@ public class VamWebServiceFactory extends RetrofitServiceFactory {
     }
 
     public Gson getGson() {
+        return newGson();
+    }
+
+    public static Gson newGson() {
         GsonBuilder gsonBuilder = new GsonBuilder()
                 .setPrettyPrinting()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
@@ -37,6 +41,5 @@ public class VamWebServiceFactory extends RetrofitServiceFactory {
         // Register java.time.Instant
         return Converters.registerInstant(gsonBuilder)
                 .create();
-
     }
 }

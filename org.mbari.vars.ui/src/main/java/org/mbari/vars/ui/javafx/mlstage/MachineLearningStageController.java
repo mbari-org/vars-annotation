@@ -2,18 +2,23 @@ package org.mbari.vars.ui.javafx.mlstage;
 
 
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import org.mbari.vars.core.util.Requirements;
-import org.mbari.vars.services.impl.ml.JdkMegalodonService;
 
 import org.mbari.vars.services.impl.ml.OkHttpMegalodonService;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.commands.BulkCreateAnnotations;
+import org.mbari.vars.ui.commands.FramegrabUploadCmd;
 import org.mbari.vars.ui.services.MLAnalysisService;
+import org.mbari.vars.ui.services.MLImageInference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
+
 import javafx.embed.swing.SwingFXUtils;
 
 public class MachineLearningStageController {
@@ -21,6 +26,7 @@ public class MachineLearningStageController {
     private final UIToolBox toolBox;
     private static final Logger log = LoggerFactory.getLogger(MachineLearningStageController.class);
     private MachineLearningStage machineLearningStage;
+    private ObjectProperty<MLImageInference> inference = new SimpleObjectProperty<>();
 
 
     // TODO use Executor instead fo single thread
@@ -37,41 +43,66 @@ public class MachineLearningStageController {
                 .forEach(e -> this.analyzeAsync());
 
         machineLearningStage.getCancelButton()
-                .setOnAction(evt -> {
-            machineLearningStage.setLocalizations(Collections.emptyList());
-            machineLearningStage.hide();
-        });
+                .setOnAction(evt -> done());
 
         machineLearningStage.getSaveAnnotationsButton()
-                .setOnAction(evt -> {
-
-                });
+                .setOnAction(evt -> saveAnnotations());
 
         machineLearningStage.getSaveAllButton()
-                .setOnAction(event -> {
+                .setOnAction(event -> saveAll());
 
+        inference.addListener((obs, oldv, newv) -> {
+            if (newv != null) {
+                var fxImage = SwingFXUtils.toFXImage(newv.imageData().getBufferedImage(), null);
+                Platform.runLater(() -> {
+                    machineLearningStage.setImage(fxImage);
+                    // Don't add localizaitons unti the image has been set! Otherwise they will be cropped out of existence!
+                    var locView = newv.localizations()
+                            .stream()
+                            .map(v -> MLUtil.toLocalization(v, machineLearningStage.getImagePaneController()))
+                            .flatMap(Optional::stream)
+                            .toList();
+                    log.atDebug().log("Created " + locView.size() + " Localization UI objects");
+                    machineLearningStage.setLocalizations(locView);
+                    machineLearningStage.show();
                 });
-
+            } else {
+                machineLearningStage.setLocalizations(Collections.emptyList());
+                machineLearningStage.setImage(null);
+            }
+        });
 
     }
 
     private void done() {
-        machineLearningStage.setLocalizations(Collections.emptyList());
         machineLearningStage.hide();
+        inference.set(null);
     }
 
     private void saveAnnotations() {
-        var locs = machineLearningStage.getLocalizations();
+        var mlInference = inference.get();
+        if (mlInference != null) {
+            final var observer = toolBox.getData().getUser().getUsername();
+            final var imageData = mlInference.imageData();
+            final var locs = machineLearningStage.getLocalizations();
+            final var annos = locs.stream()
+                    .flatMap(loc -> MLUtil.toAnnotation(observer,
+                            imageData.getVideoIndex(), imageData.getVideoReferenceUuid(), loc).stream())
+                    .toList();
+            toolBox.getEventBus().send(new BulkCreateAnnotations(annos));
+        }
         done();
-        // TODO save annotations via cmd
-
     }
 
     private void saveAll() {
-        var locs = machineLearningStage.getLocalizations();
-        done();
-        // TODO save framegrab then save annotations
+        var mlInference = inference.get();
+        if (mlInference != null) {
+            var imageData = mlInference.imageData();
+            toolBox.getEventBus().send(new FramegrabUploadCmd(imageData));
+            saveAnnotations();
+        }
     }
+
 
     public void analyzeAsync() {
         new Thread(() -> {
@@ -90,20 +121,8 @@ public class MachineLearningStageController {
         var mlRemoteUrlOpt = MLSettingsPaneController.getRemoteUrl();
         Requirements.validate(mlRemoteUrlOpt.isPresent(), "The URL for the machine learning web service was not set");
         var mlService = new OkHttpMegalodonService(mlRemoteUrlOpt.get());
-        var framegrabRecord = MLAnalysisService.analyzeCurrentElapsedTime(toolBox, mlService);
-        var fxImage = SwingFXUtils.toFXImage(framegrabRecord.imageData().getBufferedImage(), null);
-        Platform.runLater(() -> {
-            machineLearningStage.setImage(fxImage);
-            // Don't add localizaitons unti the image has been set! Otherwise they will be cropped out of existence!
-            var locView = framegrabRecord.localizations()
-                    .stream()
-                    .map(v -> MLUtil.toLocalization(v, machineLearningStage.getImagePaneController()))
-                    .flatMap(Optional::stream)
-                    .toList();
-            log.atDebug().log("Created " + locView.size() + " Localization UI objects");
-            machineLearningStage.setLocalizations(locView);
-            machineLearningStage.show();
-        });
+        var mlImageInference = MLAnalysisService.analyzeCurrentElapsedTime(toolBox, mlService);
+        inference.set(mlImageInference);
     }
 
 

@@ -19,6 +19,7 @@ import org.mbari.imgfx.roi.RectangleView;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.javafx.Icons;
 import org.mbari.vars.ui.javafx.imagestage.ImageStage2;
+import org.mbari.vars.ui.services.MLImageInference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,6 +87,10 @@ public class MachineLearningStage extends Stage {
         scene.getStylesheets()
                 .addAll(toolBox.getStylesheets());
         setScene(scene);
+    }
+
+    public void setMLImageInference(MLImageInference mlImageInference) {
+
     }
 
     public void setImage(Image image) {
