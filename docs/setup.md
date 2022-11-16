@@ -56,7 +56,26 @@ Then on the network tab set the control port:
 
 ### Machine Leaning Configuration
 
+#### ML Configuration
+
 VARS can send the current video frame to a remote server where machine learning can be applied to the image. To configure, simply enter the URL to the ML endpoint. For internal use, that endpoint is: <http://prometheus.shore.mbari.org:8082/predictor/>
 
 ![Machine Learning Endpoint](assets/images/MachineLearningConfiguration.png)
+
+#### ML Usage
+
+To use machine learning, click on the ML button. This will show a window with prposed annotations. These annotations are NOT sent to teh database until you accept them with one of the save buttons at the bottom of the window.
+
+![Machine Learning Button](assets/images/MachineLearningButton.png)
+
+This will grab the current frame of video and display it like:
+
+![Machine Learning Window](assets/images/MLDisplay.png)
+
+You can remove ml proposed annotations by removing the check next to the annotation. You can edit the annotation by clicking by the combo box. Once you've madde teh edits you can use one fo the three buttons at the bottom. They are:
+
+1. Cancel (nothing is saved to the database)
+2. Save the annotations only. This will send them to the database and display them in VARS.
+3. Save annotations and image. This will create a framegrab from the ML window as well as save the anntoations to VARS>
+
 
