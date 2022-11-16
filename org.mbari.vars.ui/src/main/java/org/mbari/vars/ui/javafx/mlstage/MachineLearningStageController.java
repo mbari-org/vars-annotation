@@ -83,11 +83,17 @@ public class MachineLearningStageController {
         var mlInference = inference.get();
         if (mlInference != null) {
             final var observer = toolBox.getData().getUser().getUsername();
+            final var group = toolBox.getData().getGroup();
+            final var activity = toolBox.getData().getActivity();
             final var imageData = mlInference.imageData();
             final var locs = machineLearningStage.getLocalizations();
             final var annos = locs.stream()
                     .flatMap(loc -> MLUtil.toAnnotation(observer,
-                            imageData.getVideoIndex(), imageData.getVideoReferenceUuid(), loc).stream())
+                            group,
+                            activity,
+                            imageData.getVideoIndex(),
+                            imageData.getVideoReferenceUuid(),
+                            loc).stream())
                     .toList();
             toolBox.getEventBus().send(new BulkCreateAnnotations(annos));
         }

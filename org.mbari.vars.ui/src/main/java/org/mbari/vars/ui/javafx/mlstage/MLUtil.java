@@ -1,8 +1,6 @@
 package org.mbari.vars.ui.javafx.mlstage;
 
-import com.google.gson.Gson;
 import javafx.scene.image.ImageView;
-import org.mbari.imgfx.Autoscale;
 import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.RectangleView;
@@ -13,6 +11,7 @@ import org.mbari.vcr4j.VideoIndex;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import static org.mbari.vars.core.util.MathUtil.doubleToInt;
 
 public class MLUtil {
 
@@ -33,6 +32,8 @@ public class MLUtil {
     }
 
     public static Optional<Annotation> toAnnotation(String observer,
+                                                    String group,
+                                                    String activity,
                                                     VideoIndex videoIndex,
                                                     UUID videoReferenceUuid,
                                                     Localization<RectangleView, ImageView> localization) {
@@ -53,13 +54,12 @@ public class MLUtil {
             final var concept = localization.labelProperty().get();
             final var annotation = new Annotation(concept, observer, videoIndex, videoReferenceUuid);
             annotation.setAssociations(List.of(association));
+            annotation.setGroup(group);
+            annotation.setActivity(activity);
             return Optional.of(annotation);
         }
         return Optional.empty();
 
     }
 
-    public static int doubleToInt(double d) {
-        return Math.toIntExact(Math.round(d));
-    }
 }

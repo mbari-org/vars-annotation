@@ -1,6 +1,7 @@
 package org.mbari.vars.services.model;
 
 import java.util.UUID;
+import static org.mbari.vars.core.util.MathUtil.doubleToInt;
 
 /**
  * Bean class used for serializing/deserializing bounding box info into JSON
@@ -69,6 +70,9 @@ public class BoundingBox {
     public String getProject() {
         return project;
     }
+
+
+
 
     @Override
     public String toString() {
