@@ -166,11 +166,11 @@ public class AnnotationTableController {
 
     private void scrollTo(Annotation anno) {
         if (!isVisible(anno)) {
-            scrollTo(anno);
+            tableView.scrollTo(anno);
         }
 
         if (!isVisible(anno)) {
-            scrollTo(anno);
+            tableView.scrollTo(anno);
         }
     }
 
@@ -178,6 +178,7 @@ public class AnnotationTableController {
         int i = tableView.getItems().indexOf(anno);
         if (i >= 0) {
             int[] visibleRows = getVisibleRows();
+//            log.atWarn().log(() -> "i = %d, visible is %d - %d".formatted(i, visibleRows[0], visibleRows[1]));
             return i >= visibleRows[0] && i <= visibleRows[1];
         }
         return false;
