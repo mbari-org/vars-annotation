@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.javafx.annotable;
 
-import javafx.application.Platform;
 import javafx.scene.control.skin.TableViewSkin;
 import javafx.scene.control.skin.VirtualFlow;
 import io.reactivex.Observable;
@@ -14,7 +13,6 @@ import org.mbari.vars.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
 import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.ui.javafx.shared.TableViewExt;
 import org.mbari.vars.ui.messages.SeekMsg;
 import org.mbari.vars.ui.javafx.shared.AnnotationTableViewFactory;
 import org.mbari.vars.ui.UIToolBox;
