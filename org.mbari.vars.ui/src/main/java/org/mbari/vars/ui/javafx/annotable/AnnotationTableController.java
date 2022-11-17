@@ -159,40 +159,34 @@ public class AnnotationTableController {
                 annotations.forEach(selectionModel::select);
                 annotations.stream()
                         .findFirst()
-                        .ifPresent(anno -> {
-                            int i = tableView.getItems().indexOf(anno);
-                            if (i >= 0) {
-                                int[] visibleRows = getVisibleRows();
-//                                log.atWarn().log("WANTED: " + i + ", VISIBLE: " + visibleRows[0] + " to " + visibleRows[1]);
-                                if (i < visibleRows[0] || i > visibleRows[1]) {
-                                    tableView.scrollTo(i);
-//                                    Platform.runLater(() -> tableView.scrollTo(i));
-                                }
-                            }
-                        });
+                        .ifPresent(this::scrollTo);
             }
         });
+    }
+
+    private void scrollTo(Annotation anno) {
+        if (!isVisible(anno)) {
+            scrollTo(anno);
+        }
+
+        if (!isVisible(anno)) {
+            scrollTo(anno);
+        }
+    }
+
+    private boolean isVisible(Annotation anno) {
+        int i = tableView.getItems().indexOf(anno);
+        if (i >= 0) {
+            int[] visibleRows = getVisibleRows();
+            return i >= visibleRows[0] && i <= visibleRows[1];
+        }
+        return false;
     }
 
 
     public TableView<Annotation> getTableView() {
         if (tableView == null) {
             tableView = AnnotationTableViewFactory.newTableView(i18n);
-//            tableView.getSelectionModel()
-//                    .selectedItemProperty()
-//                    .addListener((obs, oldv, newv) -> {
-//                        if (newv != null && oldv != newv) {
-////                            Platform.runLater(() -> tableView.scrollTo(newv));
-//                            int i = tableView.getItems().indexOf(newv);
-//                            if (i >= 0) {
-//                                int[] visibleRows = getVisibleRows();
-//                                log.atWarn().log("WANTED: " + i + ", VISIBLE: " + visibleRows[0] + " to " + visibleRows[1]);
-//                                if (i < visibleRows[0] || i > visibleRows[1]) {
-//                                    Platform.runLater(() -> tableView.scrollTo(i));
-//                                }
-//                            }
-//                        }
-//                    });
 
             TableView.TableViewSelectionModel<Annotation> selectionModel = tableView.getSelectionModel();
             selectionModel.setSelectionMode(SelectionMode.MULTIPLE);

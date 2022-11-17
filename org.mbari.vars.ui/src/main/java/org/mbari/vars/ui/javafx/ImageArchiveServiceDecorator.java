@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  */
 public class ImageArchiveServiceDecorator {
 
-    private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("uuuuMMdd'T'HHmmss'Z'")
+    private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("uuuuMMdd'T'HHmmss.SSS'Z'")
             .withZone(ZoneOffset.UTC);
 
 
