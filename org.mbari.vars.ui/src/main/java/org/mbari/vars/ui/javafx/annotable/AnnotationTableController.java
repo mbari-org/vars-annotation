@@ -168,10 +168,6 @@ public class AnnotationTableController {
         if (!isVisible(anno)) {
             tableView.scrollTo(anno);
         }
-
-        if (!isVisible(anno)) {
-            tableView.scrollTo(anno);
-        }
     }
 
     private boolean isVisible(Annotation anno) {
@@ -188,6 +184,10 @@ public class AnnotationTableController {
     public TableView<Annotation> getTableView() {
         if (tableView == null) {
             tableView = AnnotationTableViewFactory.newTableView(i18n);
+
+            // When less than one, cells are individually sized adn positioned. This is a big
+            // performance hit. Issue #128
+            tableView.fixedCellSizeProperty().set(-1D);
 
             TableView.TableViewSelectionModel<Annotation> selectionModel = tableView.getSelectionModel();
             selectionModel.setSelectionMode(SelectionMode.MULTIPLE);
