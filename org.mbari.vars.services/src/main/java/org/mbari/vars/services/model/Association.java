@@ -159,4 +159,6 @@ public class Association implements Cloneable, Details {
             return a.getLinkValue().compareTo(b.getLinkValue());
         }
     };
+
+    public static final Comparator<Association> ALPHABETICAL_COMPARATOR = Comparator.comparing(Association::toString);
 }

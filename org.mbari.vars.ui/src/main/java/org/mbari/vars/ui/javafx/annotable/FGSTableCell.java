@@ -19,14 +19,9 @@ public class FGSTableCell extends TableCell<Annotation, FGSValue> {
     private Text imageIcon = Icons.IMAGE.size(20);
     private Text sampleIcon = Icons.NATURE_PEOPLE.size(20);
     private Text concurrentIcon = Icons.TIMELINE.size(20);
-
     private Text jsonIcon = Icons.FORMAT_SHAPES.size(20);
 
-
-
     private final HBox graphic = new HBox();
-//    private final GridPane graphic = new GridPane();
-
 
     public FGSTableCell() {
         setGraphic(graphic);
@@ -45,11 +40,6 @@ public class FGSTableCell extends TableCell<Annotation, FGSValue> {
                 // Do nothing
             }
             else {
-//                graphic.add(imageIcon, 0, 0);
-//                graphic.add(sampleIcon, 0, 1);
-//                graphic.add(concurrentIcon, 1, 0);
-//                graphic.add(jsonIcon, 1, 1);
-
                 graphic.getChildren().addAll(imageIcon, sampleIcon, concurrentIcon, jsonIcon);
                 String imageStyle = (item == null || !item.hasImage()) ? "icon-inactive" : "icon-active-image";
                 String sampleStyle = (item == null || !item.hasSample()) ? "icon-inactive" : "icon-active-sample";

@@ -21,13 +21,13 @@ public class FGSValue {
         this.annotation = annotation;
     }
 
-    boolean hasImage() {
+    public boolean hasImage() {
         return annotation != null &&
                 annotation.getImages() != null &&
                 !annotation.getImages().isEmpty();
     }
 
-    boolean hasSample() {
+    public boolean hasSample() {
         return annotation != null &&
                 annotation.getAssociations() != null &&
                 annotation.getAssociations()
@@ -37,7 +37,7 @@ public class FGSValue {
                         );
     }
 
-    boolean hasJson() {
+    public boolean hasJson() {
         return annotation != null &&
                 annotation.getAssociations() != null &&
                 annotation.getAssociations()
@@ -45,7 +45,7 @@ public class FGSValue {
                         .anyMatch(a -> "application/json".equals(a.getMimeType()));
     }
 
-    boolean isConcurrent() {
+    public boolean isConcurrent() {
         Media media = Initializer.getToolBox().getData().getMedia();
         return media != null &&
                 annotation != null &&

@@ -12,6 +12,7 @@ dependencies {
     implementation 'com.typesafe:config'
     implementation 'javax.inject:javax.inject'
     implementation 'org.kordamp.ikonli:ikonli-javafx'
+    implementation 'org.kordamp.ikonli:ikonli-swing'
     implementation 'org.kordamp.ikonli:ikonli-material-pack'
     implementation 'org.zeromq:jeromq'
     implementation 'org.mbari:imgfx'
@@ -20,6 +21,7 @@ dependencies {
     implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client'
     implementation 'org.mbari:mbarix4j'
     implementation 'org.slf4j:slf4j-api'
+    implementation 'org.swinglabs.swingx:swingx-all'
 
 
 //    implementation('io.reactivex.rxjava2:rxjavafx') {
