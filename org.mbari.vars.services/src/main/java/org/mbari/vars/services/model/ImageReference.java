@@ -1,5 +1,7 @@
 package org.mbari.vars.services.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.net.URL;
 import java.time.Instant;
 import java.util.UUID;
@@ -15,6 +17,12 @@ public class ImageReference implements Cloneable {
     private String format;
     private Instant lastUpdatedTime;
 
+    @SerializedName("width_pixels")
+    private Integer width;
+
+    @SerializedName("height_pixels")
+    private Integer height;
+
     public ImageReference() {
     }
 
@@ -28,6 +36,8 @@ public class ImageReference implements Cloneable {
         url = i.url;
         format = i.format;
         lastUpdatedTime = i.lastUpdatedTime;
+        width = i.width;
+        height = i.height;
     }
 
     public UUID getUuid() {
@@ -68,5 +78,21 @@ public class ImageReference implements Cloneable {
 
     public void setLastUpdatedTime(Instant lastUpdatedTime) {
         this.lastUpdatedTime = lastUpdatedTime;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 }

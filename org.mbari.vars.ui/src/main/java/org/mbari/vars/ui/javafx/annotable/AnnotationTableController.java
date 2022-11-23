@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.javafx.annotable;
 
-import javafx.application.Platform;
 import javafx.scene.control.skin.TableViewSkin;
 import javafx.scene.control.skin.VirtualFlow;
 import io.reactivex.Observable;
@@ -14,7 +13,6 @@ import org.mbari.vars.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
 import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.ui.javafx.shared.TableViewExt;
 import org.mbari.vars.ui.messages.SeekMsg;
 import org.mbari.vars.ui.javafx.shared.AnnotationTableViewFactory;
 import org.mbari.vars.ui.UIToolBox;
@@ -161,40 +159,35 @@ public class AnnotationTableController {
                 annotations.forEach(selectionModel::select);
                 annotations.stream()
                         .findFirst()
-                        .ifPresent(anno -> {
-                            int i = tableView.getItems().indexOf(anno);
-                            if (i >= 0) {
-                                int[] visibleRows = getVisibleRows();
-//                                log.atWarn().log("WANTED: " + i + ", VISIBLE: " + visibleRows[0] + " to " + visibleRows[1]);
-                                if (i < visibleRows[0] || i > visibleRows[1]) {
-                                    tableView.scrollTo(i);
-//                                    Platform.runLater(() -> tableView.scrollTo(i));
-                                }
-                            }
-                        });
+                        .ifPresent(this::scrollTo);
             }
         });
+    }
+
+    private void scrollTo(Annotation anno) {
+        if (!isVisible(anno)) {
+            tableView.scrollTo(anno);
+        }
+    }
+
+    private boolean isVisible(Annotation anno) {
+        int i = tableView.getItems().indexOf(anno);
+        if (i >= 0) {
+            int[] visibleRows = getVisibleRows();
+//            log.atWarn().log(() -> "i = %d, visible is %d - %d".formatted(i, visibleRows[0], visibleRows[1]));
+            return i >= visibleRows[0] && i <= visibleRows[1];
+        }
+        return false;
     }
 
 
     public TableView<Annotation> getTableView() {
         if (tableView == null) {
             tableView = AnnotationTableViewFactory.newTableView(i18n);
-//            tableView.getSelectionModel()
-//                    .selectedItemProperty()
-//                    .addListener((obs, oldv, newv) -> {
-//                        if (newv != null && oldv != newv) {
-////                            Platform.runLater(() -> tableView.scrollTo(newv));
-//                            int i = tableView.getItems().indexOf(newv);
-//                            if (i >= 0) {
-//                                int[] visibleRows = getVisibleRows();
-//                                log.atWarn().log("WANTED: " + i + ", VISIBLE: " + visibleRows[0] + " to " + visibleRows[1]);
-//                                if (i < visibleRows[0] || i > visibleRows[1]) {
-//                                    Platform.runLater(() -> tableView.scrollTo(i));
-//                                }
-//                            }
-//                        }
-//                    });
+
+            // When less than one, cells are individually sized adn positioned. This is a big
+            // performance hit. Issue #128
+            tableView.fixedCellSizeProperty().set(-1D);
 
             TableView.TableViewSelectionModel<Annotation> selectionModel = tableView.getSelectionModel();
             selectionModel.setSelectionMode(SelectionMode.MULTIPLE);

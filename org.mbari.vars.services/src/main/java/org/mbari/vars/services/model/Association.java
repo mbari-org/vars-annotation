@@ -20,6 +20,7 @@ public class Association implements Cloneable, Details {
     public static final String VALUE_NIL = "nil";
     public static final String VALUE_SELF = "self";
     public static final Association NIL = new Association(VALUE_NIL, VALUE_NIL, VALUE_NIL);
+    public static final String NAME_LOCALIZATION = "bounding box";
 
     public Association(String linkName, String toConcept, String linkValue, String mimeType) {
         this.linkName = linkName;
@@ -118,7 +119,7 @@ public class Association implements Cloneable, Details {
         try {
             List<String> ss = Arrays.stream(s.split("[|]"))
                     .map(String::trim)
-                    .collect(Collectors.toList());
+                    .toList();
             if (ss.size() == 3) {
                 a = Optional.of(new Association(ss.get(0), ss.get(1), ss.get(2)));
             }

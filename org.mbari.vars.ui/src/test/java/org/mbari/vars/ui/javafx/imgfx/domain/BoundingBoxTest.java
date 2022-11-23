@@ -1,6 +1,8 @@
 package org.mbari.vars.ui.javafx.imgfx.domain;
 
 import org.junit.Test;
+import org.mbari.vars.ui.javafx.imagestage.BoundingBox;
+import org.mbari.vars.ui.javafx.imagestage.Json;
 
 import java.util.UUID;
 

@@ -41,6 +41,7 @@ public enum Icons {
     GRAIN(Material.GRAIN),
     GRID_ON(Material.GRID_ON),
     IMAGE(Material.IMAGE),
+    IMAGE_SEARCH(Material.IMAGE_SEARCH),
     INSERT_COMMENT(Material.INSERT_COMMENT),
     KEYBOARD_ARROW_RIGHT(Material.KEYBOARD_ARROW_RIGHT),
     LIVE_TV(Material.LIVE_TV),
@@ -60,6 +61,7 @@ public enum Icons {
     STOP(Material.STOP),
     TIMELINE(Material.TIMELINE),
     UNDO(Material.UNDO),
+    UPLOAD_FILE(Material.UPLOAD_FILE),
     VERTICAL_ALIGN_BOTTOM(Material.VERTICAL_ALIGN_BOTTOM),
     VIDEO_LIBRARY(Material.VIDEO_LIBRARY),
     VIEW_COLUMN(Material.VIEW_COLUMN);

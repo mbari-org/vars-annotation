@@ -36,7 +36,6 @@ public class  Data {
 
     private final BooleanProperty showJsonAssociations = new SimpleBooleanProperty(false);
 
-
     private final IntegerProperty timeJump = new SimpleIntegerProperty(1000);
 
     public Media getMedia() {

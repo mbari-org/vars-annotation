@@ -1,5 +1,6 @@
 package org.mbari.vars.services.impl.panoptes.v1;
 
+import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import org.mbari.vars.services.model.ImageUploadResults;
@@ -32,7 +33,10 @@ public class PanoptesService implements ImageArchiveService, RetrofitWebService 
     }
 
     @Override
-    public CompletableFuture<ImageUploadResults> upload(String cameraId, String deploymentId, String name, java.nio.file.Path image) {
+    public CompletableFuture<ImageUploadResults> upload(String cameraId,
+                                                        String deploymentId,
+                                                        String name,
+                                                        java.nio.file.Path image) {
         RequestBody requestBody = RequestBody.create(MultipartBody.FORM, image.toFile());
         MultipartBody.Part body = MultipartBody.Part.createFormData("file",
                 image.getFileName().toString(),
@@ -40,6 +44,22 @@ public class PanoptesService implements ImageArchiveService, RetrofitWebService 
         return sendRequest(webService.uploadImage(cameraId, deploymentId, name, body,
                 requestBody, defaultHeaders));
     }
+
+    public CompletableFuture<ImageUploadResults> upload(String cameraId,
+                                                        String deploymentId,
+                                                        String name,
+                                                        byte[] imageByes) {
+
+        var mediaType = name.toLowerCase().endsWith("png") ?
+                MediaType.parse("image/png") :
+                MediaType.parse("image/jpeg");
+        var requestBody = RequestBody.create(mediaType, imageByes);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("file",
+                name,
+                requestBody);
+        return sendRequest(webService.uploadImage(cameraId, deploymentId, name, body, requestBody, defaultHeaders));
+    }
+
 
     @Override
     public CompletableFuture<ImageUploadResults> locate(String cameraId, String deploymentId, String name) {

@@ -8,8 +8,8 @@ import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.RectangleView;
 import org.mbari.imgfx.roi.RectangleViewEditor;
 import org.mbari.vars.services.model.Association;
-import org.mbari.vars.ui.javafx.imgfx.domain.BoundingBox;
-import org.mbari.vars.ui.javafx.imgfx.domain.Json;
+import org.mbari.vars.ui.javafx.imagestage.BoundingBox;
+import org.mbari.vars.ui.javafx.imagestage.Json;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -37,6 +37,18 @@ public class RoiBoundingBox implements Roi<RectangleView> {
                     editor.editColorProperty().bind(editedColor);
                     return dataView;
                 })
+                .map(dataView -> new Localization<>(dataView, paneController, association.getUuid(), concept));
+    }
+
+    public Optional<Localization<RectangleView, ImageView>> fromAssociation(String concept,
+                                                                            Association association,
+                                                                            AutoscalePaneController<ImageView> paneController) {
+        var boundingBox = Json.GSON.fromJson(association.getLinkValue(), BoundingBox.class);
+        return RectangleView.fromImageCoords(boundingBox.getX().doubleValue(),
+                        boundingBox.getY().doubleValue(),
+                        boundingBox.getWidth().doubleValue(),
+                        boundingBox.getHeight().doubleValue(),
+                        paneController.getAutoscale())
                 .map(dataView -> new Localization<>(dataView, paneController, association.getUuid(), concept));
     }
 

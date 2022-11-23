@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import mbarix4j.util.Tuple2;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
+import org.mbari.vars.services.model.BoundingBox;
 import org.mbari.vcr4j.sharktopoda.client.gson.DurationConverter;
 import org.mbari.vcr4j.sharktopoda.client.localization.Localization;
 

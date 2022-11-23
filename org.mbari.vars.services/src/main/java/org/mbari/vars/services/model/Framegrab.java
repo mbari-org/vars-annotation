@@ -10,33 +10,37 @@ import java.util.Optional;
  */
 public class Framegrab {
 
-    private Optional<java.awt.Image> image = Optional.empty();
-    private Optional<VideoIndex> videoIndex = Optional.empty();
+    private java.awt.Image image;
+    private VideoIndex videoIndex;
 
     public Framegrab() {}
 
     public Framegrab(java.awt.Image image) {
-        this.image = Optional.ofNullable(image);
+        this.image = image;
     }
 
     public Framegrab(java.awt.Image image, VideoIndex videoIndex) {
-        this.image = Optional.ofNullable(image);
-        this.videoIndex = Optional.ofNullable(videoIndex);
+        this.image = image;
+        this.videoIndex = videoIndex;
     }
 
     public Optional<java.awt.Image> getImage() {
-        return image;
+        return Optional.ofNullable(image);
     }
 
     public Optional<VideoIndex> getVideoIndex() {
-        return videoIndex;
+        return Optional.ofNullable(videoIndex);
     }
 
     public void setImage(java.awt.Image image) {
-        this.image = Optional.ofNullable(image);
+        this.image = image;
     }
 
     public void setVideoIndex(VideoIndex videoIndex) {
-        this.videoIndex = Optional.ofNullable(videoIndex);
+        this.videoIndex = videoIndex;
+    }
+
+    public boolean isComplete() {
+        return image != null && videoIndex != null;
     }
 }

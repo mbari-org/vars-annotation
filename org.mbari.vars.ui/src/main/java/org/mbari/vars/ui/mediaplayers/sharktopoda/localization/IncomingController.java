@@ -6,6 +6,7 @@ import io.reactivex.subjects.Subject;
 import javafx.collections.ListChangeListener;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.model.Association;
+import org.mbari.vars.services.model.BoundingBox;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.Data;
 import org.mbari.vars.ui.UIToolBox;

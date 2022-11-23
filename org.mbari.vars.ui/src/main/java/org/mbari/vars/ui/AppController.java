@@ -119,6 +119,7 @@ public class AppController {
                     if (conceptService instanceof CachedConceptService) {
                         ((CachedConceptService) conceptService).clear();
                     }
+
                     // Clear pref cache
                     var preferenceService = toolBox.getServices().getPreferencesService();
                     if (preferenceService instanceof CachedKBPrefService) {
@@ -148,7 +149,6 @@ public class AppController {
 
         eventObservable.ofType(ShowAlert.class)
                 .subscribe(alerts::showAlert);
-
 
     }
 

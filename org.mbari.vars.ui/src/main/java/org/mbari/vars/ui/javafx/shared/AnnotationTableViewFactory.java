@@ -17,6 +17,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -102,6 +104,12 @@ public class AnnotationTableViewFactory {
                 });
             assCol.setId("associations");
 
+            TableColumn<Annotation, Integer> assCountCol = new TableColumn<>(
+                    i18n.getString("annotable.col.associationcount"));
+            assCountCol.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getAssociations().size()));
+            assCountCol.setSortable(true);
+            assCountCol.setId("associations-count");
+
             TableColumn<Annotation, FGSValue> fgsCol = new TableColumn<>(
                 i18n.getString("annotable.col.framegrab"));
             fgsCol.setCellValueFactory(
@@ -153,6 +161,7 @@ public class AnnotationTableViewFactory {
                             timestampCol,
                             obsCol,
                             assCol,
+                            assCountCol,
                             fgsCol,
                             obvCol,
                             durationCol,

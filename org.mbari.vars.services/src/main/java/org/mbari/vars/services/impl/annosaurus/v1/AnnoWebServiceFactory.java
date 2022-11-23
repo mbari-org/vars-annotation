@@ -30,8 +30,15 @@ public class AnnoWebServiceFactory extends RetrofitServiceFactory {
 
 
     public Gson getGson() {
+        return newGson();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static Gson newGson() {
         GsonBuilder gsonBuilder = new GsonBuilder()
-                .setPrettyPrinting()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
                 .registerTypeAdapter(ImagedMoment.class, new AnnotationCreator())
@@ -42,7 +49,6 @@ public class AnnoWebServiceFactory extends RetrofitServiceFactory {
         // Register java.time.Instant
         return Converters.registerInstant(gsonBuilder)
                 .create();
-
     }
 }
 
