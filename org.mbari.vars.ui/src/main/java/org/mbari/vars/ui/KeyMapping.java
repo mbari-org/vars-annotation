@@ -87,28 +87,26 @@ public class KeyMapping {
         Map<KeyCodeCombination, Runnable> map = new HashMap<>();
 
         map.put(new KeyCodeCombination(KeyCode.DOWN, osModifier, shiftModifier), () -> {
-            TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
-                    .getTableView()
+            var selectionModel = paneController.getAnnotationTableController()
+                    .getTable()
                     .getSelectionModel();
-            int idx = selectionModel.getSelectedIndex();
-            selectionModel.clearSelection();
-            selectionModel.select(idx + 1);
+            int idx = selectionModel.getMaxSelectionIndex() + 1;
+            selectionModel.setSelectionInterval(idx, idx);
         });
 
         map.put(new KeyCodeCombination(KeyCode.UP, osModifier, shiftModifier), () -> {
-            TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
-                    .getTableView()
+            var selectionModel = paneController.getAnnotationTableController()
+                    .getTable()
                     .getSelectionModel();
-            int idx = selectionModel.getSelectedIndex();
-            selectionModel.clearSelection();
-            selectionModel.select(idx - 1);
+            int idx = selectionModel.getMinSelectionIndex() - 1;
+            selectionModel.setSelectionInterval(idx, idx);
         });
 
         map.put(new KeyCodeCombination(KeyCode.S, osModifier, shiftModifier), () -> {
-            TableView.TableViewSelectionModel<Annotation> selectionModel = paneController.getAnnotationTableController()
-                    .getTableView()
-                    .getSelectionModel();
-            Annotation selectedItem = selectionModel.getSelectedItem();
+            var table = paneController.getAnnotationTableController()
+                    .getTable();
+            int row = table.getSelectedRow();
+            var selectedItem = (Annotation) table.getValueAt(row, 0);
             Media media = toolBox.getData().getMedia();
             SeekMsg.seek(media, selectedItem, eventBus);
         });

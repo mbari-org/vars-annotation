@@ -84,7 +84,7 @@ def runtimeJvmArgs = [
         '--add-opens', 'java.base/java.lang.reflect=com.jfoenix',
         '--add-opens', 'org.mbari.vars.services/org.mbari.vars.services.model=com.google.gson',
         '--add-reads', 'vars.annotation.merged.module=org.slf4j',
-        '--add-reads', 'vars.annotation.merged.module=com.google.gson'
+        '--add-reads', 'vars.annotation.merged.module=com.google.gson',
 ]
 
 // If any of these exist as environment variables add them as -Dkey=value to jvmArgs
@@ -167,6 +167,11 @@ jlink {
     launcher {
         name = 'VARS Annotation'
         jvmArgs = runtimeJvmArgs
+    }
+
+    mergedModule {
+        additive = true
+        uses "org.jdesktop.swingx.plaf.LookAndFeelAddons"
     }
 
     jpackage {

@@ -5,6 +5,7 @@ import org.mbari.vars.services.model.Annotation;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -39,6 +40,14 @@ public class AnnotationTableModel extends AbstractTableModel {
         fireTableRowsDeleted(i, i);
     }
 
+    public void addAnnotations(Collection<Annotation> xs) {
+        int i = annotations.size();
+        int j = xs.size() + i - 1;
+        annotations.addAll(xs);
+        fireTableRowsInserted(i, j);
+    }
+
+
     public void clear() {
         int n = annotations.size() - 1;
         annotations.clear();
@@ -57,11 +66,11 @@ public class AnnotationTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return annotations.get(rowIndex);
+        return getAnnotationAt(rowIndex);
     }
 
     public Annotation getAnnotationAt(int rowIndex) {
-        if (rowIndex < annotations.size()) {
+        if (rowIndex < annotations.size() && rowIndex > -1) {
             return annotations.get(rowIndex);
         }
         else {

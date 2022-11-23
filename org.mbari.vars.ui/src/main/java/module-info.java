@@ -74,6 +74,7 @@ module org.mbari.vars.ui {
   exports org.mbari.vars.ui.mediaplayers.ships;
   exports org.mbari.vars.ui.messages;
   exports org.mbari.vars.ui.services;
+  exports org.mbari.vars.ui.swing.annotable;
   exports org.mbari.vars.ui;
   exports org.mbari.vars.ui.javafx.imagestage;
 

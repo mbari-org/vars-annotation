@@ -5,6 +5,7 @@ import org.jdesktop.swingx.table.TableColumnExt;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.util.FormatUtils;
 
+import java.util.Comparator;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 
@@ -21,7 +22,8 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
         addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.timestamp"),
                 0,
                 safely(Annotation::getRecordedTimestamp),
-                90));
+                90,
+                Comparator.comparing(Annotation::getRecordedTimestamp)));
 
         addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.timecode"),
                 1,
@@ -39,7 +41,8 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
                         return null;
                     }
                 },
-                45));
+                45,
+                Comparator.comparing(Annotation::getElapsedTime)));
 
         addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.concept"),
                 3,
@@ -51,6 +54,7 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
         associationCol.setEditable(false);
         associationCol.setIdentifier(associationId);
         associationCol.setHeaderValue(associationId);
+        associationCol.setSortable(false);
         addColumn(associationCol);
 
         var fgsCol = new TableColumnExt(5, 45, new FGSCellRenderer(), null);
@@ -58,6 +62,7 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
         fgsCol.setEditable(false);
         fgsCol.setIdentifier(fgsId);
         fgsCol.setHeaderValue(fgsId);
+        fgsCol.setSortable(false);
         addColumn(fgsCol);
 
         addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.observer"),
@@ -76,7 +81,8 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
                         return null;
                     }
                 },
-                45));
+                45,
+                Comparator.comparing(Annotation::getDuration)));
 
         addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.activity"),
                 8,

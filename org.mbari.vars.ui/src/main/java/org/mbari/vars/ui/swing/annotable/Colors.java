@@ -4,15 +4,16 @@ import java.awt.Color;
 
 public enum Colors {
 
-    ATTENTION(Color.getColor("#FFB74D")),
-    CONCURRENT(Color.getColor(" #FDD835")),
-    DEFAULT(Color.getColor("#2b3940")),
-    DEFAULT_TEXT(Color.getColor("#B3A9A3")),
-    EMPHASIS(Color.getColor("#5D3D3D")),
-    IMAGE(Color.getColor("#1E88E5")),
-    JSON(Color.getColor(" #8E24AA")),
-    SAMPLE(Color.getColor("#00600f")),
-    TABLE_TEXT(Color.getColor("#79c9ff"));
+    ATTENTION(Color.decode("#FFB74D")),
+    CONCURRENT(Color.decode("#FDD835")),
+    DEFAULT(Color.decode("#2b3940")),
+    DEFAULT_TEXT(Color.decode("#B3A9A3")),
+    DEFAULT_TABLE_TEXT(Color.decode("#79c9ff")),
+    EMPHASIS(Color.decode("#5D3D3D")),
+    IMAGE(Color.decode("#1E88E5")),
+    JSON(Color.decode("#8E24AA")),
+    SAMPLE(Color.decode("#00600f")),
+    TABLE_TEXT(Color.decode("#79c9ff"));
 
 
 

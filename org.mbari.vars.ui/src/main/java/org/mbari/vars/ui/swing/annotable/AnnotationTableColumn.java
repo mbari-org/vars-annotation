@@ -6,6 +6,7 @@ import org.mbari.vars.services.model.Annotation;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Component;
+import java.util.Comparator;
 import java.util.function.Function;
 
 public class AnnotationTableColumn extends TableColumnExt {
@@ -15,7 +16,15 @@ public class AnnotationTableColumn extends TableColumnExt {
                                 int modelIndex,
                                  Function<Annotation, String> converter,
                                  int width) {
-        super(modelIndex, width, new DefaultTableCellRenderer(), null);
+        this(id, modelIndex, converter, width,  Comparator.comparing(converter));
+    }
+
+    public AnnotationTableColumn(String id,
+                                 int modelIndex,
+                                 Function<Annotation, String> converter,
+                                 int width,
+                                 Comparator<Annotation> comparator) {
+        super(modelIndex, width, new DefaultTableCellRenderer(), new DefaultCellEditor(new JTextField()));
         setIdentifier(id);
         setHeaderValue(id);
         var renderer = new DefaultTableCellRenderer() {
@@ -33,6 +42,8 @@ public class AnnotationTableColumn extends TableColumnExt {
         };
         setCellRenderer(renderer);
         setEditable(false);
+        setVisible(true);
+        setComparator(comparator);
     }
 
 }

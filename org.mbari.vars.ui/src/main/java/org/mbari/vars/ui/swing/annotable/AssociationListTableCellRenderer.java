@@ -13,16 +13,24 @@ import java.util.List;
 
 public class AssociationListTableCellRenderer extends ListTableCellRenderer {
 
+    public AssociationListTableCellRenderer() {
+        super();
+        setForeground(Colors.DEFAULT_TABLE_TEXT.getColor());
+        setBackground(Colors.DEFAULT.getColor());
+    }
+
+
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         final var component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         final var listModel = getModel();
         final int fixedCellHeight = getFixedCellHeight();
         final int numItemsInList = Math.max(1, listModel.getSize());
-        final int cellHeight = fixedCellHeight * numItemsInList;
+        final int cellHeight = Math.max(24, fixedCellHeight * numItemsInList);
         final Dimension preferredSize = component.getPreferredSize();
         if (cellHeight != table.getRowHeight(row)) {
             preferredSize.setSize(preferredSize.getWidth(), cellHeight);
+            component.setPreferredSize(preferredSize);
             table.setRowHeight(row, cellHeight);
         }
         return component;
