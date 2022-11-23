@@ -93,8 +93,13 @@ public class JXAnnotationTableController {
             tableHeader.setReorderingAllowed(true);
             tableHeader.setTable(table);
             tableHeader.setBackground(Colors.DEFAULT.getColor());
+            tableHeader.setForeground(Colors.DEFAULT_TEXT.getColor());
             table.setTableHeader(tableHeader);
             table.setBackground(Colors.DEFAULT.getColor());
+            var columnContol = table.getColumnControl();
+            columnContol.setBackground(Colors.DEFAULT.getColor());
+            columnContol.setForeground(Colors.DEFAULT_TEXT.getColor());
+//            columnContol.getParent().setBackground(Colors.DEFAULT.getColor());
 
 //            table.setAutoCreateColumnsFromModel(true);
             table.setPreferredSize(new Dimension(800, 500));

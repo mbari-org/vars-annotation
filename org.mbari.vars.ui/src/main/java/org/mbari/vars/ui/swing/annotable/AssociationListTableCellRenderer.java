@@ -15,6 +15,7 @@ public class AssociationListTableCellRenderer extends ListTableCellRenderer {
 
     public AssociationListTableCellRenderer() {
         super();
+        setCellRenderer(new AssociationListCellRenderer());
         setForeground(Colors.DEFAULT_TABLE_TEXT.getColor());
         setBackground(Colors.DEFAULT.getColor());
     }
