@@ -18,8 +18,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.transformation.SortedList;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.mbari.vars.services.model.Annotation;
@@ -40,136 +41,134 @@ import org.mbari.vcr4j.time.Timecode;
 public class AnnotationTableViewFactory {
 
 
-    private AnnotationTableViewFactory() {}
+    private AnnotationTableViewFactory() {
+    }
 
     /**
      * @return A new instance of a table view for displaying Annotations
      */
     public static TableView<Annotation> newTableView(ResourceBundle i18n) {
-            TableView<Annotation> tableView = new TableView<>();
-            tableView.setTableMenuButtonVisible(true);
 
-            // --- Add all columns
-            TableColumn<Annotation, Instant> timestampCol = new TableColumn<>(
+        TableView<Annotation> tableView = new TableView<>();
+        tableView.setTableMenuButtonVisible(true);
+
+        // --- Add all columns
+        TableColumn<Annotation, Instant> timestampCol = new TableColumn<>(
                 i18n.getString("annotable.col.timestamp"));
-            timestampCol.setCellValueFactory(new PropertyValueFactory<>("recordedTimestamp"));
-            timestampCol.setId("recordedTimestamp");
+        timestampCol.setCellValueFactory(new PropertyValueFactory<>("recordedTimestamp"));
+        timestampCol.setId("recordedTimestamp");
 
-            TableColumn<Annotation, Timecode> timecodeCol = new TableColumn<>(
+        TableColumn<Annotation, Timecode> timecodeCol = new TableColumn<>(
                 i18n.getString("annotable.col.timecode"));
-            timecodeCol.setCellValueFactory(new PropertyValueFactory<>("timecode"));
-            timecodeCol.setId("timecode");
+        timecodeCol.setCellValueFactory(new PropertyValueFactory<>("timecode"));
+        timecodeCol.setId("timecode");
 
-            TableColumn<Annotation, Duration> elapsedTimeCol = new TableColumn<>(
+        TableColumn<Annotation, Duration> elapsedTimeCol = new TableColumn<>(
                 i18n.getString("annotable.col.elapsedtime"));
-            elapsedTimeCol.setCellValueFactory(new PropertyValueFactory<>("elapsedTime"));
-            elapsedTimeCol.setCellFactory(c -> new TableCell<Annotation, Duration>() {
+        elapsedTimeCol.setCellValueFactory(new PropertyValueFactory<>("elapsedTime"));
+        elapsedTimeCol.setCellFactory(c -> new TableCell<Annotation, Duration>() {
 
-                        @Override
-                        protected void updateItem(Duration item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if ((item == null) || empty) {
-                                setText(null);
-                            }
-                            else {
-                                setText(FormatUtils.formatDuration(item));
-                            }
-                        }
+            @Override
+            protected void updateItem(Duration item, boolean empty) {
+                super.updateItem(item, empty);
+                if ((item == null) || empty) {
+                    setText(null);
+                } else {
+                    setText(FormatUtils.formatDuration(item));
+                }
+            }
 
-                    });
-            elapsedTimeCol.setId("elapsedTime");
+        });
+        elapsedTimeCol.setId("elapsedTime");
 
-            TableColumn<Annotation, String> obsCol = new TableColumn<>(
+        TableColumn<Annotation, String> obsCol = new TableColumn<>(
                 i18n.getString("annotable.col.concept"));
-            obsCol.setCellValueFactory(new PropertyValueFactory<>("concept"));
-            obsCol.setId("concept");
+        obsCol.setCellValueFactory(new PropertyValueFactory<>("concept"));
+        obsCol.setId("concept");
 
-            TableColumn<Annotation, List<Association>> assCol = new TableColumn<>(
+        TableColumn<Annotation, List<Association>> assCol = new TableColumn<>(
                 i18n.getString("annotable.col.association"));
-            assCol.setCellValueFactory(new PropertyValueFactory<>("associations"));
-            assCol.setSortable(false);
-            assCol.setCellFactory(
+        assCol.setCellValueFactory(new PropertyValueFactory<>("associations"));
+        assCol.setSortable(false);
+        assCol.setCellFactory(
                 c -> {
                     AssociationsTableCell cell = new AssociationsTableCell();
 
                     // If association cell is clicked, select the row in the table
                     cell.getListView().setOnMouseClicked(event -> {
-                            TableRow row = cell.getTableRow();
-                            row.getTableView()
-                                    .getSelectionModel()
-                                    .clearAndSelect(row.getIndex(), c);
-                        });
+                        TableRow row = cell.getTableRow();
+                        row.getTableView()
+                                .getSelectionModel()
+                                .clearAndSelect(row.getIndex(), c);
+                    });
 
                     return cell;
                 });
-            assCol.setId("associations");
+        assCol.setId("associations");
 
-            TableColumn<Annotation, Integer> assCountCol = new TableColumn<>(
-                    i18n.getString("annotable.col.associationcount"));
-            assCountCol.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getAssociations().size()));
-            assCountCol.setSortable(true);
-            assCountCol.setId("associations-count");
+        TableColumn<Annotation, Integer> assCountCol = new TableColumn<>(
+                i18n.getString("annotable.col.associationcount"));
+        assCountCol.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getAssociations().size()));
+        assCountCol.setSortable(true);
+        assCountCol.setId("associations-count");
 
-            TableColumn<Annotation, FGSValue> fgsCol = new TableColumn<>(
+        TableColumn<Annotation, FGSValue> fgsCol = new TableColumn<>(
                 i18n.getString("annotable.col.framegrab"));
-            fgsCol.setCellValueFactory(
+        fgsCol.setCellValueFactory(
                 param -> new SimpleObjectProperty<>(new FGSValue(param.getValue())));
-            fgsCol.setSortable(false);
-            fgsCol.setCellFactory(c -> new FGSTableCell());
-            fgsCol.setId("fgs");
+        fgsCol.setSortable(false);
+        fgsCol.setCellFactory(c -> new FGSTableCell());
+        fgsCol.setId("fgs");
 
-            TableColumn<Annotation, String> obvCol = new TableColumn<>(
+        TableColumn<Annotation, String> obvCol = new TableColumn<>(
                 i18n.getString("annotable.col.observer"));
-            obvCol.setCellValueFactory(new PropertyValueFactory<>("observer"));
-            obvCol.setId("observer");
+        obvCol.setCellValueFactory(new PropertyValueFactory<>("observer"));
+        obvCol.setId("observer");
 
-            TableColumn<Annotation, Duration> durationCol = new TableColumn<>(
+        TableColumn<Annotation, Duration> durationCol = new TableColumn<>(
                 i18n.getString("annotable.col.duration"));
-            durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
-            durationCol.setCellFactory(c -> new TableCell<Annotation, Duration>() {
+        durationCol.setCellValueFactory(new PropertyValueFactory<>("duration"));
+        durationCol.setCellFactory(c -> new TableCell<Annotation, Duration>() {
 
-                        @Override
-                        protected void updateItem(Duration item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if ((item == null) || empty) {
-                                setText(null);
-                            }
-                            else {
-                                setText(FormatUtils.formatDuration(item));
-                            }
-                        }
+            @Override
+            protected void updateItem(Duration item, boolean empty) {
+                super.updateItem(item, empty);
+                if ((item == null) || empty) {
+                    setText(null);
+                } else {
+                    setText(FormatUtils.formatDuration(item));
+                }
+            }
 
-                    });
-            durationCol.setId("duration");
+        });
+        durationCol.setId("duration");
 
-            TableColumn<Annotation, String> actCol = new TableColumn<>(
+        TableColumn<Annotation, String> actCol = new TableColumn<>(
                 i18n.getString("annotable.col.activity"));
-            actCol.setCellValueFactory(new PropertyValueFactory<>("activity"));
-            actCol.setId("activity");
+        actCol.setCellValueFactory(new PropertyValueFactory<>("activity"));
+        actCol.setId("activity");
 
-            TableColumn<Annotation, String> grpCol = new TableColumn<>(
+        TableColumn<Annotation, String> grpCol = new TableColumn<>(
                 i18n.getString("annotable.col.group"));
-            grpCol.setCellValueFactory(new PropertyValueFactory<>("group"));
-            grpCol.setId("group");
+        grpCol.setCellValueFactory(new PropertyValueFactory<>("group"));
+        grpCol.setId("group");
 
+        // TODO get column order from preferences
+        tableView.getColumns()
+                .addAll(timecodeCol,
+                        elapsedTimeCol,
+                        timestampCol,
+                        obsCol,
+                        assCol,
+                        assCountCol,
+                        fgsCol,
+                        obvCol,
+                        durationCol,
+                        actCol,
+                        grpCol);
 
-
-            // TODO get column order from preferences
-            tableView.getColumns()
-                    .addAll(timecodeCol,
-                            elapsedTimeCol,
-                            timestampCol,
-                            obsCol,
-                            assCol,
-                            assCountCol,
-                            fgsCol,
-                            obvCol,
-                            durationCol,
-                            actCol,
-                            grpCol);
-
-            TableView.TableViewSelectionModel<Annotation> selectionModel = tableView.getSelectionModel();
-            selectionModel.setSelectionMode(SelectionMode.MULTIPLE);
+        TableView.TableViewSelectionModel<Annotation> selectionModel = tableView.getSelectionModel();
+        selectionModel.setSelectionMode(SelectionMode.MULTIPLE);
 
 
         return tableView;
