@@ -85,7 +85,7 @@ public class AnnotationTableController {
                             items.remove(idx); // FIXME Got a -1 in the bulk edito. Maybe getting this twice??
                             items.add(idx, a);
                         }
-//                        getTableView().refresh();
+                        getTableView().refresh();
 //                        getTableView().sort();
                         eventBus.send(new AnnotationsSelectedEvent(intersection));
                     });
