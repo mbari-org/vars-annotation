@@ -82,6 +82,7 @@ public class AnnotationTableController {
                         List<Annotation> intersection = ListUtils.intersection(annotations, items);
                         for (Annotation a : intersection) {
                             int idx = items.indexOf(a);
+//                            items.set(idx, a);  // Use set instead of remove/add?
                             items.remove(idx); // FIXME Got a -1 in the bulk edito. Maybe getting this twice??
                             items.add(idx, a);
                         }
