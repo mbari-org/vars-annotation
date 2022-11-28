@@ -30,6 +30,7 @@ public class RazielConfigurationService implements ConfigurationService {
             .create();
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    // TODO - Add EventBus. execRequest failures should show dialog
     public RazielConfigurationService() {
         var logger = new HttpLoggingInterceptor(log::debug);
         logger.setLevel(HttpLoggingInterceptor.Level.BODY);

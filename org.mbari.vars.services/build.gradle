@@ -17,6 +17,7 @@ dependencies {
     implementation 'com.auth0:java-jwt'
     implementation 'com.fasterxml.jackson.core:jackson-databind' // used java-jwt
     implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers'
+    implementation 'com.github.mizosoft.methanol:methanol'
     implementation 'com.google.code.gson:gson'
     implementation 'com.squareup.okhttp3:logging-interceptor'
     implementation 'com.squareup.retrofit2:converter-gson'

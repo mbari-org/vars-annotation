@@ -1,8 +1,6 @@
 package org.mbari.vars.ui.javafx;
 
 
-import mbarix4j.awt.image.ImageUtilities;
-import mbarix4j.io.FileUtilities;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
@@ -10,7 +8,6 @@ import org.mbari.vars.ui.commands.CommandUtil;
 import org.mbari.vars.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.services.model.*;
 import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.ImageArchiveService;
 import org.mbari.vars.core.util.AsyncUtils;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
@@ -39,7 +36,6 @@ import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -48,7 +44,7 @@ import java.util.stream.Collectors;
  */
 public class ImageArchiveServiceDecorator {
 
-    private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("uuuuMMdd'T'HHmmss'Z'")
+    private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("uuuuMMdd'T'HHmmss.SSS'Z'")
             .withZone(ZoneOffset.UTC);
 
 
@@ -57,6 +53,15 @@ public class ImageArchiveServiceDecorator {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final Duration timeout;
 
+    public enum ImageTypes {
+        JPG("jpg"), PNG("png");
+
+        public final String extension;
+        ImageTypes(String extension) {
+            this.extension = extension;
+        }
+    }
+
 
     public ImageArchiveServiceDecorator(UIToolBox toolBox) {
         this.toolBox = toolBox;
@@ -64,74 +69,50 @@ public class ImageArchiveServiceDecorator {
         timeout = toolBox.getConfig().getDuration("annotation.service.timeout");
     }
 
-    public CompletableFuture<Optional<CreatedImageData>> createdCompressedFramegrab(Media media,
-                Framegrab framegrab,
-                ImageUploadResults imageUploadResults) {
+    public CompletableFuture<Optional<CreatedImageData>> createJpegWithOverlay(Media media,
+                                                                               ImageData imageData,
+                                                                               ImageUploadResults imageUploadResults) {
 
-        if (framegrab.getImage().isPresent() && framegrab.getVideoIndex().isPresent()) {
-            return compressImage(media, framegrab, imageUploadResults)
-                    .thenCompose(path -> createImageFromExistingImagePath(media, framegrab, path));
-        }
-        else {
-            return CompletableFuture.completedFuture(Optional.empty());
-        }
-
+        return createImageWithOverlay(imageData, imageUploadResults)
+                .thenCompose(idWithOverlay -> createImageFromExistingImageData(media, idWithOverlay, ImageTypes.JPG));
     }
 
-    private CompletableFuture<Path> compressImage(Media media, Framegrab framegrab, ImageUploadResults imageUploadResults) {
+    private CompletableFuture<ImageData> createImageWithOverlay(ImageData imageData, ImageUploadResults imageUploadResults) {
         return CompletableFuture.supplyAsync(() -> {
             // -- Write image locally
-            String[] overlayText = createOverlayText(copyrightOwner, framegrab, imageUploadResults);
-            BufferedImage imageWithOverlay = createImageWithOverlay(framegrab.getImage().get(), overlayText);
-            File localImageFile = buildLocalImageFile(media, ".jpg");
-            try {
-                ImageUtilities.saveImage(imageWithOverlay, localImageFile);
-                return localImageFile.toPath();
-            }
-            catch (IOException e) {
-                log.error("Failed to save jpg image to " + localImageFile.getAbsolutePath(), e);
-                throw new RuntimeException(e);
-            }
+            String[] overlayText = createOverlayText(copyrightOwner, imageData, imageUploadResults);
+            BufferedImage imageWithOverlay = createImageWithOverlay(imageData.getBufferedImage(), overlayText);
+            return new ImageData(imageData.getVideoReferenceUuid(), imageData.getVideoIndex(), imageWithOverlay);
         });
     }
 
-    public CompletableFuture<Optional<CreatedImageData>> createImageFromExistingImagePath(Media media, Framegrab framegrab, Path imagePath) {
+    public CompletableFuture<Optional<CreatedImageData>> createImageFromExistingImageData(Media media, ImageData imageData, ImageTypes type) {
 
         CreatedImageData createdImageData = new CreatedImageData();
 
-        if (framegrab.getVideoIndex().isPresent()) {
+        String name = ImageArchiveServiceDecorator.buildName(media.getVideoReferenceUuid(), imageData.getVideoIndex(), type.extension);
+        String deploymentId = CommandUtil.getDeploymentId(media);
 
-            String extension = FileUtilities.getExtension(imagePath.toFile());
-            String name = ImageArchiveServiceDecorator.buildName(media.getVideoReferenceUuid(), framegrab.getVideoIndex().get(), extension);
-            String deploymentId = CommandUtil.getDeploymentId(media);
+        var bytes = switch(type) {
+            case JPG -> imageData.getJpegBytes();
+            case PNG -> imageData.getPngBytes();
+        };
 
-            CompletableFuture<org.mbari.vars.services.model.Image> future = toolBox.getServices()
-                    .getImageArchiveService()
-                    .upload(media.getCameraId(), deploymentId, name, imagePath)
-                    .thenCompose(imageUploadResults -> {
-                        createdImageData.setImageUploadResults(imageUploadResults);
-                        return createImageInDatastore(media, framegrab, toUrl(imageUploadResults.getUri()));
-                    });
+        log.atDebug().log(() -> "Creating image for " + media.getUri() + " at " + imageData.getVideoIndex() +
+                " as " + type.extension + " with byte[" + bytes.length + "]");
 
-            future.whenComplete((image, throwable) -> {
-                if (Files.exists(imagePath)) {
-                    try {
-                        Files.delete(imagePath);
-                    } catch (IOException e) {
-                        log.warn("Failed to delete image at " + imagePath.toString(), e);
-                    }
-                }
-            });
+        CompletableFuture<org.mbari.vars.services.model.Image> future = toolBox.getServices()
+                .getImageArchiveService()
+                .upload(media.getCameraId(), deploymentId, name, bytes)
+                .thenCompose(imageUploadResults -> {
+                    createdImageData.setImageUploadResults(imageUploadResults);
+                    return createImageInDatastore(imageData, toUrl(imageUploadResults.getUri()));
+                });
 
-            return future.thenApply(image -> {
-                createdImageData.setImage(image);
-                return Optional.of(createdImageData);
-            });
-
-        }
-        else {
-            return CompletableFuture.completedFuture(Optional.empty());
-        }
+        return future.thenApply(image -> {
+            createdImageData.setImage(image);
+            return Optional.of(createdImageData);
+        });
 
     }
 
@@ -180,7 +161,7 @@ public class ImageArchiveServiceDecorator {
 
     }
 
-    public CompletableFuture<org.mbari.vars.services.model.Image> createImageInDatastore(Media media, Framegrab framegrab, URL imageUrl) {
+    public CompletableFuture<org.mbari.vars.services.model.Image> createImageInDatastore(ImageData imageData, URL imageUrl) {
 
 
         // FIXME - Taking a framegrab of annotation with existing framegrab will
@@ -190,41 +171,32 @@ public class ImageArchiveServiceDecorator {
         // Also the image metadata is not getting updated either as the insert fails
 
         CompletableFuture<org.mbari.vars.services.model.Image> readImageFuture = CompletableFuture.supplyAsync(() -> {
-            Optional<Image> awtImageOpt = framegrab.getImage();
-            if (!awtImageOpt.isPresent()) {
-                // TODO show alert that framecapture failed
-                throw new RuntimeException("No image was captured");
+            String ext = parseExtension(imageUrl);
+            String description = null;
+            switch (ext) {
+                case "jpg":
+                    description = "compressed image";
+                    break;
+                case "png":
+                    description = "uncompressed image";
+                    break;
+                default:
+                    description = null;
             }
-            else {
-                String ext = parseExtension(imageUrl);
-                String description = null;
-                switch (ext) {
-                    case "jpg":
-                        description = "compressed image";
-                        break;
-                    case "png":
-                        description = "uncompressed image";
-                        break;
-                    default:
-                        description = null;
-                }
-                Image awtImage = awtImageOpt.get();
-                BufferedImage bi = ImageUtilities.toBufferedImage(awtImage);
-                org.mbari.vars.services.model.Image image = new org.mbari.vars.services.model.Image();
-                image.setFormat("image/" + ext);
-                image.setHeight(bi.getHeight());
-                image.setWidth(bi.getWidth());
-                image.setVideoReferenceUuid(media.getVideoReferenceUuid());
-                image.setDescription(description);
-                image.setUrl(imageUrl);
+            BufferedImage bi = imageData.getBufferedImage();
+            org.mbari.vars.services.model.Image image = new org.mbari.vars.services.model.Image();
+            image.setFormat("image/" + ext);
+            image.setHeight(bi.getHeight());
+            image.setWidth(bi.getWidth());
+            image.setVideoReferenceUuid(imageData.getVideoReferenceUuid());
+            image.setDescription(description);
+            image.setUrl(imageUrl);
 
-                // If no index use the current timestamp
-                VideoIndex videoIndex = framegrab.getVideoIndex().orElse(new VideoIndex(Instant.now()));
-                videoIndex.getElapsedTime().ifPresent(image::setElapsedTime);
-                videoIndex.getTimecode().ifPresent(image::setTimecode);
-                videoIndex.getTimestamp().ifPresent(image::setRecordedTimestamp);
-                return image;
-            }
+            VideoIndex videoIndex = imageData.getVideoIndex();
+            videoIndex.getElapsedTime().ifPresent(image::setElapsedTime);
+            videoIndex.getTimecode().ifPresent(image::setTimecode);
+            videoIndex.getTimestamp().ifPresent(image::setRecordedTimestamp);
+            return image;
         });
 
         final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
@@ -274,13 +246,13 @@ public class ImageArchiveServiceDecorator {
     /**
      * Creates the textual overlay for the preview image
      * @param copyrightOwner
-     * @param framegrab
+     * @param imageData
      * @param imageUploadResults
      * @return  A string array of ext to be overlaid onto an image.
      */
-    public static String[] createOverlayText(String copyrightOwner, Framegrab framegrab, ImageUploadResults imageUploadResults) {
+    public static String[] createOverlayText(String copyrightOwner, ImageData imageData, ImageUploadResults imageUploadResults) {
         final String[] s = new String[4];
-        Instant copyrightDate = getCopyrightDate(framegrab);
+        Instant copyrightDate = getCopyrightDate(imageData);
         int year = copyrightDate.atZone(ZoneId.of("UTC")).get(ChronoField.YEAR);
         imageUploadResults.getUri().toString().replace(".png", ".jpg");
         s[0] = "Copyright " + year + " " +  copyrightOwner;
@@ -291,17 +263,14 @@ public class ImageArchiveServiceDecorator {
         return s;
     }
 
-    private static Instant getCopyrightDate(Framegrab framegrab) {
-        AtomicReference<Instant> ref = new AtomicReference<>();
-        framegrab.getVideoIndex().ifPresent(vi -> {
-            if (vi.getTimestamp().isPresent()) {
-                ref.set(vi.getTimestamp().get());
-            }
-            else {
-                ref.set(Instant.now());
-            }
-        });
-        return ref.get();
+    private static Instant getCopyrightDate(ImageData imageData) {
+        var vi = imageData.getVideoIndex();
+        if (vi.getTimestamp().isPresent()) {
+            return vi.getTimestamp().get();
+        }
+        else {
+            return Instant.now();
+        }
     }
 
     public static File buildLocalImageFile(Media media, String ext) {

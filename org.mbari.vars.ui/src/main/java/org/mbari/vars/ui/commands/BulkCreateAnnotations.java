@@ -3,7 +3,9 @@ package org.mbari.vars.ui.commands;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
+import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
 import org.mbari.vcr4j.util.Preconditions;
 
@@ -39,12 +41,15 @@ public class BulkCreateAnnotations implements Command {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
         annotationService.createAnnotations(annotations)
                 .thenAccept(annos -> {
-                    addedAnnotations = annos;
-                    AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
-                    Set<UUID> observationUuids = addedAnnotations.stream()
-                            .map(Annotation::getObservationUuid)
-                            .collect(Collectors.toSet());
-                    asd.refreshAnnotationsView(observationUuids);
+//                    addedAnnotations = annos;
+//                    AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
+//                    Set<UUID> observationUuids = addedAnnotations.stream()
+//                            .map(Annotation::getObservationUuid)
+//                            .collect(Collectors.toSet());
+                    final var eventBus = toolBox.getEventBus();
+                    eventBus.send(new AnnotationsAddedEvent(annos));
+                    eventBus.send(new AnnotationsSelectedEvent(annos));
+//                    asd.refreshAnnotationsView(observationUuids);
                 });
     }
 

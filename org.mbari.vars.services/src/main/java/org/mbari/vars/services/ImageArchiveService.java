@@ -15,4 +15,9 @@ public interface ImageArchiveService {
 
     CompletableFuture<ImageUploadResults> locate(String cameraId, String deploymentId, String name);
 
+    CompletableFuture<ImageUploadResults> upload(String cameraId,
+                                                 String deploymentId,
+                                                 String name,
+                                                 byte[] imageByes);
+
 }

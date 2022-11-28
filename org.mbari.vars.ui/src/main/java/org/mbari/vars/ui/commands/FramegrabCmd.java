@@ -12,14 +12,15 @@ import org.mbari.vars.ui.messages.ShowWarningAlert;
 import org.mbari.vars.services.model.*;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.ConceptService;
-import org.mbari.vars.services.ImageCaptureService;
 import org.mbari.vars.ui.javafx.ImageArchiveServiceDecorator;
+import org.mbari.vars.ui.services.FrameCaptureService;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.time.Instant;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -34,7 +35,7 @@ public class FramegrabCmd implements Command {
     private volatile Annotation annotationRef;
     private volatile Image pngImageRef;
     private volatile Image jpgImageRef;
-    //private static final Logger log = LoggerFactory.getLogger(FramegrabCmd.class);
+    private static final Logger log = LoggerFactory.getLogger(FramegrabCmd.class);
 
     private class CreatedData {
         final Annotation annotation;
@@ -141,9 +142,9 @@ public class FramegrabCmd implements Command {
 
         // -- Capture image
         File imageFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".png");
-        Optional<Framegrab> framegrabOpt = capture(imageFile, media, mediaPlayer);
+        Optional<ImageData> imageDataOpt = FrameCaptureService.capture(imageFile, media, mediaPlayer);
 
-        if (framegrabOpt.isEmpty()) {
+        if (imageDataOpt.isEmpty()) {
             //log.warn("No framegrab was captured for {} at {}", media.getVideoName(), media.getUri());
             ResourceBundle i18n = toolBox.getI18nBundle();
             String content = i18n.getString("commands.framecapture.nomedia.content") +
@@ -152,12 +153,12 @@ public class FramegrabCmd implements Command {
         }
         else {
 
-            Framegrab framegrab = framegrabOpt.get();
-            //log.info("Captured image at {}", framegrab.getVideoIndex());
+            ImageData imageData = imageDataOpt.get();
+            log.info("Captured image at {}", imageData.getVideoIndex().getTimestamp().orElse(null));
 
             ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
             // -- 1. Upload image to server and register in annotation service
-            decorator.createImageFromExistingImagePath(media, framegrab, imageFile.toPath())
+            decorator.createImageFromExistingImageData(media, imageData, ImageArchiveServiceDecorator.ImageTypes.PNG)
                     .thenCompose(pngOpt -> {
                         if (pngOpt.isPresent()) {
                             CreatedImageData createdImageData = pngOpt.get();
@@ -169,8 +170,8 @@ public class FramegrabCmd implements Command {
                                 eventBus.send(new AnnotationsAddedEvent(annotationRef));
                                 eventBus.send(new AnnotationsSelectedEvent(annotationRef));
                                 // -- 3. Create a jpeg
-                                return decorator.createdCompressedFramegrab(media,
-                                        framegrab,
+                                return decorator.createJpegWithOverlay(media,
+                                        imageData,
                                         createdImageData.getImageUploadResults())
                                         .thenApply(jpgOpt -> {
                                             jpgOpt.ifPresent(cid -> jpgImageRef = cid.getImage());
@@ -220,27 +221,6 @@ public class FramegrabCmd implements Command {
         eventBus.send(alert);
     }
 
-    private static Optional<Framegrab> capture(File imageFile,
-                                               Media media,
-                                               MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer) {
-        try {
-            ImageCaptureService service = mediaPlayer.getImageCaptureService();
-            Framegrab framegrab = service.capture(imageFile);
-
-            // If there's an elapsed time, make sure the recordedTimestamp is
-            // set and correct
-            framegrab.getVideoIndex().ifPresent(videoIndex ->
-                videoIndex.getElapsedTime().ifPresent(elapsedTime -> {
-                    Instant recordedDate = media.getStartTimestamp().plus(elapsedTime);
-                    framegrab.setVideoIndex(new VideoIndex(elapsedTime, recordedDate));
-                }));
-            return Optional.of(framegrab);
-        }
-        catch (Exception e) {
-            // TODO show error
-            return Optional.empty();
-        }
-    }
 
     private CompletableFuture<Annotation> createAnnotationInDatastore(UIToolBox toolBox, VideoIndex videoIndex) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();

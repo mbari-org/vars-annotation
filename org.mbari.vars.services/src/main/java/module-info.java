@@ -20,6 +20,10 @@ module org.mbari.vars.services {
   requires retrofit2;
   requires typesafe.config;
   requires vcr4j.core;
+  requires methanol;
+    requires okio;
+
+    opens org.mbari.vars.services.impl.ml to com.google.gson;
 
   exports org.mbari.vars.services.gson;
   exports org.mbari.vars.services.impl.annosaurus.v1;
@@ -32,4 +36,5 @@ module org.mbari.vars.services {
   exports org.mbari.vars.services.model;
   exports org.mbari.vars.services.util;
   exports org.mbari.vars.services;
+  exports org.mbari.vars.services.impl.ml;
 }

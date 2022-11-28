@@ -25,8 +25,11 @@ public class PanoptesWebServiceFactory extends RetrofitServiceFactory {
 
     @Override
     public Gson getGson() {
+        return newGson();
+    }
+
+    public static Gson newGson() {
         GsonBuilder gsonBuilder = new GsonBuilder()
-                .setPrettyPrinting()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
                 .registerTypeAdapter(Duration.class, new DurationConverter())
                 .registerTypeAdapter(Timecode.class, new TimecodeConverter())

@@ -26,8 +26,11 @@ public class PrefWebServiceFactory extends RetrofitServiceFactory {
     }
 
     public Gson getGson() {
+        return newGson();
+    }
+
+    public static Gson newGson() {
         GsonBuilder gsonBuilder = new GsonBuilder()
-                .setPrettyPrinting()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
                 .registerTypeAdapter(Duration.class, new DurationConverter())
                 .registerTypeAdapter(Timecode.class, new TimecodeConverter())
@@ -36,6 +39,5 @@ public class PrefWebServiceFactory extends RetrofitServiceFactory {
         // Register java.time.Instant
         return Converters.registerInstant(gsonBuilder)
                 .create();
-
     }
 }

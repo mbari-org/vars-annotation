@@ -132,7 +132,7 @@ public class AssocButtonPaneController {
                             String name = buttonPreferences.get(PREF_BUTTON_NAME, BAD_KEY);
                             int order = buttonPreferences.getInt(PREF_BUTTON_ORDER, 0);
                             String a = buttonPreferences.get(PREF_BUTTON_ASSOCIATION, nil.toString());
-                            log.warn("Loading association button " + a);
+                            log.debug("Loading association button " + a);
                             Association ass = Association.parse(a).orElse(nil);
                             Button button = buttonFactory.build(name, ass, prefs);
                             return new ButtonPref(button, order);

@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
@@ -175,8 +176,6 @@ public class AnnotationEditorPaneController {
             }
         });
         loadComboBoxData();
-
-
 
         // If the cache is cleared reload combobox data
         // TODO there's a bug in FilteredComboBoxDecorator that causes filtering to fail after refresh
