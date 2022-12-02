@@ -1,8 +1,9 @@
 package org.mbari.vars.services;
 
-import io.reactivex.Observable;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.Subject;
+
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.PublishSubject;
+import io.reactivex.rxjava3.subjects.Subject;
 import org.mbari.vcr4j.util.Preconditions;
 import org.slf4j.LoggerFactory;
 

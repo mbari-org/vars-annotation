@@ -5,7 +5,7 @@ module org.mbari.vars.services {
   requires com.google.gson;
 //  requires com.google.guice;
   requires gson.javatime.serialisers;
-  requires io.reactivex.rxjava2;
+  requires io.reactivex.rxjava3;
   requires com.fasterxml.jackson.databind; // required by java-jwt
   requires java.desktop;
   requires com.auth0.jwt;
@@ -21,9 +21,9 @@ module org.mbari.vars.services {
   requires typesafe.config;
   requires vcr4j.core;
   requires methanol;
-    requires okio;
+  requires okio;
 
-    opens org.mbari.vars.services.impl.ml to com.google.gson;
+  opens org.mbari.vars.services.impl.ml to com.google.gson;
 
   exports org.mbari.vars.services.gson;
   exports org.mbari.vars.services.impl.annosaurus.v1;

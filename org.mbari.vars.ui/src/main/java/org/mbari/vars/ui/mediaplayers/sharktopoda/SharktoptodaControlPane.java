@@ -2,8 +2,8 @@ package org.mbari.vars.ui.mediaplayers.sharktopoda;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSlider;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.disposables.Disposable;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
@@ -20,7 +20,6 @@ import org.mbari.vars.services.model.Media;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
-import org.mbari.vcr4j.decorators.VideoIndexAsString;
 import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
 import org.mbari.vcr4j.sharktopoda.commands.SharkCommands;
 import org.slf4j.Logger;
@@ -252,7 +251,7 @@ public class SharktoptodaControlPane extends Pane {
                 });
                 mediaPlayer.getVideoIO()
                         .getIndexObservable()
-                        .subscribe(new Observer<>() {
+                        .subscribe(new Observer<VideoIndex>() {
                             @Override
                             public void onSubscribe(Disposable disposable) {
                                 disposables.add(disposable);

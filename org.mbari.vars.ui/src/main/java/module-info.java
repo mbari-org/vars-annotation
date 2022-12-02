@@ -2,7 +2,6 @@ module org.mbari.vars.ui {
 
   requires com.google.gson;
   requires com.jfoenix;
-  requires io.reactivex.rxjava2;
   requires java.desktop;
   requires java.logging;
   requires java.prefs;
@@ -25,6 +24,7 @@ module org.mbari.vars.ui {
   requires typesafe.config;
   requires vcr4j.core;
 
+  requires vcr4j.remote;
   requires vcr4j.sharktopoda;
   requires transitive vcr4j.sharktopoda.client;
   requires io.reactivex.rxjava3;

@@ -1,8 +1,7 @@
 package org.mbari.vars.ui.mediaplayers.macos.bm;
 
-import io.reactivex.Scheduler;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.ImageCaptureService;
 import org.mbari.vars.services.model.Framegrab;

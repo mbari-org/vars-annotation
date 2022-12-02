@@ -34,6 +34,8 @@ public class SharktopodaSettingsPaneController implements IPrefs {
     @FXML
     private TextField timeJumpTextField;
 
+    char a = 'b';
+
     @FXML
     private GridPane root;
 

@@ -1,7 +1,8 @@
 package org.mbari.vars.ui.javafx.deployeditor;
 
-import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
+
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;

@@ -1,6 +1,6 @@
 package org.mbari.vars.ui.javafx.buttons;
 
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;

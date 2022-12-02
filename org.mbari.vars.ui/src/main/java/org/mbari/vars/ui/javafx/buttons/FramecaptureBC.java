@@ -1,7 +1,7 @@
 package org.mbari.vars.ui.javafx.buttons;
 
 
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import org.mbari.vars.ui.UIToolBox;

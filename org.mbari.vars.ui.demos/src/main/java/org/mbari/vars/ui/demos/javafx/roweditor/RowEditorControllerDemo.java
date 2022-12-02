@@ -1,6 +1,6 @@
 package org.mbari.vars.ui.demos.javafx.roweditor;
 
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;

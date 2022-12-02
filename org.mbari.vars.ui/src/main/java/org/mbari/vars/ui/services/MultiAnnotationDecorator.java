@@ -1,8 +1,9 @@
 package org.mbari.vars.ui.services;
 
-import io.reactivex.Observable;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.Subject;
+
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.PublishSubject;
+import io.reactivex.rxjava3.subjects.Subject;
 import org.mbari.vars.ui.AppConfig;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.UIToolBox;
