@@ -69,6 +69,7 @@ module org.mbari.vars.ui {
   exports org.mbari.vars.ui.mediaplayers;
   exports org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
   exports org.mbari.vars.ui.mediaplayers.sharktopoda;
+  exports org.mbari.vars.ui.mediaplayers.sharktopoda2;
   exports org.mbari.vars.ui.mediaplayers.ships;
   exports org.mbari.vars.ui.messages;
   exports org.mbari.vars.ui.services;

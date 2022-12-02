@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.sharkopoda2;
+package org.mbari.vars.ui.mediaplayers.sharktopoda2;
 
 import javafx.util.Pair;
 import org.mbari.vars.services.model.Media;
@@ -12,10 +12,15 @@ import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.remote.control.RError;
 import org.mbari.vcr4j.remote.control.RState;
 import org.mbari.vcr4j.remote.control.RemoteControl;
+import org.mbari.vcr4j.remote.control.commands.CloseCmd;
+import org.mbari.vcr4j.remote.control.commands.OpenCmd;
 
 import java.util.concurrent.CompletableFuture;
 
 public class MediaControlsFactoryImpl implements MediaControlsFactory {
+
+    private ImageCaptureServiceImpl imageCaptureService = new ImageCaptureServiceImpl();
+    private RemoteControl remoteControl;
 
     @Override
     public SettingsPane getSettingsPane() {
@@ -46,10 +51,24 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                     .port(localPort)
                     .withStatus(true)
                     .withMonitoring(true)
-                    .whenFrameCaptureIsDone(cmd -> {
-                    })
-                    .build();
-            return null;
+                    .whenFrameCaptureIsDone(imageCaptureService.getEventBus()::send)
+                    .build()
+                    .get();
+            var io = remoteControl.getVideoIO();
+            imageCaptureService.setIo(io);
+            try {
+                io.send(new OpenCmd(media.getVideoReferenceUuid(), media.getUri().toURL()));
+            }
+            catch (Exception e) {
+                throw new RuntimeException("Failed to open " + media.getUri(), e);
+            }
+
+            return new MediaPlayer<>(media, imageCaptureService, io,
+                    () -> {
+                        io.send(new CloseCmd(media.getVideoReferenceUuid()));
+                        remoteControl.close();
+                    });
+
         });
     }
 }

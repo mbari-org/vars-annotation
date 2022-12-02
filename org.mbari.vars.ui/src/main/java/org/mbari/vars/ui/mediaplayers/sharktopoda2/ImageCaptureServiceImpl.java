@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.sharkopoda2;
+package org.mbari.vars.ui.mediaplayers.sharktopoda2;
 
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import org.mbari.vars.core.EventBus;
@@ -7,7 +7,6 @@ import org.mbari.vars.services.model.Framegrab;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.remote.control.commands.FrameCaptureCmd;
 import org.mbari.vcr4j.remote.control.commands.FrameCaptureDoneCmd;
-import org.mbari.vcr4j.sharktopoda.decorators.FramecaptureDecorator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.mbari.vcr4j.remote.control.RVideoIO;
@@ -21,14 +20,28 @@ import java.util.UUID;
 public class ImageCaptureServiceImpl implements ImageCaptureService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final RVideoIO io;
+    private RVideoIO io;
 
-    private EventBus eventBus = new EventBus();
+    private final EventBus eventBus = new EventBus();
 
-    public ImageCaptureServiceImpl(RVideoIO io) {
+    public void setIo(RVideoIO io) {
         this.io = io;
     }
 
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
+    /**
+     * The framecapture flow is:
+     * 1. method call: capture(file)
+     * 2. send framecapture cmd to Sharktopoda
+     * 3. listen for framecapturedone cmd from sharkdopoda
+     * 4. Push done command to the eventbus in this service
+     * 5. Observer for done command, then read data from disk
+     * @param file
+     * @return
+     */
     @Override
     public Framegrab capture(File file) {
         var observable = eventBus.toObserverable()
