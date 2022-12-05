@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
-    private ImageCaptureServiceImpl imageCaptureService = new ImageCaptureServiceImpl();
+    private final ImageCaptureServiceImpl imageCaptureService = new ImageCaptureServiceImpl();
     private RemoteControl remoteControl;
 
     @Override

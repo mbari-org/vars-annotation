@@ -44,13 +44,17 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
      */
     @Override
     public Framegrab capture(File file) {
-        var observable = eventBus.toObserverable()
-                .ofType(FrameCaptureDoneCmd.class)
-                .observeOn(Schedulers.io())
-                .map(this::captureDone);
-
-        io.send(new FrameCaptureCmd(io.getUuid(), UUID.randomUUID(), file.getAbsolutePath()));
-        return observable.blockingFirst();
+        if (io != null) {
+            var observable = eventBus.toObserverable()
+                    .ofType(FrameCaptureDoneCmd.class)
+                    .observeOn(Schedulers.io())
+                    .map(this::captureDone);
+            io.send(new FrameCaptureCmd(io.getUuid(), UUID.randomUUID(), file.getAbsolutePath()));
+            return observable.blockingFirst();
+        }
+        else {
+            throw new IllegalStateException("The video io object is null. Unable to send a command to Sharktopoda");
+        }
     }
 
     public final Framegrab captureDone(FrameCaptureDoneCmd cmd) {
