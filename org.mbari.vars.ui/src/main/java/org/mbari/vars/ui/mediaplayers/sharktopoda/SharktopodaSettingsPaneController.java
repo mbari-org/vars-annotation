@@ -6,15 +6,15 @@ import java.util.function.UnaryOperator;
 import java.util.prefs.Preferences;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
-import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.AppConfig;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.MediaChangedEvent;
 import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.ui.javafx.prefs.IPrefs;
 import org.mbari.vars.ui.util.FXMLUtils;
@@ -34,6 +34,13 @@ public class SharktopodaSettingsPaneController implements IPrefs {
     @FXML
     private TextField timeJumpTextField;
 
+    @FXML
+    private RadioButton v1RadioButton;
+
+    @FXML
+    private RadioButton v2RadioButton;
+
+
     char a = 'b';
 
     @FXML
@@ -43,6 +50,7 @@ public class SharktopodaSettingsPaneController implements IPrefs {
     public static final String CONTROL_PORT_KEY = "sharktopoda-control-port";
     public static final String FRAMEGRAB_PORT_KEY = "sharktopoda-framegrab-port";
     public static final String TIME_JUMP = "sharktopoda-time-jump";
+    public static final String SHARKTOPODA_VERSION = "sharktopoda-version";
     public static final Integer DEFAULT_TIME_JUMP = 1000;
 
     @FXML
@@ -62,6 +70,10 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         controlPortTextField.setTextFormatter(textFormatter1);
         framegrabPortTextField.setTextFormatter(textFormatter2);
         timeJumpTextField.setTextFormatter(textFormatter3);
+
+        final ToggleGroup group = new ToggleGroup();
+        v1RadioButton.setToggleGroup(group);
+        v2RadioButton.setToggleGroup(group);
 
         load();
     }
@@ -96,6 +108,16 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         }
     }
 
+    public static Integer getSharktopodaVersion() {
+        Preferences prefs = Preferences.userNodeForPackage(SharktopodaSettingsPaneController.class);
+        try {
+            return prefs.getInt(SHARKTOPODA_VERSION, 1);
+        }
+        catch (Exception e) {
+            return 1;
+        }
+    }
+
     public static SharktopodaSettingsPaneController newInstance() {
         ResourceBundle i18n = Initializer.getToolBox().getI18nBundle();
         return FXMLUtils.newInstance(SharktopodaSettingsPaneController.class,
@@ -119,6 +141,13 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         controlPortTextField.setText(sharkPort + "");
         framegrabPortTextField.setText(fgPort + "");
         timeJumpTextField.setText(timeJump + "");
+
+        int sharkVersion = prefs.getInt(SHARKTOPODA_VERSION, 1);
+        if (sharkVersion == 2) {
+            v2RadioButton.setSelected(true);
+        } else {
+            v1RadioButton.setSelected(true);
+        }
     }
 
     @Override
@@ -149,6 +178,10 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         // Time jump is saved to prefs but also set in Data so it can be used immediatly
         prefs.putInt(TIME_JUMP, timeJump);
         toolBox.getData().setTimeJump(timeJump);
+
+        var version = v2RadioButton.isSelected() ? 2 : 1;
+        prefs.putInt(SHARKTOPODA_VERSION, version);
+
 
         // Raziel sends a ReloadServicesMsg which close the open media
 //        Media media = toolBox.getData()

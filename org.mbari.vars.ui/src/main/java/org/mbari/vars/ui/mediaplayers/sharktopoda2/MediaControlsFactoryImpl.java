@@ -2,11 +2,14 @@ package org.mbari.vars.ui.mediaplayers.sharktopoda2;
 
 import javafx.util.Pair;
 import org.mbari.vars.services.model.Media;
+import org.mbari.vars.ui.Initializer;
+import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.mediaplayers.MediaControls;
 import org.mbari.vars.ui.mediaplayers.MediaControlsFactory;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.ui.mediaplayers.SettingsPane;
 import org.mbari.vars.ui.mediaplayers.sharktopoda.SharktopodaSettingsPaneController;
+import org.mbari.vars.ui.mediaplayers.sharktopoda.SharktoptodaControlPane;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.remote.control.RError;
@@ -21,6 +24,13 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
     private final ImageCaptureServiceImpl imageCaptureService = new ImageCaptureServiceImpl();
     private RemoteControl remoteControl;
+    private SharktoptodaControlPane controlPane;
+    private final UIToolBox toolBox;
+
+    public MediaControlsFactoryImpl() {
+        this.toolBox = Initializer.getToolBox();
+        controlPane = new SharktoptodaControlPane(toolBox);
+    }
 
     @Override
     public SettingsPane getSettingsPane() {
@@ -29,10 +39,14 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
     @Override
     public boolean canOpen(Media media) {
+        // Check to see if the user has specified sharktopoda version 2 in settings
         boolean b = false;
         if (media != null) {
-            String u = media.getUri().toString();
-            b =  u.startsWith("http") || u.startsWith("file");
+            var version = SharktopodaSettingsPaneController.getSharktopodaVersion();
+            if (version == 2) {
+                String u = media.getUri().toString();
+                b = u.startsWith("http") || u.startsWith("file");
+            }
         }
         return b;
     }
@@ -40,8 +54,11 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
     @Override
     public CompletableFuture<MediaControls<? extends VideoState, ? extends VideoError>> open(Media media) {
         Pair<Integer, Integer> portNumbers = SharktopodaSettingsPaneController.getPortNumbers();
-
-        return null;
+        return open(media, portNumbers.getKey(), portNumbers.getValue())
+                .thenApply(mediaPlayer -> {
+                    controlPane.setMediaPlayer(mediaPlayer);
+                    return new MediaControls<>(mediaPlayer, controlPane);
+                });
     }
 
     public CompletableFuture<MediaPlayer<RState, RError>> open(Media media, int remotePort, int localPort) {

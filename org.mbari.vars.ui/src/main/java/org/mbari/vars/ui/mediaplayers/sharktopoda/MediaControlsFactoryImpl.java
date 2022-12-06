@@ -53,10 +53,14 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
     @Override
     public boolean canOpen(Media media) {
+        // Check to see if the user has specified sharktopoda version 1 in settings
         boolean b = false;
         if (media != null) {
-            String u = media.getUri().toString();
-            b =  u.startsWith("http") || u.startsWith("file");
+            var version = SharktopodaSettingsPaneController.getSharktopodaVersion();
+            if (version == 1) {
+                String u = media.getUri().toString();
+                b = u.startsWith("http") || u.startsWith("file");
+            }
         }
         return b;
     }

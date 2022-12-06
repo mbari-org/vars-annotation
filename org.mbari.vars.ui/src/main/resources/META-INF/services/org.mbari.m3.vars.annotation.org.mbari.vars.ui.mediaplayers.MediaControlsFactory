@@ -1,3 +1,4 @@
 org.mbari.vars.ui.mediaplayers.sharktopoda.MediaControlsFactoryImpl
+org.mbari.vars.ui.mediaplayers.sharktopoda2.MediaControlsFactoryImpl
 org.mbari.vars.ui.mediaplayers.ships.MediaControlsFactoryImpl
 org.mbari.vars.ui.mediaplayers.macos.bm.MediaControlsFactoryImpl
