@@ -35,6 +35,7 @@ module org.mbari.vars.ui {
       with 
       org.mbari.vars.ui.mediaplayers.macos.bm.MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.sharktopoda.MediaControlsFactoryImpl,
+      org.mbari.vars.ui.mediaplayers.sharktopoda2.MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.ships.MediaControlsFactoryImpl;
 
   opens org.mbari.vars.ui to javafx.graphics;

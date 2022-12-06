@@ -24,6 +24,13 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
 
     private final EventBus eventBus = new EventBus();
 
+    public ImageCaptureServiceImpl() {
+        eventBus.toObserverable()
+                .subscribe(obj -> log.debug("Received " + obj.toString()),
+                        ex -> log.atWarn().setCause(ex).log("An exception was thrown"),
+                        () -> log.info("Closed event bus"));
+    }
+
     public void setIo(RVideoIO io) {
         this.io = io;
     }
