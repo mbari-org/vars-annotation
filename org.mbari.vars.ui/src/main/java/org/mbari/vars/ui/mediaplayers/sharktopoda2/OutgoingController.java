@@ -56,7 +56,7 @@ public class OutgoingController {
     private void handle(Collection<Annotation> annotations, Action action) {
         List<Localization> localizations = LocalizedAnnotation.from(annotations)
                 .stream()
-                .flatMap(opt -> opt.localization().stream())
+                .flatMap(opt -> opt.toLocalization().stream())
                 .toList();
 
         if (!localizations.isEmpty()) {

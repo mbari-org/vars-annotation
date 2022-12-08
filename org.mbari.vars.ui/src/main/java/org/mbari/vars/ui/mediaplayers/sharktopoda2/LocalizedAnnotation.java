@@ -34,7 +34,7 @@ public record LocalizedAnnotation(Annotation annotation, Association association
      * @return An optional localization. Will be none if the association is not a bounding box,
      *   or does not have a json mimetype or if there's an error parsing the json to a bounding box.
      */
-    public Optional<Localization> localization() {
+    public Optional<Localization> toLocalization() {
         if (association.getLinkName().equalsIgnoreCase(BoundingBox.LINK_NAME) &&
                 association.getMimeType().equalsIgnoreCase("application/json")) {
             try {
@@ -92,6 +92,7 @@ public record LocalizedAnnotation(Annotation annotation, Association association
         var elapsedTime = Duration.ofMillis(x.getElapsedTimeMillis());
 
         var annotation = new Annotation();
+        annotation.setConcept(x.getConcept());
 
         annotation.setElapsedTime(elapsedTime);
         if (x.getDurationMillis() != null && x.getDurationMillis() != 0L) {
