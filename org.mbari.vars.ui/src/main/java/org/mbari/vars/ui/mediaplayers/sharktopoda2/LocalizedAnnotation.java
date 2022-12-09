@@ -89,12 +89,15 @@ public record LocalizedAnnotation(Annotation annotation, Association association
      * @return
      */
     public static LocalizedAnnotation from(Localization x) {
-        var elapsedTime = Duration.ofMillis(x.getElapsedTimeMillis());
+
 
         var annotation = new Annotation();
         annotation.setConcept(x.getConcept());
 
-        annotation.setElapsedTime(elapsedTime);
+        if (x.getElapsedTimeMillis() != null) {
+            var elapsedTime = Duration.ofMillis(x.getElapsedTimeMillis());
+            annotation.setElapsedTime(elapsedTime);
+        }
         if (x.getDurationMillis() != null && x.getDurationMillis() != 0L) {
             var duration = Duration.ofMillis(x.getDurationMillis());
             annotation.setDuration(duration);
