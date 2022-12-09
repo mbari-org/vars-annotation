@@ -20,7 +20,7 @@ public class OutgoingController {
     private final RVideoIO io;
     private final List<Disposable> disposables = new ArrayList<>();
     private enum Action {
-        Add, Remove, Select, Update
+        Add, Clear, Remove, Select, Update
     }
 
     public OutgoingController(EventBus eventBus, RVideoIO io) {
@@ -72,8 +72,8 @@ public class OutgoingController {
         }
     }
 
-
     public void close() {
         disposables.forEach(Disposable::dispose);
+        disposables.clear();
     }
 }

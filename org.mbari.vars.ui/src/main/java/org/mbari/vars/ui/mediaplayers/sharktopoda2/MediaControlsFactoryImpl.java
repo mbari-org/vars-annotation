@@ -73,6 +73,9 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                     .get();
             var io = remoteControl.getVideoIO();
             imageCaptureService.setIo(io);
+
+            var outgoingController = new OutgoingController(toolBox.getEventBus(), io);
+            var incomingController = new IncomingController(toolBox, remoteControl.getRequestHandler());
             try {
                 io.send(new OpenCmd(media.getVideoReferenceUuid(), media.getUri().toURL()));
             }
@@ -84,6 +87,8 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                     () -> {
                         io.send(new CloseCmd(media.getVideoReferenceUuid()));
                         remoteControl.close();
+                        incomingController.close();
+                        outgoingController.close();
                     });
 
         });

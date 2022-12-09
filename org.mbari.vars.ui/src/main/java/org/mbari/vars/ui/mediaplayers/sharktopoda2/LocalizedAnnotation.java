@@ -39,10 +39,11 @@ public record LocalizedAnnotation(Annotation annotation, Association association
                 association.getMimeType().equalsIgnoreCase("application/json")) {
             try {
                 BoundingBox box = gson.fromJson(association.getLinkValue(), BoundingBox.class);
+                var duration = annotation.getDuration() == null ? null : annotation.getDuration().toMillis();
                 var localization = new Localization(association.getUuid(),
                         annotation.getConcept(),
                         annotation.getElapsedTime().toMillis(),
-                        annotation.getDuration().toMillis(),
+                        duration,
                         box.getX(),
                         box.getY(),
                         box.getWidth(),

@@ -145,4 +145,9 @@ public class IncomingController {
         }
         return matches;
     }
+
+    public void close() {
+        disposables.forEach(Disposable::dispose);
+        disposables.clear();
+    }
 }
