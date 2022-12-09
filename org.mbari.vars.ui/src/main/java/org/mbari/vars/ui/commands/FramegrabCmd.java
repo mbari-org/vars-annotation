@@ -114,7 +114,7 @@ public class FramegrabCmd implements Command {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Framegrab @ " + annotationRef.getElapsedTime();
     }
 
     private void applyFromCachedData(UIToolBox toolBox) {

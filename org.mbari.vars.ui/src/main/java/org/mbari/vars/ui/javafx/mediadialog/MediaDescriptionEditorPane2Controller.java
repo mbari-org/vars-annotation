@@ -7,7 +7,6 @@ import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.reactivex.internal.operators.flowable.FlowableAllSingle;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

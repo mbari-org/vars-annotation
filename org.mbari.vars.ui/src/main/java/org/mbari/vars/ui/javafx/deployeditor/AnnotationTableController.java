@@ -1,7 +1,8 @@
 package org.mbari.vars.ui.javafx.deployeditor;
 
-import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
+
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -19,7 +20,14 @@ import org.mbari.vars.ui.util.JFXUtilities;
 import org.mbari.vars.core.util.ListUtils;
 
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.UUID;
+import java.util.Map;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;

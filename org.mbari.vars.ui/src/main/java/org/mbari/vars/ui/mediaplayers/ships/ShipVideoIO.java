@@ -1,8 +1,8 @@
 package org.mbari.vars.ui.mediaplayers.ships;
 
-import io.reactivex.Observable;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.Subject;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.PublishSubject;
+import io.reactivex.rxjava3.subjects.Subject;
 import org.mbari.vcr4j.*;
 import org.mbari.vcr4j.commands.VideoCommands;
 
@@ -16,7 +16,7 @@ public class ShipVideoIO implements VideoIO<ShipVideoState, SimpleVideoError> {
 
     private final String connectionId;
 
-    private final Subject<VideoCommand> commandSubject;
+    private final Subject<VideoCommand<?>> commandSubject;
 
     private final Subject<SimpleVideoError> errorSubject;
 
@@ -28,7 +28,7 @@ public class ShipVideoIO implements VideoIO<ShipVideoState, SimpleVideoError> {
 
         this.connectionId = connectionId;
 
-        PublishSubject<VideoCommand> s1 = PublishSubject.create();
+        PublishSubject<VideoCommand<?>> s1 = PublishSubject.create();
         commandSubject = s1.toSerialized();
 
         PublishSubject<ShipVideoState> s2 = PublishSubject.create();
@@ -53,14 +53,16 @@ public class ShipVideoIO implements VideoIO<ShipVideoState, SimpleVideoError> {
     }
 
     @Override
-    public <A extends VideoCommand> void send(A videoCommand) {
+    public <A extends VideoCommand<?>> void send(A videoCommand) {
         commandSubject.onNext(videoCommand);
     }
 
     @Override
-    public Subject<VideoCommand> getCommandSubject() {
+    public Subject<VideoCommand<?>> getCommandSubject() {
         return commandSubject;
     }
+
+
 
     @Override
     public String getConnectionID() {

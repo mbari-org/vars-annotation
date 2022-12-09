@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 //import de.jensd.fx.glyphs.GlyphsFactory;
 //import de.jensd.fx.glyphs.materialicons.MaterialIcon;
 //import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -337,7 +337,7 @@ public class BulkEditorPaneController {
 
     private void setEventBus(EventBus eventBus) {
         Preconditions.checkNotNull(eventBus);
-        final Observable<Object> obs = eventBus.toObserverable();
+        final io.reactivex.rxjava3.core.Observable<Object> obs = eventBus.toObserverable();
         obs.ofType(AnnotationsChangedEvent.class)
                 .subscribe(e -> refresh());
         obs.ofType(AnnotationsAddedEvent.class)

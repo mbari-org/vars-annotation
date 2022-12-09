@@ -38,6 +38,7 @@ public class Initializer {
 
     private static Config config;
 
+
     /**
      * First looks for the file `~/.vars/vars-annotation.conf` and, if found,
      * loads that file. Otherwise used the usual `reference.conf`/`application.conf`
@@ -71,6 +72,7 @@ public class Initializer {
                     .handle((services, ex) -> {
                         if (ex != null) {
                             // TODO log it
+
                             log.atWarn().setCause(ex).log(() -> "Failed to retrieve server configurations from Raziel at " + rcp.url());
                             return ServicesBuilder.noop();
                         }

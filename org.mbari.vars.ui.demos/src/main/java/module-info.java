@@ -4,7 +4,7 @@ open module org.mbari.vars.ui.demos {
   requires com.google.gson;
   requires com.jfoenix;
   requires eu.hansolo.medusa;
-  requires io.reactivex.rxjava2;
+  requires io.reactivex.rxjava3;
   requires java.prefs;
   requires javafx.controls;
   requires javafx.fxml;

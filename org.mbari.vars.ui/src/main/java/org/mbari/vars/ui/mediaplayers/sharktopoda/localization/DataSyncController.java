@@ -108,32 +108,37 @@ public class DataSyncController implements Closeable  {
     }
 
     private void addAnnotation(LocalizedAnnotation a) {
-        var searchList = localizedAnnotations.subList(0, localizedAnnotations.size());
-        var match = LocalizedAnnotation.search(searchList, a.association().getUuid());
-        if (match.getB().isEmpty()) {
-            // New annotation not in LocalizedAnnotation List
-            var idx = -match.getA() - 1;
-            localizedAnnotations.add(idx, a);
-            var remoteOpt = searchRemote(a);
-            if (remoteOpt.isEmpty() || !areLocalizationsSame(a.localization().get(), remoteOpt.get())) {
-                io.getController().addLocalization(a.localization().get());
-            }
-        }
-        else {
-            // An annotation with the matching assocation uuid already exist in the LocalizatedAnnotation List
-            var aloc = a.localization().get();
-            var bloc = match.getB().get().localization().get();
-            if (areLocalizationsSame(aloc, bloc)) {
-                // Do nothing
-            }
-            else {
-                // New Localized annotation. Added it to the list.
-                localizedAnnotations.set(match.getA(), a);
+        try {
+            var searchList = localizedAnnotations.subList(0, localizedAnnotations.size());
+            var match = LocalizedAnnotation.search(searchList, a.association().getUuid());
+            if (match.getB().isEmpty()) {
+                // New annotation not in LocalizedAnnotation List
+                var idx = -match.getA() - 1;
+                localizedAnnotations.add(idx, a);
                 var remoteOpt = searchRemote(a);
-                if (remoteOpt.isEmpty() || !areLocalizationsSame(aloc, remoteOpt.get())) {
+                if (remoteOpt.isEmpty() || !areLocalizationsSame(a.localization().get(), remoteOpt.get())) {
                     io.getController().addLocalization(a.localization().get());
                 }
+            } else {
+                // An annotation with the matching assocation uuid already exist in the LocalizatedAnnotation List
+                var aloc = a.localization().get();
+                var bloc = match.getB().get().localization().get();
+                if (areLocalizationsSame(aloc, bloc)) {
+                    // Do nothing
+                } else {
+                    // New Localized annotation. Added it to the list.
+                    localizedAnnotations.set(match.getA(), a);
+                    var remoteOpt = searchRemote(a);
+                    if (remoteOpt.isEmpty() || !areLocalizationsSame(aloc, remoteOpt.get())) {
+                        io.getController().addLocalization(a.localization().get());
+                    }
+                }
             }
+        }
+        catch (Exception e) {
+            log.atWarn()
+                    .setCause(e)
+                    .log("Failed to add localized annotation: " + a);
         }
     }
 

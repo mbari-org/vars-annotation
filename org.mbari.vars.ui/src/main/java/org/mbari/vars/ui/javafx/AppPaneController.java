@@ -4,7 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTabPane;
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -28,7 +28,6 @@ import org.mbari.vars.ui.events.MediaChangedEvent;
 import org.mbari.vars.ui.events.UserAddedEvent;
 import org.mbari.vars.ui.events.UserChangedEvent;
 import org.mbari.vars.ui.javafx.mediadialog.MediaDescriptionEditorPane2Controller;
-import org.mbari.vars.ui.javafx.mlstage.MLSettingsPaneController;
 import org.mbari.vars.ui.javafx.mlstage.MachineLearningStageController;
 import org.mbari.vars.ui.mediaplayers.ships.MediaParams;
 import org.mbari.vars.ui.mediaplayers.ships.OpenRealTimeDialog;
@@ -260,7 +259,7 @@ public class AppPaneController {
         if (tabPane == null) {
             tabPane = new JFXTabPane();
 
-            Observable<Object> observable = toolBox.getEventBus().toObserverable();
+            io.reactivex.rxjava3.core.Observable<Object> observable = toolBox.getEventBus().toObserverable();
 
             Tab imageTab = new Tab("Images", imageViewController.getRoot());
             imageTab.setClosable(false);
