@@ -15,9 +15,13 @@ public class AssociationListTableCellRenderer extends ListTableCellRenderer {
 
     public AssociationListTableCellRenderer() {
         super();
-        setCellRenderer(new AssociationListCellRenderer());
+        setPrototypeCellValue("0123456789012345678901234567890"); // required for resize to work
+        var cellRenderer = new AssociationListCellRenderer();
+        cellRenderer.setOpaque(false);
+        setCellRenderer(cellRenderer);
         setForeground(Colors.DEFAULT_TABLE_TEXT.getColor());
         setBackground(Colors.DEFAULT.getColor());
+        ToolTipManager.sharedInstance().registerComponent(this);
     }
 
 

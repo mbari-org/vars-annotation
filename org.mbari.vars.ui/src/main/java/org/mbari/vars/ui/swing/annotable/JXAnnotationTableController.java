@@ -1,6 +1,6 @@
 package org.mbari.vars.ui.swing.annotable;
 
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 import javafx.collections.ObservableList;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTableHeader;
@@ -11,6 +11,8 @@ import org.mbari.vars.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
 import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +24,7 @@ public class JXAnnotationTableController {
     private final UIToolBox toolBox;
     private final AnnotationTableModel tableModel;
     private JXTable table;
+    private static final Logger log = LoggerFactory.getLogger(JXAnnotationTableController.class);
 
 
     public JXAnnotationTableController(UIToolBox toolBox) {
@@ -107,7 +110,7 @@ public class JXAnnotationTableController {
             table.setSortable(true);
             table.setAutoscrolls(true);
             table.setColumnControlVisible(true);
-            table.setShowGrid(true, false);
+            table.setShowGrid(false, true);
             table.setGridColor(Colors.DEFAULT_TEXT.getColor());
             table.setForeground(Colors.DEFAULT_TABLE_TEXT.getColor());
             table.setSortOrder(0, SortOrder.ASCENDING); // default sort is recordedTimestamp
@@ -118,12 +121,14 @@ public class JXAnnotationTableController {
                     .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
             table.getSelectionModel()
                     .addListSelectionListener(e -> {
+//                        log.atInfo().log("SELECTION EVENT: " + e);
                         if (!e.getValueIsAdjusting()) {
                             int[] rows = table.getSelectedRows();
                             var selected = new ArrayList<Annotation>(rows.length);
                             for (int i = 0; i < rows.length; i++) {
                                 selected.add(getAnnotationAt(i));
                             }
+//                            log.atInfo().log("SELECTED " + selected.size());
                             toolBox.getEventBus()
                                     .send(new AnnotationsSelectedEvent(JXAnnotationTableController.this, selected));
                         }

@@ -3,7 +3,7 @@ package org.mbari.vars.ui.swing.annotable;
 import org.mbari.vars.services.model.Association;
 
 import javax.swing.*;
-import java.awt.Component;
+import java.awt.*;
 
 public class AssociationListCellRenderer extends DefaultListCellRenderer {
 
@@ -23,6 +23,16 @@ public class AssociationListCellRenderer extends DefaultListCellRenderer {
         }
         setText(associationAsString);
         return component;
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        Dimension dim = super.getPreferredSize();
+        if (dim != null) {
+            dim = new Dimension(dim.width + 4, dim.height);
+        }
+
+        return dim;
     }
 
 
