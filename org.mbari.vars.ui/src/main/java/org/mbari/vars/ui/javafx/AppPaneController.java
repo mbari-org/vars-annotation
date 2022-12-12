@@ -239,7 +239,7 @@ public class AppPaneController {
         if (tabPane == null) {
             tabPane = new JFXTabPane();
 
-            io.reactivex.rxjava3.core.Observable<Object> observable = toolBox.getEventBus().toObserverable();
+            Observable<Object> observable = toolBox.getEventBus().toObserverable();
 
             Tab imageTab = new Tab("Images", imageViewController.getRoot());
             imageTab.setClosable(false);
