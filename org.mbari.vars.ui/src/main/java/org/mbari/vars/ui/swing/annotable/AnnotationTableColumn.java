@@ -44,6 +44,7 @@ public class AnnotationTableColumn extends TableColumnExt {
         setEditable(false);
         setVisible(true);
         setComparator(comparator);
+        setPreferredWidth(100);
     }
 
 }

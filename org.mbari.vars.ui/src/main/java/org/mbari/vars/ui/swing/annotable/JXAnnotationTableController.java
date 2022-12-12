@@ -99,9 +99,9 @@ public class JXAnnotationTableController {
             tableHeader.setForeground(Colors.DEFAULT_TEXT.getColor());
             table.setTableHeader(tableHeader);
             table.setBackground(Colors.DEFAULT.getColor());
-            var columnContol = table.getColumnControl();
-            columnContol.setBackground(Colors.DEFAULT.getColor());
-            columnContol.setForeground(Colors.DEFAULT_TEXT.getColor());
+            var columnControl = table.getColumnControl();
+            columnControl.setBackground(Colors.DEFAULT.getColor());
+            columnControl.setForeground(Colors.DEFAULT_TEXT.getColor());
 //            columnContol.getParent().setBackground(Colors.DEFAULT.getColor());
 
 //            table.setAutoCreateColumnsFromModel(true);
@@ -126,9 +126,9 @@ public class JXAnnotationTableController {
                             int[] rows = table.getSelectedRows();
                             var selected = new ArrayList<Annotation>(rows.length);
                             for (int i = 0; i < rows.length; i++) {
-                                selected.add(getAnnotationAt(i));
+                                selected.add(getAnnotationAt(rows[i]));
                             }
-//                            log.atInfo().log("SELECTED " + selected.size());
+//                            log.atInfo().log("SELECTED " + selected.size() + " - " + selected.get(0).getConcept());
                             toolBox.getEventBus()
                                     .send(new AnnotationsSelectedEvent(JXAnnotationTableController.this, selected));
                         }

@@ -225,14 +225,33 @@ public class AppPaneController {
         if (topPane == null) {
             var swingNode = new SwingNode();
             SwingUtilities.invokeLater(() -> {
-                var table = annotationTableController.getTable();
+                final var table = annotationTableController.getTable();
                 var scrollPane = new JScrollPane(table);
+//                scrollPane.setViewportView(table);
                 table.setFillsViewportHeight(true);
                 swingNode.setContent(scrollPane);
-                table.revalidate();
-                table.packAll();
+                scrollPane.revalidate();
+//                table.packAll();
 
+                swingNode.parentProperty()
+                        .addListener((obs, oldv, newv) -> {
+                            if (newv != null) {
+                                newv.boundsInParentProperty()
+                                        .addListener((obs1, oldBounds, newBounds) -> {
+                                            var w = (int) newBounds.getWidth();
+                                            var h = (int) newBounds.getHeight();
+                                            SwingUtilities.invokeLater(() -> {
+                                                var dim = new Dimension(w, h);
+                                                scrollPane.setPreferredSize(dim);
+//                                                table.setPreferredSize(dim);
+                                                table.setPreferredScrollableViewportSize(dim);
+                                            });
+                                        });
+                            }
+                        });
             });
+
+
             topPane = new SplitPane(swingNode,
                    getTabPane());
             imageViewController.getImageView()
