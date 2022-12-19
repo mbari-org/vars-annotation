@@ -5,6 +5,7 @@ import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.messages.ClearCommandManagerMsg;
 import org.mbari.vars.ui.messages.RedoMsg;
+import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.ui.messages.UndoMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +77,8 @@ public class CommandManager {
                     inverseCommandList.offerLast(commandEvent);
                 } catch (Exception e) {
                     // TODO handle error via event
+                    var msg = ShowNonfatalErrorAlert.from("commandmanager.error", e, toolBox.getI18nBundle());
+                    toolBox.getEventBus().send(msg);
                 }
             }
         }

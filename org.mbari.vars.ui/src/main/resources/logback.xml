@@ -37,7 +37,7 @@
     <logger name="org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory" level="INFO" />
     <logger name="org.mbari.vars.services.impl.panoptes.v1.PanoptesWebServiceFactory" level="INFO" />
     <logger name="org.mbari.vars.services.impl.vampiresquid.v1.VamWebServiceFactory" level="INFO" />
-     <logger name="org.mbari.vars.services.impl.varskbserver.v1.KBWebServiceFactory" level="INFO" />
+    <logger name="org.mbari.vars.services.impl.varskbserver.v1.KBWebServiceFactory" level="INFO" />
     <logger name="org.mbari.vars.services.util.WebPreferences" level="INFO" />
     <logger name="org.mbari.vcr4j" level="INFO" />
     <logger name="org.mbari.vcr4j.remote" level="DEBUG" />
