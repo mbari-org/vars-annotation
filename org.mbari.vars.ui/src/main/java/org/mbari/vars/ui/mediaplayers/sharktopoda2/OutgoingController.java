@@ -10,12 +10,16 @@ import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.ui.mediaplayers.sharktopoda.localization.LocalizationController;
 import org.mbari.vcr4j.remote.control.RVideoIO;
 import org.mbari.vcr4j.remote.control.commands.localization.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class OutgoingController {
+
+    private static final Logger log = LoggerFactory.getLogger(OutgoingController.class);
 
     private final RVideoIO io;
     private final List<Disposable> disposables = new ArrayList<>();
@@ -58,6 +62,8 @@ public class OutgoingController {
                 .stream()
                 .flatMap(opt -> opt.toLocalization().stream())
                 .toList();
+
+        log.atDebug().log(() -> "Outgoing to Sharktopoda: %s on %d localizations".formatted(action, localizations.size()));
 
         if (!localizations.isEmpty()) {
             var uuids = localizations.stream()

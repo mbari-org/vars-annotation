@@ -7,6 +7,7 @@ import org.mbari.vars.ui.commands.CreateAnnotationAtIndexWithAssociationCmd;
 import org.mbari.vars.ui.commands.DeleteAssociationsCmd;
 import org.mbari.vars.ui.commands.UpdateAssociationCmd;
 import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.ui.mediaplayers.sharktopoda.localization.LocalizationController;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.remote.control.commands.localization.*;
 import org.mbari.vcr4j.remote.player.RxControlRequestHandler;
@@ -49,6 +50,9 @@ public class IncomingController {
                 .subscribe(evt -> handleSelect(evt.getValue().getLocalizations()));
         disposables.add(d);
 
+        d = bus.subscribe(evt -> log.atDebug().log(() -> "Incoming from Sharktopoda: " + evt));
+        disposables.add(d);
+
     }
 
     private void handleAdd(List<Localization> added) {
@@ -65,7 +69,8 @@ public class IncomingController {
             var videoIndex = new VideoIndex(localizedAnnotation.annotation().getElapsedTime());
             var cmd = new CreateAnnotationAtIndexWithAssociationCmd(videoIndex,
                     annotation.getConcept(),
-                    association);
+                    association,
+                    LocalizationController.EVENT_SOURCE);
             toolBox.getEventBus().send(cmd);
         });
 

@@ -74,6 +74,8 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
             var io = remoteControl.getVideoIO();
             imageCaptureService.setIo(io);
 
+
+
             var outgoingController = new OutgoingController(toolBox.getEventBus(), io);
             var incomingController = new IncomingController(toolBox, remoteControl.getRequestHandler());
             try {
