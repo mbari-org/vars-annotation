@@ -10,7 +10,7 @@ import java.util.List;
 public record MLImageInference(ImageData imageData, List<MachineLearningLocalization> localizations) {
 
 
-    public MLImageInference(Path path, ImageData imageData) {
+    public MLImageInference(ImageData imageData) {
         this(imageData, Collections.emptyList());
     }
 

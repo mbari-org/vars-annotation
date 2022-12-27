@@ -18,7 +18,13 @@ public class ImageUtils {
     }
 
     public static byte[] toJpegByteArray(BufferedImage image) throws IOException {
-        return toImageByteArray(image, "jpg");
+        // We create a new bufferedimage dropping any alpha channels that might exist. Otherwise,
+        // we can run buffered images created from PNG files that return 0 byte jpeg arrays.
+        var bufferedImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+        var graphics = bufferedImage.getGraphics();
+        graphics.drawImage(image, 0, 0, null);
+        graphics.dispose();
+        return toImageByteArray(bufferedImage, "jpg");
     }
 
     public static byte[] toPngByteArray(BufferedImage image) throws IOException {
