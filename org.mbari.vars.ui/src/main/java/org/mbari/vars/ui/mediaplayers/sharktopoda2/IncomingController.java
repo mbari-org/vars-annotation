@@ -22,12 +22,14 @@ public class IncomingController {
     private final RxControlRequestHandler requestHandler;
     private final UIToolBox toolBox;
     private final List<Disposable> disposables = new ArrayList<>();
+    private final SharktopodaState sharktopodaState;
     private static final Logger log = LoggerFactory.getLogger(IncomingController.class);
     private final Comparator<LocalizedAnnotation> comparator = Comparator.comparing(a -> a.association().getUuid());
 
-    public IncomingController(UIToolBox toolBox, RxControlRequestHandler requestHandler) {
+    public IncomingController(UIToolBox toolBox, RxControlRequestHandler requestHandler, SharktopodaState sharktopodaState) {
         this.requestHandler = requestHandler;
         this.toolBox = toolBox;
+        this.sharktopodaState = sharktopodaState;
         init();
     }
 
@@ -114,6 +116,11 @@ public class IncomingController {
             return;
         }
         var matches = searchByUuid(selected);
+        var matchingLocalizationUuids = matches.stream()
+                .map(lp -> lp.localization().getUuid())
+                .toList();
+        sharktopodaState.setSelectedLocalizations(matchingLocalizationUuids);
+
         var selectedAnnotations = matches.stream()
                 .map(LocalizationPair::localizedAnnotation)
                 .map(LocalizedAnnotation::annotation)

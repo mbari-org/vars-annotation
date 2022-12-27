@@ -23,12 +23,14 @@ public class OutgoingController {
 
     private final RVideoIO io;
     private final List<Disposable> disposables = new ArrayList<>();
+    private final SharktopodaState sharktopodaState;
     private enum Action {
         Add, Clear, Remove, Select, Update
     }
 
-    public OutgoingController(EventBus eventBus, RVideoIO io) {
+    public OutgoingController(EventBus eventBus, RVideoIO io, SharktopodaState sharktopodaState) {
         this.io = io;
+        this.sharktopodaState = sharktopodaState;
         init(eventBus);
     }
 
@@ -73,7 +75,11 @@ public class OutgoingController {
                 case Add -> io.send(new AddLocalizationsCmd(io.getUuid(), localizations));
                 case Update -> io.send(new UpdateLocalizationsCmd(io.getUuid(), localizations));
                 case Remove -> io.send(new RemoveLocalizationsCmd(io.getUuid(), uuids));
-                case Select -> io.send(new SelectLocalizationsCmd(io.getUuid(), uuids));
+                case Select -> {
+                    if (sharktopodaState.isDifferentThanSelected(uuids)) {
+                        io.send(new SelectLocalizationsCmd(io.getUuid(), uuids));
+                    }
+                }
             }
         }
     }
