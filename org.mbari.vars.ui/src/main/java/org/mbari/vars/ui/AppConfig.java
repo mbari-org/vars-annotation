@@ -2,15 +2,10 @@ package org.mbari.vars.ui;
 
 import com.typesafe.config.Config;
 import org.mbari.vars.services.ServiceConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * We are avoiding scattering config strings through the codebase. The AppConfig

@@ -42,6 +42,7 @@ dependencies {
     }
     runtimeOnly 'javax.servlet:javax.servlet-api'
     runtimeOnly 'org.fusesource.jansi:jansi'
+    runtimeOnly 'org.org.slf4j:slf4j-jdk-platform-logging'
 
     // For command line comment out runtime and add implementation so we see log output.
 //    runtimeOnly 'org.slf4j:slf4j-jdk14'
