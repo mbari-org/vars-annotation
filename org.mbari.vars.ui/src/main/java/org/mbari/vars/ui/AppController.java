@@ -1,6 +1,6 @@
 package org.mbari.vars.ui;
 
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
@@ -76,7 +76,7 @@ public class AppController {
         EventBus eventBus = toolBox.getEventBus();
         Data data = toolBox.getData();
         Observable<Object> eventObservable = eventBus.toObserverable();
-        eventObservable.subscribe(e -> log.debug(e.toString()));
+        eventObservable.subscribe(e -> log.debug("There's an event on the EventBus: " + e.toString()));
         eventObservable.ofType(AnnotationsAddedEvent.class)
                 .subscribe(e -> {
                             if (e.get() != null) {

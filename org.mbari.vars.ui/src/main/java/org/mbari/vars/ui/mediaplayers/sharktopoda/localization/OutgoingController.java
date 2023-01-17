@@ -1,7 +1,7 @@
 package org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
 
 import com.google.gson.Gson;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;

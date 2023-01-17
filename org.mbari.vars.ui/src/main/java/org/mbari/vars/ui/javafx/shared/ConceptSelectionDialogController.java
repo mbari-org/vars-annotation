@@ -1,7 +1,7 @@
 package org.mbari.vars.ui.javafx.shared;
 
 import com.jfoenix.controls.JFXComboBox;
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

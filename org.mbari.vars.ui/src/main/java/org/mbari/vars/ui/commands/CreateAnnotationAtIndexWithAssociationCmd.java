@@ -25,6 +25,7 @@ public class CreateAnnotationAtIndexWithAssociationCmd implements Command  {
     private final String concept;
     private final VideoIndex videoIndex;
     private final Association associationTemplate;
+    private final Object eventSource;
     private volatile Annotation annotation;
 
     /**
@@ -35,11 +36,21 @@ public class CreateAnnotationAtIndexWithAssociationCmd implements Command  {
      *                            be added along to the annotation. If provided it must
      *                            have a UUID set (required to track the association)
      */
-    public CreateAnnotationAtIndexWithAssociationCmd(VideoIndex videoIndex, String concept, Association associationTemplate) {
+    public CreateAnnotationAtIndexWithAssociationCmd(VideoIndex videoIndex,
+                                                     String concept,
+                                                     Association associationTemplate) {
+        this(videoIndex, concept, associationTemplate, "");
+    }
+
+    public CreateAnnotationAtIndexWithAssociationCmd(VideoIndex videoIndex,
+                                                     String concept,
+                                                     Association associationTemplate,
+                                                     Object eventSource) {
         Preconditions.checkArgument(associationTemplate.getUuid() != null, "The associationTemplate must have a UUID");
         this.videoIndex = videoIndex;
         this.concept = concept;
         this.associationTemplate = associationTemplate;
+        this.eventSource = eventSource;
     }
 
     @Override
@@ -73,7 +84,7 @@ public class CreateAnnotationAtIndexWithAssociationCmd implements Command  {
                                 match.ifPresent(anno -> {
                                     annotation = anno;
                                     EventBus eventBus = toolBox.getEventBus();
-                                    eventBus.send(new AnnotationsAddedEvent(annotation));
+                                    eventBus.send(new AnnotationsAddedEvent(eventSource, List.of(annotation)));
                                     eventBus.send(new AnnotationsSelectedEvent(annotation));
                                 });
 

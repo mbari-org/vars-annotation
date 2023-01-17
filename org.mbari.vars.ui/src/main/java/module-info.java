@@ -2,7 +2,6 @@ module org.mbari.vars.ui {
 
   requires com.google.gson;
   requires com.jfoenix;
-  requires io.reactivex.rxjava2;
   requires java.desktop;
   requires java.logging;
   requires java.prefs;
@@ -25,6 +24,7 @@ module org.mbari.vars.ui {
   requires typesafe.config;
   requires vcr4j.core;
 
+  requires vcr4j.remote;
   requires vcr4j.sharktopoda;
   requires transitive vcr4j.sharktopoda.client;
   requires io.reactivex.rxjava3;
@@ -35,6 +35,7 @@ module org.mbari.vars.ui {
       with 
       org.mbari.vars.ui.mediaplayers.macos.bm.MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.sharktopoda.MediaControlsFactoryImpl,
+      org.mbari.vars.ui.mediaplayers.sharktopoda2.MediaControlsFactoryImpl,
       org.mbari.vars.ui.mediaplayers.ships.MediaControlsFactoryImpl;
 
   opens org.mbari.vars.ui to javafx.graphics;
@@ -52,6 +53,7 @@ module org.mbari.vars.ui {
   opens org.mbari.vars.ui.mediaplayers.macos.bm to javafx.fxml;
   opens org.mbari.vars.ui.mediaplayers.sharktopoda to javafx.fxml;
   opens org.mbari.vars.ui.mediaplayers.sharktopoda.localization to com.google.gson, javafx.fxml;
+  opens org.mbari.vars.ui.mediaplayers.sharktopoda2 to com.google.gson, javafx.fxml;
   opens org.mbari.vars.ui.mediaplayers.ships to javafx.fxml;
   opens org.mbari.vars.ui.mediaplayers.vcr to javafx.fxml;
 
@@ -69,11 +71,11 @@ module org.mbari.vars.ui {
   exports org.mbari.vars.ui.mediaplayers;
   exports org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
   exports org.mbari.vars.ui.mediaplayers.sharktopoda;
+  exports org.mbari.vars.ui.mediaplayers.sharktopoda2;
   exports org.mbari.vars.ui.mediaplayers.ships;
   exports org.mbari.vars.ui.messages;
   exports org.mbari.vars.ui.services;
   exports org.mbari.vars.ui;
   exports org.mbari.vars.ui.javafx.imagestage;
-
 
 }

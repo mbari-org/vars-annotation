@@ -55,6 +55,7 @@ public class Alerts {
     }
 
     private void showExceptionAlert(ShowExceptionAlert msg) {
+        log.atWarn().setCause(msg.getException()).log("Showing an exception alert to the user");
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             buildExeptionAlert(msg, alert);
@@ -62,6 +63,7 @@ public class Alerts {
     }
 
     private void showFatalErrorAlert(ShowFatalErrorAlert msg) {
+        log.atWarn().setCause(msg.getException()).log("Showing a fatal alert to the user");
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             buildExeptionAlert(msg, alert);

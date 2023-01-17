@@ -42,7 +42,7 @@
     <rxjava2.version>2.2.21</rxjava2.version>
     <servlet.version>4.0.1</servlet.version>
     <slf4j.version>2.0.0-alpha6</slf4j.version>
-    <vcr4j.version>4.4.1.jre11</vcr4j.version>
+    <vcr4j.version>5.0.0.jre17-SNAPSHOT</vcr4j.version>
   </properties>
   <dependencies>
     <dependency>

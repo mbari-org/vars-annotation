@@ -13,13 +13,14 @@ dependencies {
     implementation 'javax.inject:javax.inject'
     implementation 'org.kordamp.ikonli:ikonli-javafx'
     implementation 'org.kordamp.ikonli:ikonli-material-pack'
-    implementation 'org.zeromq:jeromq'
-    implementation 'org.mbari:imgfx'
     implementation 'org.mbari.vcr4j:vcr4j-core'
+    implementation 'org.mbari.vcr4j:vcr4j-remote'
     implementation 'org.mbari.vcr4j:vcr4j-sharktopoda'
     implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client'
+    implementation 'org.mbari:imgfx'
     implementation 'org.mbari:mbarix4j'
     implementation 'org.slf4j:slf4j-api'
+    implementation 'org.zeromq:jeromq'
 
 
 //    implementation('io.reactivex.rxjava2:rxjavafx') {
@@ -41,6 +42,7 @@ dependencies {
     }
     runtimeOnly 'javax.servlet:javax.servlet-api'
     runtimeOnly 'org.fusesource.jansi:jansi'
+    runtimeOnly 'org.slf4j:slf4j-jdk-platform-logging'
 
     // For command line comment out runtime and add implementation so we see log output.
 //    runtimeOnly 'org.slf4j:slf4j-jdk14'

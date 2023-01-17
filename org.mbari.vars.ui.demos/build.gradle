@@ -11,7 +11,7 @@ dependencies {
     implementation 'com.google.inject:guice'
     implementation 'com.jfoenix:jfoenix'
     implementation 'com.typesafe:config'
-    implementation 'io.reactivex.rxjava2:rxjava'
+    implementation 'io.reactivex.rxjava3:rxjava'
     implementation 'org.controlsfx:controlsfx'
     implementation 'org.kordamp.ikonli:ikonli-javafx'
     implementation 'org.kordamp.ikonli:ikonli-material-pack'

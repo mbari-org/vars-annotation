@@ -5,7 +5,7 @@ module org.mbari.vars.services {
   requires com.github.benmanes.caffeine;
   requires com.google.gson;
   requires gson.javatime.serialisers;
-  requires io.reactivex.rxjava2;
+  requires io.reactivex.rxjava3;
   requires java.desktop;
   requires java.prefs;
   requires java.sql;
@@ -20,6 +20,8 @@ module org.mbari.vars.services {
   requires retrofit2.converter.gson;
   requires typesafe.config;
   requires vcr4j.core;
+  requires methanol;
+  requires okio;
 
   opens org.mbari.vars.services.impl.ml to com.google.gson;
   opens org.mbari.vars.services.model to com.google.gson;

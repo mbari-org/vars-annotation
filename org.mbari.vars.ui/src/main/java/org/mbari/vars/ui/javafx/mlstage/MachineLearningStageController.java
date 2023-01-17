@@ -10,6 +10,7 @@ import org.mbari.vars.services.impl.ml.OkHttpMegalodonService;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.commands.BulkCreateAnnotations;
 import org.mbari.vars.ui.commands.FramegrabUploadCmd;
+import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.ui.services.MLAnalysisService;
 import org.mbari.vars.ui.services.MLImageInference;
 import org.slf4j.Logger;
@@ -127,8 +128,15 @@ public class MachineLearningStageController {
         var mlRemoteUrlOpt = MLSettingsPaneController.getRemoteUrl();
         Requirements.validate(mlRemoteUrlOpt.isPresent(), "The URL for the machine learning web service was not set");
         var mlService = new OkHttpMegalodonService(mlRemoteUrlOpt.get());
-        var mlImageInference = MLAnalysisService.analyzeCurrentElapsedTime(toolBox, mlService);
-        inference.set(mlImageInference);
+        try {
+            var mlImageInference = MLAnalysisService.analyzeCurrentElapsedTime(toolBox, mlService);
+            inference.set(mlImageInference);
+        }
+        catch (Exception e) {
+            var i18n = toolBox.getI18nBundle();
+            var msg = ShowNonfatalErrorAlert.from("ml.controller.analyze.error", e, i18n);
+            toolBox.getEventBus().send(msg);
+        }
     }
 
 

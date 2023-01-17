@@ -1,8 +1,8 @@
 package org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
 
 import com.google.gson.Gson;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.Subject;
+import io.reactivex.rxjava3.subjects.PublishSubject;
+import io.reactivex.rxjava3.subjects.Subject;
 import javafx.collections.ListChangeListener;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.model.Association;
@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
  * Controller that handles inbound traffic from remote app that's creating localizations.
  * @deprecated  Use IncomingController2 instead
  */
+@Deprecated(since="2022-01-01")
 class IncomingController implements Closeable {
     private final UIToolBox toolBox;
     private final EventBus eventBus;
