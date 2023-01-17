@@ -20,8 +20,7 @@ module org.mbari.vars.services {
   requires retrofit2.converter.gson;
   requires typesafe.config;
   requires vcr4j.core;
-  requires methanol;
-  requires okio;
+
 
   opens org.mbari.vars.services.impl.ml to com.google.gson;
   opens org.mbari.vars.services.model to com.google.gson;
