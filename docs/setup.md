@@ -36,13 +36,25 @@ VARS communicates with custom external video players via [UDP](https://en.wikipe
 
 #### VARS Port setting
 
-![Sharktopoda Port](assets/images/SharktopodaDialogPort.jpeg)
+![Sharktopoda Port](assets/images/SharktopodaDialogPort.png)
 
-#### Sharktopoda Port Setting
+#### Sharktopoda 1 Port Setting
 
 Under __Sharktopoda > Preferences__:
 
 ![Sharktopoda Preferences](assets/images/SharktopodaPrefs.png)
+
+#### Sharktopoda 2 Port Setting
+
+Under __Sharktopoda > Preferences__:
+
+![Sharktopoda 2 Network Preferences](assets/images/Sharktopoda2NetworkPrefs.png)
+
+### Sharktopoda 2 Annotation Settings
+
+If you are working with localizations you should check these settings in Sharktopoda 2:
+
+![Sharktopoda 2 Annotation Preferences](assets/images/Sharktopoda2AnnotationPrefs.png)
 
 #### Cthulhu Port Setting
 
@@ -77,5 +89,4 @@ You can remove ml proposed annotations by removing the check next to the annotat
 1. Cancel (nothing is saved to the database)
 2. Save the annotations only. This will send them to the database and display them in VARS.
 3. Save annotations and image. This will create a framegrab from the ML window as well as save the annotations to VARS.
-
 
