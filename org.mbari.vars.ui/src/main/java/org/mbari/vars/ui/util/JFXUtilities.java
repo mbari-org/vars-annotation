@@ -20,12 +20,13 @@ public class JFXUtilities {
     private static final String HEIGHT_KEY = "stage-height";
 
     public static void runOnFXThread(Runnable r) {
-        if (Platform.isFxApplicationThread()) {
-            r.run();
-        }
-        else {
-            Platform.runLater(r);
-        }
+        Platform.runLater(r);
+//        if (Platform.isFxApplicationThread()) {
+//            r.run();
+//        }
+//        else {
+//            Platform.runLater(r);
+//        }
     }
 
     public static void attractAttention(Button button) {

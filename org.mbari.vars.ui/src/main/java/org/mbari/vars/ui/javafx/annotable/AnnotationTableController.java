@@ -20,12 +20,10 @@ import org.mbari.vars.ui.javafx.shared.AnnotationTableViewFactory;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.ui.util.JFXUtilities;
-import org.mbari.vars.core.util.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;

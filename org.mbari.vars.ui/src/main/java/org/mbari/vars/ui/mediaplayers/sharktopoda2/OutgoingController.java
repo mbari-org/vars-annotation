@@ -13,9 +13,7 @@ import org.mbari.vcr4j.remote.control.commands.localization.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class OutgoingController {
 
@@ -77,10 +75,17 @@ public class OutgoingController {
                 case Remove -> io.send(new RemoveLocalizationsCmd(io.getUuid(), uuids));
                 case Select -> {
                     if (sharktopodaState.isDifferentThanSelected(uuids)) {
+                        sharktopodaState.setSelectedLocalizations(uuids);
                         io.send(new SelectLocalizationsCmd(io.getUuid(), uuids));
                     }
                 }
             }
+        }
+
+        if (action.equals(Action.Select) && localizations.isEmpty() && !annotations.isEmpty()) {
+            List<UUID> nothing = Collections.emptyList();
+            sharktopodaState.setSelectedLocalizations(nothing);
+            io.send(new SelectLocalizationsCmd(io.getUuid(), nothing));
         }
     }
 

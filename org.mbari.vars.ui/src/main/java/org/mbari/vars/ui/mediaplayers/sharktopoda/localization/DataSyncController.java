@@ -41,7 +41,7 @@ public class DataSyncController implements Closeable  {
     public DataSyncController(UIToolBox toolBox, IO io) {
         this.toolBox = toolBox;
         this.io = io;
-        init();
+//        init();
     }
 
     private void init() {

@@ -149,7 +149,7 @@ jlink {
     imageZip = file("$buildDir/image-zip/vars-annotation.zip")
     options = [
             '--bind-services',
-//            '--strip-debug',
+            '--strip-debug',
             '--compress', '2',
             '--no-header-files',
             '--no-man-pages'
@@ -249,16 +249,16 @@ tasks.jpackageImage.doLast {
         
         def signer = System.getenv("MAC_CODE_SIGNER")
         if (signer) {
-//            exec {
-//                println("MACOSX: Signing application")
-//                workingDir "build/jpackage"
-//
-//                executable "codesign"
-//
-//                args "--entitlements", "${projectDir}/src/jpackage/macos/java.entitlements",
-//                  "--options", "runtime", "--deep", "-vvv", "-f", "--sign", signer,
-//                  "VARS Annotation.app"
-//            }
+           exec {
+               println("MACOSX: Signing application")
+               workingDir "build/jpackage"
+
+               executable "codesign"
+
+               args "--entitlements", "${projectDir}/src/jpackage/macos/java.entitlements",
+                 "--options", "runtime", "--deep", "-vvv", "-f", "--sign", signer,
+                 "VARS Annotation.app"
+           }
         }
     }
 }
