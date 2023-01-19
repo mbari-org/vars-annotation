@@ -10,12 +10,16 @@ MBARI's Video Annotation and Reference System's user interface for creating and 
 
 ## Developers
 
+VARS Uses libraries in [mbari-org/maven](https://github.com/mbari-org/maven). You can follow the instructions there to allow gradle to fetch the needed libraries or incuded you github user hame and access token in the example below.
+
 ```bash
 .\gradlew clean jpackage --info -P"gpr.user"=my_github_username -P"gpr.key"=my_github_token
 ```
 
-```bash
-# Hacked in better debugging using Maven. Note it may be out of sync with gradlew build
-mvn install
-mvn javafx:run -pl org.mbari.vars.ui
-```
+### Code signing for Macs
+
+Set an the environment variable, `MAC_CODE_SIGNER` to the name of your signing identity (e.g. `Developer ID Application: foo bar (ABC123456)`). Then run `gradlew clean jpackage --info`. This will build a signed app at `org.mbari.vars.ui/build/jpackage/VARS Annotation.app`. This will then need to be notarized by Apple using:
+
+
+
+

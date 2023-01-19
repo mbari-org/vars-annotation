@@ -198,16 +198,24 @@ jlink {
                 "--mac-package-identifier", project.name
             ])
             imageOptions = ["--icon", "src/jpackage/macos/VARS Annotation.icns"]
-
-            // def prefix = System.getenv("MAC_PACKAGE_SIGNING_PREFIX")
-            // def user=System.getenv("MAC_SIGNING_KEY_USER_NAME")
-            // if (prefix && user) {
-            //     customInstallerOptions.addAll([
-            //         "--mac-sign",
-            //         "--mac-package-signing-prefix", prefix,
-            //         "--mac-signing-key-user-name", user
-            //     ])
-            // }
+//            def signer = System.getenv("MAC_CODE_SIGNER")
+//            if (signer) {
+//                customInstallerOptions.addAll([
+//                         "--mac-sign",
+//                         "--mac-package-signing-prefix", "org.mbari.vars.ui",
+//                         "--mac-signing-key-user-name", "Monterey Bay Aquarium Research Institute (9TN7A342V4)",
+//                         "--mac-entitlements", "${projectDir}/src/jpackage/macos/java.entitlements"
+//                     ])
+//            }
+                // def prefix = System.getenv("MAC_PACKAGE_SIGNING_PREFIX")
+                // def user=System.getenv("MAC_SIGNING_KEY_USER_NAME")
+                // if (prefix && user) {
+                //     customInstallerOptions.addAll([
+                //         "--mac-sign",
+                //         "--mac-package-signing-prefix", prefix,
+                //         "--mac-signing-key-user-name", user
+                //     ])
+                // }
 
         }
         installerOptions = customInstallerOptions
@@ -249,16 +257,44 @@ tasks.jpackageImage.doLast {
         
         def signer = System.getenv("MAC_CODE_SIGNER")
         if (signer) {
-           exec {
+
+            def dirsToBeSigned= [
+                    file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/runtime/Contents/Home/bin"),
+                    file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/runtime/Contents/Home/lib"),
+                    file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/runtime/Contents/Home/lib/server"),
+                    file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/runtime/Contents/MacOS")
+            ]
+
+            dirsToBeSigned.forEach { dir ->
+                println("Signing $dir")
+                FileCollection files = layout.files(dir.listFiles())
+                files
+                        .findAll {it.isFile() }
+                        .forEach {file ->
+                    exec {
+                        println("MACOSX: Signing ${file}")
+                        workingDir "build/jpackage"
+
+                        executable "codesign"
+
+                        args "--entitlements", "${projectDir}/src/jpackage/macos/java.entitlements",
+                                "--options", "runtime", "--timestamp", "-vvv", "-f", "--sign", signer,
+                                file.absolutePath
+                    }
+                }
+            }
+
+            exec {
                println("MACOSX: Signing application")
                workingDir "build/jpackage"
 
                executable "codesign"
 
                args "--entitlements", "${projectDir}/src/jpackage/macos/java.entitlements",
-                 "--options", "runtime", "--deep", "-vvv", "-f", "--sign", signer,
+                 "--options", "runtime", "--timestamp", "-vvv", "-f", "--sign", signer,
                  "VARS Annotation.app"
-           }
+            }
+
         }
     }
 }
