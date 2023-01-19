@@ -9,7 +9,7 @@ plugins {
 
 subprojects {
 
-    version = "1.4.4"
+    version = "1.4.5"
 
     apply plugin: 'com.adarshr.test-logger'
     apply plugin: 'com.github.ben-manes.versions'
@@ -84,10 +84,10 @@ subprojects {
             implementation 'org.kordamp.ikonli:ikonli-material-pack:12.3.1'
             implementation 'org.zeromq:jeromq:0.5.3'
             implementation 'org.mbari:imgfx:0.0.13'
-            implementation 'org.mbari.vcr4j:vcr4j-core:5.1.4-SNAPSHOT'
-            implementation 'org.mbari.vcr4j:vcr4j-remote:5.1.4-SNAPSHOT'
-            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client:5.1.4-SNAPSHOT'
-            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda:5.1.4-SNAPSHOT'
+            implementation 'org.mbari.vcr4j:vcr4j-core:5.1.4.jre17'
+            implementation 'org.mbari.vcr4j:vcr4j-remote:5.1.4.jre17'
+            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client:5.1.4.jre17'
+            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda:5.1.4.jre17'
             implementation 'org.mbari:mbarix4j:2.0.5.jre11'
             implementation 'org.slf4j:slf4j-api:2.0.6'
             implementation 'org.slf4j:slf4j-jdk14:2.0.6'
