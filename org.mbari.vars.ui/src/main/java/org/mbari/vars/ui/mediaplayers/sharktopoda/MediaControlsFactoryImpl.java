@@ -11,6 +11,7 @@ import org.mbari.vars.services.model.Media;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIO;
 import org.mbari.vcr4j.VideoState;
+import org.mbari.vcr4j.commands.RemoteCommands;
 import org.mbari.vcr4j.decorators.SchedulerVideoIO;
 import org.mbari.vcr4j.decorators.StatusDecorator;
 import org.mbari.vcr4j.decorators.VideoSyncDecorator;
@@ -18,11 +19,9 @@ import org.mbari.vcr4j.sharktopoda.SharktopodaError;
 import org.mbari.vcr4j.sharktopoda.SharktopodaState;
 import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
 import org.mbari.vcr4j.sharktopoda.commands.OpenCmd;
-import org.mbari.vcr4j.sharktopoda.commands.SharkCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
@@ -91,12 +90,12 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                         new MediaPlayer<>(media, new ImageCaptureServiceImpl(videoIO, framecapturePort),
                                 io,
                                 () -> {
-                                    io.send(SharkCommands.CLOSE);
+                                    io.send(RemoteCommands.CLOSE);
                                     statusDecorator.unsubscribe();
                                     syncDecorator.unsubscribe();
                                  });
                 cf.complete(newVc);
-                io.send(SharkCommands.SHOW);
+                io.send(RemoteCommands.SHOW);
             } catch (Exception e) {
                 log.error("Failed to create SharktopodaVideoIO", e);
                 cf.completeExceptionally(e);

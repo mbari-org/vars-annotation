@@ -13,7 +13,7 @@ import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.ui.javafx.AppPaneController;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
-import org.mbari.vcr4j.sharktopoda.commands.SharkCommands;
+import org.mbari.vcr4j.commands.RemoteCommands;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -197,7 +197,7 @@ public class KeyMapping {
 
         Consumer<MediaPlayer<?, ?>> frameAdvance = mp -> {
             mp.stop();
-            mp.getVideoIO().send(SharkCommands.FRAMEADVANCE);
+            mp.getVideoIO().send(RemoteCommands.FRAMEADVANCE);
         };
         map.put(new KeyCodeCombination(KeyCode.I, osModifier),
                 execute(frameAdvance));
