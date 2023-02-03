@@ -89,9 +89,6 @@ public class MachineLearningStage extends Stage {
         setScene(scene);
     }
 
-    public void setMLImageInference(MLImageInference mlImageInference) {
-
-    }
 
     public void setImage(Image image) {
         imagePaneController.getView().setImage(image);

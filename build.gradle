@@ -51,14 +51,16 @@ subprojects {
     }
 
     ext {
-        javafxVersion = "19.0.2"
+//        javafxVersion = "19.0.2"
+        javafxVersion = "14.0.2.1"
     }
+
 
     dependencies {
 
         constraints {
             implementation 'com.auth0:java-jwt:3.18.3'
-            implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.1'
+            implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
             implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2'
             implementation 'com.github.ben-manes.caffeine:caffeine:3.1.2'
             implementation 'com.github.mizosoft.methanol:methanol:1.7.0'
@@ -82,17 +84,16 @@ subprojects {
             implementation 'org.kordamp.ikonli:ikonli-material-pack:12.3.1'
             implementation 'org.zeromq:jeromq:0.5.3'
             implementation 'org.mbari:imgfx:0.0.13'
-            implementation 'org.mbari.vcr4j:vcr4j-core:5.2.0-SNAPSHOT'
-            implementation 'org.mbari.vcr4j:vcr4j-remote:5.2.0-SNAPSHOT'
-            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client:5.2.0-SNAPSHOT'
-            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda:5.2.0-SNAPSHOT'
+            implementation 'org.mbari.vcr4j:vcr4j-core:5.2.0'
+            implementation 'org.mbari.vcr4j:vcr4j-remote:5.2.0'
+            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client:5.2.0'
+            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda:5.2.0'
             implementation 'org.mbari:mbarix4j:2.0.5.jre11'
             implementation 'org.slf4j:slf4j-api:2.0.6'
             implementation 'org.slf4j:slf4j-jdk14:2.0.6'
             implementation 'org.slf4j:slf4j-jdk-platform-logging:2.0.6'
             runtimeOnly 'ch.qos.logback:logback-classic:1.4.5'
             runtimeOnly 'org.fusesource.jansi:jansi:2.4.0'
-            runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.3'
         }
 
         testCompileOnly 'junit:junit:4.13.2'
