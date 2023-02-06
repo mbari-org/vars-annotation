@@ -10,21 +10,25 @@ import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.ui.mediaplayers.sharktopoda.localization.LocalizationController;
 import org.mbari.vcr4j.remote.control.RVideoIO;
 import org.mbari.vcr4j.remote.control.commands.localization.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class OutgoingController {
 
+    private static final Logger log = LoggerFactory.getLogger(OutgoingController.class);
+
     private final RVideoIO io;
     private final List<Disposable> disposables = new ArrayList<>();
+    private final SharktopodaState sharktopodaState;
     private enum Action {
         Add, Clear, Remove, Select, Update
     }
 
-    public OutgoingController(EventBus eventBus, RVideoIO io) {
+    public OutgoingController(EventBus eventBus, RVideoIO io, SharktopodaState sharktopodaState) {
         this.io = io;
+        this.sharktopodaState = sharktopodaState;
         init(eventBus);
     }
 
@@ -59,6 +63,8 @@ public class OutgoingController {
                 .flatMap(opt -> opt.toLocalization().stream())
                 .toList();
 
+        log.atDebug().log(() -> "Outgoing to Sharktopoda: %s on %d localizations".formatted(action, localizations.size()));
+
         if (!localizations.isEmpty()) {
             var uuids = localizations.stream()
                     .map(Localization::getUuid)
@@ -67,8 +73,19 @@ public class OutgoingController {
                 case Add -> io.send(new AddLocalizationsCmd(io.getUuid(), localizations));
                 case Update -> io.send(new UpdateLocalizationsCmd(io.getUuid(), localizations));
                 case Remove -> io.send(new RemoveLocalizationsCmd(io.getUuid(), uuids));
-                case Select -> io.send(new SelectLocalizationsCmd(io.getUuid(), uuids));
+                case Select -> {
+                    if (sharktopodaState.isDifferentThanSelected(uuids)) {
+                        sharktopodaState.setSelectedLocalizations(uuids);
+                        io.send(new SelectLocalizationsCmd(io.getUuid(), uuids));
+                    }
+                }
             }
+        }
+
+        if (action.equals(Action.Select) && localizations.isEmpty() && !annotations.isEmpty()) {
+            List<UUID> nothing = Collections.emptyList();
+            sharktopodaState.setSelectedLocalizations(nothing);
+            io.send(new SelectLocalizationsCmd(io.getUuid(), nothing));
         }
     }
 

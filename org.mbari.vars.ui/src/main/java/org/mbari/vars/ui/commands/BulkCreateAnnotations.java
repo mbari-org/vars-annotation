@@ -43,13 +43,14 @@ public class BulkCreateAnnotations implements Command {
                 .thenAccept(annos -> {
 //                    addedAnnotations = annos;
 //                    AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
-//                    Set<UUID> observationUuids = addedAnnotations.stream()
+//                    Set<UUID> observationUuids = annos.stream()
 //                            .map(Annotation::getObservationUuid)
 //                            .collect(Collectors.toSet());
+//                    asd.refreshAnnotationsView(observationUuids);
                     final var eventBus = toolBox.getEventBus();
                     eventBus.send(new AnnotationsAddedEvent(annos));
                     eventBus.send(new AnnotationsSelectedEvent(annos));
-//                    asd.refreshAnnotationsView(observationUuids);
+
                 });
     }
 

@@ -1,5 +1,6 @@
 package org.mbari.vars.ui.services;
 
+import mbarix4j.awt.image.ImageUtilities;
 import org.mbari.vars.services.ImageCaptureService;
 import org.mbari.vars.services.model.Framegrab;
 import org.mbari.vars.services.model.ImageData;
@@ -36,9 +37,10 @@ public class FrameCaptureService {
                         framegrab.setVideoIndex(new VideoIndex(elapsedTime, recordedDate));
                     });
             if (framegrab.isComplete()) {
+                var bufferedImage = ImageUtilities.toBufferedImage(framegrab.getImage().get());
                 var imageData = new ImageData(media.getVideoReferenceUuid(),
                         framegrab.getVideoIndex().get(),
-                        (BufferedImage) framegrab.getImage().get());
+                        bufferedImage);
                 return Optional.of(imageData);
             }
             return Optional.empty();

@@ -274,6 +274,11 @@ public class ImageArchiveServiceDecorator {
     }
 
     public static File buildLocalImageFile(Media media, String ext) {
+
+        if (!ext.startsWith(".")) {
+            ext = "." + ext;
+        }
+
         try {
             String deploymentKey = media.getVideoName() + "--" + media.getVideoReferenceUuid();
             String filename = deploymentKey + "--" + timeFormat.format(Instant.now()) + ext;

@@ -20,8 +20,8 @@ import org.mbari.vars.services.model.Media;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
+import org.mbari.vcr4j.commands.RemoteCommands;
 import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
-import org.mbari.vcr4j.sharktopoda.commands.SharkCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -140,7 +140,7 @@ public class SharktoptodaControlPane extends Pane {
             frameAdvanceButton.setOnAction(e -> {
                 mediaPlayer.stop();
                 mediaPlayer.getVideoIO()
-                        .send(SharkCommands.FRAMEADVANCE);
+                        .send(RemoteCommands.FRAMEADVANCE);
             });
         }
         return frameAdvanceButton;

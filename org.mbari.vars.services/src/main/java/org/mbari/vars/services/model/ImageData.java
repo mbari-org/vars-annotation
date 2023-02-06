@@ -47,7 +47,7 @@ public class ImageData {
     }
 
     public byte[] getJpegBytes() {
-        if (jpegBytes == null) {
+        if (jpegBytes == null || jpegBytes.length == 0) {
             try {
                 jpegBytes = ImageUtils.toJpegByteArray(bufferedImage);
             }

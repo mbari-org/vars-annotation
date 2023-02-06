@@ -9,7 +9,7 @@ plugins {
 
 subprojects {
 
-    version = "1.4.0"
+    version = "1.4.6"
 
     apply plugin: 'com.adarshr.test-logger'
     apply plugin: 'com.github.ben-manes.versions'
@@ -51,20 +51,20 @@ subprojects {
     }
 
     ext {
-        javafxVersion = "19"
-        // javafxVersion = "17.0.2"
-//        javafxVersion = "11.0.2"
+//        javafxVersion = "19.0.2"
+        javafxVersion = "14.0.2.1"
     }
+
 
     dependencies {
 
         constraints {
             implementation 'com.auth0:java-jwt:3.18.3'
-            implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+            implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
             implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2'
-            implementation 'com.github.ben-manes.caffeine:caffeine:3.1.1'
+            implementation 'com.github.ben-manes.caffeine:caffeine:3.1.2'
             implementation 'com.github.mizosoft.methanol:methanol:1.7.0'
-            implementation 'com.google.code.gson:gson:2.9.1'
+            implementation 'com.google.code.gson:gson:2.10.1'
             implementation 'com.google.inject:guice:5.1.0'
             implementation 'com.jfoenix:jfoenix:9.0.10'
             implementation 'com.squareup.okhttp3:logging-interceptor:3.14.4'
@@ -74,7 +74,7 @@ subprojects {
             implementation 'de.jensd:fontawesomefx-commons:11.0'
             implementation 'de.jensd:fontawesomefx-materialicons:2.2.0-11'
             implementation 'eu.hansolo:Medusa:16.0.0' //1.7
-            implementation 'io.reactivex.rxjava3:rxjava:3.1.4'
+            implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
             implementation 'jakarta.activation:jakarta.activation-api:1.2.2'
             implementation 'javax.inject:javax.inject:1'
             implementation 'javax.servlet:javax.servlet-api:4.0.1'
@@ -85,23 +85,22 @@ subprojects {
             implementation 'org.kordamp.ikonli:ikonli-swing:12.3.1'
             implementation 'org.zeromq:jeromq:0.5.2'
             implementation 'org.mbari:imgfx:0.0.13'
-            implementation 'org.mbari.vcr4j:vcr4j-core:5.0.0.jre17-SNAPSHOT'
-            implementation 'org.mbari.vcr4j:vcr4j-remote:5.0.0.jre17-SNAPSHOT'
-            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client:5.0.0.jre17-SNAPSHOT'
-            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda:5.0.0.jre17-SNAPSHOT'
+            implementation 'org.mbari.vcr4j:vcr4j-core:5.2.0'
+            implementation 'org.mbari.vcr4j:vcr4j-remote:5.2.0'
+            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client:5.2.0'
+            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda:5.2.0'
             implementation 'org.mbari:mbarix4j:2.0.5.jre11'
-            implementation 'org.slf4j:slf4j-api:2.0.3'
-            implementation 'org.slf4j:slf4j-jdk14:2.0.3'
-            implementation 'org.swinglabs.swingx:swingx-all:1.6.5-1'
-            runtimeOnly 'ch.qos.logback:logback-classic:1.4.4'
+            implementation 'org.slf4j:slf4j-api:2.0.6'
+            implementation 'org.slf4j:slf4j-jdk14:2.0.6'
+            implementation 'org.slf4j:slf4j-jdk-platform-logging:2.0.6'
+            runtimeOnly 'ch.qos.logback:logback-classic:1.4.5'
             runtimeOnly 'org.fusesource.jansi:jansi:2.4.0'
-            runtimeOnly 'org.slf4j:slf4j-jdk14:2.0.3'
         }
 
         testCompileOnly 'junit:junit:4.13.2'
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
-        testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.9.1'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+        testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.9.2'
 
 
     }

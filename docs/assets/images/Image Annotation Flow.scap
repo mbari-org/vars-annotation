@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ScappleDocument Version="1.2" ID="DE9D2C26-50FC-4CC3-907F-7A50DB09C996">
+    <Notes>
+        <Note ID="0" FontSize="12.0" Position="246.164062,70.308594" Width="73.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>All Images</String>
+            <ConnectedNoteIDs>2</ConnectedNoteIDs>
+            <PointsToNoteIDs>2</PointsToNoteIDs>
+        </Note>
+        <Note ID="1" FontSize="12.0" Position="492.398438,199.132812" Width="116.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>Image Annotations</String>
+            <ConnectedNoteIDs>2-3, 5-6</ConnectedNoteIDs>
+            <PointsToNoteIDs>3, 6</PointsToNoteIDs>
+        </Note>
+        <Note ID="2" FontSize="12.0" Position="235.316406,199.542969" Width="97.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>selected image</String>
+            <ConnectedNoteIDs>0-1</ConnectedNoteIDs>
+            <PointsToNoteIDs>1</PointsToNoteIDs>
+        </Note>
+        <Note ID="3" FontSize="12.0" Position="485.84375,413.375" Width="131.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>selected annotation</String>
+            <ConnectedNoteIDs>1, 11</ConnectedNoteIDs>
+            <PointsToNoteIDs>11</PointsToNoteIDs>
+        </Note>
+        <Note ID="5" FontSize="12.0" Position="506.417969,74.578125" Width="96.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>All Annotations</String>
+            <ConnectedNoteIDs>1</ConnectedNoteIDs>
+            <PointsToNoteIDs>1</PointsToNoteIDs>
+        </Note>
+        <Note ID="6" FontSize="12.0" Position="698.851562,200.628906" Width="81.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>assocations</String>
+            <ConnectedNoteIDs>1, 7</ConnectedNoteIDs>
+            <PointsToNoteIDs>7</PointsToNoteIDs>
+        </Note>
+        <Note ID="7" FontSize="12.0" Position="656.914062,292.28125" Width="165.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>associations of localizations</String>
+            <ConnectedNoteIDs>6, 8</ConnectedNoteIDs>
+            <PointsToNoteIDs>8</PointsToNoteIDs>
+        </Note>
+        <Note ID="8" FontSize="12.0" Position="1102.21875,299.550781" Width="139.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>Localizations for image</String>
+            <ConnectedNoteIDs>7</ConnectedNoteIDs>
+        </Note>
+        <Note ID="10" FontSize="12.0" Position="36.390625,178.710938" Width="200.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <TextColor>0.985954 0.0 0.02694</TextColor>
+                <Border Weight="1">0.877748 0.828289 0.562126</Border>
+                <Fill>0.975275 0.920321 0.624585</Fill>
+            </Appearance>
+            <String>Selecting an image in IFXVarsPane sets the image annotations
+
+It also resets the paneController view (set image, remove all localizations)</String>
+        </Note>
+        <Note ID="11" FontSize="12.0" Position="1090.003906,411.9375" Width="179.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+            </Appearance>
+            <String>Selected Localization in image</String>
+            <ConnectedNoteIDs>3</ConnectedNoteIDs>
+        </Note>
+        <Note ID="12" FontSize="12.0" Position="484.601562,451.503906" Width="200.0">
+            <Appearance>
+                <Alignment>Left</Alignment>
+                <TextColor>0.985954 0.0 0.02694</TextColor>
+                <Border Weight="1">0.877748 0.828289 0.562126</Border>
+                <Fill>0.975275 0.920321 0.624585</Fill>
+            </Appearance>
+            <String>Selecting an annotation in IFXVarsPane sends a SelectAnnotationsEvent</String>
+        </Note>
+    </Notes>
+    <BackgroundShapes></BackgroundShapes>
+    <AutoFit>0-2, 5, 7-8, 11</AutoFit>
+    <NoteStyles>
+        <Style Name="Bubble (Blue)" ID="7904DF5E-0B28-4EB1-BE39-EF4C189B98D6" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+            <BorderThickness>1</BorderThickness>
+            <BorderColor>0.668962 0.810287 0.895092</BorderColor>
+            <FillColor>0.743291 0.900319 0.994547</FillColor>
+        </Style>
+        <Style Name="Bubble (Green)" ID="733A025C-9F60-4495-AD71-A6C20C261026" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+            <BorderThickness>1</BorderThickness>
+            <BorderColor>0.669404 0.885265 0.567007</BorderColor>
+            <FillColor>0.743783 0.983628 0.630008</FillColor>
+        </Style>
+        <Style Name="Bubble (Pink)" ID="E795D340-B009-4E4D-B104-FA46FB8008F3" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+            <BorderThickness>1</BorderThickness>
+            <BorderColor>0.894547 0.707772 0.715904</BorderColor>
+            <FillColor>0.989115 0.814114 0.999483</FillColor>
+        </Style>
+        <Style Name="Bubble (Red)" ID="9B4D61CF-DA36-44C6-A968-61BE1056476A" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+            <BorderThickness>1</BorderThickness>
+            <BorderColor>0.894547 0.707772 0.715904</BorderColor>
+            <FillColor>0.993942 0.786413 0.795449</FillColor>
+        </Style>
+        <Style Name="Bubble (Yellow)" ID="D76D16D1-D711-4345-9583-4B7E020DC6EE" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="No" AffectNoteBody="Yes" AffectFade="No">
+            <BorderThickness>1</BorderThickness>
+            <BorderColor>0.877748 0.828289 0.562126</BorderColor>
+            <FillColor>0.975275 0.920321 0.624585</FillColor>
+        </Style>
+        <Style Name="Red Text" ID="7FA9B30C-2B95-4220-BDC9-4DA53EECC3D7" AffectFontStyle="No" AffectAlignment="No" AffectTextColor="Yes" AffectNoteBody="No" AffectFade="No">
+            <TextColor>0.985954 0.0 0.02694</TextColor>
+        </Style>
+        <Style Name="Title Text" ID="21CFCC38-495A-4A10-B757-B6E1F73DB34E" AffectFontStyle="Yes" AffectAlignment="Yes" AffectTextColor="No" AffectNoteBody="No" AffectFade="No">
+            <FontSize>28.0</FontSize>
+            <IsBold>Yes</IsBold>
+        </Style>
+    </NoteStyles>
+    <UISettings>
+        <BackgroundColor>0.999763 0.988395 0.949915</BackgroundColor>
+        <DefaultFont>Helvetica</DefaultFont>
+        <NoteXPadding>8.0</NoteXPadding>
+    </UISettings>
+    <PrintSettings PaperSize="612.0,792.0" LeftMargin="72.0" RightMargin="72.0" TopMargin="90.0" BottomMargin="90.0" PaperType="na-letter" Orientation="Portrait" HorizontalPagination="Clip" VerticalPagination="Auto" ScaleFactor="1.0" HorizontallyCentered="Yes" VerticallyCentered="Yes" Collates="Yes" PagesAcross="1" PagesDown="1"></PrintSettings>
+</ScappleDocument>

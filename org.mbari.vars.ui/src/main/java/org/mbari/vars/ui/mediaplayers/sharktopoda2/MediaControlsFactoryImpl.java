@@ -74,8 +74,10 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
             var io = remoteControl.getVideoIO();
             imageCaptureService.setIo(io);
 
-            var outgoingController = new OutgoingController(toolBox.getEventBus(), io);
-            var incomingController = new IncomingController(toolBox, remoteControl.getRequestHandler());
+
+            var sharktopodaState = new SharktopodaState();
+            var outgoingController = new OutgoingController(toolBox.getEventBus(), io, sharktopodaState);
+            var incomingController = new IncomingController(toolBox, remoteControl.getRequestHandler(), sharktopodaState);
             try {
                 io.send(new OpenCmd(media.getVideoReferenceUuid(), media.getUri().toURL()));
             }

@@ -6,6 +6,8 @@ import org.mbari.vars.services.model.Annotation;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -48,7 +50,7 @@ public class UpdateAnnotationCmd implements Command {
                                 .updateAnnotation(annotation)
                                 .thenAccept(a -> {
                                     toolBox.getEventBus()
-                                            .send(new AnnotationsChangedEvent(null, Arrays.asList(a)));
+                                            .send(new AnnotationsChangedEvent(null, List.of(a)));
                                 });
                     }
                 });

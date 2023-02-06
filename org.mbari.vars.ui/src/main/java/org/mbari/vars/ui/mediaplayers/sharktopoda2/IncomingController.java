@@ -7,6 +7,7 @@ import org.mbari.vars.ui.commands.CreateAnnotationAtIndexWithAssociationCmd;
 import org.mbari.vars.ui.commands.DeleteAssociationsCmd;
 import org.mbari.vars.ui.commands.UpdateAssociationCmd;
 import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.ui.mediaplayers.sharktopoda.localization.LocalizationController;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.remote.control.commands.localization.*;
 import org.mbari.vcr4j.remote.player.RxControlRequestHandler;
@@ -21,12 +22,14 @@ public class IncomingController {
     private final RxControlRequestHandler requestHandler;
     private final UIToolBox toolBox;
     private final List<Disposable> disposables = new ArrayList<>();
+    private final SharktopodaState sharktopodaState;
     private static final Logger log = LoggerFactory.getLogger(IncomingController.class);
     private final Comparator<LocalizedAnnotation> comparator = Comparator.comparing(a -> a.association().getUuid());
 
-    public IncomingController(UIToolBox toolBox, RxControlRequestHandler requestHandler) {
+    public IncomingController(UIToolBox toolBox, RxControlRequestHandler requestHandler, SharktopodaState sharktopodaState) {
         this.requestHandler = requestHandler;
         this.toolBox = toolBox;
+        this.sharktopodaState = sharktopodaState;
         init();
     }
 
@@ -49,6 +52,9 @@ public class IncomingController {
                 .subscribe(evt -> handleSelect(evt.getValue().getLocalizations()));
         disposables.add(d);
 
+        d = bus.subscribe(evt -> log.atDebug().log(() -> "Incoming from Sharktopoda: " + evt));
+        disposables.add(d);
+
     }
 
     private void handleAdd(List<Localization> added) {
@@ -65,7 +71,8 @@ public class IncomingController {
             var videoIndex = new VideoIndex(localizedAnnotation.annotation().getElapsedTime());
             var cmd = new CreateAnnotationAtIndexWithAssociationCmd(videoIndex,
                     annotation.getConcept(),
-                    association);
+                    association,
+                    LocalizationController.EVENT_SOURCE);
             toolBox.getEventBus().send(cmd);
         });
 
@@ -109,6 +116,11 @@ public class IncomingController {
             return;
         }
         var matches = searchByUuid(selected);
+        var matchingLocalizationUuids = matches.stream()
+                .map(lp -> lp.localization().getUuid())
+                .toList();
+        sharktopodaState.setSelectedLocalizations(matchingLocalizationUuids);
+
         var selectedAnnotations = matches.stream()
                 .map(LocalizationPair::localizedAnnotation)
                 .map(LocalizedAnnotation::annotation)
