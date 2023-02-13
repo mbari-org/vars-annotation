@@ -51,8 +51,7 @@ subprojects {
     }
 
     ext {
-//        javafxVersion = "19.0.2"
-        javafxVersion = "14.0.2.1"
+        javafxVersion = "19.0.2"
     }
 
 
@@ -93,6 +92,7 @@ subprojects {
             implementation 'org.slf4j:slf4j-api:2.0.6'
             implementation 'org.slf4j:slf4j-jdk14:2.0.6'
             implementation 'org.slf4j:slf4j-jdk-platform-logging:2.0.6'
+            implementation 'org.swinglabs.swingx:swingx-all:1.6.5-1'
             runtimeOnly 'ch.qos.logback:logback-classic:1.4.5'
             runtimeOnly 'org.fusesource.jansi:jansi:2.4.0'
         }
