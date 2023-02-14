@@ -48,12 +48,14 @@ import org.mbari.vars.ui.javafx.mediadialog.SelectMediaDialog;
 import org.mbari.vars.ui.javafx.prefs.PreferencesDialogController;
 import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
 import org.mbari.vars.ui.javafx.userdialog.CreateUserDialog;
+import org.mbari.vars.ui.swing.annotable.Colors;
 import org.mbari.vars.ui.swing.annotable.JXAnnotationTableController;
 import org.mbari.vars.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -202,7 +204,8 @@ public class AppPaneController {
         for (int i = 0; i < positions.length; i++) {
             try {
                 double v = p1.getDouble(i + "", positions[i]);
-                pane.setDividerPosition(i, v);
+                final int idx = i; // final reference need for lambda below
+                Platform.runLater(() -> pane.setDividerPosition(idx, v));
             }
             catch (Exception e) {
                 // TODO log it
@@ -226,29 +229,21 @@ public class AppPaneController {
             var swingNode = new SwingNode();
             SwingUtilities.invokeLater(() -> {
                 final var table = annotationTableController.getTable();
-                var scrollPane = new JScrollPane(table);
-//                scrollPane.setViewportView(table);
+                var scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                scrollPane.getVerticalScrollBar().setBackground(Colors.DEFAULT.getColor());
+                scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+                    @Override
+                    protected void configureScrollBarColors() {
+                        this.thumbColor = Colors.DEFAULT_TEXT.getColor();
+                    }
+                });
+                scrollPane.getHorizontalScrollBar().setBackground(Colors.DEFAULT.getColor());
+                scrollPane.setViewportView(table);
                 table.setFillsViewportHeight(true);
                 swingNode.setContent(scrollPane);
                 scrollPane.revalidate();
-//                table.packAll();
 
-                swingNode.parentProperty()
-                        .addListener((obs, oldv, newv) -> {
-                            if (newv != null) {
-                                newv.boundsInParentProperty()
-                                        .addListener((obs1, oldBounds, newBounds) -> {
-                                            var w = (int) newBounds.getWidth();
-                                            var h = (int) newBounds.getHeight();
-                                            SwingUtilities.invokeLater(() -> {
-                                                var dim = new Dimension(w, h);
-                                                scrollPane.setPreferredSize(dim);
-//                                                table.setPreferredSize(dim);
-                                                table.setPreferredScrollableViewportSize(dim);
-                                            });
-                                        });
-                            }
-                        });
             });
 
 

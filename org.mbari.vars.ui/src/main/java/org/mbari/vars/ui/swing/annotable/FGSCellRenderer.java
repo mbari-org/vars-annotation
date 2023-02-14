@@ -23,8 +23,8 @@ public class FGSCellRenderer extends JPanel implements TableCellRenderer {
 
     private final JLabel imageLabel = buildLabel(Icons.IMAGE, imageColor, "labelImage");
     private final JLabel sampleLabel = buildLabel(Icons.NATURE_PEOPLE, sampleColor, "labelSample");
-    private final JLabel jsonLabel = buildLabel(Icons.TIMELINE, jsonColor, "labelJson");
-    private final JLabel concurrentLabel = buildLabel(Icons.FORMAT_SHAPES, concurrentColor, "labelConcurrent");
+    private final JLabel jsonLabel = buildLabel(Icons.FORMAT_SHAPES, jsonColor, "labelJson");
+    private final JLabel concurrentLabel = buildLabel(Icons.TIMELINE, concurrentColor, "labelConcurrent");
 
     /**
      * This is the default constructor

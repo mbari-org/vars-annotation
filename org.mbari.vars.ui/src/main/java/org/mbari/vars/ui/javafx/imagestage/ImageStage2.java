@@ -44,6 +44,9 @@ public class ImageStage2 extends Stage {
 
     private void init() {
 
+        setWidth(400);
+        setHeight(400);
+
         var imageView = new ImageView();
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
