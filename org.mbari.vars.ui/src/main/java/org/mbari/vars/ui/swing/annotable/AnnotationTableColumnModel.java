@@ -23,12 +23,13 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
                 0,
                 safely(Annotation::getRecordedTimestamp),
                 90,
-                Comparator.comparing(Annotation::getRecordedTimestamp)));
+                safelyCompare(Annotation::getRecordedTimestamp)));
 
         addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.timecode"),
                 1,
                 safely(Annotation::getTimecode),
-                90));
+                90,
+                safelyCompare(a -> a.getTimecode().toString())));
 
         addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.elapsedtime"),
                 2,
@@ -42,7 +43,7 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
                     }
                 },
                 45,
-                Comparator.comparing(Annotation::getElapsedTime)));
+                safelyCompare(Annotation::getElapsedTime)));
 
         addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.concept"),
                 3,
@@ -82,7 +83,7 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
                     }
                 },
                 45,
-                Comparator.comparing(Annotation::getDuration)));
+                safelyCompare(Annotation::getDuration)));
 
         addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.activity"),
                 8,
@@ -109,6 +110,27 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
             }
             catch (Exception e) {
                 return null;
+            }
+        };
+    }
+
+    private Comparator<Annotation> safelyCompare(Function<Annotation, ? extends Comparable> fn) {
+        return (o1, o2) -> {
+            try {
+                var v1 = fn.apply(o1);
+                var v2 = fn.apply(o2);
+                if (v1 != null && v2 != null) {
+                    return v1.compareTo(v2);
+                }
+                if (v1 == null && v2 == null) {
+                    return 0;
+                } else if (v1 != null) {
+                    return 1;
+                }
+                return -1;
+            }
+            catch (Exception e) {
+                return 0;
             }
         };
     }
