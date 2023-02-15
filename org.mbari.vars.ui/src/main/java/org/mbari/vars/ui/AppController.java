@@ -48,13 +48,14 @@ public class AppController {
     private final MediaPlayers mediaPlayers;
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final FileChooser fileChooser = new FileChooser();
-    private final LocalizationLifecycleController localizationLifecycleController;
+    // Disabled ZeroMQ for https://github.com/mbari-media-management/vars-annotation/issues/148
+//    private final LocalizationLifecycleController localizationLifecycleController;
 
     public AppController(UIToolBox toolBox) {
         this.toolBox = toolBox;
         alerts = new Alerts(toolBox);
         mediaPlayers = new MediaPlayers(toolBox);
-        localizationLifecycleController = new LocalizationLifecycleController(toolBox);
+//        localizationLifecycleController = new LocalizationLifecycleController(toolBox);
         initialize();
     }
 
