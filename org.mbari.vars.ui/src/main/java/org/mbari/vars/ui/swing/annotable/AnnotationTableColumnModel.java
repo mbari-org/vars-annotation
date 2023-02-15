@@ -114,6 +114,7 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
         };
     }
 
+    // Fix for https://github.com/mbari-media-management/vars-annotation/issues/150
     private Comparator<Annotation> safelyCompare(Function<Annotation, ? extends Comparable> fn) {
         return (o1, o2) -> {
             try {

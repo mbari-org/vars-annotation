@@ -9,7 +9,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.ui.messages.SeekMsg;
 import org.mbari.vars.ui.util.ColorUtil;
 
 import java.util.List;
@@ -56,6 +58,12 @@ record DisplayedAnnotation(Annotation annotation, Label label, Line line) {
             label.setOnMouseClicked(evt -> {
                 var e = new AnnotationsSelectedEvent(DisplayedAnnotation.class, List.of(annotation));
                 eventBus.send(e);
+                if (evt.getClickCount() == 2) {
+                    var media = Initializer.getToolBox().getData().getMedia();
+                    if (media != null) {
+                        SeekMsg.seek(media, annotation, eventBus);
+                    }
+                }
             });
 
             if (annotation.getRecordedTimestamp() != null) {

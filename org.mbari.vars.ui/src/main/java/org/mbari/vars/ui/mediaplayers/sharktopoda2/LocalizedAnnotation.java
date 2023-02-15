@@ -32,11 +32,13 @@ public record LocalizedAnnotation(Annotation annotation, Association association
     /**
      * Builds the localization from the annotation and association. Always returns a new instance
      * @return An optional localization. Will be none if the association is not a bounding box,
-     *   or does not have a json mimetype or if there's an error parsing the json to a bounding box.
+     *   or does not have a json mimetype or if there's an error parsing the json to a bounding box or
+     *   if the annotation does not have an elapsedTime.
      */
     public Optional<Localization> toLocalization() {
         if (association.getLinkName().equalsIgnoreCase(BoundingBox.LINK_NAME) &&
-                association.getMimeType().equalsIgnoreCase("application/json")) {
+                association.getMimeType().equalsIgnoreCase("application/json") &&
+                annotation.getElapsedTime() != null) {
             try {
                 BoundingBox box = gson.fromJson(association.getLinkValue(), BoundingBox.class);
                 var duration = annotation.getDuration() == null ? null : annotation.getDuration().toMillis();
