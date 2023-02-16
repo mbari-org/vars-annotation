@@ -21,7 +21,7 @@ import java.util.List;
 public class AssociationsTableCell extends TableCell<Annotation, List<Association>> {
 
     private final ListView<Association> listView = new ListView<>();
-    private static final Comparator<Association> alphabetical = Comparator.comparing(Association::toString);
+    private static final Comparator<Association> alphabetical = Association.ALPHABETICAL_COMPARATOR;
 
     private final BooleanProperty showJsonAssociations;
 

@@ -76,7 +76,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
 
             var sharktopodaState = new SharktopodaState();
-            var outgoingController = new OutgoingController(toolBox.getEventBus(), io, sharktopodaState);
+            var outgoingController = new OutgoingController(toolBox, io, sharktopodaState);
             var incomingController = new IncomingController(toolBox, remoteControl.getRequestHandler(), sharktopodaState);
             try {
                 io.send(new OpenCmd(media.getVideoReferenceUuid(), media.getUri().toURL()));

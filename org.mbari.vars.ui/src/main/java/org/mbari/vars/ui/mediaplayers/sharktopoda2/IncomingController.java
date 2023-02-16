@@ -26,7 +26,9 @@ public class IncomingController {
     private static final Logger log = LoggerFactory.getLogger(IncomingController.class);
     private final Comparator<LocalizedAnnotation> comparator = Comparator.comparing(a -> a.association().getUuid());
 
-    public IncomingController(UIToolBox toolBox, RxControlRequestHandler requestHandler, SharktopodaState sharktopodaState) {
+    public IncomingController(UIToolBox toolBox,
+                              RxControlRequestHandler requestHandler,
+                              SharktopodaState sharktopodaState) {
         this.requestHandler = requestHandler;
         this.toolBox = toolBox;
         this.sharktopodaState = sharktopodaState;

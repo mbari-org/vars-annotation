@@ -66,6 +66,7 @@ public class MachineLearningStageController {
                     log.atDebug().log("Created " + locView.size() + " Localization UI objects");
                     machineLearningStage.setLocalizations(locView);
                     machineLearningStage.show();
+
                 });
             } else {
                 machineLearningStage.setLocalizations(Collections.emptyList());
@@ -130,7 +131,7 @@ public class MachineLearningStageController {
         var mlService = new OkHttpMegalodonService(mlRemoteUrlOpt.get());
         try {
             var mlImageInference = MLAnalysisService.analyzeCurrentElapsedTime(toolBox, mlService);
-            inference.set(mlImageInference);
+            Platform.runLater(() -> inference.set(mlImageInference));
         }
         catch (Exception e) {
             var i18n = toolBox.getI18nBundle();

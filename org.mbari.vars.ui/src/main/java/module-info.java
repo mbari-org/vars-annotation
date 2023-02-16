@@ -8,19 +8,20 @@ module org.mbari.vars.ui {
   requires javafx.controls;
   requires javafx.fxml;
   requires javafx.graphics;
-  requires javax.inject;
   requires javafx.media;
   requires javafx.swing;
+  requires javax.inject;
   requires mbarix4j;
   requires org.controlsfx.controls;
   requires org.kordamp.ikonli.core;
   requires org.kordamp.ikonli.javafx;
+  requires org.kordamp.ikonli.swing;
   requires org.kordamp.ikonli.material;
   requires org.mbari.imgfx;
   requires org.mbari.vars.core;
-  requires transitive org.mbari.vars.services;
   requires org.reactivestreams;
   requires org.slf4j;
+  requires transitive org.mbari.vars.services;
   requires typesafe.config;
   requires vcr4j.core;
 
@@ -28,6 +29,7 @@ module org.mbari.vars.ui {
   requires vcr4j.sharktopoda;
   requires transitive vcr4j.sharktopoda.client;
   requires io.reactivex.rxjava3;
+  requires swingx.all;
 
   uses org.mbari.vars.ui.mediaplayers.MediaControlsFactory;
 
@@ -75,6 +77,7 @@ module org.mbari.vars.ui {
   exports org.mbari.vars.ui.mediaplayers.ships;
   exports org.mbari.vars.ui.messages;
   exports org.mbari.vars.ui.services;
+  exports org.mbari.vars.ui.swing.annotable;
   exports org.mbari.vars.ui;
   exports org.mbari.vars.ui.javafx.imagestage;
 

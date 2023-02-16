@@ -21,6 +21,8 @@ public class CachedConceptService implements ConceptService {
 
     private final ConceptService conceptService;
     private volatile String rootName;
+
+    // This list is unmodifiable. It gets set to a populated list as needed in `findAllNames`
     private volatile List<String> allNames = Collections.emptyList();
 
     private final AsyncLoadingCache<String, Optional<Concept>> conceptCache;
@@ -44,7 +46,7 @@ public class CachedConceptService implements ConceptService {
 
     public synchronized void clear() {
         rootName = null;
-        allNames.clear();
+        allNames = Collections.emptyList();
         conceptCache.synchronous().invalidateAll();
         templateCache.synchronous().invalidateAll();
     }

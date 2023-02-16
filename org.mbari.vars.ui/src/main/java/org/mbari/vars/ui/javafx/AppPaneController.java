@@ -9,8 +9,12 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingNode;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -44,11 +48,17 @@ import org.mbari.vars.ui.javafx.mediadialog.SelectMediaDialog;
 import org.mbari.vars.ui.javafx.prefs.PreferencesDialogController;
 import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
 import org.mbari.vars.ui.javafx.userdialog.CreateUserDialog;
+import org.mbari.vars.ui.swing.annotable.Colors;
+import org.mbari.vars.ui.swing.annotable.JXAnnotationTableController;
 import org.mbari.vars.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
+import javax.swing.plaf.basic.BasicScrollBarUI;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
@@ -63,7 +73,8 @@ public class AppPaneController {
     private SplitPane topPane;
     private SplitPane bottomPane;
     private TabPane tabPane;
-    private final AnnotationTableController annotationTableController;
+//    private final AnnotationTableController annotationTableController;
+    private final JXAnnotationTableController annotationTableController;
     private ToolBar toolBar;
     private final UIToolBox toolBox;
     private ComboBox<String> usersComboBox;
@@ -119,7 +130,8 @@ public class AppPaneController {
                 .addAll(toolBox.getStylesheets());
         tapeDialog.initOwner(toolBox.getPrimaryStage());
 
-        annotationTableController = new AnnotationTableController(toolBox);
+//        annotationTableController = new AnnotationTableController(toolBox);
+        annotationTableController = new JXAnnotationTableController(toolBox);
         preferencesDialogController = new PreferencesDialogController(toolBox);
         imageViewController = new ImageViewController2(toolBox);
         controlsPaneController = new ControlsPaneController(toolBox);
@@ -192,7 +204,8 @@ public class AppPaneController {
         for (int i = 0; i < positions.length; i++) {
             try {
                 double v = p1.getDouble(i + "", positions[i]);
-                pane.setDividerPosition(i, v);
+                final int idx = i; // final reference need for lambda below
+                Platform.runLater(() -> pane.setDividerPosition(idx, v));
             }
             catch (Exception e) {
                 // TODO log it
@@ -213,7 +226,27 @@ public class AppPaneController {
 
     public SplitPane getTopPane() {
         if (topPane == null) {
-            topPane = new SplitPane(annotationTableController.getTableView(),
+            var swingNode = new SwingNode();
+            SwingUtilities.invokeLater(() -> {
+                final var table = annotationTableController.getTable();
+                var scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                        JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                scrollPane.getVerticalScrollBar().setBackground(Colors.DEFAULT.getColor());
+                scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+                    @Override
+                    protected void configureScrollBarColors() {
+                        this.thumbColor = Colors.DEFAULT_TEXT.getColor();
+                    }
+                });
+                scrollPane.getHorizontalScrollBar().setBackground(Colors.DEFAULT.getColor());
+                scrollPane.setViewportView(table);
+                table.setFillsViewportHeight(true);
+                swingNode.setContent(scrollPane);
+                scrollPane.revalidate();
+            });
+
+
+            topPane = new SplitPane(swingNode,
                    getTabPane());
             imageViewController.getImageView()
                     .fitWidthProperty()
@@ -714,7 +747,7 @@ public class AppPaneController {
         return showCurrentGroupOnlyCheckBox;
     }
 
-    public AnnotationTableController getAnnotationTableController() {
+    public JXAnnotationTableController getAnnotationTableController() {
         return annotationTableController;
     }
 

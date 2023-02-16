@@ -93,11 +93,12 @@ public class ServicesBuilder {
     var mediaE = namedEndpoints.get("vampire-squid");
     var userE = namedEndpoints.get("vars-user-server");
     var prefs = buildPrefs(userE.getUrl().toExternalForm(), userE.getTimeout(), userE.getSecret());
+    var mediaService = buildMediaService(mediaE.getUrl().toExternalForm(), mediaE.getTimeout(), mediaE.getSecret());
     return new Services(
             buildAnnotationService(annoE.getUrl().toExternalForm(), annoE.getTimeout(), annoE.getSecret()),
             buildConceptService(kbE.getUrl().toExternalForm(), kbE.getTimeout(), kbE.getSecret()),
             buildImageArchiveService(imgE.getUrl().toExternalForm(), imgE.getTimeout(), imgE.getSecret()),
-            buildMediaService(mediaE.getUrl().toExternalForm(), mediaE.getTimeout(), mediaE.getSecret()),
+            new CachedMediaService(mediaService),
             buildUserService(userE.getUrl().toExternalForm(), userE.getTimeout(), userE.getSecret()),
             prefs.getPreferencesService(),
             prefs.getPreferencesFactory()

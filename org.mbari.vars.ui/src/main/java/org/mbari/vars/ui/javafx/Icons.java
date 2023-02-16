@@ -83,4 +83,8 @@ public enum Icons {
         return size(30);
     }
 
+    public Ikon getIkon() {
+        return ikon;
+    }
+
 }

@@ -55,15 +55,18 @@ public class CommentBC extends AbstractBC {
 
     protected void apply() {
         List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
-        TextInputDialog dialog = getDialog();
-        JFXUtilities.runOnFXThread(() -> dialog.getEditor().requestFocus());
-        Optional<String> s = dialog.showAndWait();
-        s.ifPresent(comment -> {
-            Association a = new Association(commentLinkName, Association.VALUE_SELF, comment);
-            toolBox.getEventBus()
-                    .send(new CreateAssociationsCmd(a, annotations));
+        JFXUtilities.runOnFXThread(() -> {
+            TextInputDialog dialog = getDialog();
+            dialog.getEditor().requestFocus();
+            Optional<String> s = dialog.showAndWait();
+            s.ifPresent(comment -> {
+                Association a = new Association(commentLinkName, Association.VALUE_SELF, comment);
+                toolBox.getEventBus()
+                        .send(new CreateAssociationsCmd(a, annotations));
+            });
+            dialog.getEditor().setText(null);
         });
-        getDialog().getEditor().setText(null);
+
 
     }
 }

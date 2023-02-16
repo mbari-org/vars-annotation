@@ -175,6 +175,14 @@ public class AnnotationEditorPaneController {
                 }
             }
         });
+        conceptComboBox.focusedProperty().addListener((obs, oldv, newv) -> {
+            if (newv) {
+                conceptComboBox.setStyle("-fx-background-color: #5D3D3D");
+            }
+            else {
+                conceptComboBox.setStyle(null);
+            }
+        });
         loadComboBoxData();
 
         // If the cache is cleared reload combobox data

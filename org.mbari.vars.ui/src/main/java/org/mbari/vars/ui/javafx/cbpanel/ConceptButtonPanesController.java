@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.mbari.vars.core.util.Preconditions;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.javafx.timeline.TimelineController;
 import org.mbari.vars.ui.messages.*;
 import org.mbari.vars.ui.javafx.Icons;
 import org.mbari.vars.services.model.User;
@@ -49,12 +50,14 @@ public class ConceptButtonPanesController {
     private Logger log = LoggerFactory.getLogger(getClass());
     private BooleanProperty lockProperty = new SimpleBooleanProperty(false);
     private final ConceptButtonPanesWithHighlightController overviewController;
+    private final TimelineController timelineController;
 
     public ConceptButtonPanesController(UIToolBox toolBox) {
         Preconditions.checkNotNull(toolBox, "The UIToolbox arg can not be null");
         this.toolBox = toolBox;
         this.i18n = toolBox.getI18nBundle();
         overviewController = new ConceptButtonPanesWithHighlightController(toolBox);
+        timelineController = new TimelineController(toolBox);
         // add listener to Data.user. When changed remove all panes and reload
         toolBox.getData()
                 .userProperty()
@@ -136,8 +139,25 @@ public class ConceptButtonPanesController {
                 }
             });
 
+            Button timelineButton = new JFXButton();
+            Text timelineIcon = Icons.TIMELINE.standardSize();
+            String timelineLabel = i18n.getString("cppanel.tabpane.timeline.label");
+            Tab timelineTab = new Tab(timelineLabel, timelineController.getRoot());
+            timelineButton.setGraphic(timelineIcon);
+            timelineButton.setTooltip(new Tooltip(i18n.getString("cppanel.tabpane.timeline.tooltip")));
+            timelineButton.setOnAction(e -> {
+                ObservableList<Tab> tabs = getTabPane().getTabs();
+                if (tabs.contains(timelineTab)) {
+                    tabs.remove(timelineTab);
+                }
+                else {
+                    tabs.add(timelineTab);
+                    getTabPane().getSelectionModel().select(timelineTab);
+                }
+            });
+
             // COntrol Pane
-            controlPane = new VBox(addButton, removeButton, lockButton, overviewButton);
+            controlPane = new VBox(addButton, removeButton, lockButton, overviewButton, timelineButton);
         }
         return controlPane;
     }

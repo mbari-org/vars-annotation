@@ -8,6 +8,7 @@ import javafx.scene.control.skin.VirtualFlow;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
+import org.mbari.vars.core.util.ListUtils;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.Data;
 import org.mbari.vars.core.EventBus;
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
@@ -92,8 +94,11 @@ public class AnnotationTableController {
                         var annotations = e.get();
                         annotations.forEach(a -> {
                             var idx = tableItems.indexOf(a);
-                            tableItems.set(idx, a);
+                            tableItems.remove(idx);
+                            tableItems.add(idx, a);
+//                            tableItems.set(idx, a);
                         });
+                        getTableView().refresh();
                         eventBus.send(new AnnotationsSelectedEvent(AnnotationTableController.this, annotations));
                     });
                 });
@@ -182,6 +187,7 @@ public class AnnotationTableController {
     private void scrollTo(Annotation anno) {
 //        if (!isVisible(anno)) {
             tableView.scrollTo(anno);
+//            tableView.refresh();
 //        }
     }
 
@@ -206,7 +212,7 @@ public class AnnotationTableController {
 
             // When less than one, cells are individually sized adn positioned. This is a big
             // performance hit. Issue #128
-            tableView.fixedCellSizeProperty().set(-1D);
+            tableView.fixedCellSizeProperty().set(-1D); // # Disabled to address Issue #146
 
             TableView.TableViewSelectionModel<Annotation> selectionModel = tableView.getSelectionModel();
             selectionModel.setSelectionMode(SelectionMode.MULTIPLE);
