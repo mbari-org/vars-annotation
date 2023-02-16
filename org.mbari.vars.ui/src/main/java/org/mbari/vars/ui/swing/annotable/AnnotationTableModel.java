@@ -34,10 +34,18 @@ public class AnnotationTableModel extends AbstractTableModel {
 
     public void removeAnnotation(Annotation a) {
         int i = annotations.indexOf(a);
-        if (i > -1) {
-            annotations.remove(i);
+        removeAnnotationAt(i);
+//        if (i > -1) {
+//            annotations.remove(i);
+//        }
+//        fireTableRowsDeleted(i, i);
+    }
+
+    public void removeAnnotationAt(int idx) {
+        if (idx > -1 && idx < annotations.size()) {
+            annotations.remove(idx);
         }
-        fireTableRowsDeleted(i, i);
+        fireTableRowsDeleted(idx, idx);
     }
 
     public void addAnnotations(Collection<Annotation> xs) {
