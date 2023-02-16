@@ -1,5 +1,6 @@
 package org.mbari.vars.ui.swing.annotable;
 
+import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.table.DefaultTableColumnModelExt;
 import org.jdesktop.swingx.table.TableColumnExt;
 import org.mbari.vars.services.model.Annotation;
@@ -56,6 +57,7 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
         associationCol.setIdentifier(associationId);
         associationCol.setHeaderValue(associationId);
         associationCol.setSortable(false);
+        associationCol.addHighlighter(new ColorHighlighter(Colors.DEFAULT.getColor(), Colors.DEFAULT_TABLE_TEXT.getColor()));
         addColumn(associationCol);
 
         var fgsCol = new TableColumnExt(5, 45, new FGSCellRenderer(), null);

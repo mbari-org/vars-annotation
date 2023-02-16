@@ -243,7 +243,6 @@ public class AppPaneController {
                 table.setFillsViewportHeight(true);
                 swingNode.setContent(scrollPane);
                 scrollPane.revalidate();
-
             });
 
 

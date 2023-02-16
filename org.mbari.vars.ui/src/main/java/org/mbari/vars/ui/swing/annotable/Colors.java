@@ -7,6 +7,8 @@ public enum Colors {
     ATTENTION(Color.decode("#FFB74D")),
     CONCURRENT(Color.decode("#FDD835")),
     DEFAULT(Color.decode("#2b3940")),
+    DEFAULT_DARKER(Color.decode("#222d33")),
+    DEFAULT_DARKEST(Color.decode("#1c262a")),
     DEFAULT_TEXT(Color.decode("#B3A9A3")),
     DEFAULT_TABLE_TEXT(Color.decode("#79c9ff")),
     EMPHASIS(Color.decode("#5D3D3D")),

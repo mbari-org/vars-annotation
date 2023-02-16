@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import mbarix4j.io.IOUtilities;
 import org.mbari.vars.core.EventBus;
+import org.mbari.vars.services.CachedMediaService;
+import org.mbari.vars.services.MediaService;
 import org.mbari.vars.services.impl.varsuserserver.v1.CachedKBPrefService;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.ui.mediaplayers.MediaPlayers;
@@ -119,6 +121,11 @@ public class AppController {
                     ConceptService conceptService = toolBox.getServices().getConceptService();
                     if (conceptService instanceof CachedConceptService) {
                         ((CachedConceptService) conceptService).clear();
+                    }
+
+                    MediaService mediaService = toolBox.getServices().getMediaService();
+                    if (mediaService instanceof CachedMediaService) {
+                        ((CachedMediaService) mediaService).clear();
                     }
 
                     // Clear pref cache

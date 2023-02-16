@@ -14,6 +14,7 @@ import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.ui.messages.SeekMsg;
 import org.mbari.vars.ui.util.ColorUtil;
 
+import java.time.Duration;
 import java.util.List;
 
 record DisplayedAnnotation(Annotation annotation, Label label, Line line) {
@@ -23,12 +24,19 @@ record DisplayedAnnotation(Annotation annotation, Label label, Line line) {
                       Line horizontalAxis,
                       DoubleBinding distanceBetweenMinutes,
                       EventBus eventBus) {
-        if (annotation.getElapsedTime() == null) {
+
+        var media = Initializer.getToolBox().getData().getMedia();
+        if (media == null) {
             return;
         }
+        var elapsedTimeOpt = media.toMediaElapsedTime(annotation);
+        if (elapsedTimeOpt.isEmpty()) {
+            return;
+        }
+        var elapsedTime = elapsedTimeOpt.get();
 
         Platform.runLater(() -> {
-            var minutes = annotation.getElapsedTime().toMillis() / 1000.0 / 60.0;
+            var minutes = elapsedTime.toMillis() / 1000.0 / 60.0;
             var xProp = distanceBetweenMinutes.multiply(minutes).add(TimelineController.OFFSET);
 
             // --- LABEL
@@ -49,20 +57,15 @@ record DisplayedAnnotation(Annotation annotation, Label label, Line line) {
 
             var fillHex = ColorUtil.stringToHexColor(annotation.getConcept(), 0.7);
             var fill = Color.web(fillHex, 0.7);
-//            label.setTextFill(fill);
-
 
             label.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: " + fillHex + ";");
-
 
             label.setOnMouseClicked(evt -> {
                 var e = new AnnotationsSelectedEvent(DisplayedAnnotation.class, List.of(annotation));
                 eventBus.send(e);
                 if (evt.getClickCount() == 2) {
-                    var media = Initializer.getToolBox().getData().getMedia();
-                    if (media != null) {
-                        SeekMsg.seek(media, annotation, eventBus);
-                    }
+//                    var media = Initializer.getToolBox().getData().getMedia();
+                    SeekMsg.seek(media, annotation, eventBus);
                 }
             });
 

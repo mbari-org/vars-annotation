@@ -3,6 +3,8 @@ package org.mbari.vars.ui.mediaplayers.sharktopoda2;
 import io.reactivex.rxjava3.disposables.Disposable;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.services.model.Media;
+import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
@@ -19,6 +21,7 @@ public class OutgoingController {
 
     private static final Logger log = LoggerFactory.getLogger(OutgoingController.class);
 
+    private final UIToolBox toolBox;
     private final RVideoIO io;
     private final List<Disposable> disposables = new ArrayList<>();
     private final SharktopodaState sharktopodaState;
@@ -26,10 +29,13 @@ public class OutgoingController {
         Add, Clear, Remove, Select, Update
     }
 
-    public OutgoingController(EventBus eventBus, RVideoIO io, SharktopodaState sharktopodaState) {
+    public OutgoingController(UIToolBox toolBox,
+                              RVideoIO io,
+                              SharktopodaState sharktopodaState) {
+        this.toolBox = toolBox;
         this.io = io;
         this.sharktopodaState = sharktopodaState;
-        init(eventBus);
+        init(toolBox.getEventBus());
     }
 
     private void init(EventBus eventBus) {
@@ -58,9 +64,10 @@ public class OutgoingController {
     }
 
     private void handle(Collection<Annotation> annotations, Action action) {
+        var media = toolBox.getData().getMedia();
         List<Localization> localizations = LocalizedAnnotation.from(annotations)
                 .stream()
-                .flatMap(opt -> opt.toLocalization().stream())
+                .flatMap(opt -> opt.toLocalization(toolBox).stream())
                 .toList();
 
         log.atDebug().log(() -> "Outgoing to Sharktopoda: %s on %d localizations".formatted(action, localizations.size()));

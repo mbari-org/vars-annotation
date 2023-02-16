@@ -4,6 +4,7 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -236,5 +237,15 @@ public class Media {
     @Override
     public int hashCode() {
         return videoReferenceUuid.hashCode();
+    }
+
+    public Optional<Duration> toMediaElapsedTime(Annotation annotation) {
+        if (annotation.getVideoReferenceUuid().equals(videoReferenceUuid) && annotation.getElapsedTime() != null) {
+            return Optional.of(annotation.getElapsedTime());
+        }
+        else if (annotation.getRecordedTimestamp() != null && startTimestamp != null) {
+            return Optional.of(Duration.between(startTimestamp, annotation.getRecordedTimestamp()));
+        }
+        return Optional.empty();
     }
 }

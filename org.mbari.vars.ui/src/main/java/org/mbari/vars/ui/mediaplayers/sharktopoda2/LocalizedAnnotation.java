@@ -6,6 +6,9 @@ import mbarix4j.util.Tuple2;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.BoundingBox;
+import org.mbari.vars.services.model.Media;
+import org.mbari.vars.ui.AppConfig;
+import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vcr4j.remote.control.commands.localization.Localization;
 import org.mbari.vcr4j.sharktopoda.client.gson.DurationConverter;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Builds a localization from an annotation and a "bounding box" associations. The resulting localizations
@@ -35,10 +39,10 @@ public record LocalizedAnnotation(Annotation annotation, Association association
      *   or does not have a json mimetype or if there's an error parsing the json to a bounding box or
      *   if the annotation does not have an elapsedTime.
      */
-    public Optional<Localization> toLocalization() {
+    public Optional<Localization> toLocalization(UIToolBox toolBox) {
         if (association.getLinkName().equalsIgnoreCase(BoundingBox.LINK_NAME) &&
                 association.getMimeType().equalsIgnoreCase("application/json") &&
-                annotation.getElapsedTime() != null) {
+                checkIfValidForCurrentMedia(toolBox)) {
             try {
                 BoundingBox box = gson.fromJson(association.getLinkValue(), BoundingBox.class);
                 var duration = annotation.getDuration() == null ? null : annotation.getDuration().toMillis();
@@ -59,7 +63,40 @@ public record LocalizedAnnotation(Annotation annotation, Association association
                         .log("Failed to build Localization from JSON: " + association.getLinkValue());
             }
         }
+        log.atWarn().log("Annotation (observationUuid=" + annotation.getObservationUuid() + ") contains a localization that is not valid for the current media");
         return Optional.empty();
+    }
+
+    private boolean checkIfValidForCurrentMedia(UIToolBox toolBox) {
+        var currentMedia = toolBox.getData().getMedia();
+        if (annotation.getElapsedTime() == null) {
+            return false;
+        }
+        else if (currentMedia != null) {
+            if (annotation.getVideoReferenceUuid().equals(currentMedia.getVideoReferenceUuid())) {
+                return true;
+            }
+            else {
+                try {
+                    var annotationMedia = toolBox.getServices()
+                            .getMediaService()
+                            .findByUuid(annotation.getVideoReferenceUuid())
+                            .get(10, TimeUnit.SECONDS);
+                    return annotationMedia != null &&
+                        annotationMedia.getStartTimestamp().equals(currentMedia.getStartTimestamp()) &&
+                        annotationMedia.getWidth() != null &&
+                        annotationMedia.getWidth().equals(currentMedia.getWidth()) &&
+                        annotationMedia.getHeight() != null &&
+                        annotationMedia.getHeight().equals(currentMedia.getHeight());
+                }
+                catch (Exception e) {
+                    log.atInfo()
+                            .setCause(e)
+                            .log(() -> "Unable to look up media with videoReferenceUuid=" + annotation.getVideoReferenceUuid());
+                }
+            }
+        }
+        return false;
     }
 
     /**

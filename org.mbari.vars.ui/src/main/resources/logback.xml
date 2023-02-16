@@ -32,11 +32,13 @@
     </appender>
 
     <logger name="javafx" level="INFO" />
+    <logger name="java" level="INFO" />
+    <logger name="jdk" level="INFO" />
     <logger name="org.gradle" level="WARN" />
     <logger name="org.mbari.vars.core.util.ActiveAppPinger" level="WARN" />
     <logger name="org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory" level="INFO" />
     <logger name="org.mbari.vars.services.impl.panoptes.v1.PanoptesWebServiceFactory" level="INFO" />
-    <logger name="org.mbari.vars.services.impl.vampiresquid.v1.VamWebServiceFactory" level="INFO" />
+    <logger name="org.mbari.vars.services.impl.vampiresquid.v1.VamWebServiceFactory" level="DEBUG" />
     <logger name="org.mbari.vars.services.impl.varskbserver.v1.KBWebServiceFactory" level="INFO" />
     <logger name="org.mbari.vars.services.util.WebPreferences" level="INFO" />
     <logger name="org.mbari.vcr4j" level="INFO" />
@@ -44,6 +46,7 @@
     <logger name="org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO" level="WARN" />
     <logger name="org.mbari.vcr4j.sharktopoda.SharktopodaResponseParser" level="WARN" />
     <logger name="sun" level="INFO" />
+
 
     <root level="${LOGBACK_LEVEL}">
         <appender-ref ref="FILE" />

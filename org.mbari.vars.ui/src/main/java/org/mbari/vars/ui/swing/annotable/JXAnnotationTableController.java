@@ -5,6 +5,10 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTableHeader;
+import org.jdesktop.swingx.decorator.BorderHighlighter;
+import org.jdesktop.swingx.decorator.ColorHighlighter;
+import org.jdesktop.swingx.decorator.HighlightPredicate;
+import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.mbari.vars.core.util.ListUtils;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Media;
@@ -19,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -126,7 +131,8 @@ public class JXAnnotationTableController {
             table.setForeground(Colors.DEFAULT_TABLE_TEXT.getColor());
             table.setSelectionBackground(Colors.EMPHASIS.getColor());
             table.setSortOrder(0, SortOrder.ASCENDING); // default sort is recordedTimestamp
-
+            table.addHighlighter(HighlighterFactory.createAlternateStriping(Colors.DEFAULT.getColor(), Colors.DEFAULT_DARKER.getColor()));
+            table.addHighlighter(new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, Colors.DEFAULT_DARKEST.getColor(), Colors.DEFAULT_TABLE_TEXT.getColor()));
             // The row editor panel should get focus NOT the table
             table.setFocusable(false);
             table.getSelectionModel()
