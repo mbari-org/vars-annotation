@@ -1,6 +1,7 @@
 package org.mbari.vars.ui;
 
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
@@ -34,6 +35,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This is the main controller for the App
@@ -133,8 +135,29 @@ public class AppController {
                     if (preferenceService instanceof CachedKBPrefService) {
                         ((CachedKBPrefService) preferenceService).clear();
                     }
-                    // Close open media
+                    // Close open media, reopen current media
+                    // https://github.com/mbari-media-management/vars-annotation/issues/157
+                    var lastOpenedMedia = toolBox.getData().getMedia();
                     eventBus.send(new MediaChangedEvent(AppController.this, null));
+                    if (lastOpenedMedia != null) {
+                        new Thread(() -> {
+                            try {
+                                eventBus.send(new ShowInfoAlert("VARS", "Reopening video", "Reopening " + lastOpenedMedia.getVideoName() + " after refresh"));
+                                Thread.sleep(1500);
+                                toolBox.getServices()
+                                        .getMediaService()
+                                        .findByUuid(lastOpenedMedia.getVideoReferenceUuid())
+                                        .thenAccept(media -> {
+                                            eventBus.send(new MediaChangedEvent(AppController.this, lastOpenedMedia));
+                                        });
+
+                            } catch (InterruptedException ex) {
+                                log.atWarn()
+                                        .setCause(ex)
+                                        .log("An error occurred while waiting to reopen " + lastOpenedMedia);
+                            }
+                        }).start();
+                    }
                 });
 
         eventObservable.ofType(MediaPlayerChangedEvent.class)
