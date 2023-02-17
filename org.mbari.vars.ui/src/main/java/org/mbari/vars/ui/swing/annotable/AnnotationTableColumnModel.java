@@ -26,14 +26,8 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
                 90,
                 safelyCompare(Annotation::getRecordedTimestamp)));
 
-        addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.timecode"),
-                1,
-                safely(Annotation::getTimecode),
-                90,
-                safelyCompare(a -> a.getTimecode().toString())));
-
         addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.elapsedtime"),
-                2,
+                1,
                 (a) -> {
                     var et = a.getElapsedTime();
                     if (et != null) {
@@ -47,11 +41,11 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
                 safelyCompare(Annotation::getElapsedTime)));
 
         addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.concept"),
-                3,
+                2,
                 Annotation::getConcept,
                 140));
 
-        var associationCol = new TableColumnExt(4, 140,  new AssociationListTableCellRenderer(), null);
+        var associationCol = new TableColumnExt(3, 140,  new AssociationListTableCellRenderer(), null);
         var associationId = i18n.getString("annotable.col.association");
         associationCol.setEditable(false);
         associationCol.setIdentifier(associationId);
@@ -60,7 +54,7 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
         associationCol.addHighlighter(new ColorHighlighter(Colors.DEFAULT.getColor(), Colors.DEFAULT_TABLE_TEXT.getColor()));
         addColumn(associationCol);
 
-        var fgsCol = new TableColumnExt(5, 45, new FGSCellRenderer(), null);
+        var fgsCol = new TableColumnExt(4, 45, new FGSCellRenderer(), null);
         var fgsId = i18n.getString("annotable.col.framegrab");
         fgsCol.setEditable(false);
         fgsCol.setIdentifier(fgsId);
@@ -69,12 +63,28 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
         addColumn(fgsCol);
 
         addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.observer"),
-                6,
+                5,
                 Annotation::getObserver,
                 50));
 
-        addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.duration"),
+        addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.activity"),
+                6,
+                Annotation::getActivity,
+                50));
+
+        addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.group"),
                 7,
+                Annotation::getGroup,
+                50));
+
+        addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.timecode"),
+                8,
+                safely(Annotation::getTimecode),
+                90,
+                safelyCompare(a -> a.getTimecode().toString())));
+
+        addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.duration"),
+                9,
                 (a) -> {
                     var d = a.getDuration();
                     if (d != null) {
@@ -86,16 +96,6 @@ public class AnnotationTableColumnModel extends DefaultTableColumnModelExt {
                 },
                 45,
                 safelyCompare(Annotation::getDuration)));
-
-        addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.activity"),
-                8,
-                Annotation::getActivity,
-                50));
-
-        addColumn(new AnnotationTableColumn(i18n.getString("annotable.col.group"),
-                9,
-                Annotation::getGroup,
-                50));
 
     }
 
