@@ -1,15 +1,12 @@
 package org.mbari.vars.ui.swing.annotable;
 
-import io.reactivex.rxjava3.core.Observable;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTableHeader;
-import org.jdesktop.swingx.decorator.BorderHighlighter;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.mbari.vars.core.util.ListUtils;
+import org.jdesktop.swingx.table.TableColumnExt;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.Data;
@@ -23,16 +20,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
+import javax.swing.table.TableColumn;
+import java.util.*;
+import java.util.prefs.Preferences;
 
 public class JXAnnotationTableController {
 
     private final UIToolBox toolBox;
     private final AnnotationTableModel tableModel;
     private JXTable table;
+    private final List<TableColumn> allTableColumns;
     private static final Logger log = LoggerFactory.getLogger(JXAnnotationTableController.class);
 
     private record ModelAndViewIdx(int model, int view) {}
@@ -40,6 +37,7 @@ public class JXAnnotationTableController {
     public JXAnnotationTableController(UIToolBox toolBox) {
         this.toolBox = toolBox;
         this.tableModel = new AnnotationTableModel(toolBox.getI18nBundle());
+        this.allTableColumns = Collections.list(tableModel.getTableColumnModel().getColumns());
     }
 
     private void init() {
@@ -96,6 +94,11 @@ public class JXAnnotationTableController {
                         });
                     }
                 });
+
+        loadColumns();
+
+        Runtime.getRuntime()
+                .addShutdownHook(new Thread(this::saveColumns));
 
     }
 
@@ -249,5 +252,28 @@ public class JXAnnotationTableController {
 
     public Annotation getAnnotationAt(int row) {
         return tableModel.getAnnotationAt(getTable().convertRowIndexToModel(row));
+    }
+
+    public void saveColumns() {
+        var prefs = Preferences.userRoot().node(getClass().getName());
+        allTableColumns.forEach(c -> {
+            if (c instanceof TableColumnExt tc) {
+                prefs.node("col-widths").putInt(tc.getIdentifier().toString(), tc.getWidth());
+                prefs.node("col-visible").putBoolean(tc.getIdentifier().toString(), tc.isVisible());
+            }
+        });
+    }
+
+    public void loadColumns() {
+        var prefs = Preferences.userRoot().node(getClass().getName());
+        allTableColumns.forEach(c -> {
+            if (c instanceof TableColumnExt tc) {
+                var visible = prefs.node("col-visible").getBoolean(tc.getIdentifier().toString(), true);
+                tc.setVisible(visible);
+                var width = prefs.node("col-width").getInt(tc.getIdentifier().toString(), tc.getWidth());
+                tc.setPreferredWidth(width);
+            }
+        });
+
     }
 }
