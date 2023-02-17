@@ -9,6 +9,7 @@ import org.jdesktop.swingx.decorator.BorderHighlighter;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
+import org.jdesktop.swingx.sort.TableSortController;
 import org.mbari.vars.core.util.ListUtils;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Media;
@@ -23,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -104,6 +106,7 @@ public class JXAnnotationTableController {
         if (table == null) {
             var tableColumnModel = tableModel.getTableColumnModel();
             table = new JXTable(tableModel, tableColumnModel);
+//            table.setRowSorter(new TableSortController<>());
 
             var tableHeader = new JXTableHeader(tableColumnModel);
             tableHeader.setReorderingAllowed(true);
