@@ -6,8 +6,6 @@ import mbarix4j.util.Tuple2;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.model.BoundingBox;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.AppConfig;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vcr4j.remote.control.commands.localization.Localization;
 import org.mbari.vcr4j.sharktopoda.client.gson.DurationConverter;

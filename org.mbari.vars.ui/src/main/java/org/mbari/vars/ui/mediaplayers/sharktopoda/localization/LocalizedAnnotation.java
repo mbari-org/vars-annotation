@@ -14,6 +14,8 @@ import java.util.*;
 
 public record LocalizedAnnotation(Annotation annotation, Association association) {
 
+    public static String GENERATOR = "VARS Annotation";
+
     private static Gson gson = new GsonBuilder()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
             .registerTypeAdapter(Duration.class, new DurationConverter())
@@ -63,7 +65,7 @@ public record LocalizedAnnotation(Annotation annotation, Association association
     }
 
     public static Association toAssociation(Localization x) {
-        BoundingBox bb = new BoundingBox(x.getX(), x.getY(), x.getWidth(), x.getHeight(), "VARS Annotation");
+        BoundingBox bb = new BoundingBox(x.getX(), x.getY(), x.getWidth(), x.getHeight(), GENERATOR);
         String json = gson.toJson(bb);
 
         return new Association(BoundingBox.LINK_NAME,

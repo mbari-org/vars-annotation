@@ -64,11 +64,12 @@ public class OutgoingController {
     }
 
     private void handle(Collection<Annotation> annotations, Action action) {
-        var media = toolBox.getData().getMedia();
-        List<Localization> localizations = LocalizedAnnotation.from(annotations)
-                .stream()
-                .flatMap(opt -> opt.toLocalization(toolBox).stream())
-                .toList();
+
+        List<LocalizationPair> localizationPairs = SharktopodaState.from(annotations, toolBox);
+
+        List<Localization> localizations = localizationPairs.stream()
+                        .map(LocalizationPair::localization)
+                        .toList();
 
         log.atDebug().log(() -> "Outgoing to Sharktopoda: %s on %d localizations".formatted(action, localizations.size()));
 
@@ -77,12 +78,26 @@ public class OutgoingController {
                     .map(Localization::getUuid)
                     .toList();
             switch (action) {
-                case Add -> io.send(new AddLocalizationsCmd(io.getUuid(), localizations));
-                case Update -> io.send(new UpdateLocalizationsCmd(io.getUuid(), localizations));
-                case Remove -> io.send(new RemoveLocalizationsCmd(io.getUuid(), uuids));
+                case Add -> {
+                    sharktopodaState.addLocalizationPairs(localizationPairs);
+                    io.send(new AddLocalizationsCmd(io.getUuid(), localizations));
+                }
+                case Update -> {
+                    // TODO For Changed events we need to remove any localizations that
+                    // on the annotation that no longer exist
+
+                    // TODO for changed events we may have to add a new localization that
+                    // was created on the VARS side
+                    sharktopodaState.addLocalizationPairs(localizationPairs);
+                    io.send(new UpdateLocalizationsCmd(io.getUuid(), localizations));
+                }
+                case Remove -> {
+                    sharktopodaState.removeLocalizationPairs(localizationPairs);
+                    io.send(new RemoveLocalizationsCmd(io.getUuid(), uuids));
+                }
                 case Select -> {
                     if (sharktopodaState.isDifferentThanSelected(uuids)) {
-                        sharktopodaState.setSelectedLocalizations(uuids);
+                        sharktopodaState.setSelectedLocalizations(localizationPairs);
                         io.send(new SelectLocalizationsCmd(io.getUuid(), uuids));
                     }
                 }
@@ -90,9 +105,8 @@ public class OutgoingController {
         }
 
         if (action.equals(Action.Select) && localizations.isEmpty() && !annotations.isEmpty()) {
-            List<UUID> nothing = Collections.emptyList();
-            sharktopodaState.setSelectedLocalizations(nothing);
-            io.send(new SelectLocalizationsCmd(io.getUuid(), nothing));
+            sharktopodaState.setSelectedLocalizations(Collections.emptyList());
+            io.send(new SelectLocalizationsCmd(io.getUuid(), Collections.emptyList()));
         }
     }
 

@@ -117,18 +117,19 @@ public class IncomingController {
             log.info("An attempt was made to update a localization, but no media is currently open");
             return;
         }
-        var matches = searchByUuid(selected);
-        var matchingLocalizationUuids = matches.stream()
-                .map(lp -> lp.localization().getUuid())
-                .toList();
-        sharktopodaState.setSelectedLocalizations(matchingLocalizationUuids);
+        // Only send this if the selected are different from the currently selected
+        if (sharktopodaState.isDifferentThanSelected(selected)) {
+            var matches = searchByUuid(selected);
+            sharktopodaState.setSelectedLocalizations(matches);
 
-        var selectedAnnotations = matches.stream()
-                .map(LocalizationPair::localizedAnnotation)
-                .map(LocalizedAnnotation::annotation)
-                .toList();
-        var cmd = new AnnotationsSelectedEvent(this, selectedAnnotations);
-        toolBox.getEventBus().send(cmd);
+            var selectedAnnotations = matches.stream()
+                    .map(LocalizationPair::localizedAnnotation)
+                    .map(LocalizedAnnotation::annotation)
+                    .toList();
+
+            var cmd = new AnnotationsSelectedEvent(this, selectedAnnotations);
+            toolBox.getEventBus().send(cmd);
+        }
     }
 
     private List<LocalizationPair> searchByUuid(List<UUID> uuids) {

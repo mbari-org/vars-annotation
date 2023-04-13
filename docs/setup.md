@@ -70,7 +70,7 @@ Then on the network tab set the control port:
 
 #### ML Configuration
 
-VARS can send the current video frame to a remote server where machine learning can be applied to the image. To configure, simply enter the URL to the ML endpoint. For internal use, that endpoint is: <http://digits-dev-box-fish.shore.mbari.org:8082/predictor/>
+VARS can send the current video frame to a remote server where machine learning can be applied to the image. To configure, simply enter the URL to the ML endpoint. For internal use, that endpoint is: <http://perceptron.shore.mbari.org:8080/predictor/>
 
 ![Machine Learning Endpoint](assets/images/MachineLearningConfiguration.png)
 

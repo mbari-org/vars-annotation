@@ -1,10 +1,15 @@
 package org.mbari.vars.ui.commands;
 
+import org.mbari.vars.services.model.BoundingBox;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.ui.mediaplayers.sharktopoda2.LocalizedAnnotation;
+import org.mbari.vcr4j.remote.control.RVideoIO;
+import org.mbari.vcr4j.remote.control.commands.localization.AddLocalizationsCmd;
+import org.mbari.vcr4j.remote.control.commands.localization.RemoveLocalizationsCmd;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
