@@ -9,7 +9,7 @@ plugins {
 
 subprojects {
 
-    version = "1.5.0"
+    version = "1.5.1"
 
     apply plugin: 'com.adarshr.test-logger'
     apply plugin: 'com.github.ben-manes.versions'
