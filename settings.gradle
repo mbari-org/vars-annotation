@@ -10,7 +10,7 @@ pluginManagement {
     id "com.github.ben-manes.versions" version "0.36.0"
     id "com.github.spotbugs" version "4.6.0"
     id "org.javamodularity.moduleplugin" version "1.5.0" // DO NOT USE 1.6.0
-    id "org.openjfx.javafxplugin" version "0.0.13"
+    id "org.openjfx.javafxplugin" version "0.1.0"
   }
 }
 
