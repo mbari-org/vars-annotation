@@ -58,18 +58,20 @@ public class SampleBC extends AbstractBC {
 
     @Override
     protected void apply() {
-        Platform.runLater(() -> comboBox.requestFocus());
-        Optional<Pair<String, String>> v = getDialog().showAndWait();
-        if (v.isPresent()) {
-            Pair<String, String> pair = v.get();
-            createAssociation(pair.getKey(), pair.getValue());
-        }
-        textField.setText(null);
+        JFXUtilities.runOnFXThread(() -> {
+            var dialog = getDialog();
+            comboBox.requestFocus();
+            Optional<Pair<String, String>> v = dialog.showAndWait();
+            v.ifPresent(pair -> {
+                createAssociation(pair.getKey(), pair.getValue());
+            });
+            textField.setText(null);
+            String concept = lastSelectedSampler == null ?
+                    toolBox.getAppConfig().getAppAnnotationSampleDefaultConcept() :
+                    lastSelectedSampler;
+            comboBox.getSelectionModel().select(concept);
+        });
 
-        String concept = lastSelectedSampler == null ?
-                toolBox.getAppConfig().getAppAnnotationSampleDefaultConcept() :
-                lastSelectedSampler;
-        comboBox.getSelectionModel().select(concept);
     }
 
 
@@ -114,7 +116,7 @@ public class SampleBC extends AbstractBC {
         if (dialogPane == null) {
             dialogPane = new GridPane();
             dialogPane.setPadding(new Insets(20, 10, 10, 10));
-            comboBox = new JFXComboBox<>();
+            comboBox = new ComboBox<>();
             comboBox.setEditable(false);
             comboBox.getSelectionModel()
                     .selectedItemProperty()
