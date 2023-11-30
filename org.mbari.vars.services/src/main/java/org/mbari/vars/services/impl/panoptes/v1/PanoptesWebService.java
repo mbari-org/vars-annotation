@@ -20,7 +20,6 @@ public interface PanoptesWebService {
                                          @Path("deployment_id") String deploymentId,
                                          @Path("filename") String filename,
                                          @Part MultipartBody.Part image,
-                                         @Part("name") RequestBody name,
                                          @HeaderMap Map<String, String> headers);
 
     @GET("images/{camera_id}/{deployment_id}/{filename}")

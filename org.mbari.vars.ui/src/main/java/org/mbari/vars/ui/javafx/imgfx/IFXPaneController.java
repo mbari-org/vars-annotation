@@ -1,12 +1,9 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
 import javafx.application.Platform;
-import javafx.collections.ListChangeListener;
 import javafx.scene.image.Image;
-import org.mbari.imgfx.etc.rx.events.AddLocalizationEvent;
+import org.mbari.imgfx.demos.imageview.editor.AnnotationPaneController;
 import org.mbari.imgfx.etc.rx.events.RemoveLocalizationEvent;
-import org.mbari.imgfx.imageview.editor.AnnotationPaneController;
-import org.mbari.imgfx.roi.Localization;
 import org.mbari.vars.ui.javafx.imgfx.domain.VarsLocalization;
 import org.mbari.vars.ui.javafx.imgfx.events.AddLocalizationEventBuilder;
 import org.mbari.vars.ui.javafx.imgfx.events.DrawVarsLocalizationEvent;

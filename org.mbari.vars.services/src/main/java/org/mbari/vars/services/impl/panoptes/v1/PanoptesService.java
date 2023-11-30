@@ -41,8 +41,7 @@ public class PanoptesService implements ImageArchiveService, RetrofitWebService 
         MultipartBody.Part body = MultipartBody.Part.createFormData("file",
                 image.getFileName().toString(),
                 requestBody);
-        return sendRequest(webService.uploadImage(cameraId, deploymentId, name, body,
-                requestBody, defaultHeaders));
+        return sendRequest(webService.uploadImage(cameraId, deploymentId, name, body, defaultHeaders));
     }
 
     public CompletableFuture<ImageUploadResults> upload(String cameraId,
@@ -57,7 +56,7 @@ public class PanoptesService implements ImageArchiveService, RetrofitWebService 
         MultipartBody.Part body = MultipartBody.Part.createFormData("file",
                 name,
                 requestBody);
-        return sendRequest(webService.uploadImage(cameraId, deploymentId, name, body, requestBody, defaultHeaders));
+        return sendRequest(webService.uploadImage(cameraId, deploymentId, name, body, defaultHeaders));
     }
 
 

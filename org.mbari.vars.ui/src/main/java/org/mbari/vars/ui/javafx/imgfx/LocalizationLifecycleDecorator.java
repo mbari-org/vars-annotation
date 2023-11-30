@@ -1,10 +1,8 @@
 package org.mbari.vars.ui.javafx.imgfx;
 
 import javafx.collections.ListChangeListener;
-import javafx.scene.image.ImageView;
-import org.mbari.imgfx.AutoscalePaneController;
+import org.mbari.imgfx.demos.imageview.editor.Localizations;
 import org.mbari.imgfx.etc.rx.events.RemoveLocalizationEvent;
-import org.mbari.imgfx.imageview.editor.Localizations;
 
 import org.mbari.vars.ui.javafx.imgfx.domain.VarsLocalization;
 import org.mbari.vars.ui.javafx.imgfx.events.AddLocalizationEventBuilder;
