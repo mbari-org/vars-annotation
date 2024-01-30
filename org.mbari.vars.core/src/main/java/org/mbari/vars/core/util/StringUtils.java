@@ -2,12 +2,17 @@ package org.mbari.vars.core.util;
 
 import java.net.URL;
 import java.util.Optional;
+import java.util.Random;
+import java.util.stream.IntStream;
 
 /**
  * @author Brian Schlining
  * @since 2017-06-29T08:56:00
  */
 public class StringUtils {
+
+    private static final String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final Random random = new Random();
 
     public static boolean isBlank(final CharSequence cs) {
         int strLen;
@@ -46,5 +51,12 @@ public class StringUtils {
         catch (Exception e) {
             return Optional.empty();
         }
+    }
+
+    public static String random(int length) {
+        var xs = IntStream.range(0, length)
+                .mapToObj(i -> chars.charAt(random.nextInt(chars.length())))
+                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append);
+        return xs.toString();
     }
 }
