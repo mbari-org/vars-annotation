@@ -39,6 +39,248 @@ public class AnnoServiceTest {
     private final UUID tempUuid = UUID.randomUUID();
 
     @Test
+    public void testCountAnnotations() {
+        CompletableFuture<AnnotationCount> f0 = annoService.countAnnotations(uuid);
+        Optional<AnnotationCount> c0 = await(f0, timeout);
+        assertTrue("Expected a count, but nothing was returned", c0.isPresent());
+        AnnotationCount i = c0.get();
+        assertEquals(786, i.getCount().intValue());
+    }
+
+    @Test
+    public void countAnnotationsGroupByVideoReferenceUuidTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findByConceptTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findByConceptTestWithLimitAndOffset() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void countByConcurrentRequestTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void countByMutliRequestTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void countImagedMomentsGroupByVideoReferenceUuidTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void countObservationsByConceptTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void countImagedMomentsModifiedBeforeTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void createAnnotationTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void createAnnotationsTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void createAssociationTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void createImageTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void createOrUpdateAncillaryDataTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void createCachedVideoReferenceTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void deleteAncillaryDataByVideoReferenceTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void deleteAnnotationTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void deleteAnnotationsTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void deleteAssociationTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void deleteAssociationsTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void deleteImageTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void deleteDurationTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void deleteCacheVideoReferenceTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findActivitiesTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findAllVideoReferenceUuidsTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findAncillaryDataTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findAncillaryDataByVideoReferenceTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findAnnotationsTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findAnnotationsWithDataTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findAnnotationsWithLimitOffsetTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findAnnotationsWithLimitOffsetAndDataTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findAssociationByUuidTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findByConceptAssociationRequestTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findByConcurrentRequestTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findByImageReferenceTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findByMultiRequestTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findByUuidTest() {
+        fail("Not yet implemented");
+    }
+
+
+    @Test
+    public void findByVideoReferenceAndLinkNameTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findByVideoReferenceAndLinkNameAndConceptTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findGroupsTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findImageByUrlTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findImageByUuidTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findImagesByVideoReferenceUuidTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findImagedMomentsByVideoReferenceUuidTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findIndicesByVideoReferenceUuidTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void findVideoReferenceByVideoReferenceUuidTest() {
+        fail("Not yet implemented");
+    }
+
+    @Test
+    public void mergeTest() {
+        fail("Not yet implemented");
+    }
+
+
+
+    @Test
     public void testFindAnnotatons() {
 
         // Find all
@@ -58,14 +300,7 @@ public class AnnoServiceTest {
 
     }
 
-    @Test
-    public void testCountAnnotations() {
-        CompletableFuture<AnnotationCount> f0 = annoService.countAnnotations(uuid);
-        Optional<AnnotationCount> c0 = await(f0, timeout);
-        assertTrue("Expected a count, but nothing was returned", c0.isPresent());
-        AnnotationCount i = c0.get();
-        assertEquals(786, i.getCount().intValue());
-    }
+
 
     @Test
     public void testCrudAnnotation() {

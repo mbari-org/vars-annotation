@@ -1,7 +1,6 @@
 package org.mbari.vars.services.impl.panoptes.v1;
 
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import org.mbari.vars.services.model.ImageUploadResults;
 import retrofit2.Call;
 import retrofit2.http.*;
