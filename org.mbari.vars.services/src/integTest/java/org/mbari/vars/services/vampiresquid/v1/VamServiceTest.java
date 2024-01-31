@@ -100,6 +100,8 @@ public class VamServiceTest {
 
     @Test
     public void findByUri() {
+        // TODO: This test fails because the encoded URI gets decoded by the nginx proxy server.
+        // A workaround is to not use a proxy server for vampire-squid
         var media = createRandomMedia();
         var obtained = mediaService.findByUri(media.getUri()).join();
         assertNotNull(obtained);
