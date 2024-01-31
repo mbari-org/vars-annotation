@@ -9,13 +9,14 @@ import java.security.MessageDigest;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Random;
+import java.util.UUID;
 
 public class TestUtils {
 
     private static final Random random = new Random();
 
 
-    public static Media createRandomMedia() {
+    public static Media buildRandomMedia() {
 
         try {
             var digest = MessageDigest.getInstance("SHA-512");
@@ -37,6 +38,9 @@ public class TestUtils {
             m.setDuration(duration);
             m.setDescription(StringUtils.random(100));
             m.setSha512(digest.digest(videoName.getBytes()));
+            m.setVideoReferenceUuid(UUID.randomUUID());
+            m.setVideoUuid(UUID.randomUUID());
+            m.setVideoReferenceUuid(UUID.randomUUID());
             return m;
         }
         catch (Exception e) {
