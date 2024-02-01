@@ -251,7 +251,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
 
     @Override
     public CompletableFuture<Boolean> deleteAnnotation(UUID observationUuid) {
-        return sendRequest(annoService.delete(observationUuid, defaultHeaders));
+        return sendNoContentRequest(annoService.delete(observationUuid, defaultHeaders));
     }
 
     /**
@@ -265,7 +265,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
 
     @Override
     public CompletableFuture<Boolean> deleteAssociation(UUID associationUuid) {
-        return sendRequest(assService.delete(associationUuid));
+        return sendNoContentRequest(assService.delete(associationUuid));
     }
 
     /**
@@ -279,7 +279,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
 
     @Override
     public CompletableFuture<Boolean> deleteImage(UUID imageReferenceUuid) {
-        return sendRequest(imageService.delete(imageReferenceUuid));
+        return sendNoContentRequest(imageService.delete(imageReferenceUuid));
     }
 
     @Override

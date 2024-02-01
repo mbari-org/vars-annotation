@@ -147,7 +147,11 @@ public class AnnoServiceTest {
 
     @Test
     public void deleteAnnotation() {
-        fail("not implemented");
+        var a = createRandomAnnotation();
+        var ok = annoService.deleteAnnotation(a.getObservationUuid()).join();
+        assertTrue(ok);
+        var opt = annoService.findByUuid(a.getObservationUuid()).join();
+        assertNull(opt);
     }
 
     @Test
@@ -167,7 +171,15 @@ public class AnnoServiceTest {
 
     @Test
     public void deleteImage() {
-        fail("not implemented");
+        var a = createRandomAnnotation();
+        var imageReference = TestUtils.buildRandomImageReference();
+        var expected = new Image(a, imageReference);
+        var obtained = annoService.createImage(expected).join();
+        assertNotNull(obtained);
+        var ok = annoService.deleteImage(obtained.getImageReferenceUuid()).join();
+        assertTrue(ok);
+        var opt = annoService.findImageByUuid(obtained.getImageReferenceUuid()).join();
+        assertNull(opt);
     }
 
     @Test
@@ -182,7 +194,10 @@ public class AnnoServiceTest {
 
     @Test
     public void findActivities() {
-        fail("not implemented");
+        var a = createRandomAnnotation();
+        var activities = annoService.findActivities().join();
+        assertTrue(!activities.isEmpty());
+        assertTrue(activities.contains(a.getActivity()));
     }
 
     @Test
@@ -262,7 +277,10 @@ public class AnnoServiceTest {
 
     @Test
     public void findGroups() {
-        fail("not implemented");
+        var a = createRandomAnnotation();
+        var groups = annoService.findGroups().join();
+        assertTrue(!groups.isEmpty());
+        assertTrue(groups.contains(a.getGroup()));
     }
 
     @Test

@@ -39,6 +39,24 @@ public interface RetrofitWebService {
         return f;
     }
 
+    default <T> CompletableFuture<Boolean> sendNoContentRequest(Call<T> call) {
+        CompletableFuture<Boolean> f = new CompletableFuture<>();
+        call.enqueue(new Callback<T>() {
+            @Override
+            public void onResponse(Call<T> call, Response<T> response) {
+                f.complete(response.isSuccessful());
+            }
+
+            @Override
+            public void onFailure(Call<T> call, Throwable throwable) {
+                LoggerFactory.getLogger(getClass())
+                        .warn("Exception thrown when making a REST call", throwable);
+                f.completeExceptionally(throwable);
+            }
+        });
+        return f;
+    }
+
     /**
      * Convert an object to it's string form or null if the object is null
      * @param obj
