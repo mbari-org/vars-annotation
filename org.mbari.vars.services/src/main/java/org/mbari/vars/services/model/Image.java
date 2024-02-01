@@ -1,5 +1,6 @@
 package org.mbari.vars.services.model;
 
+import com.google.gson.annotations.SerializedName;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
 
@@ -23,6 +24,7 @@ public class Image implements ImagedMoment, Cloneable {
     private UUID videoReferenceUuid;
     private UUID imagedMomentUuid;
     private Timecode timecode;
+    @SerializedName("elapsed_time_millis")
     private Duration elapsedTime;
     private Instant recordedTimestamp;
 

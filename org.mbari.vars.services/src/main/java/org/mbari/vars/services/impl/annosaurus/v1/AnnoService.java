@@ -86,7 +86,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     public CompletableFuture<List<Annotation>> findByConcept(String concept, Boolean data) {
         // TODO: add pager?
         // HACK: Hardcoded max of a milliion annotations
-        return sendRequest(annoService.findByConcept(concept, 0L, 1000000L, data));
+        return sendRequest(annoService.findByConcept(concept, 1000000L, 0L, data));
     }
 
     @Override
@@ -186,15 +186,16 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     public CompletableFuture<Association> createAssociation(UUID observationUuid,
                                                             Association association,
                                                             UUID associationUuid) {
-        Call<Association> call = assService.create(observationUuid,
-                association.getLinkName(),
-                association.getToConcept(),
-                association.getLinkValue(),
-                association.getMimeType(),
-                associationUuid,
-                defaultHeaders);
-
-        return sendRequest(call);
+        throw new IllegalArgumentException("Not implemented. Annosaurus does not support user specified UUIDs for creating associations");
+//        Call<Association> call = assService.create(observationUuid,
+//                association.getLinkName(),
+//                association.getToConcept(),
+//                association.getLinkValue(),
+//                association.getMimeType(),
+//                associationUuid,
+//                defaultHeaders);
+//
+//        return sendRequest(call);
     }
 
     @Override

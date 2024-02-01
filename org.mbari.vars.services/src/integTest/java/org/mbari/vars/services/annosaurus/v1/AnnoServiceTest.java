@@ -1,298 +1,352 @@
 package org.mbari.vars.services.annosaurus.v1;
 
 import static org.junit.Assert.*;
+
 import org.junit.Test;
+import org.mbari.vars.services.AnnotationService;
+import org.mbari.vars.services.AssertUtils;
+import org.mbari.vars.services.TestToolbox;
+import org.mbari.vars.services.TestUtils;
+import org.mbari.vars.services.impl.annosaurus.v1.AnnoService;
+import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.services.model.Image;
+
+import java.time.Instant;
+import java.util.stream.IntStream;
 
 public class AnnoServiceTest {
-    
 
-    @Test
-    public void countAnnotations() {
-            fail("not implemented");
-    }
+    AnnotationService annoService = TestToolbox.getServices().getAnnotationService();
 
-    @Test
-    public void countAnnotationsGroupByVideoReferenceUuid() {
-            fail("not implemented");
-    }
-
-    @Test
-    public void findByConcept() {
-            fail("not implemented");
-    }
-
-    @Test
-    public void testFindByConcept() {
-            fail("not implemented");
-    }
-
-    @Test
-    public void countByConcurrentRequest() {
-            fail("not implemented");
-    }
-
-    @Test
-    public void countByMultiRequest() {
-            fail("not implemented");
-    }
-
-    @Test
-    public void countImagedMomentsGroupByVideoReferenceUuid() {
-            fail("not implemented");
-    }
-
-    @Test
-    public void countObservationsByConcept() {
-            fail("not implemented");
-    }
-
-    @Test
-    public void countImagedMomentsModifiedBefore() {
-            fail("not implemented");
+    private Annotation createRandomAnnotation() {
+        var a = TestUtils.buildRandomAnnotation();
+        return annoService.createAnnotation(a).join();
     }
 
     @Test
     public void createAnnotation() {
-            fail("not implemented");
+        var a = TestUtils.buildRandomAnnotation();
+        var obtained = annoService.createAnnotation(a).join();
+        assertNotNull(obtained);
+        AssertUtils.assertSameAnnotation(a, obtained, false, false);
+    }
+
+
+    @Test
+    public void countAnnotations() {
+        var a = createRandomAnnotation();
+        var count = annoService.countAnnotations(a.getVideoReferenceUuid()).join();
+        assertEquals(1L, count.getCount().longValue());
+        assertEquals(a.getVideoReferenceUuid(), count.getVideoReferenceUuid());
+    }
+
+    @Test
+    public void countAnnotationsGroupByVideoReferenceUuid() {
+        var a = createRandomAnnotation();
+        var counts = annoService.countAnnotationsGroupByVideoReferenceUuid().join();
+        var opt = counts.stream().filter(c -> a.getVideoReferenceUuid() == c.getVideoReferenceUuid()).findFirst();
+        assertTrue(opt.isPresent());
+        var count = opt.get();
+        assertEquals(a.getVideoReferenceUuid(), count.getVideoReferenceUuid());
+        assertEquals(1L, count.getCount().longValue());
+
+    }
+
+    @Test
+    public void findByConcept() {
+        var a = createRandomAnnotation();
+        var annotations = annoService.findByConcept(a.getConcept(), false).join();
+        assertEquals(1, annotations.size());
+        AssertUtils.assertSameAnnotation(a, annotations.get(0), true, false);
+    }
+
+
+    @Test
+    public void countByConcurrentRequest() {
+        fail("not implemented");
+    }
+
+    @Test
+    public void countByMultiRequest() {
+        fail("not implemented");
+    }
+
+    @Test
+    public void countImagedMomentsGroupByVideoReferenceUuid() {
+        var a = createRandomAnnotation();
+        var counts = annoService.countImagedMomentsGroupByVideoReferenceUuid().join();
+        assert (!counts.isEmpty());
+        var opt = counts.stream().filter(c -> a.getVideoReferenceUuid() == c.getVideoReferenceUuid()).findFirst();
+        assertTrue(opt.isPresent());
+        var count = opt.get();
+        assertEquals(a.getVideoReferenceUuid(), count.getVideoReferenceUuid());
+        assertEquals(1L, count.getCount().longValue());
+    }
+
+    @Test
+    public void countObservationsByConcept() {
+        var a = createRandomAnnotation();
+        var counts = annoService.countObservationsByConcept(a.getConcept()).join();
+        assertEquals(1L, counts.getCount().longValue());
+        assertEquals(a.getConcept(), counts.getConcept());
+    }
+
+    @Test
+    public void countImagedMomentsModifiedBefore() {
+        var a = createRandomAnnotation();
+        var counts = annoService.countImagedMomentsModifiedBefore(a.getVideoReferenceUuid(), Instant.now()).join();
+        assertEquals(1L, counts.getCount().longValue());
+        assertEquals(a.getVideoReferenceUuid(), counts.getVideoReferenceUuid());
     }
 
     @Test
     public void createAnnotations() {
-            fail("not implemented");
+        var m = TestUtils.buildRandomMedia();
+        var a = IntStream.range(0, 4)
+                .mapToObj(i -> TestUtils.buildRandomAnnotation(m))
+                .toList();
+        var obtained = annoService.createAnnotations(a).join();
+        assertNotNull(obtained);
+        assertEquals(4, obtained.size());
     }
 
     @Test
     public void createAssociation() {
-            fail("not implemented");
+        var a = createRandomAnnotation();
+        var expected = TestUtils.buildRandomAssociation();
+        var obtained = annoService.createAssociation(a.getObservationUuid(), expected).join();
+        assertNotNull(obtained);
+        AssertUtils.assertSameAssociation(expected, obtained, false);
     }
 
-    @Test
-    public void testCreateAssociation() {
-            fail("not implemented");
-    }
 
     @Test
     public void createImage() {
-            fail("not implemented");
+        var a = createRandomAnnotation();
+        var imageReference = TestUtils.buildRandomImageReference();
+        var expected = new Image(a, imageReference);
+        var obtained = annoService.createImage(expected).join();
+        assertNotNull(obtained);
+        AssertUtils.assertSameImage(expected, obtained, false);
     }
 
     @Test
     public void createOrUpdateAncillaryData() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void createCachedVideoReference() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void deleteAncillaryDataByVideoReference() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void deleteAnnotation() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void deleteAnnotations() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void deleteAssociation() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void deleteAssociations() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void deleteImage() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void deleteDuration() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void deleteCacheVideoReference() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findActivities() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findAllVideoReferenceUuids() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findAncillaryData() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findAncillaryDataByVideoReference() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findAnnotations() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void testFindAnnotations() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void testFindAnnotations1() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void testFindAnnotations2() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findAssociationByUuid() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findByConceptAssociationRequest() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findByConcurrentRequest() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findByImageReference() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findByMultiRequest() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findByUuid() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findByVideoReferenceAndLinkName() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findByVideoReferenceAndLinkNameAndConcept() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findGroups() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findImageByUrl() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findImageByUuid() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findImagesByVideoReferenceUuid() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findImagedMomentsByVideoReferenceUuid() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findIndicesByVideoReferenceUuid() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void findVideoReferenceByVideoReferenceUuid() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void merge() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void renameConcepts() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void updateAnnotation() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void updateAnnotations() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void updateAssociation() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void updateAssociations() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void updateImage() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void updateIndexRecordedTimestamps() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void updateRecordedTimestampsForTapes() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void updateRecordedTimestamp() {
-            fail("not implemented");
+        fail("not implemented");
     }
 
     @Test
     public void updateCachedVideoReference() {
-            fail("not implemented");
+        fail("not implemented");
     }
 }
