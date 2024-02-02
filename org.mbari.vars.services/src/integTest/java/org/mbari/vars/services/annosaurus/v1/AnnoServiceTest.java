@@ -3,6 +3,7 @@ package org.mbari.vars.services.annosaurus.v1;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.mbari.vars.core.util.StringUtils;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.AssertUtils;
 import org.mbari.vars.services.TestToolbox;
@@ -12,6 +13,7 @@ import org.mbari.vars.services.model.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -385,12 +387,59 @@ public class AnnoServiceTest {
 
     @Test
     public void findByConceptAssociationRequest() {
-        fail("not implemented");
+        var xs = createRandomAnnotations(4, true);
+        var a = xs.get(0);
+        var ass = a.getAssociations().get(0);
+        var linkName = ass.getLinkName();
+        var vru = xs.stream().map(Annotation::getVideoReferenceUuid).toList();
+        var car = new ConceptAssociationRequest(linkName, vru);
+        var obtained = annoService.findByConceptAssociationRequest(car).join();
+        var c = obtained.getConceptAssociationRequest();
+        assertEquals(c.getLinkName(), linkName);
+        assertEquals(c.getVideoReferenceUuids(), vru);
+        var results = obtained.getConceptAssociations();
+        assertEquals(results.size(), 1);
+        var ca = results.get(0);
+        assertEquals(ca.getToConcept(), ass.getToConcept());
+        assertEquals(ca.getLinkName(), ass.getLinkName());
+        assertEquals(ca.getLinkValue(), ass.getLinkValue());
+        assertEquals(ca.getConcept(), a.getConcept());
+        assertEquals(ca.getMimeType(), ass.getMimeType());
+        assertEquals(ca.getUuid(), ass.getUuid());
+        assertEquals(ca.getVideoReferenceUuid(), a.getVideoReferenceUuid());
     }
 
     @Test
     public void findByConcurrentRequest() {
-        fail("not implemented");
+        var xs = createRandomAnnotations(5,  false)
+                .stream()
+                .sorted(Comparator.comparing(Annotation::getConcept))
+                .toList();
+        var uuids = xs.stream().map(Annotation::getVideoReferenceUuid).toList();
+        var tx = xs.stream().map(Annotation::getRecordedTimestamp).toList();
+        var dt = Duration.ofMillis(1000);
+        var t0 = tx.stream()
+                .min(Comparator.comparing(Instant::toEpochMilli))
+                .map(i -> i.minus(dt))
+                .get();
+        var t1 = tx.stream()
+                .max(Comparator.comparing(Instant::toEpochMilli))
+                .map(i -> i.plus(dt))
+                .get();
+
+        var cr = new ConcurrentRequest(t0, t1, uuids);
+        var obtained = annoService.findByConcurrentRequest(cr, 100, 0)
+                .join()
+                .stream()
+                .sorted(Comparator.comparing(Annotation::getConcept))
+                .toList();
+        assertNotNull(obtained);
+        assertEquals( xs.size(), obtained.size());
+        for (int i = 0; i < xs.size(); i++) {
+            var a = xs.get(i);
+            var b = obtained.get(i);
+            AssertUtils.assertSameAnnotation(a, b, true, true);
+        }
     }
 
     @Test
@@ -405,7 +454,31 @@ public class AnnoServiceTest {
 
     @Test
     public void findByMultiRequest() {
-        fail("not implemented");
+        var xs = createRandomAnnotations(2,  false);
+        var ys = createRandomAnnotations(2, true);
+        var annos = new ArrayList<>(xs);
+        annos.addAll(ys);
+        var uuids = annos.stream().map(Annotation::getVideoReferenceUuid).toList();
+
+        var expected = annos.stream()
+                .sorted(Comparator.comparing(Annotation::getConcept))
+                .toList();
+
+
+        var mr = new MultiRequest(uuids);
+
+        var obtained = annoService.findByMultiRequest(mr, 100, 0)
+                .join()
+                .stream()
+                .sorted(Comparator.comparing(Annotation::getConcept))
+                .toList();
+        assertNotNull(obtained);
+        assertEquals( expected.size(), obtained.size());
+        for (int i = 0; i < expected.size(); i++) {
+            var a = expected.get(i);
+            var b = obtained.get(i);
+            AssertUtils.assertSameAnnotation(a, b, true, true);
+        }
     }
 
     @Test
@@ -417,12 +490,24 @@ public class AnnoServiceTest {
 
     @Test
     public void findByVideoReferenceAndLinkName() {
-        fail("not implemented");
+        var xs = createRandomAnnotations(2, true);
+        var a = xs.get(0);
+        var expected = a.getAssociations().get(0);
+        var ys = annoService.findByVideoReferenceAndLinkName(a.getVideoReferenceUuid(), expected.getLinkName()).join();
+        assertEquals(1, ys.size());
+        var obtained = ys.get(0);
+        AssertUtils.assertSameAssociation(expected, obtained, true);
     }
 
     @Test
     public void findByVideoReferenceAndLinkNameAndConcept() {
-        fail("not implemented");
+        var xs = createRandomAnnotations(2, true);
+        var a = xs.get(0);
+        var expected = a.getAssociations().get(0);
+        var ys = annoService.findByVideoReferenceAndLinkNameAndConcept(a.getVideoReferenceUuid(), expected.getLinkName(), a.getConcept()).join();
+        assertEquals(1, ys.size());
+        var obtained = ys.get(0);
+        AssertUtils.assertSameAssociation(expected, obtained, true);
     }
 
     @Test
@@ -440,27 +525,65 @@ public class AnnoServiceTest {
 
     @Test
     public void findImageByUuid() {
-        fail("not implemented");
+        var a = createRandomAnnotations(1, true).get(0);
+        var ir = a.getImageReferences().get(0);
+        var expected = new Image(a, ir);
+        var obtained = annoService.findImageByUuid(ir.getUuid()).join();
+        assertNotNull(obtained);
+        AssertUtils.assertSameImage(expected, obtained, true);
     }
 
     @Test
     public void findImagesByVideoReferenceUuid() {
-        fail("not implemented");
+        var xs = createRandomAnnotations(2, true);
+        var expected = xs.stream()
+                .map(a -> {
+                    var ir = a.getImageReferences().get(0);
+                    return new Image(a, ir);
+                })
+                .sorted(Comparator.comparing(Image::getImageReferenceUuid))
+                .toList();
+        var obtained = annoService.findImagesByVideoReferenceUuid(xs.get(0).getVideoReferenceUuid()).join()
+                .stream()
+                .sorted(Comparator.comparing(Image::getImageReferenceUuid))
+                .toList();
+
+        for (int i = 0; i < expected.size(); i++) {
+            var a = expected.get(i);
+            var b = obtained.get(i);
+            AssertUtils.assertSameImage(a, b, true);
+        }
+
     }
 
     @Test
     public void findImagedMomentsByVideoReferenceUuid() {
-        fail("not implemented");
+        var xs = createRandomAnnotations(2, true);
+        var expected = xs.stream()
+                .map(Annotation::getImagedMomentUuid)
+                .sorted()
+                .toList();
+        var obtained = annoService.findImagedMomentsByVideoReferenceUuid(xs.get(0).getVideoReferenceUuid()).join();
+        assertEquals(expected.size(), obtained.size());
     }
 
     @Test
     public void findIndicesByVideoReferenceUuid() {
-        fail("not implemented");
+        var xs = createRandomAnnotations(2, true);
+        var expected = xs.stream()
+                .map(Annotation::getImagedMomentUuid)
+                .sorted()
+                .toList();
+        var obtained = annoService.findIndicesByVideoReferenceUuid(xs.get(0).getVideoReferenceUuid()).join();
+        assertEquals(expected.size(), obtained.size());
     }
 
     @Test
     public void findVideoReferenceByVideoReferenceUuid() {
-        fail("not implemented");
+        var a = TestUtils.buildRandomCachedVideoReference();
+        var b = annoService.createCachedVideoReference(a).join();
+        var c = annoService.findVideoReferenceByVideoReferenceUuid(b.getVideoReferenceUuid()).join();
+        AssertUtils.assertSameCachedVideoReference(b, c, true);
     }
 
     @Test
@@ -470,21 +593,55 @@ public class AnnoServiceTest {
 
     @Test
     public void renameConcepts() {
-        fail("not implemented");
+        var oldConcept = StringUtils.random(12);
+        var newConcept = StringUtils.random(12);
+        var xs = TestUtils.buildRandomAnnotations(2)
+                .stream()
+                .peek(a -> a.setConcept(oldConcept))
+                .sorted(Comparator.comparing(Annotation::getConcept))
+                .toList();
+        var ys = annoService.createAnnotations(xs).join();
+        assertEquals(xs.size(), ys.size());
+        var cr = annoService.renameConcepts(oldConcept, newConcept).join();
+        assertEquals(2L, cr.getCount().longValue());
+        assertEquals(oldConcept, cr.getOldConcept());
+        assertEquals(newConcept, cr.getNewConcept());
     }
 
     @Test
     public void updateAnnotation() {
-        fail("not implemented");
+        var a = createRandomAnnotation();
+        a.setConcept(StringUtils.random(12));
+
+        var b = annoService.updateAnnotation(a).join();
+        a.setObservationTimestamp(b.getObservationTimestamp());
+        AssertUtils.assertSameAnnotation(a, b, true, true);
     }
 
     @Test
     public void updateAnnotations() {
-        fail("not implemented");
+        var xs = createRandomAnnotations(2, true);
+        var ys = xs.stream()
+                .peek(a -> a.setConcept(StringUtils.random(12)))
+                .sorted(Comparator.comparing(Annotation::getConcept))
+                .toList();
+        var zs = annoService.updateAnnotations(ys)
+                .join()
+                .stream()
+                .sorted(Comparator.comparing(Annotation::getConcept))
+                .toList();
+        assertEquals(ys.size(), zs.size());
+        for (int i = 0; i < ys.size(); i++) {
+            var a = ys.get(i);
+            var b = zs.get(i);
+            a.setObservationTimestamp(b.getObservationTimestamp());
+            AssertUtils.assertSameAnnotation(a, b, true, true);
+        }
     }
 
     @Test
     public void updateAssociation() {
+        var a = createRandomAnnotations(1, true).get(0);
         fail("not implemented");
     }
 

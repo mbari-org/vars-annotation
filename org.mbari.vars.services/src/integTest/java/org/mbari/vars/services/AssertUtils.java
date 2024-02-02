@@ -51,7 +51,6 @@ public class AssertUtils {
         assertEquals(a.getActivity(), b.getActivity());
         if (checkRelations) {
             assertEquals(a.getAssociations().size(), b.getAssociations().size());
-
             assertEquals(a.getImageReferences().size(), b.getImageReferences().size());
         }
     }
