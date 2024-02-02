@@ -2,10 +2,7 @@ package org.mbari.vars.services;
 
 import org.mbari.vars.core.util.InstantUtils;
 import org.mbari.vars.core.util.StringUtils;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
-import org.mbari.vars.services.model.ImageReference;
-import org.mbari.vars.services.model.Media;
+import org.mbari.vars.services.model.*;
 import org.mbari.vcr4j.time.FrameRates;
 import org.mbari.vcr4j.time.Timecode;
 
@@ -14,8 +11,10 @@ import java.net.URI;
 import java.security.MessageDigest;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 public class TestUtils {
 
@@ -52,6 +51,17 @@ public class TestUtils {
         catch (Exception e) {
             throw new RuntimeException("Failed to create random media", e);
         }
+    }
+
+    public static List<Annotation> buildRandomAnnotations(int count) {
+        var videoReferenceUuid = UUID.randomUUID();
+        return IntStream.range(0, count)
+                .mapToObj(i -> {
+                    var a = buildRandomAnnotation();
+                    a.setVideoReferenceUuid(videoReferenceUuid);
+                    return a;
+                })
+                .toList();
     }
 
     public static Annotation buildRandomAnnotation() {
@@ -110,5 +120,34 @@ public class TestUtils {
         a.setRecordedTimestamp(recordedTimestamp);
         a.setElapsedTime(elapsedTime);
         return a;
+    }
+
+    public static AncillaryData buildRandomAncillaryData() {
+        var ad = new AncillaryData();
+        ad.setRecordedTimestamp(Instant.now());
+        ad.setAltitude(random.nextDouble(1000));
+        ad.setCrs(StringUtils.random(10));
+        ad.setDepthMeters(random.nextDouble(4000));
+        ad.setLatitude(random.nextDouble(90));
+        ad.setLightTransmission(random.nextDouble(100));
+        ad.setLongitude(random.nextDouble(180));
+        ad.setOxygenMlL(random.nextDouble(10));
+        ad.setPhi(random.nextDouble(360));
+        ad.setPosePositionUnits(StringUtils.random(10));
+        ad.setPressureDbar(random.nextDouble(4000));
+        ad.setPsi(random.nextDouble(360));
+        ad.setSalinity(random.nextDouble(40));
+        ad.setTemperatureCelsius(random.nextDouble(15));
+        ad.setTheta(random.nextDouble(360));
+        ad.setX(random.nextDouble(1000));
+        ad.setY(random.nextDouble(1000));
+        ad.setZ(random.nextDouble(1000));
+        return ad;
+    }
+
+    public static CachedVideoReference buildRandomCachedVideoReference() {
+        return new CachedVideoReference(StringUtils.random(32), StringUtils.random(32),
+                UUID.randomUUID(), StringUtils.random(64), UUID.randomUUID());
+
     }
 }

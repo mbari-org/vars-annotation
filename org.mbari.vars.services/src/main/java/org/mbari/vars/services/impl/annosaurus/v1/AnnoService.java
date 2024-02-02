@@ -259,8 +259,8 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
      * @param observationUuids
      * @return
      */
-    public CompletableFuture<Void> deleteAnnotations(Collection<UUID> observationUuids) {
-        return sendRequest(annoService.delete(observationUuids, bulkHeaders));
+    public CompletableFuture<Boolean> deleteAnnotations(Collection<UUID> observationUuids) {
+        return sendNoContentRequest(annoService.delete(observationUuids, bulkHeaders));
     }
 
     @Override
@@ -273,8 +273,8 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
      * @param associationUuids
      * @return
      */
-    public CompletableFuture<Void> deleteAssociations(Collection<UUID> associationUuids) {
-        return sendRequest(assService.delete(associationUuids, bulkHeaders));
+    public CompletableFuture<Boolean> deleteAssociations(Collection<UUID> associationUuids) {
+        return sendNoContentRequest(assService.delete(associationUuids, bulkHeaders));
     }
 
     @Override

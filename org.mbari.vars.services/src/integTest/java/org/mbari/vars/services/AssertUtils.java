@@ -94,4 +94,40 @@ public class AssertUtils {
             assertEquals(a.getImagedMomentUuid(), b.getImagedMomentUuid());
         }
     }
+
+    public static void assertSameAncillaryData(AncillaryData a, AncillaryData b, boolean checkUuid) {
+        assertEquals(a.getRecordedTimestamp(), b.getRecordedTimestamp());
+        assertEquals(a.getAltitude(), b.getAltitude(), 0.001);
+        assertEquals(a.getCrs(), b.getCrs());
+        assertEquals(a.getDepthMeters(), b.getDepthMeters(), 0.001);
+        assertEquals(a.getLatitude(), b.getLatitude(), 0.001);
+        assertEquals(a.getLongitude(), b.getLongitude(), 0.001);
+        assertEquals(a.getLightTransmission(), b.getLightTransmission(), 0.001);
+        assertEquals(a.getOxygenMlL(), b.getOxygenMlL(), 0.001);
+        assertEquals(a.getPhi(), b.getPhi());
+        assertEquals(a.getPosePositionUnits(), b.getPosePositionUnits());
+        assertEquals(a.getPressureDbar(), b.getPressureDbar(), 0.001);
+        assertEquals(a.getPsi(), b.getPsi());
+        assertEquals(a.getSalinity(), b.getSalinity(), 0.001);
+        assertEquals(a.getTemperatureCelsius(), b.getTemperatureCelsius(), 0.001);
+        assertEquals(a.getTheta(), b.getTheta());
+        assertEquals(a.getX(), b.getX());
+        assertEquals(a.getY(), b.getY());
+        assertEquals(a.getZ(), b.getZ());
+        if (checkUuid) {
+            assertEquals(a.getUuid(), b.getUuid());
+            assertEquals(a.getImagedMomentUuid(), b.getImagedMomentUuid());
+        }
+    }
+
+    public static void assertSameCachedVideoReference(CachedVideoReference a, CachedVideoReference b, boolean checkUuid) {
+        assertEquals(a.getMissionContact(), b.getMissionContact());
+        assertEquals(a.getPlatformName(), b.getPlatformName());
+        assertEquals(a.getMissionId(), b.getMissionId());
+        assertEquals(a.getVideoReferenceUuid(), b.getVideoReferenceUuid());
+        if (checkUuid) {
+            assertEquals(a.getUuid(), b.getUuid());
+        }
+    }
+
 }

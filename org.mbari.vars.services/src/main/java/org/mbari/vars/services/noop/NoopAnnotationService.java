@@ -90,7 +90,7 @@ public class NoopAnnotationService implements AnnotationService {
     }
 
     @Override
-    public CompletableFuture<Void> deleteAnnotations(Collection<UUID> observationUuids) {
+    public CompletableFuture<Boolean> deleteAnnotations(Collection<UUID> observationUuids) {
         return CompletableFuture.failedFuture(new UnsupportedOperationException());
     }
 
@@ -100,7 +100,7 @@ public class NoopAnnotationService implements AnnotationService {
     }
 
     @Override
-    public CompletableFuture<Void> deleteAssociations(Collection<UUID> associationUuids) {
+    public CompletableFuture<Boolean> deleteAssociations(Collection<UUID> associationUuids) {
         return CompletableFuture.failedFuture(new UnsupportedOperationException());
     }
 
