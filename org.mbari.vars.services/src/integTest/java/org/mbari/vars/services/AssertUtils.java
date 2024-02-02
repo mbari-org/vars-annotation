@@ -129,4 +129,13 @@ public class AssertUtils {
         }
     }
 
+    public static void assertSameIndex(Index a, Index b, boolean checkUuid) {
+        assertEquals(a.getElapsedTime(), b.getElapsedTime());
+        assertEquals(a.getRecordedTimestamp(), b.getRecordedTimestamp());
+        assertEquals(a.getVideoReferenceUuid(), b.getVideoReferenceUuid());
+        if (checkUuid) {
+            assertEquals(a.getUuid(), b.getUuid());
+        }
+    }
+
 }

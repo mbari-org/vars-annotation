@@ -59,7 +59,7 @@ subprojects {
 
         constraints {
             implementation 'com.auth0:java-jwt:4.4.0'
-            implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
+            implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
             implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2'
             implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
             implementation 'com.github.mizosoft.methanol:methanol:1.7.0'
@@ -74,7 +74,7 @@ subprojects {
             implementation 'de.jensd:fontawesomefx-materialicons:2.2.0-11'
             implementation 'eu.hansolo:Medusa:16.0.0' //1.7
             implementation 'io.reactivex.rxjava3:rxjava:3.1.8'
-            implementation 'jakarta.activation:jakarta.activation-api:1.2.2'
+            implementation 'jakarta.activation:jakarta.activation-api:2.1.2'
             implementation 'javax.inject:javax.inject:1'
             implementation 'javax.servlet:javax.servlet-api:4.0.1'
             implementation 'org.controlsfx:controlsfx:11.2.0'
@@ -93,7 +93,7 @@ subprojects {
             implementation 'org.slf4j:slf4j-jdk14:2.0.9'
             implementation 'org.slf4j:slf4j-jdk-platform-logging:2.0.9'
             implementation 'org.swinglabs.swingx:swingx-all:1.6.5-1'
-            runtimeOnly 'ch.qos.logback:logback-classic:1.4.13'
+            runtimeOnly 'ch.qos.logback:logback-classic:1.4.14'
             runtimeOnly 'org.fusesource.jansi:jansi:2.4.1'
         }
 

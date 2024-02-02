@@ -1,5 +1,7 @@
 package org.mbari.vars.services.model;
 
+import com.google.gson.annotations.SerializedName;
+import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
 
 import java.time.Duration;
@@ -10,12 +12,13 @@ import java.util.UUID;
  * @author Brian Schlining
  * @since 2019-02-08T15:03:00
  */
-public class Index {
+public class Index implements ImagedMoment {
 
     private UUID uuid;
     private UUID videoReferenceUuid;
+    @SerializedName("elapsed_time_millis")
     private Duration elapsedTime;
-    private Instant recordedDate;
+    private Instant recordedTimestamp;
     private Timecode timecode;
     private Instant lastUpdatedTime;
 
@@ -26,7 +29,7 @@ public class Index {
         this.uuid = index.uuid;
         this.videoReferenceUuid = index.videoReferenceUuid;
         this.elapsedTime = index.elapsedTime;
-        this.recordedDate = index.recordedDate;
+        this.recordedTimestamp = index.recordedTimestamp;
         this.timecode = index.timecode;
     }
 
@@ -36,10 +39,10 @@ public class Index {
         this.elapsedTime = elapsedTime;
     }
 
-    public Index(UUID uuid, UUID videoReferenceUuid, Instant recordedDate) {
+    public Index(UUID uuid, UUID videoReferenceUuid, Instant recordedTimestamp) {
         this.uuid = uuid;
         this.videoReferenceUuid = videoReferenceUuid;
-        this.recordedDate = recordedDate;
+        this.recordedTimestamp = recordedTimestamp;
     }
 
     public Index(UUID uuid, UUID videoReferenceUuid, Timecode timecode) {
@@ -48,11 +51,11 @@ public class Index {
         this.timecode = timecode;
     }
 
-    public Index(UUID uuid, UUID videoReferenceUuid, Duration elapsedTime, Instant recordedDate, Timecode timecode) {
+    public Index(UUID uuid, UUID videoReferenceUuid, Duration elapsedTime, Instant recordedTimestamp, Timecode timecode) {
         this.uuid = uuid;
         this.videoReferenceUuid = videoReferenceUuid;
         this.elapsedTime = elapsedTime;
-        this.recordedDate = recordedDate;
+        this.recordedTimestamp = recordedTimestamp;
         this.timecode = timecode;
     }
 
@@ -62,6 +65,15 @@ public class Index {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    public UUID getImagedMomentUuid() {
+        return uuid;
+    }
+
+    @Override
+    public void setImagedMomentUuid(UUID imagedMomentUuid) {
+        this.uuid = imagedMomentUuid;
     }
 
     public UUID getVideoReferenceUuid() {
@@ -80,12 +92,17 @@ public class Index {
         this.elapsedTime = elapsedTime;
     }
 
-    public Instant getRecordedDate() {
-        return recordedDate;
+//    @Override
+//    public VideoIndex toVideoIndex() {
+//        return ImagedMoment.super.toVideoIndex();
+//    }
+
+    public Instant getRecordedTimestamp() {
+        return recordedTimestamp;
     }
 
-    public void setRecordedDate(Instant recordedDate) {
-        this.recordedDate = recordedDate;
+    public void setRecordedTimestamp(Instant recordedTimestamp) {
+        this.recordedTimestamp = recordedTimestamp;
     }
 
     public Timecode getTimecode() {

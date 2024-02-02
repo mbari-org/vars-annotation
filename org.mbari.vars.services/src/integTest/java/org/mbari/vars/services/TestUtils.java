@@ -82,6 +82,9 @@ public class TestUtils {
         if(random.nextBoolean()) {
             a.setDuration(Duration.ofSeconds(random.nextInt(60)));
         }
+        if (random.nextBoolean()) {
+            a.setDuration(Duration.ofSeconds(random.nextInt(60)));
+        }
         a.setGroup(StringUtils.random(10));
         a.setActivity(StringUtils.random(10));
 
@@ -149,5 +152,11 @@ public class TestUtils {
         return new CachedVideoReference(StringUtils.random(32), StringUtils.random(32),
                 UUID.randomUUID(), StringUtils.random(64), UUID.randomUUID());
 
+    }
+
+    public static Timecode randomTimecode() {
+        var t =  random.nextDouble(3600);
+        var ntsc = new Timecode(t, FrameRates.NTSC);
+        return new Timecode(ntsc.toString());
     }
 }

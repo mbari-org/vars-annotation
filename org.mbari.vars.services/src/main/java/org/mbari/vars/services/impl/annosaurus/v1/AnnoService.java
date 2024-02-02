@@ -594,7 +594,8 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     @Override
     public CompletableFuture<Collection<Annotation>> updateRecordedTimestampsForTapes(
             Collection<Annotation> annotations) {
-        return sendRequest(annoService.updateRecordedTimestampForTapes(annotations, bulkHeaders));
+        throw new UnsupportedOperationException("Use updateIndexRecordedTimestamps instead");
+//        return sendRequest(annoService.updateRecordedTimestampForTapes(annotations, bulkHeaders));
     }
 
     @Override

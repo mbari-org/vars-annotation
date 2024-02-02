@@ -9,12 +9,14 @@ import org.mbari.vars.services.AssertUtils;
 import org.mbari.vars.services.TestToolbox;
 import org.mbari.vars.services.TestUtils;
 import org.mbari.vars.services.model.*;
+import org.mbari.vcr4j.time.Timecode;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.IntStream;
 
 public class AnnoServiceTest {
@@ -202,7 +204,7 @@ public class AnnoServiceTest {
         var cvr = TestUtils.buildRandomCachedVideoReference();
         var obtained = annoService.createCachedVideoReference(cvr).join();
         assertNotNull(obtained);
-        AssertUtils.assertSameCachedVideoReference(cvr ,obtained, false);
+        AssertUtils.assertSameCachedVideoReference(cvr, obtained, false);
     }
 
     @Test
@@ -287,7 +289,7 @@ public class AnnoServiceTest {
         assertNotNull(obtained);
         assertEquals(d, obtained.getDuration());
         var updated = annoService.deleteDuration(obtained.getObservationUuid()).join();
-        assert(updated.getDuration() == null);
+        assert (updated.getDuration() == null);
     }
 
     @Test
@@ -355,7 +357,7 @@ public class AnnoServiceTest {
         assertEquals(4, xs.size());
         var ys = annoService.findAnnotations(xs.get(0).getVideoReferenceUuid()).join();
         assertEquals(4, ys.size());
-        xs.forEach(x ->  assertEquals(1, x.getAssociations().size()));
+        xs.forEach(x -> assertEquals(1, x.getAssociations().size()));
     }
 
     @Test
@@ -366,13 +368,13 @@ public class AnnoServiceTest {
         assertEquals(4, xs.size());
         var ys = annoService.findAnnotations(xs.get(0).getVideoReferenceUuid(), true).join();
         assertEquals(4, ys.size());
-        xs.forEach(x ->  assertEquals(1, x.getAssociations().size()));
-        xs.forEach(x ->  assertNotNull(x.getAncillaryData()));
+        xs.forEach(x -> assertEquals(1, x.getAssociations().size()));
+        xs.forEach(x -> assertNotNull(x.getAncillaryData()));
 
         // with limit and offset
         var zs = annoService.findAnnotations(xs.get(0).getVideoReferenceUuid(), 2L, 1L, true).join();
         assertEquals(2, zs.size());
-        zs.forEach(z ->  assertNotNull(z.getAncillaryData()));
+        zs.forEach(z -> assertNotNull(z.getAncillaryData()));
 
     }
 
@@ -411,7 +413,7 @@ public class AnnoServiceTest {
 
     @Test
     public void findByConcurrentRequest() {
-        var xs = createRandomAnnotations(5,  false)
+        var xs = createRandomAnnotations(5, false)
                 .stream()
                 .sorted(Comparator.comparing(Annotation::getConcept))
                 .toList();
@@ -434,7 +436,7 @@ public class AnnoServiceTest {
                 .sorted(Comparator.comparing(Annotation::getConcept))
                 .toList();
         assertNotNull(obtained);
-        assertEquals( xs.size(), obtained.size());
+        assertEquals(xs.size(), obtained.size());
         for (int i = 0; i < xs.size(); i++) {
             var a = xs.get(i);
             var b = obtained.get(i);
@@ -454,7 +456,7 @@ public class AnnoServiceTest {
 
     @Test
     public void findByMultiRequest() {
-        var xs = createRandomAnnotations(2,  false);
+        var xs = createRandomAnnotations(2, false);
         var ys = createRandomAnnotations(2, true);
         var annos = new ArrayList<>(xs);
         annos.addAll(ys);
@@ -473,7 +475,7 @@ public class AnnoServiceTest {
                 .sorted(Comparator.comparing(Annotation::getConcept))
                 .toList();
         assertNotNull(obtained);
-        assertEquals( expected.size(), obtained.size());
+        assertEquals(expected.size(), obtained.size());
         for (int i = 0; i < expected.size(); i++) {
             var a = expected.get(i);
             var b = obtained.get(i);
@@ -642,36 +644,105 @@ public class AnnoServiceTest {
     @Test
     public void updateAssociation() {
         var a = createRandomAnnotations(1, true).get(0);
-        fail("not implemented");
+        var ass = a.getAssociations().get(0);
+        var expected = new Association(StringUtils.random(25),
+                StringUtils.random(25),
+                StringUtils.random(255),
+                ass.getMimeType(),
+                ass.getUuid());
+        var obtained = annoService.updateAssociation(expected).join();
+        AssertUtils.assertSameAssociation(expected, obtained, true);
     }
 
     @Test
     public void updateAssociations() {
-        fail("not implemented");
+        var xs = createRandomAnnotations(2, true);
+        var expected = xs.stream()
+                .flatMap(x -> x.getAssociations().stream())
+                .map(a -> new Association(StringUtils.random(25),
+                        StringUtils.random(25),
+                        StringUtils.random(255),
+                        a.getMimeType(),
+                        a.getUuid())
+                )
+                .sorted(Comparator.comparing(Association::getUuid))
+                .toList();
+
+        var obtained = annoService.updateAssociations(expected)
+                .join()
+                .stream()
+                .sorted(Comparator.comparing(Association::getUuid))
+                .toList();
+        assertEquals(expected.size(), obtained.size());
+        for (int i = 0; i < expected.size(); i++) {
+            AssertUtils.assertSameAssociation(expected.get(i), obtained.get(i), true);
+        }
     }
 
     @Test
     public void updateImage() {
-        fail("not implemented");
+        var a = createRandomAnnotations(1, true).get(0);
+        var i = a.getImageReferences().get(0);
+        var j = TestUtils.buildRandomImageReference();
+        var expected = new Image(a, i);
+        expected.setUrl(j.getUrl());
+        expected.setDescription(j.getDescription());
+        expected.setFormat(j.getFormat());
+        expected.setWidth(j.getWidth());
+        expected.setHeight(j.getHeight());
+        var obtained = annoService.updateImage(expected).join();
+        AssertUtils.assertSameImage(expected, obtained, true);
     }
 
     @Test
     public void updateIndexRecordedTimestamps() {
-        fail("not implemented");
+        var xs = createRandomAnnotations(2, true);
+        var expected = xs.stream()
+                .map(x -> {
+                            var et = Duration.ofMillis(new Random().nextInt(36000));
+                            var tc = TestUtils.randomTimecode();
+                            return new Index(x.getImagedMomentUuid(),
+                                    x.getVideoReferenceUuid(),
+                                    Instant.now().plus(et));
+                        }
+                )
+                .sorted(Comparator.comparing(Index::getUuid))
+                .toList();
+        var obtained = annoService.updateIndexRecordedTimestamps(expected)
+                .join()
+                .stream()
+                .sorted(Comparator.comparing(Index::getUuid))
+                .toList();
+        assertEquals(expected.size(), obtained.size());
+        for (int i = 0; i < expected.size(); i++) {
+            var a = expected.get(i);
+            var b = obtained.get(i);
+            assertEquals(a.getRecordedTimestamp(), b.getRecordedTimestamp());
+        }
     }
 
-    @Test
-    public void updateRecordedTimestampsForTapes() {
-        fail("not implemented");
-    }
+//    @Test
+//    public void updateRecordedTimestampsForTapes() {
+//        fail("not implemented");
+//    }
 
     @Test
     public void updateRecordedTimestamp() {
-        fail("not implemented");
+        var a = createRandomAnnotations(1, true).get(0);
+        var t = Instant.parse("2021-01-01T00:00:00Z");
+        var opt = annoService.updateRecordedTimestamp(a.getImagedMomentUuid(), t).join();
+        assertNotNull(opt);
+        assertTrue(opt.isPresent());
+        assertEquals(t, opt.get().getRecordedTimestamp());
     }
 
     @Test
     public void updateCachedVideoReference() {
-        fail("not implemented");
+        var a = TestUtils.buildRandomCachedVideoReference();
+        var b = annoService.createCachedVideoReference(a).join();
+        var c = TestUtils.buildRandomCachedVideoReference();
+        var d = new CachedVideoReference(c.getMissionContact(), c.getPlatformName(), b.getVideoReferenceUuid(), c.getMissionId(), b.getUuid());
+        var e = annoService.updateCachedVideoReference(d).join();
+        AssertUtils.assertSameCachedVideoReference(d, e, true);
     }
 }
