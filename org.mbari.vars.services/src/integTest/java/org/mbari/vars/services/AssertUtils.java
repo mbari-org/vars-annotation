@@ -95,7 +95,13 @@ public class AssertUtils {
     }
 
     public static void assertSameAncillaryData(AncillaryData a, AncillaryData b, boolean checkUuid) {
-        assertEquals(a.getRecordedTimestamp(), b.getRecordedTimestamp());
+        assertSameAncillaryData(a, b, checkUuid, true);
+    }
+
+    public static void assertSameAncillaryData(AncillaryData a, AncillaryData b, boolean checkUuid, boolean checkTimestamp) {
+        if (checkTimestamp) {
+            assertEquals(a.getRecordedTimestamp(), b.getRecordedTimestamp());
+        }
         assertEquals(a.getAltitude(), b.getAltitude(), 0.001);
         assertEquals(a.getCrs(), b.getCrs());
         assertEquals(a.getDepthMeters(), b.getDepthMeters(), 0.001);

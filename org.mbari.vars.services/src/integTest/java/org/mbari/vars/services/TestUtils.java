@@ -11,6 +11,7 @@ import java.net.URI;
 import java.security.MessageDigest;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -53,6 +54,30 @@ public class TestUtils {
         }
     }
 
+    public static List<Annotation> buildRandomAnnotations(int count, boolean extend) {
+        var xs = TestUtils.buildRandomAnnotations(count);
+        if (extend) {
+            xs.forEach(y -> {
+
+                // Add association
+                var ass = TestUtils.buildRandomAssociation();
+                y.setAssociations(List.of(ass));
+
+                // Add data
+                var d = TestUtils.buildRandomAncillaryData();
+                d.setImagedMomentUuid(y.getImagedMomentUuid());
+                y.setAncillaryData(d);
+
+                // add image reference
+                var i = TestUtils.buildRandomImageReference();
+                var j = new Image(y, i);
+                var ir = new ImageReference(j);
+                y.setImageReferences(List.of(ir));
+            });
+        }
+        return new ArrayList<>(xs);
+    }
+
     public static List<Annotation> buildRandomAnnotations(int count) {
         var videoReferenceUuid = UUID.randomUUID();
         return IntStream.range(0, count)
@@ -63,6 +88,7 @@ public class TestUtils {
                 })
                 .toList();
     }
+
 
     public static Annotation buildRandomAnnotation() {
         var a = new Annotation();
