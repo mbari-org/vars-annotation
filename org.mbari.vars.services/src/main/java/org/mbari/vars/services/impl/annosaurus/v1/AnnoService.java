@@ -163,11 +163,14 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     @Override
     public CompletableFuture<Association> createAssociation(UUID observationUuid,
             Association association) {
+        var linkValue = association.getLinkValue() == null ? Association.VALUE_NIL : association.getLinkValue();
+        var toConcept = association.getToConcept() == null ? Association.VALUE_SELF : association.getToConcept();
+        var mimeType = association.getMimeType() == null ? "text/plain" : association.getMimeType();
         Call<Association> call = assService.create(observationUuid,
                 association.getLinkName(),
-                association.getToConcept(),
-                association.getLinkValue(),
-                association.getMimeType(),
+                toConcept,
+                linkValue,
+                mimeType,
                 defaultHeaders);
 
         return sendRequest(call);

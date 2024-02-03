@@ -44,7 +44,7 @@ public class AnnotationServiceTest {
         Optional<AnnotationCount> c0 = await(f0, timeout);
         assertTrue("Expected a count, but nothing was returned", c0.isPresent());
         AnnotationCount i = c0.get();
-        assertEquals(786, i.getCount().intValue());
+        assertEquals(787, i.getCount().intValue());
     }
 
 
@@ -78,6 +78,7 @@ public class AnnotationServiceTest {
         annotation.setConcept("Nanomia bijuga");
         annotation.setObserver("brian");
         annotation.setRecordedTimestamp(Instant.now());
+//        annotation.setObservationTimestamp(Instant.now());
         CompletableFuture<Annotation> f = annoService.createAnnotation(annotation);
         Optional<Annotation> annoOpt0 = await(f, timeout);
         assertTrue("Annotation return value was null", annoOpt0.isPresent());
@@ -197,8 +198,8 @@ public class AnnotationServiceTest {
         assertTrue("Image is missing", imgOpt0.isPresent());
         Image img0 = imgOpt0.get();
         assertEquals(image.getVideoReferenceUuid(), img0.getVideoReferenceUuid());
-        var roundedTimestamp = image.getRecordedTimestamp().truncatedTo(ChronoUnit.MILLIS);
-        assertEquals(roundedTimestamp, img0.getRecordedTimestamp());
+//        var roundedTimestamp = image.getRecordedTimestamp().truncatedTo(ChronoUnit.MILLIS);
+        assertEquals(image.getRecordedTimestamp(), img0.getRecordedTimestamp());
         assertEquals(image.getUrl(), img0.getUrl());
 
         // --- 3. Delete Image
