@@ -9,6 +9,8 @@ import org.mbari.vars.ui.commands.UpdateAssociationCmd;
 import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.ui.mediaplayers.sharktopoda.localization.LocalizationController;
 import org.mbari.vcr4j.VideoIndex;
+import org.mbari.vcr4j.remote.control.RVideoIO;
+import org.mbari.vcr4j.remote.control.RemoteControl;
 import org.mbari.vcr4j.remote.control.commands.localization.*;
 import org.mbari.vcr4j.remote.player.RxControlRequestHandler;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 
 public class IncomingController {
 
+    private final RemoteControl remoteControl;
     private final RxControlRequestHandler requestHandler;
     private final UIToolBox toolBox;
     private final List<Disposable> disposables = new ArrayList<>();
@@ -27,12 +30,14 @@ public class IncomingController {
     private final Comparator<LocalizedAnnotation> comparator = Comparator.comparing(a -> a.association().getUuid());
 
     public IncomingController(UIToolBox toolBox,
-                              RxControlRequestHandler requestHandler,
+                              RemoteControl remoteControl,
                               SharktopodaState sharktopodaState) {
-        this.requestHandler = requestHandler;
+        this.remoteControl = remoteControl;
+        this.requestHandler = remoteControl.getRequestHandler();
         this.toolBox = toolBox;
         this.sharktopodaState = sharktopodaState;
         init();
+
     }
 
     private void init() {
@@ -70,12 +75,17 @@ public class IncomingController {
             var annotation = localizedAnnotation.annotation();
             var association = localizedAnnotation.association();
 
+            // https://github.com/mbari-org/vars-annotation/issues/170
+            remoteControl.getVideoIO().send(new RemoveLocalizationsCmd(remoteControl.getVideoIO().getUuid(),
+                    List.of(loc.getUuid())));
             var videoIndex = new VideoIndex(localizedAnnotation.annotation().getElapsedTime());
             var cmd = new CreateAnnotationAtIndexWithAssociationCmd(videoIndex,
                     annotation.getConcept(),
                     association,
-                    LocalizationController.EVENT_SOURCE);
+                    IncomingController.class);
+                    //LocalizationController.EVENT_SOURCE); #170
             toolBox.getEventBus().send(cmd);
+
         });
 
     }
@@ -90,8 +100,10 @@ public class IncomingController {
         var map = matches.stream()
                 .map(LocalizationPair::localizedAnnotation)
                 .collect(Collectors.toMap(LocalizedAnnotation::association, a -> a.annotation().getObservationUuid()));
-        var cmd = new DeleteAssociationsCmd(map);
-        toolBox.getEventBus().send(cmd);
+        if (!map.isEmpty()) {
+            var cmd = new DeleteAssociationsCmd(map);
+            toolBox.getEventBus().send(cmd);
+        }
     }
 
     private void handleUpdate(List<Localization> updated) {

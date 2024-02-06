@@ -12,7 +12,6 @@ import org.mbari.vars.services.MediaService;
 import org.mbari.vars.services.impl.varsuserserver.v1.CachedKBPrefService;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.ui.mediaplayers.MediaPlayers;
-import org.mbari.vars.ui.mediaplayers.sharktopoda.localization.LocalizationLifecycleController;
 import org.mbari.vars.ui.messages.*;
 import org.mbari.vars.ui.events.*;
 import org.mbari.vars.services.model.Annotation;
