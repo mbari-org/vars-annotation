@@ -9,7 +9,7 @@ plugins {
 
 subprojects {
 
-    version = "1.5.3"
+    version = "2.0.0"
 
     apply plugin: 'com.adarshr.test-logger'
     apply plugin: 'com.github.ben-manes.versions'
@@ -19,8 +19,8 @@ subprojects {
     apply plugin: 'org.javamodularity.moduleplugin'
     apply plugin: 'org.kordamp.gradle.jdeps'
 
-    sourceCompatibility = 17
-    targetCompatibility = 17
+    sourceCompatibility = 21
+    targetCompatibility = 21
 
     repositories {
 //        jcenter()
@@ -82,7 +82,7 @@ subprojects {
             implementation 'org.kordamp.ikonli:ikonli-javafx:12.3.1'
             implementation 'org.kordamp.ikonli:ikonli-material-pack:12.3.1'
             implementation 'org.kordamp.ikonli:ikonli-swing:12.3.1'
-            implementation 'org.zeromq:jeromq:0.6.0'
+            implementation 'org.zeromq:jeromq:0.5.4'
             implementation 'org.mbari:imgfx:0.0.15'
             implementation 'org.mbari.vcr4j:vcr4j-core:5.2.0'
             implementation 'org.mbari.vcr4j:vcr4j-remote:5.2.0'
