@@ -4,7 +4,7 @@ module org.mbari.vars.services {
   requires com.fasterxml.jackson.databind; // required by java-jwt
   requires com.github.benmanes.caffeine;
   requires com.google.gson;
-  requires gson.javatime.serialisers;
+//  requires gson.javatime.serialisers;
   requires io.reactivex.rxjava3;
   requires java.desktop;
   requires java.prefs;

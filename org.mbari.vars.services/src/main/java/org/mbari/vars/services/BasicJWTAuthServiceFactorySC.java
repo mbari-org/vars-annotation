@@ -1,11 +1,13 @@
 package org.mbari.vars.services;
 
-import com.fatboyindustrial.gsonjavatime.Converters;
+//import com.fatboyindustrial.gsonjavatime.Converters;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.mbari.vars.services.gson.InstantConverter;
 
 import java.time.Duration;
+import java.time.Instant;
 
 /**
  * This parses the basic JWT tokens from snake_case JSON.
@@ -23,11 +25,14 @@ public class BasicJWTAuthServiceFactorySC extends RetrofitServiceFactory {
         GsonBuilder gsonBuilder = new GsonBuilder()
                 .setPrettyPrinting()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .registerTypeAdapter(Instant.class, new InstantConverter())
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
+        return gsonBuilder.create();
+
         // Register java.time.Instant
-        return Converters.registerInstant(gsonBuilder)
-                .create();
+//        return Converters.registerInstant(gsonBuilder)
+//                .create();
 
     }
 }

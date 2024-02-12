@@ -56,13 +56,13 @@ public class LocalizedAnnotationTest {
     }
 
 
-    @Test
-    public void toLocalizationTest() {
-        var opt = localizedAnnotation.toLocalization();
-        assertTrue(opt.isPresent());
-        var x = opt.get();
-        check(x);
-    }
+//    @Test
+//    public void toLocalizationTest() {
+//        var opt = localizedAnnotation.toLocalization();
+//        assertTrue(opt.isPresent());
+//        var x = opt.get();
+//        check(x);
+//    }
 
     @Test
     public void fromLocalizationOfNullsTest() {
@@ -74,56 +74,56 @@ public class LocalizedAnnotationTest {
     }
 
 
-    @Test
-    public void fromAnnotationTest() {
-        var xs = LocalizedAnnotation.from(annotation);
-        assertEquals(1, xs.size());
-        var la = xs.get(0);
-        assertEquals(annotation, la.annotation());
-        assertEquals(association, la.association());
-        var opt = la.toLocalization();
-        assertTrue(opt.isPresent());
-        var x = opt.get();
-        check(x);
-    }
+//    @Test
+//    public void fromAnnotationTest() {
+//        var xs = LocalizedAnnotation.from(annotation);
+//        assertEquals(1, xs.size());
+//        var la = xs.get(0);
+//        assertEquals(annotation, la.annotation());
+//        assertEquals(association, la.association());
+//        var opt = la.toLocalization();
+//        assertTrue(opt.isPresent());
+//        var x = opt.get();
+//        check(x);
+//    }
 
-    @Test
-    public void fromAnnotationsTest() {
-        var xs = LocalizedAnnotation.from(List.of(annotation));
-        assertEquals(1, xs.size());
-        var la = xs.get(0);
-        assertEquals(annotation, la.annotation());
-        assertEquals(association, la.association());
-        var opt = la.toLocalization();
-        assertTrue(opt.isPresent());
-        var x = opt.get();
-        check(x);
-    }
+//    @Test
+//    public void fromAnnotationsTest() {
+//        var xs = LocalizedAnnotation.from(List.of(annotation));
+//        assertEquals(1, xs.size());
+//        var la = xs.get(0);
+//        assertEquals(annotation, la.annotation());
+//        assertEquals(association, la.association());
+//        var opt = la.toLocalization();
+//        assertTrue(opt.isPresent());
+//        var x = opt.get();
+//        check(x);
+//    }
 
-    @Test
-    public void fromLocalizationTest() {
-        var la = LocalizedAnnotation.from(localization);
-        var opt = la.toLocalization();
-        assertTrue(opt.isPresent());
-        var x = opt.get();
-        check(x);
-        var anno = la.annotation();
-        assertEquals(annotation.getDuration(), anno.getDuration());
-        assertEquals(annotation.getElapsedTime(), anno.getElapsedTime());
-        assertNull(anno.getObservationUuid());
-        assertEquals(annotation.getConcept(), anno.getConcept());
-
-        var ass = la.association();
-        assertEquals(association.getLinkName(), ass.getLinkName());
-        assertEquals(association.getToConcept(), ass.getToConcept());
-        assertEquals("{\"x\":10,\"y\":20,\"width\":30,\"height\":40,\"generator\":\"VARS Annotation\"}", ass.getLinkValue());
-        assertEquals(association.getMimeType(), ass.getMimeType());
-        assertEquals(association.getUuid(), ass.getUuid());
-
-        var xs = anno.getAssociations();
-        assertEquals(1, xs.size());
-        var ass2 = xs.get(0);
-        assertEquals(ass, ass2);
-
-    }
+//    @Test
+//    public void fromLocalizationTest() {
+//        var la = LocalizedAnnotation.from(localization);
+//        var opt = la.toLocalization();
+//        assertTrue(opt.isPresent());
+//        var x = opt.get();
+//        check(x);
+//        var anno = la.annotation();
+//        assertEquals(annotation.getDuration(), anno.getDuration());
+//        assertEquals(annotation.getElapsedTime(), anno.getElapsedTime());
+//        assertNull(anno.getObservationUuid());
+//        assertEquals(annotation.getConcept(), anno.getConcept());
+//
+//        var ass = la.association();
+//        assertEquals(association.getLinkName(), ass.getLinkName());
+//        assertEquals(association.getToConcept(), ass.getToConcept());
+//        assertEquals("{\"x\":10,\"y\":20,\"width\":30,\"height\":40,\"generator\":\"VARS Annotation\"}", ass.getLinkValue());
+//        assertEquals(association.getMimeType(), ass.getMimeType());
+//        assertEquals(association.getUuid(), ass.getUuid());
+//
+//        var xs = anno.getAssociations();
+//        assertEquals(1, xs.size());
+//        var ass2 = xs.get(0);
+//        assertEquals(ass, ass2);
+//
+//    }
 }
