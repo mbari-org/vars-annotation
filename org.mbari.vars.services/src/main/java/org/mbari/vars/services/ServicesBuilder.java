@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 
 import org.mbari.vars.services.impl.annosaurus.v1.AnnoService;
 import org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory;
-import org.mbari.vars.services.impl.annosaurus.v2.AnnoServiceV2;
-import org.mbari.vars.services.impl.annosaurus.v2.AnnoWebServiceFactoryV2;
 import org.mbari.vars.services.impl.panoptes.v1.PanoptesService;
 import org.mbari.vars.services.impl.panoptes.v1.PanoptesWebServiceFactory;
 import org.mbari.vars.services.impl.vampiresquid.v1.VamService;

@@ -28,7 +28,6 @@ module org.mbari.vars.services {
   exports org.mbari.vars.services;
   exports org.mbari.vars.services.gson;
   exports org.mbari.vars.services.impl.annosaurus.v1;
-  exports org.mbari.vars.services.impl.annosaurus.v2;
   exports org.mbari.vars.services.impl.ml;
   exports org.mbari.vars.services.impl.panoptes.v1;
   exports org.mbari.vars.services.impl.raziel;

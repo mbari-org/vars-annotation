@@ -1,7 +1,5 @@
 package org.mbari.vars.services;
 
-import org.mbari.vars.services.impl.annosaurus.v2.AnnoServiceV2;
-
 import javax.inject.Inject;
 import org.mbari.vars.services.util.PreferencesFactory;
 

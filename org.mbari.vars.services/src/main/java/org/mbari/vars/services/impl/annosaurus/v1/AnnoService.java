@@ -74,7 +74,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
 
     @Override
     public CompletableFuture<AnnotationCount> countAnnotations(UUID videoReferenceUuid) {
-        return sendRequest(annoService.countByVideoReferenceUuid(videoReferenceUuid));
+        return sendRequestNoFail(annoService.countByVideoReferenceUuid(videoReferenceUuid));
     }
 
     @Override
@@ -86,12 +86,12 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     public CompletableFuture<List<Annotation>> findByConcept(String concept, Boolean data) {
         // TODO: add pager?
         // HACK: Hardcoded max of a milliion annotations
-        return sendRequest(annoService.findByConcept(concept, 1000000L, 0L, data));
+        return sendRequestNoFail(annoService.findByConcept(concept, 1000000L, 0L, data));
     }
 
     @Override
     public CompletableFuture<List<Annotation>> findByConcept(String concept, Long limit, Long offset, Boolean data) {
-        return sendRequest(annoService.findByConcept(concept, limit, offset, data));
+        return sendRequestNoFail(annoService.findByConcept(concept, limit, offset, data));
     }
 
     /**
@@ -125,7 +125,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
 
     @Override
     public CompletableFuture<AnnotationCount> countImagedMomentsModifiedBefore(UUID videoReferenceUuid, Instant date) {
-        return sendRequest(imagedMomentService.countByModifiedBefore(videoReferenceUuid, date));
+        return sendRequestNoFail(imagedMomentService.countByModifiedBefore(videoReferenceUuid, date));
     }
 
     @Override
@@ -249,7 +249,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     @Override
     public CompletableFuture<AncillaryDataDeleteCount> deleteAncillaryDataByVideoReference(
             UUID videoReferenceUuid) {
-        return sendRequest(dataService.deleteByVideoReference(videoReferenceUuid));
+        return sendRequestNoFail(dataService.deleteByVideoReference(videoReferenceUuid));
     }
 
     @Override
@@ -309,7 +309,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
 
     @Override
     public CompletableFuture<AncillaryData> findAncillaryData(UUID observationUuid) {
-        return sendRequest(annoService.findAncillaryData(observationUuid));
+        return sendRequestNoFail(annoService.findAncillaryData(observationUuid));
     }
 
     /**
@@ -320,7 +320,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     @Override
     public CompletableFuture<List<AncillaryData>> findAncillaryDataByVideoReference(
             UUID videoReferenceUuid) {
-        return sendRequest(dataService.findByVideoReferenceUuid(videoReferenceUuid));
+        return sendRequestNoFail(dataService.findByVideoReferenceUuid(videoReferenceUuid));
     }
 
     @Override
@@ -336,14 +336,14 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     @Override
     public CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, Long limit,
                                                                Long offset) {
-        return sendRequest(annoService.findByVideoReferenceUuid(videoReferenceUuid, limit, offset, false));
+        return sendRequestNoFail(annoService.findByVideoReferenceUuid(videoReferenceUuid, limit, offset, false));
     }
 
 
     @Override
     public CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, Long limit,
             Long offset, Boolean data) {
-        return sendRequest(annoService.findByVideoReferenceUuid(videoReferenceUuid, limit, offset, data));
+        return sendRequestNoFail(annoService.findByVideoReferenceUuid(videoReferenceUuid, limit, offset, data));
     }
 
     /**
@@ -352,7 +352,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
      * @return
      */
     public CompletableFuture<Association> findAssociationByUuid(UUID associationUuid) {
-        return sendRequest(assService.findByUuid(associationUuid));
+        return sendRequestNoFail(assService.findByUuid(associationUuid));
     }
 
     /**
@@ -386,7 +386,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
      * @return
      */
     public CompletableFuture<List<Annotation>> findByImageReference(UUID imageReferenceUuid) {
-        return sendRequest(annoService.findByImageReferenceUuid(imageReferenceUuid));
+        return sendRequestNoFail(annoService.findByImageReferenceUuid(imageReferenceUuid));
     }
 
     /**
@@ -406,7 +406,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
 
     @Override
     public CompletableFuture<Annotation> findByUuid(UUID observationUuid) {
-        return sendRequest(annoService.findByUuid(observationUuid));
+        return sendRequestNoFail(annoService.findByUuid(observationUuid));
     }
 
     /**
@@ -446,7 +446,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
      * @return
      */
     public CompletableFuture<Image> findImageByUrl(URL url) {
-        return sendRequest(imageService.findByUrl(url.toExternalForm()));
+        return sendRequestNoFail(imageService.findByUrl(url.toExternalForm()));
     }
 
     /**
@@ -455,7 +455,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
      * @return
      */
     public CompletableFuture<Image> findImageByUuid(UUID imageReferenceUuid) {
-        return sendRequest(imageService.findByUuid(imageReferenceUuid));
+        return sendRequestNoFail(imageService.findByUuid(imageReferenceUuid));
     }
 
     @Override
@@ -521,7 +521,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         addField(fieldMap, "group", annotation.getGroup());
         addField(fieldMap, "activity", annotation.getActivity());
 
-        return sendRequest(annoService.update(annotation.getObservationUuid(),
+        return sendRequestNoFail(annoService.update(annotation.getObservationUuid(),
                 fieldMap,
                 defaultHeaders));
     }
@@ -544,7 +544,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         addField(fieldMap, "link_value", association.getLinkValue());
         addField(fieldMap, "mime_type", association.getMimeType());
 
-        return sendRequest(assService.update(association.getUuid(), fieldMap, defaultHeaders));
+        return sendRequestNoFail(assService.update(association.getUuid(), fieldMap, defaultHeaders));
     }
 
     /**
@@ -574,7 +574,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
         addField(fieldMap, "height_pixels", image.getHeight());
         addField(fieldMap, "description", image.getDescription());
 
-        return sendRequest(imageService.update(image.getImageReferenceUuid(),
+        return sendRequestNoFail(imageService.update(image.getImageReferenceUuid(),
                 fieldMap,
                 defaultHeaders));
     }
