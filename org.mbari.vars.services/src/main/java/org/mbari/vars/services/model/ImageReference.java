@@ -40,6 +40,16 @@ public class ImageReference implements Cloneable {
         height = i.height;
     }
 
+    public ImageReference(Image i) {
+        uuid = i.getImageReferenceUuid();
+        description = i.getDescription();
+        url = i.getUrl();
+        format = i.getFormat();
+        lastUpdatedTime = i.getRecordedTimestamp();
+        width = i.getWidth();
+        height = i.getHeight();
+    }
+
     public UUID getUuid() {
         return uuid;
     }

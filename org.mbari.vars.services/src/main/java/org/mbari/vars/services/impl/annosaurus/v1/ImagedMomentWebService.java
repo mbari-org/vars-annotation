@@ -2,6 +2,7 @@ package org.mbari.vars.services.impl.annosaurus.v1;
 
 import org.mbari.vars.services.model.AnnotationCount;
 import org.mbari.vars.services.model.ImagedMoment;
+import org.mbari.vars.services.model.Index;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -21,9 +22,9 @@ public interface ImagedMomentWebService {
 
     @FormUrlEncoded
     @PUT("imagedmoments/{uuid}")
-    Call<ImagedMoment> update(@Path("uuid") UUID imagedMomentUuid,
-            @FieldMap Map<String, String> fields,
-            @HeaderMap Map<String, String> headers);
+    Call<Index> update(@Path("uuid") UUID imagedMomentUuid,
+                       @FieldMap Map<String, String> fields,
+                       @HeaderMap Map<String, String> headers);
 
     @GET("imagedmoments/videoreference/modified/{uuid}/{date}")
     Call<AnnotationCount> countByModifiedBefore(@Path("uuid") UUID videoReferenceUuid,

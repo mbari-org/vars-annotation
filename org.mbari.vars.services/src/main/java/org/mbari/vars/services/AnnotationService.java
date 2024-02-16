@@ -63,11 +63,11 @@ public interface AnnotationService {
 
     CompletableFuture<Boolean> deleteAnnotation(UUID observationUuid);
 
-    CompletableFuture<Void> deleteAnnotations(Collection<UUID> observationUuids);
+    CompletableFuture<Boolean> deleteAnnotations(Collection<UUID> observationUuids);
 
     CompletableFuture<Boolean> deleteAssociation(UUID associationUuid);
 
-    CompletableFuture<Void> deleteAssociations(Collection<UUID> associationUuids);
+    CompletableFuture<Boolean> deleteAssociations(Collection<UUID> associationUuids);
 
     CompletableFuture<Boolean> deleteImage(UUID imageReferenceUuid);
 

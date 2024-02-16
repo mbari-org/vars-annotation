@@ -159,7 +159,7 @@ public class VamService implements MediaService, RetrofitWebService {
 
     @Override
     public CompletableFuture<List<Media>> findByVideoSequenceNameAndTimestamp(String videoSequenceName, Instant timestamp) {
-        return CompletableFuture.completedFuture(new ArrayList<>());
+        throw new UnsupportedOperationException("Not implemented. We haven't used this yet");
     }
 
     @Override

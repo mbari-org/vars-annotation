@@ -7,12 +7,12 @@ package org.mbari.vars.services.model;
 public class ConceptsRenamed {
     private String oldConcept;
     private String newConcept;
-    private Integer numberUpdated;
+    private Integer count;
 
-    public ConceptsRenamed(String oldConcept, String newConcept, Integer numberUpdated) {
+    public ConceptsRenamed(String oldConcept, String newConcept, Integer count) {
         this.oldConcept = oldConcept;
         this.newConcept = newConcept;
-        this.numberUpdated = numberUpdated;
+        this.count = count;
     }
 
     public String getOldConcept() {
@@ -23,7 +23,7 @@ public class ConceptsRenamed {
         return newConcept;
     }
 
-    public Integer getNumberUpdated() {
-        return numberUpdated;
+    public Integer getCount() {
+        return count;
     }
 }

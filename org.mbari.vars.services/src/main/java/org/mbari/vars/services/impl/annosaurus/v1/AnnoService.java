@@ -86,7 +86,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     public CompletableFuture<List<Annotation>> findByConcept(String concept, Boolean data) {
         // TODO: add pager?
         // HACK: Hardcoded max of a milliion annotations
-        return sendRequest(annoService.findByConcept(concept, 0L, 1000000L, data));
+        return sendRequest(annoService.findByConcept(concept, 1000000L, 0L, data));
     }
 
     @Override
@@ -163,11 +163,14 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     @Override
     public CompletableFuture<Association> createAssociation(UUID observationUuid,
             Association association) {
+        var linkValue = association.getLinkValue() == null ? Association.VALUE_NIL : association.getLinkValue();
+        var toConcept = association.getToConcept() == null ? Association.VALUE_SELF : association.getToConcept();
+        var mimeType = association.getMimeType() == null ? "text/plain" : association.getMimeType();
         Call<Association> call = assService.create(observationUuid,
                 association.getLinkName(),
-                association.getToConcept(),
-                association.getLinkValue(),
-                association.getMimeType(),
+                toConcept,
+                linkValue,
+                mimeType,
                 defaultHeaders);
 
         return sendRequest(call);
@@ -186,15 +189,16 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     public CompletableFuture<Association> createAssociation(UUID observationUuid,
                                                             Association association,
                                                             UUID associationUuid) {
-        Call<Association> call = assService.create(observationUuid,
-                association.getLinkName(),
-                association.getToConcept(),
-                association.getLinkValue(),
-                association.getMimeType(),
-                associationUuid,
-                defaultHeaders);
-
-        return sendRequest(call);
+        throw new IllegalArgumentException("Not implemented. Annosaurus does not support user specified UUIDs for creating associations");
+//        Call<Association> call = assService.create(observationUuid,
+//                association.getLinkName(),
+//                association.getToConcept(),
+//                association.getLinkValue(),
+//                association.getMimeType(),
+//                associationUuid,
+//                defaultHeaders);
+//
+//        return sendRequest(call);
     }
 
     @Override
@@ -250,7 +254,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
 
     @Override
     public CompletableFuture<Boolean> deleteAnnotation(UUID observationUuid) {
-        return sendRequest(annoService.delete(observationUuid, defaultHeaders));
+        return sendNoContentRequest(annoService.delete(observationUuid, defaultHeaders));
     }
 
     /**
@@ -258,13 +262,13 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
      * @param observationUuids
      * @return
      */
-    public CompletableFuture<Void> deleteAnnotations(Collection<UUID> observationUuids) {
-        return sendRequest(annoService.delete(observationUuids, bulkHeaders));
+    public CompletableFuture<Boolean> deleteAnnotations(Collection<UUID> observationUuids) {
+        return sendNoContentRequest(annoService.delete(observationUuids, bulkHeaders));
     }
 
     @Override
     public CompletableFuture<Boolean> deleteAssociation(UUID associationUuid) {
-        return sendRequest(assService.delete(associationUuid));
+        return sendNoContentRequest(assService.delete(associationUuid));
     }
 
     /**
@@ -272,13 +276,13 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
      * @param associationUuids
      * @return
      */
-    public CompletableFuture<Void> deleteAssociations(Collection<UUID> associationUuids) {
-        return sendRequest(assService.delete(associationUuids, bulkHeaders));
+    public CompletableFuture<Boolean> deleteAssociations(Collection<UUID> associationUuids) {
+        return sendNoContentRequest(assService.delete(associationUuids, bulkHeaders));
     }
 
     @Override
     public CompletableFuture<Boolean> deleteImage(UUID imageReferenceUuid) {
-        return sendRequest(imageService.delete(imageReferenceUuid));
+        return sendNoContentRequest(imageService.delete(imageReferenceUuid));
     }
 
     @Override
@@ -593,7 +597,8 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     @Override
     public CompletableFuture<Collection<Annotation>> updateRecordedTimestampsForTapes(
             Collection<Annotation> annotations) {
-        return sendRequest(annoService.updateRecordedTimestampForTapes(annotations, bulkHeaders));
+        throw new UnsupportedOperationException("Use updateIndexRecordedTimestamps instead");
+//        return sendRequest(annoService.updateRecordedTimestampForTapes(annotations, bulkHeaders));
     }
 
     @Override

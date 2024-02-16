@@ -33,6 +33,27 @@ public interface RetrofitWebService {
             public void onFailure(Call<T> call, Throwable throwable) {
                 LoggerFactory.getLogger(getClass())
                         .warn("Exception thrown when making a REST call", throwable);
+//                f.completeExceptionally(throwable);
+                f.complete(null); // TODO: 2024-02-02 Brian Schlining - This is a hack to get around the fact that the
+                //  CompletableFuture is not being completed when the server returns a 404. This is a bug in the
+                //  retrofit library.
+            }
+        });
+        return f;
+    }
+
+    default <T> CompletableFuture<Boolean> sendNoContentRequest(Call<T> call) {
+        CompletableFuture<Boolean> f = new CompletableFuture<>();
+        call.enqueue(new Callback<T>() {
+            @Override
+            public void onResponse(Call<T> call, Response<T> response) {
+                f.complete(response.isSuccessful());
+            }
+
+            @Override
+            public void onFailure(Call<T> call, Throwable throwable) {
+                LoggerFactory.getLogger(getClass())
+                        .warn("Exception thrown when making a REST call", throwable);
                 f.completeExceptionally(throwable);
             }
         });
