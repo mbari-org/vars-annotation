@@ -1,16 +1,11 @@
 package org.mbari.vars.ui.swing.annotable;
 
-import io.reactivex.rxjava3.core.Observable;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import org.jdesktop.swingx.JXTable;
 import org.jdesktop.swingx.JXTableHeader;
-import org.jdesktop.swingx.decorator.BorderHighlighter;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
-import org.jdesktop.swingx.sort.TableSortController;
-import org.mbari.vars.core.util.ListUtils;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.Data;
@@ -24,11 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import javax.swing.table.TableRowSorter;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Optional;
 
 public class JXAnnotationTableController {
 
@@ -227,7 +221,7 @@ public class JXAnnotationTableController {
 
     // https://github.com/mbari-media-management/vars-annotation/issues/158
     private void remove(Collection<Annotation> annotations) {
-        if (tableModel.getRowCount() > 0) {
+        if (!annotations.isEmpty() && tableModel.getRowCount() > 0) {
             SwingUtilities.invokeLater(() -> {
                 var indices = annotations.stream().map(a -> {
                             var model = tableModel.getAnnotationRow(a);
@@ -238,12 +232,19 @@ public class JXAnnotationTableController {
                 var opt = indices.stream()
                         .min(Comparator.comparingInt(ModelAndViewIdx::view));
                 var scrollToIndex = Math.max(opt.map(mv -> mv.view() - 1).orElse(0), 0);
-                var annoIndex = table.convertRowIndexToModel(scrollToIndex);
-                var selectedAnno = tableModel.getAnnotationAt(annoIndex);
+                Optional<Annotation> selectedAnno = Optional.empty();
+                if (scrollToIndex > 0) {
+                    var annoIndex = table.convertRowIndexToModel(scrollToIndex);
+                    if (annoIndex > 0) {
+                        selectedAnno = Optional.ofNullable(tableModel.getAnnotationAt(annoIndex));
+                    }
+                }
                 annotations.forEach(tableModel::removeAnnotation);
 
-                if (selectedAnno != null) {
-                    toolBox.getEventBus().send(new AnnotationsSelectedEvent(java.util.List.of(selectedAnno)));
+                selectedAnno.ifPresent(anno -> toolBox.getEventBus().send(new AnnotationsSelectedEvent(java.util.List.of(anno))));
+
+                if (selectedAnno.isEmpty()) {
+                    log.atInfo().log(annotations.size() + " annotations removed. But unable to find their index in the table. So unable to scroll to the right place.");
                 }
 
             });

@@ -117,9 +117,11 @@ public class TimelineController {
 
     private void addAnnotation(Annotation a) {
         Platform.runLater(() -> {
-            var da = new DisplayedAnnotation(a, new Label(), new Line());
-            displayedAnno.add(da);
-            da.addTo(root, horizontalAxis, distanceBetweenMinutesProperty, toolBox.getEventBus());
+            if (a != null) {
+                var da = new DisplayedAnnotation(a, new Label(), new Line());
+                displayedAnno.add(da);
+                da.addTo(root, horizontalAxis, distanceBetweenMinutesProperty, toolBox.getEventBus());
+            }
         });
     }
 
