@@ -7,6 +7,7 @@ plugins {
 }
 
 
+
 subprojects {
 
     version = "2.0.2"
@@ -39,6 +40,7 @@ subprojects {
     configurations {
         testCompile
     }
+
 
     test {
         useJUnitPlatform()
@@ -92,6 +94,7 @@ subprojects {
             implementation 'org.slf4j:slf4j-api:2.0.12'
             implementation 'org.slf4j:slf4j-jdk14:2.0.12'
             implementation 'org.slf4j:slf4j-jdk-platform-logging:2.0.12'
+            implementation 'org.slf4j:jul-to-slf4j:2.0.12'
             implementation 'org.swinglabs.swingx:swingx-all:1.6.5-1'
             runtimeOnly 'ch.qos.logback:logback-classic:1.4.14'
             runtimeOnly 'org.fusesource.jansi:jansi:2.4.1'

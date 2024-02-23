@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.mbari.vars.services.impl.annosaurus.v1.AnnoService;
 import org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory;
+import org.mbari.vars.services.impl.annosaurus.v1.AnnosaurusHttpClient;
 import org.mbari.vars.services.impl.panoptes.v1.PanoptesService;
 import org.mbari.vars.services.impl.panoptes.v1.PanoptesWebServiceFactory;
 import org.mbari.vars.services.impl.vampiresquid.v1.VamService;
@@ -103,15 +104,16 @@ public class ServicesBuilder {
     );
   }
 
-  public static AnnoService buildAnnotationService(String endpoint, Duration timeout, String clientSecret) {
-    AnnoWebServiceFactory factory =
-            new AnnoWebServiceFactory(endpoint, timeout);
-    AuthService authService =
-            new BasicJWTAuthService(factory, new Authorization("APIKEY", clientSecret));
-    return new AnnoService(factory, authService);
+  public static AnnotationService buildAnnotationService(String endpoint, Duration timeout, String clientSecret) {
+//    AnnoWebServiceFactory factory =
+//            new AnnoWebServiceFactory(endpoint, timeout);
+//    AuthService authService =
+//            new BasicJWTAuthService(factory, new Authorization("APIKEY", clientSecret));
+//    return new AnnoService(factory, authService);
+    return new AnnosaurusHttpClient(endpoint, timeout, clientSecret);
   }
 
-  public AnnoService buildAnnotationService() {
+  public AnnotationService buildAnnotationService() {
     ServiceConfig.ServiceParams params = appConfig.getAnnotationServiceParamsV1();
     return buildAnnotationService(params.getEndpoint(), params.getTimeout(), params.getClientSecret());
   }

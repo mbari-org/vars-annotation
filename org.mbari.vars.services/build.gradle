@@ -10,6 +10,12 @@ facets {
     }
 }
 
+tasks.withType(Test) {
+    systemProperty("jdk.httpclient.HttpClient.log", "requests,headers,content")
+}
+
+
+
 dependencies {
 
     implementation project(':org.mbari.vars.core')
@@ -39,6 +45,8 @@ dependencies {
     }
 
     runtimeOnly 'ch.qos.logback:logback-classic:1.3.0-alpha4'
+    runtimeOnly 'org.slf4j:slf4j-jdk-platform-logging'
+    runtimeOnly 'org.slf4j:jul-to-slf4j'
 
 
 }

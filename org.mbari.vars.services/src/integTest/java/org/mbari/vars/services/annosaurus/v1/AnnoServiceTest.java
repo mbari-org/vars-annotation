@@ -2,12 +2,11 @@ package org.mbari.vars.services.annosaurus.v1;
 
 import static org.junit.Assert.*;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.junit.Test;
 import org.mbari.vars.core.util.StringUtils;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.AssertUtils;
-import org.mbari.vars.services.TestToolbox;
-import org.mbari.vars.services.TestUtils;
+import org.mbari.vars.services.*;
 import org.mbari.vars.services.model.*;
 import org.mbari.vcr4j.time.Timecode;
 
@@ -21,7 +20,8 @@ import java.util.stream.IntStream;
 
 public class AnnoServiceTest {
 
-    AnnotationService annoService = TestToolbox.getServices().getAnnotationService();
+
+    AnnotationService annoService = (new ServicesBuilder(ConfigFactory.load()).buildAnnotationService());
 
     private Annotation createRandomAnnotation() {
         var a = TestUtils.buildRandomAnnotation();
