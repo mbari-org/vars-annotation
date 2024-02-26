@@ -602,7 +602,7 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     }
 
     @Override
-    public CompletableFuture<Optional<ImagedMoment>> updateRecordedTimestamp(UUID imagedMomentUuid, Instant recordedTimestamp) {
+    public CompletableFuture<Optional<Index>> updateRecordedTimestamp(UUID imagedMomentUuid, Instant recordedTimestamp) {
         Map<String, String> map = Map.of("recorded_timestamp", recordedTimestamp.toString());
         return sendRequest(imagedMomentService.update(imagedMomentUuid, map, defaultHeaders))
                 .thenApply(Optional::ofNullable);

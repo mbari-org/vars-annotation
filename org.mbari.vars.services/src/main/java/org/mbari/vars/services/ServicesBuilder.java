@@ -177,7 +177,7 @@ public class ServicesBuilder {
     return new Prefs(prefsFactory, cachePrefService);
   }
 
-  private Prefs buildPrefs() {
+  public Prefs buildPrefs() {
     ServiceConfig.ServiceParams params = appConfig.getPreferencesServiceParamsV1();
     return buildPrefs(params.getEndpoint(), params.getTimeout(), params.getClientSecret());
   }

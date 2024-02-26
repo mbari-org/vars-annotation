@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.mbari.vars.core.util.InstantUtils;
 import org.mbari.vars.core.util.Logging;
+import org.mbari.vars.core.util.MapUtils;
 import org.mbari.vars.services.AnnotationService;
 import org.mbari.vars.services.etc.methanol.LoggingInterceptor;
 import org.mbari.vars.services.model.*;
@@ -28,6 +29,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AnnosaurusHttpClient implements AnnotationService {
 
@@ -549,7 +551,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
 
     @Override
     public CompletableFuture<List<UUID>> findAllVideoReferenceUuids() {
-        var uri = buildUri("/videoreferences/videoreferences");
+        var uri = buildUri("/imagedmoments/videoreference");
         var request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header("Accept", "application/json")
@@ -598,7 +600,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
 
     @Override
     public CompletableFuture<List<Annotation>> findByConcept(String concept, Long limit, Long offset, Boolean data) {
-        var queryMap = Map.of("limit", limit, "offset", offset, "data", data);
+        var queryMap = MapUtils.of("limit", limit, "offset", offset, "data", data);
         var query = mapToQueryFragment(queryMap);
         var uri = buildUri("/fast/concept/" + concept + query);
         var request = HttpRequest.newBuilder()
@@ -627,7 +629,8 @@ public class AnnosaurusHttpClient implements AnnotationService {
 
     @Override
     public CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, Long limit, Long offset, Boolean data) {
-        var queryMap = Map.of("limit", limit, "offset", offset, "data", data);
+
+        var queryMap = MapUtils.of("limit", limit, "offset", offset, "data", data); // Failes with null values
         var query = mapToQueryFragment(queryMap);
         var uri = buildUri("/fast/videoreference/" + videoReferenceUuid + query);
         var request = HttpRequest.newBuilder()
@@ -667,7 +670,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
 
     @Override
     public CompletableFuture<List<Annotation>> findByConcurrentRequest(ConcurrentRequest concurrentRequest, long limit, long offset) {
-        var queryMap = Map.of("limit", limit, "offset", offset);
+        var queryMap = MapUtils.of("limit", limit, "offset", offset);
         var query = mapToQueryFragment(queryMap);
         var uri = buildUri("/fast/concurrent" + query);
         var json = gson.toJson(concurrentRequest);
@@ -695,7 +698,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
 
     @Override
     public CompletableFuture<List<Annotation>> findByMultiRequest(MultiRequest multiRequest, long limit, long offset) {
-        var queryMap = Map.of("limit", limit, "offset", offset);
+        var queryMap = MapUtils.of("limit", limit, "offset", offset);
         var query = mapToQueryFragment(queryMap);
         var uri = buildUri("/fast/multi" + query);
         var json = gson.toJson(multiRequest);
@@ -807,7 +810,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
 
     @Override
     public CompletableFuture<List<Index>> findIndicesByVideoReferenceUuid(UUID videoReferenceUuid) {
-        var uri = buildUri("/indices/videoreference/" + videoReferenceUuid);
+        var uri = buildUri("/index/videoreference/" + videoReferenceUuid);
         var request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header("Accept", "application/json")
@@ -819,7 +822,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
 
     @Override
     public CompletableFuture<CachedVideoReference> findVideoReferenceByVideoReferenceUuid(UUID videoReferenceUuid) {
-        var uri = buildUri("/videoreferences/" + videoReferenceUuid);
+        var uri = buildUri("/videoreferences/videoreference/" + videoReferenceUuid);
         var request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header("Accept", "application/json")
@@ -839,7 +842,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Authorization", "BEARER " + auth.getAccessToken())
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
         logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, TYPE_LIST_ANCILLARY_DATA));
@@ -849,8 +852,11 @@ public class AnnosaurusHttpClient implements AnnotationService {
     public CompletableFuture<ConceptsRenamed> renameConcepts(String oldConcept, String newConcept) {
         var uri = buildUri("/observations/concept/rename");
         var json = gson.toJson(Map.of("old", oldConcept, "new", newConcept));
+        var auth = authorizeIfNeeded();
         var request = HttpRequest.newBuilder()
                 .uri(uri)
+                .header("Authorization", "BEARER " + auth.getAccessToken())
+                .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
@@ -960,7 +966,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
     }
 
     @Override
-    public CompletableFuture<Optional<ImagedMoment>> updateRecordedTimestamp(UUID imagedMomentUuid, Instant recordedTimestamp) {
+    public CompletableFuture<Optional<Index>> updateRecordedTimestamp(UUID imagedMomentUuid, Instant recordedTimestamp) {
         Map<String, String> map = Map.of("recorded_timestamp", recordedTimestamp.toString());
         var uri = buildUri("/imagedmoments/" + imagedMomentUuid);
         var json = gson.toJson(map);
@@ -973,12 +979,12 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
         logRequest(request, json);
-        return submit(request, 200, body -> gson.fromJson(body, ImagedMoment.class)).thenApply(Optional::ofNullable);
+        return submit(request, 200, body -> gson.fromJson(body, Index.class)).thenApply(Optional::ofNullable);
     }
 
     @Override
     public CompletableFuture<CachedVideoReference> updateCachedVideoReference(CachedVideoReference cvr) {
-        var uri = buildUri("/videoreferences/" + cvr.getVideoReferenceUuid());
+        var uri = buildUri("/videoreferences/" + cvr.getUuid());
         var json = gson.toJson(cvr);
         var auth = authorizeIfNeeded();
         var request = HttpRequest.newBuilder()

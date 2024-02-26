@@ -290,7 +290,7 @@ public class NoopAnnotationService implements AnnotationService {
     }
 
     @Override
-    public CompletableFuture<Optional<ImagedMoment>> updateRecordedTimestamp(UUID imagedMomentUuid, Instant recordedTimestamp) {
+    public CompletableFuture<Optional<Index>> updateRecordedTimestamp(UUID imagedMomentUuid, Instant recordedTimestamp) {
         return CompletableFuture.failedFuture(new UnsupportedOperationException());
     }
 

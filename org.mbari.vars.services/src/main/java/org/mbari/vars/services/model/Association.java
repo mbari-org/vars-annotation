@@ -21,34 +21,26 @@ public class Association implements Cloneable, Details {
     public static final String VALUE_SELF = "self";
     public static final Association NIL = new Association(VALUE_NIL, VALUE_NIL, VALUE_NIL);
     public static final String NAME_LOCALIZATION = "bounding box";
+    public static final String MIME_TYPE_DEFAULT = "text/plain";
 
     public Association(String linkName, String toConcept, String linkValue, String mimeType) {
         this.linkName = linkName;
-        this.toConcept = toConcept;
-        this.linkValue = linkValue;
-        this.mimeType = mimeType;
+        this.toConcept = toConcept == null ? VALUE_NIL : toConcept;
+        this.linkValue = linkValue == null ? VALUE_NIL : linkValue;
+        this.mimeType = mimeType == null ? MIME_TYPE_DEFAULT : mimeType;
     }
 
     public Association(String linkName, String toConcept, String linkValue) {
-        this.linkName = linkName;
-        this.toConcept = toConcept;
-        this.linkValue = linkValue;
-        this.mimeType = "text/plain";
+        this(linkName, toConcept, linkValue, MIME_TYPE_DEFAULT);
     }
 
     public Association(String linkName, String toConcept, String linkValue, String mimeType, UUID uuid) {
-        this.linkName = linkName;
-        this.toConcept = toConcept;
-        this.linkValue = linkValue;
-        this.mimeType = mimeType;
+        this(linkName, toConcept, linkValue, mimeType);
         this.uuid = uuid;
     }
 
     public Association(String linkName, String toConcept, String linkValue, String mimeType, UUID uuid, Instant lastUpdatedTime) {
-        this.linkName = linkName;
-        this.toConcept = toConcept;
-        this.linkValue = linkValue;
-        this.mimeType = mimeType;
+        this(linkName, toConcept, linkValue, mimeType);
         this.uuid = uuid;
         this.lastUpdatedTime = lastUpdatedTime;
     }

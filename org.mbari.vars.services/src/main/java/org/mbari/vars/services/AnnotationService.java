@@ -151,7 +151,7 @@ public interface AnnotationService {
 
     CompletableFuture<Collection<Annotation>> updateRecordedTimestampsForTapes(Collection<Annotation> annotations);
 
-    CompletableFuture<Optional<ImagedMoment>> updateRecordedTimestamp(UUID imagedMomentUuid, Instant recordedTimestamp);
+    CompletableFuture<Optional<Index>> updateRecordedTimestamp(UUID imagedMomentUuid, Instant recordedTimestamp);
 
     CompletableFuture<CachedVideoReference> updateCachedVideoReference(CachedVideoReference cvr);
 }

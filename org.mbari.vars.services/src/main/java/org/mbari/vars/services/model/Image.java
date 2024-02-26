@@ -17,7 +17,11 @@ import java.util.UUID;
 public class Image implements ImagedMoment, Cloneable {
     private UUID imageReferenceUuid;
     private String format;
+
+    @SerializedName("width_pixels")
     private Integer width;
+
+    @SerializedName("height_pixels")
     private Integer height;
     private URL url;
     private String description;

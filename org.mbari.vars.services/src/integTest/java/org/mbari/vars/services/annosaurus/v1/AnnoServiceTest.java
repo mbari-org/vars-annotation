@@ -776,6 +776,7 @@ public class AnnoServiceTest {
         var opt = annoService.updateRecordedTimestamp(a.getImagedMomentUuid(), t).join();
         assertNotNull(opt);
         assertTrue(opt.isPresent());
+        System.out.println(opt.get());
         assertEquals(t, opt.get().getRecordedTimestamp());
     }
 

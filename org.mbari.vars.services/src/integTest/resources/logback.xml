@@ -19,6 +19,7 @@
         </encoder>
     </appender>
 
+    <logger name="java" level="INFO" />
     <logger name="java.util.Date" level="WARN" />
     <logger name="jdk.event" level="INFO" />
     <logger name="org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory" level="DEBUG" />
