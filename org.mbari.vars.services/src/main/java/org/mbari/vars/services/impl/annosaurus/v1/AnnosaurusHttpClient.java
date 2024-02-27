@@ -6,10 +6,10 @@ import com.github.mizosoft.methanol.Methanol;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.mbari.vars.core.util.InstantUtils;
-import org.mbari.vars.core.util.Logging;
 import org.mbari.vars.core.util.MapUtils;
 import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.etc.methanol.LoggingInterceptor;
+import org.mbari.vars.services.impl.BaseHttpClient;
+import org.mbari.vars.services.impl.JwtHttpClient;
 import org.mbari.vars.services.model.*;
 
 import java.lang.reflect.Type;
@@ -18,27 +18,19 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class AnnosaurusHttpClient implements AnnotationService {
+public class AnnosaurusHttpClient extends BaseHttpClient implements AnnotationService {
 
-    private final Logging log = new Logging(getClass());
-    private final HttpClient client;
-    private final URI baseUri;
-    private final String apikey;
-    private AtomicReference<Authorization> authorization = new AtomicReference<>();
-    private final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+
+    private final JwtHttpClient jwtHttpClient;
+
     private final Gson gson = AnnoWebServiceFactory.newGson();
     private final Type TYPE_LIST_ANCILLARY_DATA = new TypeToken<ArrayList<AncillaryData>>(){}.getType();
     private final Type TYPE_LIST_ANNOTATION = new TypeToken<ArrayList<Annotation>>(){}.getType();
@@ -51,172 +43,24 @@ public class AnnosaurusHttpClient implements AnnotationService {
     private final Type TYPE_LIST_USER = new TypeToken<ArrayList<User>>(){}.getType();
     private final Type TYPE_LIST_UUID = new TypeToken<ArrayList<UUID>>(){}.getType();
 
+    public AnnosaurusHttpClient(HttpClient client, URI baseUri, String apiKey) {
+        super(client, baseUri);
+        this.jwtHttpClient = new JwtHttpClient(client,
+                buildUri("/auth"),
+                "Authorization", "APIKEY " + apiKey,
+                body -> gson.fromJson(body, Authorization.class));
+    }
+
     public AnnosaurusHttpClient(String baseUri, Duration timeout, String apikey) {
-        this.baseUri = URI.create(baseUri);
-        this.apikey = apikey;
-        client = Methanol.newBuilder()
-                .autoAcceptEncoding(true)
-                .connectTimeout(timeout)
-                .executor(executor)
-                .followRedirects(HttpClient.Redirect.ALWAYS)
-                .readTimeout(timeout)
-                .requestTimeout(timeout)
-                .userAgent("org.mbari.vars.services")
-                .build();
-    }
-
-    private URI buildUri(String path) {
-        var newPath = baseUri.getPath() + path;
-        return baseUri.resolve(newPath);
-
-    }
-
-    private String mapToQueryFragment(Map<String, ?> map) {
-        return map.entrySet()
-                .stream()
-                .filter(e -> e.getValue() != null)
-                .map(e -> e.getKey() + "=" + e.getValue())
-                .reduce((a, b) -> a + "&" + b)
-                .map(s -> "?" + s)
-                .orElse("");
-    }
-
-    private void logResponse(HttpResponse<?> response) {
-        if (log.logger().isLoggable(System.Logger.Level.DEBUG)) {
-            var req = response.request();
-            var headers = response.headers().map().entrySet().stream()
-                    .map(e -> e.getKey() + ": " + String.join(", ", e.getValue()))
-                    .collect(Collectors.joining(System.lineSeparator()));
-            log.atDebug().log(() -> "RECEIVED: " + req.method() + " " + req.uri() + " [" + response.statusCode()
-                    + "] \n" + headers + "\n\n" + response.body());
-        }
-    }
-
-    private void logRequest(HttpRequest request, String body) {
-        if (log.logger().isLoggable(System.Logger.Level.DEBUG)) {
-            var headers = request.headers().map().entrySet().stream()
-                    .map(e -> e.getKey() + ": " + String.join(", ", e.getValue()))
-                    .collect(Collectors.joining(System.lineSeparator()));
-            var bodyString = (body == null) ? "" : "\n\n" + body;
-            log.atDebug().log(() -> "SENDING: " + request.method() + " " + request.uri() + "\n" + headers + bodyString);
-        }
-    }
-
-
-    /**
-     * Handle a request
-     * @param request The resuest to send
-     * @param okCode The expected code if completed successfully
-     * @param fn A function to handle the response body. If null then the body is ignored
-     * @return A CompletableFuture that will complete when the request is done
-     * @param <T> The type that the response body will be converted to
-     */
-    private <T> CompletableFuture<T> submit(HttpRequest request,
-                                            int okCode,
-                                            Function<String, T> fn) {
-        var future = new CompletableFuture<T>();
-        Runnable task = () -> {
-            try {
-                var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                logResponse(response);
-                if (response.statusCode() != okCode) {
-                    future.completeExceptionally(new RuntimeException("Expected a status code of " + okCode
-                            + " but it was " +  response.statusCode() + " from " + request.method() + " " + request.uri()));
-                    return;
-                }
-                if (fn != null) {
-
-                    var body = fn.apply(response.body());
-                    future.complete(body);
-                }
-                else {
-                    future.complete(null);
-                }
-            }
-            catch (Exception e) {
-                future.completeExceptionally(e);
-            }
-        };
-        executor.execute(task);
-        return future;
-    }
-
-    private <T> CompletableFuture<T> submitSearch(HttpRequest request,
-                                                  int okCode,
-                                                  Function<String, T> fn,
-                                                  T defaultValue) {
-        var future = new CompletableFuture<T>();
-        Runnable task = () -> {
-            try {
-                var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                logResponse(response);
-                if (response.statusCode() == 404) {
-                    log.atInfo().log(() -> "Not found for " + request.method() + " " + request.uri());
-                    future.complete(defaultValue);
-                }
-                else if (response.statusCode() == okCode) {
-                    var body = fn.apply(response.body());
-                    future.complete(body);
-                }
-                else {
-                    future.completeExceptionally(new RuntimeException("Expected a status code of " + okCode
-                            + " but it was " +  response.statusCode() + " from " + request.method() + " " + request.uri()));
-                }
-            }
-            catch (Exception e) {
-                future.completeExceptionally(e);
-            }
-        };
-        executor.execute(task);
-        return future;
-    }
-
-
-    /**
-     * Handle no content responses
-     * @param request
-     * @param okCode
-     * @return
-     */
-    private CompletableFuture<Void> submit(HttpRequest request, int okCode) {
-        return submit(request, okCode, null);
-    }
-
-    // ---- Authorization stuff
-    private boolean isExpired(Authorization a) {
-        try {
-            DecodedJWT jwt = JWT.decode(a.getAccessToken());
-            Instant iat = jwt.getExpiresAt().toInstant();
-            return iat.isBefore(Instant.now());
-        }
-        catch (Exception e) {
-            return true;
-        }
+        this(newHttpClient(timeout), URI.create(baseUri), apikey);
     }
 
     private Authorization authorizeIfNeeded() {
-        return authorization.updateAndGet(this::reauthorize);
+        return jwtHttpClient.authorizeIfNeeded();
     }
 
-    private Authorization reauthorize(Authorization a) {
-        if ((a == null) || isExpired(a)) {
-            return authorize(apikey).join();
-        }
-        return a;
-    }
 
-    public CompletableFuture<Authorization> authorize(String apikey) {
-        var uri = buildUri("/auth");
-        var request = HttpRequest.newBuilder()
-                .uri(uri)
-                .header("Authorization", "APIKEY " + apikey)
-                .header("Accept", "application/json")
-                .POST(HttpRequest.BodyPublishers.noBody())
-                .build();
-        logRequest(request, null);
-        return submit(request, 200, body -> gson.fromJson(body, Authorization.class));
-    }
-
+    // --- API methods
 
     public CompletableFuture<Annotation> createAnnotation(Annotation annotation) {
         var json = gson.toJson(annotation);
@@ -229,7 +73,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, Annotation.class));
     }
 
@@ -241,7 +85,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200,
                 body -> gson.fromJson(body, AnnotationCount.class),
                 new AnnotationCount(videoReferenceUuid, 0));
@@ -255,7 +99,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submit(request, 200, body -> gson.fromJson(body, TYPE_LIST_ANNOTATION_COUNT));
     }
 
@@ -269,7 +113,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, ConcurrentRequestCount.class));
     }
 
@@ -283,7 +127,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, MultiRequestCount.class));
     }
 
@@ -295,7 +139,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submit(request, 200, body -> gson.fromJson(body, TYPE_LIST_ANNOTATION_COUNT));
     }
 
@@ -307,7 +151,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200,
                 body -> gson.fromJson(body, ConceptCount.class),
                 new ConceptCount(concept, 0));
@@ -322,7 +166,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200,
                 body -> gson.fromJson(body, AnnotationCount.class),
                 new AnnotationCount(videoReferenceUuid, 0));
@@ -340,7 +184,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, TYPE_LIST_ANNOTATION));
     }
 
@@ -357,7 +201,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, Association.class));
     }
 
@@ -374,7 +218,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, Association.class));
     }
 
@@ -390,7 +234,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, Image.class));
     }
 
@@ -406,7 +250,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, TYPE_LIST_ANCILLARY_DATA));
     }
 
@@ -422,7 +266,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, CachedVideoReference.class));
     }
 
@@ -436,7 +280,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .DELETE()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submit(request, 200, body -> gson.fromJson(body, AncillaryDataDeleteCount.class));
     }
 
@@ -449,7 +293,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Authorization", "BEARER " + auth.getAccessToken())
                 .DELETE()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submit(request, 204).thenApply(v -> true);
     }
 
@@ -465,7 +309,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 204).thenApply(v -> true);
     }
 
@@ -478,7 +322,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Authorization", "BEARER " + auth.getAccessToken())
                 .DELETE()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submit(request, 204).thenApply(v -> true);
     }
 
@@ -493,7 +337,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 204).thenApply(v -> true);
     }
 
@@ -506,7 +350,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Authorization", "BEARER " + auth.getAccessToken())
                 .DELETE()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submit(request, 204).thenApply(v -> true);
     }
 
@@ -520,7 +364,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .PUT(HttpRequest.BodyPublishers.noBody())
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submit(request, 200, body -> gson.fromJson(body, Annotation.class));
     }
 
@@ -533,7 +377,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Authorization", "BEARER " + auth.getAccessToken())
                 .DELETE()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submit(request, 204).thenApply(v -> true);
     }
 
@@ -545,7 +389,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submit(request, 200, body -> gson.fromJson(body, TYPE_LIST_STRING));
     }
 
@@ -557,7 +401,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submit(request, 200, body -> gson.fromJson(body, TYPE_LIST_UUID));
     }
 
@@ -569,7 +413,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200, body -> gson.fromJson(body, AncillaryData.class), null);
     }
 
@@ -581,34 +425,34 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200, body -> gson.fromJson(body, TYPE_LIST_ANCILLARY_DATA), new ArrayList<>());
     }
 
     @Override
     public CompletableFuture<List<Annotation>> findByConcept(String concept, Boolean data) {
-        var query = mapToQueryFragment(Map.of("data", data));
+        var query = MapUtils.mapToQueryFragment(Map.of("data", data));
         var uri = buildUri("/fast/concept/" + concept + query);
         var request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200, body -> gson.fromJson(body, TYPE_LIST_ANNOTATION), new ArrayList<>());
     }
 
     @Override
     public CompletableFuture<List<Annotation>> findByConcept(String concept, Long limit, Long offset, Boolean data) {
         var queryMap = MapUtils.of("limit", limit, "offset", offset, "data", data);
-        var query = mapToQueryFragment(queryMap);
+        var query = MapUtils.mapToQueryFragment(queryMap);
         var uri = buildUri("/fast/concept/" + concept + query);
         var request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200, body -> gson.fromJson(body, TYPE_LIST_ANNOTATION), new ArrayList<>());
     }
 
@@ -631,14 +475,14 @@ public class AnnosaurusHttpClient implements AnnotationService {
     public CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid, Long limit, Long offset, Boolean data) {
 
         var queryMap = MapUtils.of("limit", limit, "offset", offset, "data", data); // Failes with null values
-        var query = mapToQueryFragment(queryMap);
+        var query = MapUtils.mapToQueryFragment(queryMap);
         var uri = buildUri("/fast/videoreference/" + videoReferenceUuid + query);
         var request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200, body -> gson.fromJson(body, TYPE_LIST_ANNOTATION), new ArrayList<>());
     }
 
@@ -650,7 +494,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200, body -> gson.fromJson(body, Association.class), null);
     }
 
@@ -664,14 +508,14 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(httpRequest, json);
+        debugLog.logRequest(httpRequest, json);
         return submit(httpRequest, 200, body -> gson.fromJson(body, ConceptAssociationResponse.class));
     }
 
     @Override
     public CompletableFuture<List<Annotation>> findByConcurrentRequest(ConcurrentRequest concurrentRequest, long limit, long offset) {
         var queryMap = MapUtils.of("limit", limit, "offset", offset);
-        var query = mapToQueryFragment(queryMap);
+        var query = MapUtils.mapToQueryFragment(queryMap);
         var uri = buildUri("/fast/concurrent" + query);
         var json = gson.toJson(concurrentRequest);
         var request = HttpRequest.newBuilder()
@@ -680,7 +524,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, TYPE_LIST_ANNOTATION));
     }
 
@@ -692,14 +536,14 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200, body -> gson.fromJson(body, TYPE_LIST_ANNOTATION), new ArrayList<>());
     }
 
     @Override
     public CompletableFuture<List<Annotation>> findByMultiRequest(MultiRequest multiRequest, long limit, long offset) {
         var queryMap = MapUtils.of("limit", limit, "offset", offset);
-        var query = mapToQueryFragment(queryMap);
+        var query = MapUtils.mapToQueryFragment(queryMap);
         var uri = buildUri("/fast/multi" + query);
         var json = gson.toJson(multiRequest);
         var request = HttpRequest.newBuilder()
@@ -708,7 +552,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submitSearch(request, 200, body -> gson.fromJson(body, TYPE_LIST_ANNOTATION), new ArrayList<>());
     }
 
@@ -720,7 +564,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200, body -> gson.fromJson(body, Annotation.class), null);
     }
 
@@ -732,7 +576,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200, body -> gson.fromJson(body, TYPE_LIST_ASSOCIATION), new ArrayList<>());
     }
 
@@ -744,7 +588,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200, body -> gson.fromJson(body, TYPE_LIST_ASSOCIATION), new ArrayList<>());
     }
 
@@ -756,7 +600,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submit(request, 200, body -> gson.fromJson(body, TYPE_LIST_STRING));
     }
 
@@ -769,7 +613,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200, body -> gson.fromJson(body, Image.class), null);
     }
 
@@ -792,7 +636,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200, body -> gson.fromJson(body, TYPE_LIST_IMAGE), new ArrayList<>());
     }
 
@@ -804,7 +648,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200, body -> gson.fromJson(body, TYPE_LIST_IMAGED_MOMENT), new ArrayList<>());
     }
 
@@ -816,7 +660,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200, body -> gson.fromJson(body, TYPE_LIST_INDEX), new ArrayList<>());
     }
 
@@ -828,7 +672,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .GET()
                 .build();
-        logRequest(request, null);
+        debugLog.logRequest(request, null);
         return submitSearch(request, 200, body -> gson.fromJson(body, CachedVideoReference.class), null);
     }
 
@@ -844,7 +688,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, TYPE_LIST_ANCILLARY_DATA));
     }
 
@@ -860,7 +704,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, ConceptsRenamed.class));
     }
 
@@ -876,7 +720,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, Annotation.class));
     }
 
@@ -892,7 +736,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, TYPE_LIST_ANNOTATION));
     }
 
@@ -908,7 +752,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, Association.class));
     }
 
@@ -924,7 +768,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, TYPE_LIST_ASSOCIATION));
     }
 
@@ -940,7 +784,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, Image.class));
     }
 
@@ -956,7 +800,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, TYPE_LIST_INDEX));
     }
 
@@ -978,7 +822,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, Index.class)).thenApply(Optional::ofNullable);
     }
 
@@ -994,7 +838,7 @@ public class AnnosaurusHttpClient implements AnnotationService {
                 .header("Accept", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        logRequest(request, json);
+        debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, CachedVideoReference.class));
     }
 }

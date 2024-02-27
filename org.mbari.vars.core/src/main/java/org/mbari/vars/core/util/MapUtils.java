@@ -27,4 +27,14 @@ public class MapUtils {
         }
         return map;
     }
+
+    public static String mapToQueryFragment(Map<String, ?> map) {
+        return map.entrySet()
+                .stream()
+                .filter(e -> e.getValue() != null)
+                .map(e -> e.getKey() + "=" + e.getValue())
+                .reduce((a, b) -> a + "&" + b)
+                .map(s -> "?" + s)
+                .orElse("");
+    }
 }

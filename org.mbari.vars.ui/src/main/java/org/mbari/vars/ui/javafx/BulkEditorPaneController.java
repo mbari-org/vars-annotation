@@ -182,6 +182,7 @@ public class BulkEditorPaneController {
 
         // --- Updated search string in UI
         Runnable updateSearchLabelFn = () -> {
+            refresh();
             StringBuffer sb = new StringBuffer();
             if (conceptCheckBox.isSelected()
                     && !conceptCombobox.getSelectionModel().isEmpty()) {
@@ -338,17 +339,22 @@ public class BulkEditorPaneController {
     private void setEventBus(EventBus eventBus) {
         Preconditions.checkNotNull(eventBus);
         final io.reactivex.rxjava3.core.Observable<Object> obs = eventBus.toObserverable();
-        obs.ofType(AnnotationsChangedEvent.class)
-                .subscribe(e -> refresh());
-        obs.ofType(AnnotationsAddedEvent.class)
-                .subscribe(e -> refresh());
-        obs.ofType(AnnotationsRemovedEvent.class)
-                .subscribe(e -> refresh());
+        // DON"T DO THIS: THis adds a lot of overhead. The dtabase has to scan all rows to get activities and groups
+//        obs.ofType(AnnotationsChangedEvent.class)
+//                .subscribe(e -> refresh());
+//        obs.ofType(AnnotationsAddedEvent.class)
+//                .subscribe(e -> refresh());
+//        obs.ofType(AnnotationsRemovedEvent.class)
+//                .subscribe(e -> refresh());
         obs.ofType(MediaChangedEvent.class)
                 .subscribe(e -> refresh());
         this.eventBus = eventBus;
     }
 
+    /**
+     * Refreshes info in the bulk editor. This is an expensive operation as getting activities and groups
+     * does a full table scan of the database.
+     */
     public void refresh() {
 
         List<String> concepts = annotations.stream()

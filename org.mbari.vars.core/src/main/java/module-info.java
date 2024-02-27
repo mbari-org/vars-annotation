@@ -4,8 +4,9 @@ module org.mbari.vars.core {
   requires io.reactivex.rxjava3;
   requires org.slf4j;
   requires typesafe.config;
+    requires java.net.http;
 
-  exports org.mbari.vars.core;
+    exports org.mbari.vars.core;
   exports org.mbari.vars.core.util;
   exports org.mbari.vars.core.crypto;
 }
