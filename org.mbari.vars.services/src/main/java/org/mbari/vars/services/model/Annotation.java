@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
 
+import java.beans.Transient;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -33,6 +34,8 @@ public class Annotation implements ImagedMoment {
     private List<Association> associations;
     private List<ImageReference> imageReferences;
     private AncillaryData ancillaryData;
+
+    private transient Object transientKey;
 
     public Annotation() {
     }
@@ -224,6 +227,14 @@ public class Annotation implements ImagedMoment {
 
     public void setAncillaryData(AncillaryData ancillaryData) {
         this.ancillaryData = ancillaryData;
+    }
+
+    public Object getTransientKey() {
+        return transientKey;
+    }
+
+    public void setTransientKey(Object transientKey) {
+        this.transientKey = transientKey;
     }
 
     @Override
