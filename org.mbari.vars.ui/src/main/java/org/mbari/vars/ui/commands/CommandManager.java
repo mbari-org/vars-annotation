@@ -87,6 +87,7 @@ public class CommandManager {
     public CommandManager() {
         thread = new Thread(runnable, getClass().getName());
         thread.setDaemon(true);
+        thread.setPriority(8);
         thread.start();
 
         EventBus eventBus = toolBox.getEventBus();

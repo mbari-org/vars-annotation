@@ -237,6 +237,10 @@ public class Annotation implements ImagedMoment {
         this.transientKey = transientKey;
     }
 
+    public boolean isSaved() {
+        return observationUuid != null;
+    }
+
     @Override
     public String toString() {
         int a = associations == null ? 0 : associations.size();

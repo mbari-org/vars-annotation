@@ -55,7 +55,7 @@ public class ImageViewController2 {
             getComboBox().getItems().clear();
             if (annotation != null) {
                 List<ImageReference> images = annotation.getImages();
-                if (!images.isEmpty()) {
+                if (images != null && !images.isEmpty()) {
                     getComboBox().getItems().addAll(images);
                     getComboBox().getSelectionModel().select(0);
                 }
