@@ -5,6 +5,8 @@ import org.mbari.vars.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
 import org.mbari.vars.services.model.Annotation;
 
+import java.util.UUID;
+
 
 /**
  * @author Brian Schlining
@@ -13,6 +15,7 @@ import org.mbari.vars.services.model.Annotation;
 public class CreateAnnotationCmd implements Command {
     private final Annotation annotationTemplate;
     private Annotation annotation;
+    private final Object transientKey = UUID.randomUUID();
 
     public CreateAnnotationCmd(Annotation annotationTemplate) {
         this.annotationTemplate = annotationTemplate;
@@ -33,6 +36,7 @@ public class CreateAnnotationCmd implements Command {
                                 .createAnnotation(annotationTemplate)
                                 .thenAccept(a -> {
                                     annotation = a;
+                                    annotation.setTransientKey(transientKey);
                                     toolBox.getEventBus()
                                             .send(new AnnotationsAddedEvent(a));
                                 });

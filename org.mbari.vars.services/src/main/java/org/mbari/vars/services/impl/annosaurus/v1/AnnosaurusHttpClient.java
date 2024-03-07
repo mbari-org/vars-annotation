@@ -1,8 +1,6 @@
 package org.mbari.vars.services.impl.annosaurus.v1;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.github.mizosoft.methanol.Methanol;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.mbari.vars.core.util.InstantUtils;
@@ -23,8 +21,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
+
 
 public class AnnosaurusHttpClient extends BaseHttpClient implements AnnotationService {
 

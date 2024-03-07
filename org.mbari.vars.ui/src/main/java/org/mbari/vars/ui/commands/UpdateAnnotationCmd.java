@@ -49,6 +49,7 @@ public class UpdateAnnotationCmd implements Command {
                                 .getAnnotationService()
                                 .updateAnnotation(annotation)
                                 .thenAccept(a -> {
+                                    a.setTransientKey(oldAnnotation.getTransientKey());
                                     toolBox.getEventBus()
                                             .send(new AnnotationsChangedEvent(null, List.of(a)));
                                 });

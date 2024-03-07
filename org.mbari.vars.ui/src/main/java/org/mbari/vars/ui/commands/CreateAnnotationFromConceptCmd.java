@@ -16,6 +16,7 @@ import org.mbari.vcr4j.VideoIndex;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 
 /**
@@ -26,6 +27,7 @@ public class CreateAnnotationFromConceptCmd implements Command {
 
     private final String concept;
     private volatile Annotation annotation;
+    private final Object transientKey = UUID.randomUUID();
 
     public CreateAnnotationFromConceptCmd(String concept) {
         this.concept = concept;
@@ -33,6 +35,7 @@ public class CreateAnnotationFromConceptCmd implements Command {
 
     private void createAnnotation(UIToolBox toolBox, String primaryConcept, VideoIndex videoIndex) {
         Annotation a0 = CommandUtil.buildAnnotation(toolBox.getData(), primaryConcept, videoIndex);
+        a0.setTransientKey(transientKey);
 
         Observable<Annotation> observable = AsyncUtils.observe(toolBox.getServices()
                 .getAnnotationService()
@@ -40,6 +43,7 @@ public class CreateAnnotationFromConceptCmd implements Command {
 
         observable.filter(Objects::nonNull)
                 .subscribe(a -> {
+                    a.setTransientKey(transientKey);
                     this.annotation = a;
                     EventBus eventBus = toolBox.getEventBus();
                     eventBus.send(new AnnotationsAddedEvent(a));

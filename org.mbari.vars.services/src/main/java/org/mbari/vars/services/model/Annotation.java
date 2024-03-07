@@ -250,14 +250,25 @@ public class Annotation implements ImagedMoment {
                 '}';
     }
 
+    /**
+     * If both objects have a non-null observationUuid then we use that to compare. Otherwise we use the transientKey.
+     * If both objects have a null observationUuid and transientKey then we return false.
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         Annotation that = (Annotation) o;
+        if (observationUuid != null && that.observationUuid != null) {
+            return observationUuid.equals(that.observationUuid);
+        }
+        return Objects.nonNull(transientKey)
+                && Objects.nonNull(that.transientKey)
+                && Objects.equals(transientKey, that.transientKey);
 
-        return observationUuid.equals(that.observationUuid);
     }
 
     @Override
