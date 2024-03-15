@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 /**
  * @author Brian Schlining
  * @since 2017-09-15T19:32:00
+ * @deprecated use {@link ChangeActivityCmd2} instead
  */
 public class ChangeActivityCmd extends UpdateAnnotationsCmd {
 

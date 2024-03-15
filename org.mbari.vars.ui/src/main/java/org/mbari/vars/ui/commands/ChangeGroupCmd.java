@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 /**
  * @author Brian Schlining
  * @since 2017-09-15T19:31:00
+ * @deprecated use {@link ChangeGroupCmd2} instead
  */
 public class ChangeGroupCmd extends UpdateAnnotationsCmd {
 

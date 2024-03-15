@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 /**
  * @author Brian Schlining
  * @since 2017-09-18T10:46:00
+ * @deprecated use {@link ChangeConceptCmd2} instead
  */
 public class ChangeConceptCmd extends UpdateAnnotationsCmd {
 

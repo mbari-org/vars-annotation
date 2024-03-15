@@ -770,6 +770,22 @@ public class AnnoServiceTest {
 //    }
 
     @Test
+    public void updateObservations() {
+        var a = createRandomAnnotations(4, false);
+        var observationUuids = a.stream().map(Annotation::getObservationUuid).toList();
+        var update = new ObservationsUpdate(observationUuids, "gumboot chiton", "new observer!", "my-group", "some-activity");
+        var count = annoService.updateObservations(update).join();
+        assertEquals(a.size(), count.count().longValue());
+        for (var uuid: observationUuids) {
+            var b = annoService.findByUuid(uuid).join();
+            assertEquals("gumboot chiton", b.getConcept());
+            assertEquals("new observer!", b.getObserver());
+            assertEquals("my-group", b.getGroup());
+            assertEquals("some-activity", b.getActivity());
+        }
+    }
+
+    @Test
     public void updateRecordedTimestamp() {
         var a = createRandomAnnotations(1, true).get(0);
         var t = Instant.parse("2021-01-01T00:00:00Z");

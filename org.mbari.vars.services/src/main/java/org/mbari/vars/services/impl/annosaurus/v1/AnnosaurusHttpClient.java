@@ -802,6 +802,21 @@ public class AnnosaurusHttpClient extends BaseHttpClient implements AnnotationSe
     }
 
     @Override
+    public CompletableFuture<Count> updateObservations(ObservationsUpdate update) {
+        var uri = buildUri("/observations/bulk");
+        var json = gson.toJson(update);
+        var auth = authorizeIfNeeded();
+        var request = HttpRequest.newBuilder()
+                .uri(uri)
+                .header("Authorization", "BEARER " + auth.getAccessToken())
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        debugLog.logRequest(request, json);
+        return submit(request, 200, body -> gson.fromJson(body, Count.class));
+    }
+
+    @Override
     public CompletableFuture<Collection<Annotation>> updateRecordedTimestampsForTapes(Collection<Annotation> annotations) {
         throw new UnsupportedOperationException("Use updateIndexRecordedTimestamps instead");
     }
