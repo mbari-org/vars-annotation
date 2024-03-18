@@ -184,7 +184,7 @@ public class BulkEditorPaneController {
 
         // --- Updated search string in UI
         Runnable updateSearchLabelFn = () -> {
-            refresh();
+//            refresh();
             StringBuffer sb = new StringBuffer();
             if (conceptCheckBox.isSelected()
                     && !conceptCombobox.getSelectionModel().isEmpty()) {
@@ -212,12 +212,22 @@ public class BulkEditorPaneController {
         updateSearchLabelFn.run(); // Set the defaults
 
         conceptCheckBox.selectedProperty()
-                .addListener((obs, oldv, newv) -> updateSearchLabelFn.run());
+                .addListener((obs, oldv, newv) -> {
+                    if (newv) {
+                        refresh();
+                    }
+                    updateSearchLabelFn.run();
+                });
         conceptCombobox.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldv, newv) -> updateSearchLabelFn.run());
         associationCheckBox.selectedProperty()
-                .addListener((obs, oldv, newv) -> updateSearchLabelFn.run());
+                .addListener((obs, oldv, newv) -> {
+                    if (newv) {
+                        refresh();
+                    }
+                    updateSearchLabelFn.run();
+                });
         associationCombobox.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldv, newv) -> updateSearchLabelFn.run());
