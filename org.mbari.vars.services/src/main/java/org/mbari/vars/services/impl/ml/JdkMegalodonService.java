@@ -33,8 +33,11 @@ import java.util.UUID;
  *     </code>
  * </pre>
  *
- * FIXME: This is having an issue where it is only working when the Charles proxy is running.
+ *
+ * Original: This is having an issue where it is only working when the Charles proxy is running.
  * Then it works find. Otherwise it just seems to hang.  Use the OkHttp implementation instead.
+ *
+ * 2024-03-18: This is now working. I switched to a virtual thread when calling it..
  */
 public class JdkMegalodonService implements MachineLearningService {
 

@@ -74,6 +74,7 @@ public class OkHttpMegalodonService  implements MachineLearningService {
         try (var response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
             var body = response.body().string();
+            log.atDebug().log("Response from ml service: " + body);
             var prediction = gson.fromJson(body, MachineLearningResponse1.class);
             return prediction.toMLStandard();
         }

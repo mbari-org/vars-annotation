@@ -23,8 +23,8 @@ public class MLAnalysisService {
         Requirements.checkNotNull(media, "No Media is currently open");
         Requirements.checkNotNull(mediaPlayer, "No media player is available to use for framecapture");
         var framegrabRecord = capturePng(media, mediaPlayer);
-        log.atWarn().log("Captured png of " + framegrabRecord.imageData().getPngBytes().length + " bytes at " + framegrabRecord.imageData().getVideoIndex());
-        log.atWarn().log("Captured jpeg of " + framegrabRecord.imageData().getJpegBytes().length + " bytes at " + framegrabRecord.imageData().getVideoIndex());
+        log.atInfo().log("Captured png of " + framegrabRecord.imageData().getPngBytes().length + " bytes at " + framegrabRecord.imageData().getVideoIndex());
+        log.atInfo().log("Converted jpeg of " + framegrabRecord.imageData().getJpegBytes().length + " bytes at " + framegrabRecord.imageData().getVideoIndex());
         var localizations = mlService.predict(framegrabRecord.imageData().getJpegBytes());
         return framegrabRecord.copy(localizations);
     }

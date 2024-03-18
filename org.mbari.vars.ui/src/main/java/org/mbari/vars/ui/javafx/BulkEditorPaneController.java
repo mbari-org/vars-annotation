@@ -169,13 +169,15 @@ public class BulkEditorPaneController {
 
         // --- Enable/Disable buttons as appropriate
         selectionChangeListener = c -> {
-            boolean disable = selectedAnnotations.size() == 0;
+            boolean disable = selectedAnnotations.isEmpty();
             moveFramesButton.setDisable(disable);
             addAssociationButton.setDisable(disable);
             deleteObservationsButton.setDisable(disable);
             renameObservationsButton.setDisable(disable);
             replaceAssociationButton.setDisable(true);
             deleteAssociationButton.setDisable(disable);
+            activityComboBox.getSelectionModel().clearSelection();
+            groupComboBox.getSelectionModel().clearSelection();
         };
 
         selectedAnnotations.addListener(selectionChangeListener);
