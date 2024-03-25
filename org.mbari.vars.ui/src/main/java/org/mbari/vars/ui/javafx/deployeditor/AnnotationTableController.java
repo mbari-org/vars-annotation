@@ -56,11 +56,11 @@ public class AnnotationTableController {
 
         // Forward this tables annotation mutating events to main event bus
         EventBus mainEventBus = toolBox.getEventBus();
-        List<Class<? extends Command>> commandsToForward = List.of(ChangeGroupCmd2.class,
-                ChangeActivityCmd2.class,
+        List<Class<? extends Command>> commandsToForward = List.of(ChangeGroupCmd.class,
+                ChangeActivityCmd.class,
                 //MoveAnnotationsCmd.class,
                 MoveAnnotationsAndImagesCmd.class,
-                ChangeConceptCmd2.class,
+                ChangeConceptCmd.class,
                 DeleteAssociationsCmd.class);
         for (Class<? extends Command> clazz : commandsToForward) {
             observable.ofType(clazz)

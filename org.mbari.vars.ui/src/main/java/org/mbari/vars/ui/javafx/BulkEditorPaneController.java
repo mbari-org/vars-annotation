@@ -459,7 +459,7 @@ public class BulkEditorPaneController {
             String content = i18n.getString("bulkeditor.group.dialog.content1") + " " +
                     group + " " + i18n.getString("bulkeditor.group.dialog.content2") + " " +
                     annosCopy.size() + " " + i18n.getString("bulkeditor.group.dialog.content3");
-            Runnable action = () -> eventBus.send(new ChangeGroupCmd2(annosCopy, group));
+            Runnable action = () -> eventBus.send(new ChangeGroupCmd(annosCopy, group));
             doActionWithAlert(title, header, content, action);
         }
     }
@@ -480,7 +480,7 @@ public class BulkEditorPaneController {
             String content = i18n.getString("bulkeditor.activity.dialog.content1") + " " +
                     activity + " " + i18n.getString("bulkeditor.activity.dialog.content2") + " " +
                     annosCopy.size() + " " + i18n.getString("bulkeditor.activity.dialog.content3");
-            Runnable action = () -> eventBus.send(new ChangeActivityCmd2(annosCopy, activity));
+            Runnable action = () -> eventBus.send(new ChangeActivityCmd(annosCopy, activity));
             doActionWithAlert(title, header, content, action);
         }
     }
@@ -507,7 +507,7 @@ public class BulkEditorPaneController {
         dialog.setContentText(content);
         Platform.runLater(() -> conceptDialogController.getComboBox().requestFocus());
         Optional<String> opt = dialog.showAndWait();
-        opt.ifPresent(c -> eventBus.send(new ChangeConceptCmd2(annosCopy, c)));
+        opt.ifPresent(c -> eventBus.send(new ChangeConceptCmd(annosCopy, c)));
     }
 
     private void deleteAnnotations() {

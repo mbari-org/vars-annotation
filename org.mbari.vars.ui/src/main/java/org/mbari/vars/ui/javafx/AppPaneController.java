@@ -293,12 +293,20 @@ public class AppPaneController {
             Tab mediaTab = new Tab("Media", new ScrollPane(mediaPaneController.getRoot()));
             mediaTab.setClosable(false);
             observable.ofType(AnnotationsSelectedEvent.class)
-                    .subscribe(e -> showMediaOfSelectedRow(e.get()));
+                    .subscribe(e -> {
+                        if (tabPane.getSelectionModel().getSelectedItem() == mediaTab) {
+                            showMediaOfSelectedRow(e.get());
+                        }
+                    });
 
             Tab dataTab = new Tab("Data", ancillaryDataPaneController.getRoot());
             dataTab.setClosable(false);
             observable.ofType(AnnotationsSelectedEvent.class)
-                    .subscribe(e -> showAncillaryData(e.get()));
+                    .subscribe(e -> {
+                        if (tabPane.getSelectionModel().getSelectedItem() == dataTab) {
+                            showAncillaryData(e.get());
+                        }
+                    });
 
             SearchTreePaneController treeController = new SearchTreePaneController(toolBox,
                     toolBox.getI18nBundle());
