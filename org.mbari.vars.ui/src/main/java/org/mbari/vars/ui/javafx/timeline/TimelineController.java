@@ -129,7 +129,8 @@ public class TimelineController {
         Platform.runLater(() -> {
             for (int i = 0; i < displayedAnno.size(); i++) {
                 var d = displayedAnno.get(i);
-                if (d.annotation().getObservationUuid().equals(a.getObservationUuid())) {
+//                if (d.annotation().getObservationUuid().equals(a.getObservationUuid())) {
+                if (d.annotation().equals(a)) {
                     displayedAnno.remove(i);
                     d.removeFrom(root);
                     break;

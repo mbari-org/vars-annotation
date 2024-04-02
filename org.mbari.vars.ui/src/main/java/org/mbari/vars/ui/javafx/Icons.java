@@ -24,6 +24,8 @@ public enum Icons {
     CHECK(Material.CHECK),
     CLEAR(Material.CLEAR),
     CLOSE(Material.CLOSE),
+    CLOUD_DONE(Material.CLOUD_DONE),
+    CLOUD_UPLOAD(Material.CLOUD_UPLOAD),
     CREATE(Material.CREATE),
     DELETE(Material.DELETE),
     DIRECTIONS_BOAT(Material.DIRECTIONS_BOAT),

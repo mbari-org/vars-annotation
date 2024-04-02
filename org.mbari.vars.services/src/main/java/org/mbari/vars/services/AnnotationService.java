@@ -149,6 +149,8 @@ public interface AnnotationService {
 
     CompletableFuture<List<Index>> updateIndexRecordedTimestamps(Collection<Index> indices);
 
+    CompletableFuture<Count> updateObservations(ObservationsUpdate update);
+
     CompletableFuture<Collection<Annotation>> updateRecordedTimestampsForTapes(Collection<Annotation> annotations);
 
     CompletableFuture<Optional<Index>> updateRecordedTimestamp(UUID imagedMomentUuid, Instant recordedTimestamp);

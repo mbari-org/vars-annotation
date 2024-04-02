@@ -169,20 +169,22 @@ public class BulkEditorPaneController {
 
         // --- Enable/Disable buttons as appropriate
         selectionChangeListener = c -> {
-            boolean disable = selectedAnnotations.size() == 0;
+            boolean disable = selectedAnnotations.isEmpty();
             moveFramesButton.setDisable(disable);
             addAssociationButton.setDisable(disable);
             deleteObservationsButton.setDisable(disable);
             renameObservationsButton.setDisable(disable);
             replaceAssociationButton.setDisable(true);
             deleteAssociationButton.setDisable(disable);
+            activityComboBox.getSelectionModel().clearSelection();
+            groupComboBox.getSelectionModel().clearSelection();
         };
 
         selectedAnnotations.addListener(selectionChangeListener);
 
         // --- Updated search string in UI
         Runnable updateSearchLabelFn = () -> {
-            refresh();
+//            refresh();
             StringBuffer sb = new StringBuffer();
             if (conceptCheckBox.isSelected()
                     && !conceptCombobox.getSelectionModel().isEmpty()) {
@@ -210,12 +212,22 @@ public class BulkEditorPaneController {
         updateSearchLabelFn.run(); // Set the defaults
 
         conceptCheckBox.selectedProperty()
-                .addListener((obs, oldv, newv) -> updateSearchLabelFn.run());
+                .addListener((obs, oldv, newv) -> {
+                    if (newv) {
+                        refresh();
+                    }
+                    updateSearchLabelFn.run();
+                });
         conceptCombobox.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldv, newv) -> updateSearchLabelFn.run());
         associationCheckBox.selectedProperty()
-                .addListener((obs, oldv, newv) -> updateSearchLabelFn.run());
+                .addListener((obs, oldv, newv) -> {
+                    if (newv) {
+                        refresh();
+                    }
+                    updateSearchLabelFn.run();
+                });
         associationCombobox.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((obs, oldv, newv) -> updateSearchLabelFn.run());

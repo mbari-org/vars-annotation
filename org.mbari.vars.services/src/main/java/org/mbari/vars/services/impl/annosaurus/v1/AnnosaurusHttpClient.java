@@ -1,8 +1,6 @@
 package org.mbari.vars.services.impl.annosaurus.v1;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.github.mizosoft.methanol.Methanol;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.mbari.vars.core.util.InstantUtils;
@@ -23,8 +21,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
+
 
 public class AnnosaurusHttpClient extends BaseHttpClient implements AnnotationService {
 
@@ -802,6 +799,21 @@ public class AnnosaurusHttpClient extends BaseHttpClient implements AnnotationSe
                 .build();
         debugLog.logRequest(request, json);
         return submit(request, 200, body -> gson.fromJson(body, TYPE_LIST_INDEX));
+    }
+
+    @Override
+    public CompletableFuture<Count> updateObservations(ObservationsUpdate update) {
+        var uri = buildUri("/observations/bulk");
+        var json = gson.toJson(update);
+        var auth = authorizeIfNeeded();
+        var request = HttpRequest.newBuilder()
+                .uri(uri)
+                .header("Authorization", "BEARER " + auth.getAccessToken())
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        debugLog.logRequest(request, json);
+        return submit(request, 200, body -> gson.fromJson(body, Count.class));
     }
 
     @Override

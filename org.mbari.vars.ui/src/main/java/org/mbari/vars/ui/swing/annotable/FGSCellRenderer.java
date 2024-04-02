@@ -1,7 +1,7 @@
 package org.mbari.vars.ui.swing.annotable;
 
+import org.kordamp.ikonli.swing.FontIcon;
 import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Observation;
 import org.mbari.vars.ui.javafx.Icons;
 import org.mbari.vars.ui.javafx.annotable.FGSValue;
 import org.mbari.vars.ui.swing.JIcons;
@@ -19,12 +19,17 @@ public class FGSCellRenderer extends JPanel implements TableCellRenderer {
     private static final Color imageColor = Colors.IMAGE.getColor();
     private static final Color jsonColor = Colors.JSON.getColor();
     private static final Color sampleColor = Colors.SAMPLE.getColor();
+    private static final Color pendingColor = Colors.ATTENTION.getColor();
+
 
 
     private final JLabel imageLabel = buildLabel(Icons.IMAGE, imageColor, "labelImage");
     private final JLabel sampleLabel = buildLabel(Icons.NATURE_PEOPLE, sampleColor, "labelSample");
     private final JLabel jsonLabel = buildLabel(Icons.FORMAT_SHAPES, jsonColor, "labelJson");
     private final JLabel concurrentLabel = buildLabel(Icons.TIMELINE, concurrentColor, "labelConcurrent");
+
+
+    private final JLabel savedLabel = buildLabel(Icons.CLOUD_UPLOAD, pendingColor, "labelSaved", Icons.CLOUD_DONE);
 
     /**
      * This is the default constructor
@@ -35,12 +40,16 @@ public class FGSCellRenderer extends JPanel implements TableCellRenderer {
     }
 
     private JLabel buildLabel(Icons icon, Color color, String name) {
+        return buildLabel(icon, color, name, icon);
+    }
+
+    private JLabel buildLabel(Icons icon, Color color, String name, Icons disabledIcon) {
         var label = new JLabel();
         label.setText("");
         label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        var disabledIcon = JIcons.asSwing(icon, 20, defaultColor);
+        var disabledFontIcon = JIcons.asSwing(disabledIcon, 20, defaultColor);
         var fontIcon = JIcons.asSwing(icon, 20, color);
-        label.setDisabledIcon(disabledIcon);
+        label.setDisabledIcon(disabledFontIcon);
         label.setIcon(fontIcon);
         label.setName(name);
         return label;
@@ -72,9 +81,11 @@ public class FGSCellRenderer extends JPanel implements TableCellRenderer {
         sampleLabel.setEnabled(fgsValue.hasSample());
         concurrentLabel.setEnabled(fgsValue.isConcurrent());
         jsonLabel.setEnabled(fgsValue.hasJson());
+        savedLabel.setEnabled(!fgsValue.isSaved());
 
         return this;
     }
+
 
     private void initialize() {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
@@ -82,5 +93,6 @@ public class FGSCellRenderer extends JPanel implements TableCellRenderer {
         add(sampleLabel);
         add(concurrentLabel);
         add(jsonLabel);
+        add(savedLabel);
     }
 }

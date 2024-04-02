@@ -285,6 +285,11 @@ public class NoopAnnotationService implements AnnotationService {
     }
 
     @Override
+    public CompletableFuture<Count> updateObservations(ObservationsUpdate update) {
+        return CompletableFuture.failedFuture(new UnsupportedOperationException());
+    }
+
+    @Override
     public CompletableFuture<Collection<Annotation>> updateRecordedTimestampsForTapes(Collection<Annotation> annotations) {
         return CompletableFuture.failedFuture(new UnsupportedOperationException());
     }

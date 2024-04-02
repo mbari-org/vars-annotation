@@ -4,6 +4,7 @@ import io.reactivex.rxjava3.core.Observable;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.events.AnnotationsAddedEvent;
+import org.mbari.vars.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
 import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.ui.messages.ShowAlert;
@@ -13,9 +14,7 @@ import org.mbari.vars.services.model.ConceptDetails;
 import org.mbari.vars.core.util.AsyncUtils;
 import org.mbari.vcr4j.VideoIndex;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 /**
@@ -26,6 +25,7 @@ public class CreateAnnotationFromConceptCmd implements Command {
 
     private final String concept;
     private volatile Annotation annotation;
+    private final Object transientKey = UUID.randomUUID();
 
     public CreateAnnotationFromConceptCmd(String concept) {
         this.concept = concept;
@@ -33,18 +33,41 @@ public class CreateAnnotationFromConceptCmd implements Command {
 
     private void createAnnotation(UIToolBox toolBox, String primaryConcept, VideoIndex videoIndex) {
         Annotation a0 = CommandUtil.buildAnnotation(toolBox.getData(), primaryConcept, videoIndex);
+        a0.setTransientKey(transientKey);
+        final EventBus eventBus = toolBox.getEventBus();
+        eventBus.send(new AnnotationsAddedEvent(a0));
+        eventBus.send(new AnnotationsSelectedEvent(a0));
 
-        Observable<Annotation> observable = AsyncUtils.observe(toolBox.getServices()
+        toolBox.getServices()
                 .getAnnotationService()
-                .createAnnotation(a0));
+                .createAnnotation(a0)
+                .handle((a, throwable) -> {
+                    if (throwable != null) {
+                        sendAlertMsg(toolBox, throwable);
+                        eventBus.send(new AnnotationsRemovedEvent(a0));
+                    }
+                    else {
+                        a.setTransientKey(transientKey);
+                        this.annotation = a;
+                        eventBus.send(new AnnotationsChangedEvent(CreateAnnotationFromConceptCmd.class, List.of(a)));
+                        eventBus.send(new AnnotationsSelectedEvent(a));
+                    }
 
-        observable.filter(Objects::nonNull)
-                .subscribe(a -> {
-                    this.annotation = a;
-                    EventBus eventBus = toolBox.getEventBus();
-                    eventBus.send(new AnnotationsAddedEvent(a));
-                    eventBus.send(new AnnotationsSelectedEvent(a));
-                }, t -> sendAlertMsg(toolBox, t));
+                    return null;
+                });
+
+
+//        Observable<Annotation> observable = AsyncUtils.observe(toolBox.getServices()
+//                .getAnnotationService()
+//                .createAnnotation(a0));
+//
+//        observable.filter(Objects::nonNull)
+//                .subscribe(a -> {
+//                    a.setTransientKey(transientKey);
+//                    this.annotation = a;
+//                    eventBus.send(new AnnotationsChangedEvent(CreateAnnotationFromConceptCmd.class, List.of(a)));
+//                    eventBus.send(new AnnotationsSelectedEvent(a));
+//                }, t -> sendAlertMsg(toolBox, t));
 
     }
 

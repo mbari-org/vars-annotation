@@ -6,6 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import org.mbari.vars.core.util.Requirements;
 
+import org.mbari.vars.services.impl.ml.JdkMegalodonService;
 import org.mbari.vars.services.impl.ml.OkHttpMegalodonService;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.commands.BulkCreateAnnotations;
@@ -113,24 +114,26 @@ public class MachineLearningStageController {
 
 
     public void analyzeAsync() {
-        new Thread(() -> {
+        Thread.ofVirtual().start(() -> {
             try {
-                analyze2();
+                analyze();
             } catch (Exception e) {
                 log.atWarn()
                         .setCause(e)
                         .log("ML analysis failed.");
             }
-        }
-        ).start();
+        });
     }
 
-    public void analyze2() throws IOException {
+    public void analyze() throws IOException {
         var mlRemoteUrlOpt = MLSettingsPaneController.getRemoteUrl();
         Requirements.validate(mlRemoteUrlOpt.isPresent(), "The URL for the machine learning web service was not set");
-        var mlService = new OkHttpMegalodonService(mlRemoteUrlOpt.get());
+//        var mlService = new OkHttpMegalodonService(mlRemoteUrlOpt.get());
+        var mlService = new JdkMegalodonService(mlRemoteUrlOpt.get());
         try {
+            log.atDebug().log("[START] ML analysis");
             var mlImageInference = MLAnalysisService.analyzeCurrentElapsedTime(toolBox, mlService);
+            log.atDebug().log("[END] ML analysis");
             Platform.runLater(() -> inference.set(mlImageInference));
         }
         catch (Exception e) {

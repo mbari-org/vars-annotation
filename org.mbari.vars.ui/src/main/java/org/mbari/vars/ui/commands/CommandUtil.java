@@ -6,6 +6,7 @@ import org.mbari.vars.services.model.Media;
 import org.mbari.vcr4j.VideoIndex;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -26,6 +27,8 @@ public class CommandUtil {
                 videoReferenceUuid);
         a0.setGroup(group);
         a0.setActivity(activity);
+        a0.setImageReferences(new ArrayList<>()); // null by default. We want an empty list
+        a0.setAssociations(new ArrayList<>()); // null by default. We want an empty list
         videoIndex.getTimestamp().ifPresent(a0::setRecordedTimestamp);
         videoIndex.getElapsedTime().ifPresent(a0::setElapsedTime);
         videoIndex.getTimecode().ifPresent(a0::setTimecode);

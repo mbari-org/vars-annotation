@@ -1,30 +1,18 @@
 package org.mbari.vars.ui.commands;
 
 import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.services.model.ObservationsUpdate;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-/**
- * @author Brian Schlining
- * @since 2017-09-15T19:31:00
- */
-public class ChangeGroupCmd extends UpdateAnnotationsCmd {
-
-    private final String group;
-
+public class ChangeGroupCmd extends UpdateObservationsCmd {
 
     public ChangeGroupCmd(List<Annotation> originalAnnotations, String group) {
-        super(originalAnnotations, originalAnnotations.stream()
-            .map(a -> new Annotation(a))
-            .peek(a -> a.setGroup(group))
-            .collect(Collectors.toList()), false, false);
-        this.group = group;
+        super(originalAnnotations, ObservationsUpdate.forGroup(observationUuids(originalAnnotations), group));
     }
-
 
     @Override
     public String getDescription() {
-        return "Changing group of " + originalAnnotations.size() + " annotations to " + group;
+        return "Changing group of " + originalAnnotations.size() + " annotations to " + observationsUpdate.group();
     }
 }

@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
 
+import java.beans.Transient;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -33,6 +34,8 @@ public class Annotation implements ImagedMoment {
     private List<Association> associations;
     private List<ImageReference> imageReferences;
     private AncillaryData ancillaryData;
+
+    private transient Object transientKey;
 
     public Annotation() {
     }
@@ -226,6 +229,18 @@ public class Annotation implements ImagedMoment {
         this.ancillaryData = ancillaryData;
     }
 
+    public Object getTransientKey() {
+        return transientKey;
+    }
+
+    public void setTransientKey(Object transientKey) {
+        this.transientKey = transientKey;
+    }
+
+    public boolean isSaved() {
+        return observationUuid != null;
+    }
+
     @Override
     public String toString() {
         int a = associations == null ? 0 : associations.size();
@@ -239,14 +254,25 @@ public class Annotation implements ImagedMoment {
                 '}';
     }
 
+    /**
+     * If both objects have a non-null observationUuid then we use that to compare. Otherwise we use the transientKey.
+     * If both objects have a null observationUuid and transientKey then we return false.
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         Annotation that = (Annotation) o;
+        if (observationUuid != null && that.observationUuid != null) {
+            return observationUuid.equals(that.observationUuid);
+        }
+        return Objects.nonNull(transientKey)
+                && Objects.nonNull(that.transientKey)
+                && Objects.equals(transientKey, that.transientKey);
 
-        return observationUuid.equals(that.observationUuid);
     }
 
     @Override

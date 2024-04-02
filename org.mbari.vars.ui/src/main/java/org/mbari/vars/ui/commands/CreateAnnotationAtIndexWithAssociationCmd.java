@@ -11,10 +11,7 @@ import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
 import org.mbari.vcr4j.VideoIndex;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -28,6 +25,7 @@ public class CreateAnnotationAtIndexWithAssociationCmd implements Command  {
     private final VideoIndex videoIndex;
     private final Association associationTemplate;
     private final Object eventSource;
+    private final UUID transientKey = UUID.randomUUID();
     private volatile Annotation annotation;
 
     /**
@@ -68,6 +66,7 @@ public class CreateAnnotationAtIndexWithAssociationCmd implements Command  {
                     String primaryName = concept.getName();
                     Annotation a = CommandUtil.buildAnnotation(toolBox.getData(),
                             primaryName, videoIndex);
+                    a.setTransientKey(transientKey);
                     Association as = new Association(associationTemplate);
                     a.setAssociations(Collections.singletonList(as));
                     toolBox.getServices()
@@ -89,6 +88,7 @@ public class CreateAnnotationAtIndexWithAssociationCmd implements Command  {
 
                                 match.ifPresent(anno -> {
                                     annotation = anno;
+                                    annotation.setTransientKey(transientKey);
                                     EventBus eventBus = toolBox.getEventBus();
                                     eventBus.send(new AnnotationsAddedEvent(eventSource, List.of(annotation)));
                                     eventBus.send(new AnnotationsSelectedEvent(annotation));

@@ -51,4 +51,8 @@ public class FGSValue {
                 annotation != null &&
                 !annotation.getVideoReferenceUuid().equals(media.getVideoReferenceUuid());
     }
+
+    public boolean isSaved() {
+        return annotation != null && annotation.isSaved();
+    }
 }

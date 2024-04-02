@@ -30,6 +30,7 @@ public class BulkCreateAnnotations implements Command {
         Preconditions.checkArgument(annotations != null, "You provided a null collection ... bad!!");
         Preconditions.checkArgument(!annotations.isEmpty(), "You are attempting to create annotations from an empty collection. You get nothing!!");
         this.annotations = annotations;
+        annotations.forEach(a -> a.setTransientKey(UUID.randomUUID()));
     }
 
     public Collection<Annotation> getAnnotations() {

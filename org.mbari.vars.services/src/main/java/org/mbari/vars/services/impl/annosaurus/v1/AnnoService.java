@@ -531,10 +531,13 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
      * @param annotations
      * @return
      */
+    @Override
     public CompletableFuture<Collection<Annotation>> updateAnnotations(
             Collection<Annotation> annotations) {
         return sendRequest(annoService.update(annotations, bulkHeaders));
     }
+
+
 
     @Override
     public CompletableFuture<Association> updateAssociation(Association association) {
@@ -587,6 +590,11 @@ public class AnnoService implements AnnotationService, RetrofitWebService {
     @Override
     public CompletableFuture<List<Index>> updateIndexRecordedTimestamps(Collection<Index> indices) {
         return sendRequest(indexService.update(indices, bulkHeaders));
+    }
+
+    @Override
+    public CompletableFuture<Count> updateObservations(ObservationsUpdate update) {
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     /**
