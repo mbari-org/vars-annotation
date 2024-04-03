@@ -1,7 +1,7 @@
 module org.mbari.vars.ui {
 
   requires com.google.gson;
-  requires com.jfoenix;
+//  requires com.jfoenix;
   requires java.desktop;
   requires java.logging;
   requires java.prefs;

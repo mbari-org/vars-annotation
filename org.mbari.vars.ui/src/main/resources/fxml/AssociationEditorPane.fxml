@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -27,14 +26,14 @@
       <Label fx:id="linkValueLabel" focusTraversable="false" text="%roweditor.asseditor.value.label" GridPane.hgrow="NEVER" GridPane.rowIndex="4" />
       <HBox GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4">
          <children>
-            <JFXButton fx:id="addButton" defaultButton="true" onAction="#onAdd" styleClass="ok-button" />
-            <JFXButton fx:id="cancelButton" cancelButton="true" onAction="#onCancel" styleClass="cancel-button" text="Button" />
+            <Button fx:id="addButton" defaultButton="true" onAction="#onAdd" styleClass="ok-button" />
+            <Button fx:id="cancelButton" cancelButton="true" onAction="#onCancel" styleClass="cancel-button" text="Button" />
          </children>
       </HBox>
-      <JFXTextField fx:id="searchTextField" GridPane.columnIndex="1" GridPane.columnSpan="５" />
-      <JFXComboBox fx:id="associationComboBox" GridPane.columnSpan="６" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
-      <JFXTextField fx:id="linkNameTextField" GridPane.columnIndex="１" GridPane.columnSpan="５" GridPane.rowIndex="2" />
-      <JFXComboBox fx:id="toConceptComboBox" GridPane.columnIndex="１" GridPane.columnSpan="５" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
-      <JFXTextField fx:id="linkValueTextField" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="4" />
+      <TextField fx:id="searchTextField" GridPane.columnIndex="1" GridPane.columnSpan="５" />
+      <ComboBox fx:id="associationComboBox" GridPane.columnSpan="６" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+      <TextField fx:id="linkNameTextField" GridPane.columnIndex="１" GridPane.columnSpan="５" GridPane.rowIndex="2" />
+      <ComboBox fx:id="toConceptComboBox" GridPane.columnIndex="１" GridPane.columnSpan="５" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+      <TextField fx:id="linkValueTextField" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="4" />
    </children>
 </GridPane>

@@ -1,7 +1,5 @@
 package org.mbari.vars.ui.javafx.cbpanel;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTabPane;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -82,7 +80,7 @@ public class ConceptButtonPanesController {
 
 
             // Add
-            Button addButton = new JFXButton();
+            Button addButton = new Button();
 //            Text addIcon = gf.createIcon(MaterialIcon.ADD, "30px");
             Text addIcon = Icons.ADD.standardSize();
             addButton.setGraphic(addIcon);
@@ -90,7 +88,7 @@ public class ConceptButtonPanesController {
             addButton.setOnAction(e -> addTab());
 
             // Remove - Each tab is also individually closeable
-            Button removeButton = new JFXButton();
+            Button removeButton = new Button();
 //            Text removeIcon = gf.createIcon(MaterialIcon.REMOVE, "30px");
             Text removeIcon = Icons.REMOVE.standardSize();
             removeButton.setGraphic(removeIcon);
@@ -101,7 +99,7 @@ public class ConceptButtonPanesController {
             });
 
             // Lock
-            Button lockButton = new JFXButton();
+            Button lockButton = new Button();
             Text lockIcon = Icons.LOCK.standardSize();
             Text unlockIcon = Icons.LOCK_OPEN.standardSize();
             lockButton.setGraphic(lockIcon);
@@ -122,7 +120,7 @@ public class ConceptButtonPanesController {
             });
             lockProperty.set(true);
 
-            Button overviewButton = new JFXButton();
+            Button overviewButton = new Button();
             Text overviewIcon = Icons.VIEW_COLUMN.standardSize();
             String overviewLabel = i18n.getString("cppanel.tabpane.overview.label");
             Tab overviewTab = new Tab(overviewLabel, new ScrollPane(overviewController.getRoot()));
@@ -139,7 +137,7 @@ public class ConceptButtonPanesController {
                 }
             });
 
-            Button timelineButton = new JFXButton();
+            Button timelineButton = new Button();
             Text timelineIcon = Icons.TIMELINE.standardSize();
             String timelineLabel = i18n.getString("cppanel.tabpane.timeline.label");
             Tab timelineTab = new Tab(timelineLabel, timelineController.getRoot());
@@ -164,7 +162,7 @@ public class ConceptButtonPanesController {
 
     private TabPane getTabPane() {
         if (tabPane == null) {
-            tabPane = new JFXTabPane();
+            tabPane = new TabPane();
             tabPane.setSide(Side.BOTTOM);
         }
         return tabPane;

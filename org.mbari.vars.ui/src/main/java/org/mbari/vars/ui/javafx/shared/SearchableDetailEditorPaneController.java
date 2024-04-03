@@ -13,8 +13,6 @@
 
 package org.mbari.vars.ui.javafx.shared;
 
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
@@ -26,6 +24,8 @@ import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -51,9 +51,9 @@ public class SearchableDetailEditorPaneController {
     @FXML
     VBox root;
     @FXML
-    private JFXTextField searchTextField;
+    private TextField searchTextField;
     @FXML
-    private JFXComboBox<ConceptAssociationTemplate> associationComboBox;
+    private ComboBox<ConceptAssociationTemplate> associationComboBox;
 
     private DetailEditorPaneController editorPaneController;
     private UIToolBox toolBox;
@@ -146,11 +146,11 @@ public class SearchableDetailEditorPaneController {
         return root;
     }
 
-    public JFXTextField getSearchTextField() {
+    public TextField getSearchTextField() {
         return searchTextField;
     }
 
-    public JFXComboBox<?> getAssociationComboBox() {
+    public ComboBox<?> getAssociationComboBox() {
         return associationComboBox;
     }
 

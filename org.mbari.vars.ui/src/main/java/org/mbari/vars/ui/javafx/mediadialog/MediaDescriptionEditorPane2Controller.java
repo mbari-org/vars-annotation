@@ -1,7 +1,6 @@
 package org.mbari.vars.ui.javafx.mediadialog;
 
 import java.net.MalformedURLException;
-import com.jfoenix.controls.JFXButton;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.util.JFXUtilities;
@@ -69,7 +68,7 @@ public class MediaDescriptionEditorPane2Controller {
 
     var hbox = new HBox();
     var filler = new Region();
-    saveButton = new JFXButton("Save");
+    saveButton = new Button("Save");
     saveButton.setOnAction(e -> updateMedia());
     hbox.getChildren().addAll(filler, saveButton);
     HBox.setHgrow(filler, Priority.ALWAYS);

@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.javafx.buttons;
 
-import com.jfoenix.controls.JFXComboBox;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;

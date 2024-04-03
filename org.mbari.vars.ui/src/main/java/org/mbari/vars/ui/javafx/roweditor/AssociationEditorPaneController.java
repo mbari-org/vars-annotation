@@ -1,8 +1,5 @@
 package org.mbari.vars.ui.javafx.roweditor;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXTextField;
 
 import java.net.URL;
 import java.util.List;
@@ -58,25 +55,25 @@ public class AssociationEditorPaneController {
     private Label toConceptLabel;
 
     @FXML
-    private JFXButton addButton;
+    private Button addButton;
 
     @FXML
-    private JFXButton cancelButton;
+    private Button cancelButton;
 
     @FXML
-    private JFXComboBox<ConceptAssociationTemplate> associationComboBox;
+    private ComboBox<ConceptAssociationTemplate> associationComboBox;
 
     @FXML
-    private JFXTextField searchTextField;
+    private TextField searchTextField;
 
     @FXML
-    private JFXTextField linkNameTextField;
+    private TextField linkNameTextField;
 
     @FXML
     private ComboBox<String> toConceptComboBox;
 
     @FXML
-    private JFXTextField linkValueTextField;
+    private TextField linkValueTextField;
 
     private HierarchicalConceptComboBoxDecorator toConceptComboBoxDecorator;
     private final UIToolBox toolBox = Initializer.getToolBox();

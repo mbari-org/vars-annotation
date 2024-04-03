@@ -8,7 +8,7 @@ dependencies {
     implementation project(':org.mbari.vars.core')
     implementation project(':org.mbari.vars.services')
 
-    implementation 'com.jfoenix:jfoenix'
+//    implementation 'com.jfoenix:jfoenix'
     implementation 'com.typesafe:config'
     implementation 'javax.inject:javax.inject'
     implementation 'org.kordamp.ikonli:ikonli-javafx'

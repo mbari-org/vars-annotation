@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXSlider?>
+
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Button?>
+<?import org.mbari.vars.ui.javafx.controls.JFXSlider?>
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="440.0" stylesheets="@../styles/vcr.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.mediaplayers.vcr.VcrControlPaneController">
     <children>
         <Label styleClass="timecode" fx:id="timecodeLabel" layoutX="14.0" layoutY="10.0" prefHeight="17.0" prefWidth="166.0" text="--:--:--:--" />
-        <JFXButton fx:id="shuttleFwdButton" layoutX="367.0" layoutY="9.0" />
-        <JFXButton fx:id="playButton" layoutX="308.0" layoutY="9.0" />
-        <JFXButton fx:id="shuttleReverseButton" layoutX="249.0" layoutY="9.0" />
-        <JFXButton fx:id="gotoButton" layoutX="190.0" layoutY="9.0" />
-        <JFXButton fx:id="fastforwardButton" layoutX="367.0" layoutY="40.0" />
-        <JFXButton fx:id="stopButton" layoutX="308.0" layoutY="40.0" />
-        <JFXButton fx:id="rewindButton" layoutX="249.0" layoutY="40.0" />
-        <JFXButton fx:id="ejectButton" layoutX="190.0" layoutY="40.0" />
+        <Button fx:id="shuttleFwdButton" layoutX="367.0" layoutY="9.0" />
+        <Button fx:id="playButton" layoutX="308.0" layoutY="9.0" />
+        <Button fx:id="shuttleReverseButton" layoutX="249.0" layoutY="9.0" />
+        <Button fx:id="gotoButton" layoutX="190.0" layoutY="9.0" />
+        <Button fx:id="fastforwardButton" layoutX="367.0" layoutY="40.0" />
+        <Button fx:id="stopButton" layoutX="308.0" layoutY="40.0" />
+        <Button fx:id="rewindButton" layoutX="249.0" layoutY="40.0" />
+        <Button fx:id="ejectButton" layoutX="190.0" layoutY="40.0" />
         <JFXSlider fx:id="speedSlider" layoutX="14.0" layoutY="46.0" max="255.0" prefHeight="16.0" prefWidth="166.0" showTickLabels="true" showTickMarks="true" />
     </children>
 </AnchorPane>

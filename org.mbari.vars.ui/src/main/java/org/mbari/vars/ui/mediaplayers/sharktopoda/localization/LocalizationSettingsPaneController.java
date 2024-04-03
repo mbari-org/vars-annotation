@@ -1,8 +1,9 @@
 package org.mbari.vars.ui.mediaplayers.sharktopoda.localization;
 
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXTextField;
+
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import org.mbari.vars.core.EventBus;
@@ -27,19 +28,19 @@ public class LocalizationSettingsPaneController implements SettingsPane {
     private GridPane root;
 
     @FXML
-    private JFXTextField incomingPortTextField;
+    private TextField incomingPortTextField;
 
     @FXML
-    private JFXTextField outgoingPortTextField;
+    private TextField outgoingPortTextField;
 
     @FXML
-    private JFXTextField incomingTopicTextField;
+    private TextField incomingTopicTextField;
 
     @FXML
-    private JFXTextField outgoingTopicTextField;
+    private TextField outgoingTopicTextField;
 
     @FXML
-    private JFXCheckBox enabledCheckBox;
+    private CheckBox enabledCheckBox;
 
     private EventBus eventBus;
     private UIToolBox toolBox;

@@ -1,23 +1,16 @@
 package org.mbari.vars.ui.javafx.abpanel;
 
-import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
-import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.ui.javafx.abpanel.DragPaneDecorator;
 import org.mbari.vars.services.model.Association;
-import org.mbari.vars.services.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
