@@ -72,6 +72,7 @@ public class ConceptButtonPaneController {
             dragPaneDecorator.decorate(pane);
             loadButtonsFromPreferences();
             // Save everything when a new button is added or removed
+            // TODO: Change this to save if the user is changed?
             pane.getChildren()
                     .addListener((ListChangeListener<Node>) c ->  saveButtonsToPreferences());
         }
@@ -87,7 +88,8 @@ public class ConceptButtonPaneController {
                 new ConceptButtonFactory(toolBox);
         var eventBus = toolBox.getEventBus();
         // Load async so we don't block ui
-        toolBox.getExecutorService().submit(() -> {
+//        toolBox.getExecutorService().submit(() -> {
+        Thread.ofVirtual().start(() -> {
             try {
                 // NOTE: Don't add any progress bar. That's done in ConceptButtonPanesController
                 List<Button> buttons = Arrays.stream(panePreferences.childrenNames())
@@ -123,7 +125,7 @@ public class ConceptButtonPaneController {
                 .stream()
                 .filter(n -> n.getUserData().toString().equalsIgnoreCase(ConceptButtonFactory.USERDATA))
                 .map(n -> (Button) n)
-                .collect(Collectors.toList());
+                .toList()
 
         // Store existing buttons
         IntStream.range(0, buttons.size())
