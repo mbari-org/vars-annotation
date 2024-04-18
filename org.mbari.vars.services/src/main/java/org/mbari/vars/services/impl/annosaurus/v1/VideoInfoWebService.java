@@ -5,6 +5,7 @@ import org.mbari.vars.services.model.ValueList;
 import retrofit2.Call;
 import retrofit2.http.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -15,16 +16,16 @@ import java.util.UUID;
 public interface VideoInfoWebService {
 
     @GET("videoreferences/missionids")
-    Call<ValueList> findAllMissionIds();
+    Call<List<String>> findAllMissionIds();
 
     @GET("videoreferences/missioncontacts")
-    Call<ValueList> findAllMissionContacts();
+    Call<List<String>> findAllMissionContacts();
 
     @GET("videoreferences/{uuid}")
     Call<CachedVideoReference> findByUuid(@Path("uuid") UUID uuid);
 
     @GET("videoreferences/videoreferences")
-    Call<ValueList> findAllVideoReferenceUuids();
+    Call<List<UUID>> findAllVideoReferenceUuids();
 
     @GET("videoreferences/videoreference/{uuid}")
     Call<CachedVideoReference>  findByVideoReferenceUuid(@Path("uuid") UUID videoReferenceUuid);

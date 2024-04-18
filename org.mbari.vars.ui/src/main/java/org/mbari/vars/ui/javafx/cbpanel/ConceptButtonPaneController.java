@@ -125,7 +125,7 @@ public class ConceptButtonPaneController {
                 .stream()
                 .filter(n -> n.getUserData().toString().equalsIgnoreCase(ConceptButtonFactory.USERDATA))
                 .map(n -> (Button) n)
-                .toList()
+                .toList();
 
         // Store existing buttons
         IntStream.range(0, buttons.size())
