@@ -1,7 +1,7 @@
 package org.mbari.vars.services.impl.vampiresquid.v1;
 
 import org.mbari.vars.core.util.HexUtils;
-import org.mbari.vars.services.gson.ByteArrayConverter;
+import org.mbari.vars.services.etc.gson.ByteArrayConverter;
 import org.mbari.vars.services.model.LastUpdate;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.AuthService;

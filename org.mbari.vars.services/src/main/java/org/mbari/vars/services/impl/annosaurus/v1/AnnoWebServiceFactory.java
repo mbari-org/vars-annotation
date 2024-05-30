@@ -4,7 +4,7 @@ package org.mbari.vars.services.impl.annosaurus.v1;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.mbari.vars.services.gson.*;
+import org.mbari.vars.services.etc.gson.*;
 import org.mbari.vars.services.RetrofitServiceFactory;
 import org.mbari.vars.services.model.ImagedMoment;
 import org.mbari.vcr4j.time.Timecode;

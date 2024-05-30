@@ -4,10 +4,10 @@ package org.mbari.vars.services.impl.vampiresquid.v1;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.mbari.vars.services.gson.ByteArrayConverter;
-import org.mbari.vars.services.gson.DurationConverter;
-import org.mbari.vars.services.gson.InstantConverter;
-import org.mbari.vars.services.gson.TimecodeConverter;
+import org.mbari.vars.services.etc.gson.ByteArrayConverter;
+import org.mbari.vars.services.etc.gson.DurationConverter;
+import org.mbari.vars.services.etc.gson.InstantConverter;
+import org.mbari.vars.services.etc.gson.TimecodeConverter;
 import org.mbari.vars.services.RetrofitServiceFactory;
 import org.mbari.vcr4j.time.Timecode;
 

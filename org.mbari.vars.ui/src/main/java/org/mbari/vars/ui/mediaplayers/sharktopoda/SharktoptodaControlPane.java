@@ -21,7 +21,7 @@ import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.commands.RemoteCommands;
-import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
+//import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,7 +156,7 @@ public class SharktoptodaControlPane extends Pane {
             fastForwardButton.setPrefSize(30, 30);
             fastForwardButton.setOnAction(e -> {
                 if (mediaPlayer != null) {
-                    double speed = getSpeedSlider().getValue() / 1000D / SharktopodaVideoIO.MAX_SHUTTLE_RATE;
+                    double speed = getSpeedSlider().getValue() / 1000D / Constants.MAX_SHUTTLE_RATE;
                     mediaPlayer.shuttle(speed);
                 }
             });
@@ -174,7 +174,7 @@ public class SharktoptodaControlPane extends Pane {
             rewindButton.setPrefSize(30, 30);
             rewindButton.setOnAction(e -> {
                 if (mediaPlayer != null) {
-                    double speed = getSpeedSlider().getValue() / 1000D / SharktopodaVideoIO.MAX_SHUTTLE_RATE;
+                    double speed = getSpeedSlider().getValue() / 1000D / Constants.MAX_SHUTTLE_RATE;
                     mediaPlayer.shuttle(-speed);
                 }
             });
