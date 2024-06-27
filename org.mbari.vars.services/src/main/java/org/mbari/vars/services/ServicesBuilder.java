@@ -4,6 +4,7 @@ import com.typesafe.config.Config;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
@@ -87,10 +88,10 @@ public class ServicesBuilder {
     var namedEndpoints = endpoints.stream()
             .collect(Collectors.toMap(EndpointConfig::getName, Function.identity()));
     var annoE = namedEndpoints.get("annosaurus");
-    var kbE = namedEndpoints.get("vars-kb-server");
+    var kbE = Optional.ofNullable(namedEndpoints.get("vars-kb-server")).orElse(namedEndpoints.get("oni"));
     var imgE = namedEndpoints.get("panoptes");
     var mediaE = namedEndpoints.get("vampire-squid");
-    var userE = namedEndpoints.get("vars-user-server");
+    var userE = Optional.ofNullable(namedEndpoints.get("vars-user-server")).orElse(namedEndpoints.get("oni"));
     var prefs = buildPrefs(userE.getUrl().toExternalForm(), userE.getTimeout(), userE.getSecret());
     var mediaService = buildMediaService(mediaE.getUrl().toExternalForm(), mediaE.getTimeout(), mediaE.getSecret());
     return new Services(
