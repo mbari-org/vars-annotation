@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXComboBox?>
-<?import com.jfoenix.controls.JFXRadioButton?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ComboBox?>
 <GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="gridpane-pref" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.mediaplayers.macos.avf.MacImageCaptureSettingsPaneController">
   <columnConstraints>
     <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
@@ -22,11 +22,11 @@
       <Label text="%mediaplayer.macos.label" GridPane.rowIndex="1" />
       <HBox GridPane.columnIndex="1">
          <children>
-            <JFXRadioButton fx:id="noneRadioButton" styleClass="radiobutton-pref" text="%mediaplayer.macos.capture.none" HBox.hgrow="ALWAYS" />
-            <JFXRadioButton fx:id="avfRadioButton" styleClass="radiobutton-pref" text="%mediaplayer.macos.capture.avfoundation" />
-            <JFXRadioButton fx:id="bmRadioButton" styleClass="radiobutton-pref" text="%mediaplayer.macos.capture.blackmagic" />
+            <RadioButton fx:id="noneRadioButton" styleClass="radiobutton-pref" text="%mediaplayer.macos.capture.none" HBox.hgrow="ALWAYS" />
+            <RadioButton fx:id="avfRadioButton" styleClass="radiobutton-pref" text="%mediaplayer.macos.capture.avfoundation" />
+            <RadioButton fx:id="bmRadioButton" styleClass="radiobutton-pref" text="%mediaplayer.macos.capture.blackmagic" />
          </children>
       </HBox>
-      <JFXComboBox fx:id="deviceComboBox" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+      <ComboBox fx:id="deviceComboBox" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
    </children>
 </GridPane>

@@ -1,8 +1,5 @@
 package org.mbari.vars.ui.mediaplayers.vcr;
 
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -11,6 +8,9 @@ import java.util.function.UnaryOperator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import org.mbari.vars.ui.Initializer;
@@ -38,19 +38,19 @@ public class MediaParamsPaneController {
     private GridPane root;
 
     @FXML
-    private JFXComboBox<String> cameraIdComboBox;
+    private ComboBox<String> cameraIdComboBox;
 
     @FXML
-    private JFXTextField deploymentKeyTextField;
+    private TextField deploymentKeyTextField;
 
     @FXML
-    private JFXTextField tapeNumberTextField;
+    private TextField tapeNumberTextField;
 
     @FXML
-    private JFXCheckBox hdCheckBox;
+    private CheckBox hdCheckBox;
 
     @FXML
-    private JFXComboBox<String> commportComboBox;
+    private ComboBox<String> commportComboBox;
 
     @FXML
     void initialize() {

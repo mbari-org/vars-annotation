@@ -4,7 +4,7 @@ package org.mbari.vars.services;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.mbari.vars.services.gson.InstantConverter;
+import org.mbari.vars.services.etc.gson.InstantConverter;
 
 import java.time.Duration;
 import java.time.Instant;

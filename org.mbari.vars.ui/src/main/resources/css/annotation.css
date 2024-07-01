@@ -16,8 +16,8 @@
   -selected-color: #F0544C;
   -selected-text: #FFFFFF;
 
-  -cancel-color: #FF6663;
-  -accept-color: #DDF093;
+  -cancel-color: #C92A2A;
+  -accept-color: #2B8A3E;
 
   -fx-base: -default-color;
   -fx-background: -default-color;
@@ -79,6 +79,11 @@
   -fx-border-color: -default-color;
   -fx-border-radius: 1;
 }
+.check-box {
+  -fx-background-color: -default-color;
+  -fx-text-fill: -default-text;
+}
+
 .combo-box {
   -fx-background-color: -default-color;
   -fx-text-fill: -default-text;
@@ -243,6 +248,9 @@
   -fx-background-radius: 0;
   -fx-background-color: -default-color;
   -fx-border-width: 2px;
+  -fx-font-size: 16px;
+  -fx-border-color: -default-color -default-color -default-color -default-color;
+  -fx-border-radius: 2;
 }
 .tab:hover {
   -fx-background-color: -hover-color;
@@ -252,6 +260,7 @@
   -fx-background-color: -default-color;
   -fx-border-color: -selected-color -selected-color -default-color -selected-color;
   -fx-border-radius: 2;
+  -fx-text-fill: -selected-text;
 }
 .tab-close-button {
   -fx-background-color: -default-text;
@@ -392,10 +401,12 @@
   -fx-fill: -default-color;
 }
 
-.ok-button {
-  -fx-text-fill: -accept-color;
+.ok-button:hover {
+  /*-fx-text-fill: -accept-color;*/
+  -fx-background-color: -accept-color;
 }
 
-.cancel-button {
-  -fx-text-fill: -cancel-color;
+.cancel-button:hover {
+  /*-fx-text-fill: -cancel-color;*/
+  -fx-background-color: -cancel-color;
 }

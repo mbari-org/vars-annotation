@@ -52,6 +52,7 @@ public class DeleteSelectedAnnotationsBC {
         button.setText(null);
         button.setGraphic(deleteIcon);
         button.setDisable(true);
+        button.getStyleClass().add("cancel-button");
 
         toolBox.getEventBus()
                 .toObserverable()

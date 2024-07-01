@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.javafx.cbpanel;
 
-import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
@@ -37,7 +36,7 @@ public class ConceptButtonFactory {
 
     public Button build(String name) {
 
-        Button button = new JFXButton(name);
+        Button button = new Button(name);
         button.setUserData(USERDATA);
         button.getStyleClass().add("cbpanel-button");
         button.setOnAction(event ->

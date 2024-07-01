@@ -26,7 +26,7 @@ module org.mbari.vars.services {
   opens org.mbari.vars.services.model to com.google.gson;
 
   exports org.mbari.vars.services;
-  exports org.mbari.vars.services.gson;
+  exports org.mbari.vars.services.etc.gson;
   exports org.mbari.vars.services.impl.annosaurus.v1;
   exports org.mbari.vars.services.impl.ml;
   exports org.mbari.vars.services.impl.panoptes.v1;

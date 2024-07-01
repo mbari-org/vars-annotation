@@ -1,4 +1,4 @@
-package org.mbari.vars.services.gson;
+package org.mbari.vars.services.etc.gson;
 
 
 import com.google.gson.JsonDeserializationContext;
@@ -28,3 +28,4 @@ public class DurationConverter implements JsonSerializer<Duration>, JsonDeserial
         return new JsonPrimitive(src.toMillis());
     }
 }
+

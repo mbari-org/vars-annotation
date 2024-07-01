@@ -6,7 +6,6 @@ import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.javafx.Icons;
 import org.mbari.vars.core.util.Preconditions;
 
-import com.jfoenix.controls.JFXButton;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Tooltip;
@@ -73,7 +72,7 @@ public class AssocButtonPanesController {
 
     private Button getAddButton() {
         if (addButton == null) {
-            addButton = new JFXButton();
+            addButton = new Button();
             String tooltip = toolBox.getI18nBundle().getString("abpane.addbutton");
             Text icon = Icons.ADD.standardSize();
             addButton.setTooltip(new Tooltip(tooltip));
@@ -91,7 +90,7 @@ public class AssocButtonPanesController {
 
     private Button getLockButton() {
         if (lockButton == null) {
-            lockButton = new JFXButton();
+            lockButton = new Button();
             Text lockIcon = Icons.LOCK.standardSize();
             Text unlockIcon = Icons.LOCK_OPEN.standardSize();
             lockButton.setGraphic(lockIcon);

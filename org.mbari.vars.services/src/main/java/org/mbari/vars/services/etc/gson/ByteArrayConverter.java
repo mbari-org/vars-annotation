@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.mbari.vars.services.gson;
+package org.mbari.vars.services.etc.gson;
 
 import com.google.gson.*;
 import org.mbari.vars.core.util.HexUtils;

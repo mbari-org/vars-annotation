@@ -1,6 +1,6 @@
 package org.mbari.vars.ui.javafx.prefs;
 
-import com.jfoenix.controls.JFXTabPane;
+import javafx.geometry.Insets;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.mbari.vars.ui.UIToolBox;
@@ -20,7 +20,7 @@ import java.util.Objects;
  */
 public class PreferencesPaneController implements IPrefs {
 
-    private JFXTabPane root;
+    private TabPane root;
     private final UIToolBox toolBox;
     private final List<IPrefs> prefs = new ArrayList<>();
 
@@ -30,7 +30,7 @@ public class PreferencesPaneController implements IPrefs {
 
     public TabPane getRoot() {
         if (root == null) {
-            root = new JFXTabPane();
+            root = new TabPane();
             root.setPrefSize(600, 600);
             addTab(RazielSettingsPaneController.newInstance());
 //            addTab(LocalizationSettingsPaneController.newInstance(toolBox));
@@ -45,6 +45,7 @@ public class PreferencesPaneController implements IPrefs {
         tab.setClosable(false);
         tab.setContent(controller.getPane());
         root.getTabs().add(tab);
+        controller.getPane().setPadding(new Insets(20));
         prefs.add(controller);
     }
 

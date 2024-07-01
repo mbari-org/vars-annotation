@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.javafx.concepttree;
 
-import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
@@ -111,7 +110,7 @@ public class SearchTreePaneController {
 
     private TextField getTextField() {
         if (textField == null) {
-            textField = new JFXTextField();
+            textField = new TextField();
             textField.getStyleClass().add("concepttree-textfield");
             //TextField textField = new TextField();
             textField.setPromptText(uiBundle.getString("concepttree.prompt"));

@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.javafx;
 
-import com.jfoenix.controls.JFXButton;
 
 import javafx.application.Platform;
 import javafx.scene.control.Button;
@@ -87,51 +86,51 @@ public class ControlsPaneController {
         if (buttonPane == null) {
             buttonPane = new FlowPane();
 
-            Button deleteBtn = new JFXButton();
+            Button deleteBtn = new Button();
             new DeleteSelectedAnnotationsBC(deleteBtn, toolBox);
 
-            Button newBtn = new JFXButton();
+            Button newBtn = new Button();
             new NewAnnotationBC(newBtn, toolBox);
 
-            Button dupBtn = new JFXButton();
+            Button dupBtn = new Button();
             new DuplicateAnnotationBC(dupBtn, toolBox);
 
-            Button copyBtn = new JFXButton();
+            Button copyBtn = new Button();
             new CopyAnnotationBC(copyBtn, toolBox);
 
-            Button framegrabBtn = new JFXButton();
+            Button framegrabBtn = new Button();
             new FramecaptureBC(framegrabBtn, toolBox);
 
-            Button detachBtn = new JFXButton();
+            Button detachBtn = new Button();
             new DetachFramegrabsBC(detachBtn, toolBox);
 
-            Button sampleBtn = new JFXButton();
+            Button sampleBtn = new Button();
             new SampleBC(sampleBtn, toolBox);
 
-            Button commentBtn = new JFXButton();
+            Button commentBtn = new Button();
             new CommentBC(commentBtn, toolBox);
 
             CachedReferenceNumberDecorator decorator = new CachedReferenceNumberDecorator(toolBox);
 
-            Button newRefBtn = new JFXButton();
+            Button newRefBtn = new Button();
             new NewReferenceNumberBC(newRefBtn, toolBox, decorator);
 
-            Button oldRefBtn = new JFXButton();
+            Button oldRefBtn = new Button();
             new OldReferenceNumberBC(oldRefBtn, toolBox, decorator);
 
-            Button uponBtn = new JFXButton();
+            Button uponBtn = new Button();
             new UponBC(uponBtn, toolBox);
 
-            Button pqBtn = new JFXButton();
+            Button pqBtn = new Button();
             new PopulationQuantityBC(pqBtn, toolBox);
 
-            Button durationBtn = new JFXButton();
+            Button durationBtn = new Button();
             new SetDurationBC(durationBtn, toolBox);
 
-            Button deleteDurationBtn = new JFXButton();
+            Button deleteDurationBtn = new Button();
             new DeleteDurationBC(deleteDurationBtn, toolBox);
 
-            Button mlBtn = new JFXButton();
+            Button mlBtn = new Button();
             new MachineLearningBC(mlBtn, toolBox);
 
 //            Button denseBtn = new JFXButton();

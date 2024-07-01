@@ -1,7 +1,5 @@
 package org.mbari.vars.ui.javafx.cbpanel;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTabPane;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -73,6 +71,7 @@ public class ConceptButtonPanesController {
             root = new BorderPane();
             root.setCenter(getTabPane());
             root.setRight(getControlPane());
+
         }
         return root;
     }
@@ -82,7 +81,7 @@ public class ConceptButtonPanesController {
 
 
             // Add
-            Button addButton = new JFXButton();
+            Button addButton = new Button();
 //            Text addIcon = gf.createIcon(MaterialIcon.ADD, "30px");
             Text addIcon = Icons.ADD.standardSize();
             addButton.setGraphic(addIcon);
@@ -90,7 +89,7 @@ public class ConceptButtonPanesController {
             addButton.setOnAction(e -> addTab());
 
             // Remove - Each tab is also individually closeable
-            Button removeButton = new JFXButton();
+            Button removeButton = new Button();
 //            Text removeIcon = gf.createIcon(MaterialIcon.REMOVE, "30px");
             Text removeIcon = Icons.REMOVE.standardSize();
             removeButton.setGraphic(removeIcon);
@@ -101,7 +100,7 @@ public class ConceptButtonPanesController {
             });
 
             // Lock
-            Button lockButton = new JFXButton();
+            Button lockButton = new Button();
             Text lockIcon = Icons.LOCK.standardSize();
             Text unlockIcon = Icons.LOCK_OPEN.standardSize();
             lockButton.setGraphic(lockIcon);
@@ -115,6 +114,7 @@ public class ConceptButtonPanesController {
                 // The Panes created by ConceptButtonPaneController contain the controller as UserData
                 getTabPane().getTabs()
                         .stream()
+                        .peek(tab -> tab.setClosable(false))
                         .map(Tab::getContent)
                         .filter(n -> n.getUserData() instanceof ConceptButtonPaneController)
                         .map(n -> (ConceptButtonPaneController) n.getUserData())
@@ -122,10 +122,11 @@ public class ConceptButtonPanesController {
             });
             lockProperty.set(true);
 
-            Button overviewButton = new JFXButton();
+            Button overviewButton = new Button();
             Text overviewIcon = Icons.VIEW_COLUMN.standardSize();
             String overviewLabel = i18n.getString("cppanel.tabpane.overview.label");
             Tab overviewTab = new Tab(overviewLabel, new ScrollPane(overviewController.getRoot()));
+            overviewTab.setClosable(false);
             overviewButton.setGraphic(overviewIcon);
             overviewButton.setTooltip(new Tooltip(i18n.getString("cppanel.tabpane.overview.tooltip")));
             overviewButton.setOnAction(e -> {
@@ -139,10 +140,11 @@ public class ConceptButtonPanesController {
                 }
             });
 
-            Button timelineButton = new JFXButton();
+            Button timelineButton = new Button();
             Text timelineIcon = Icons.TIMELINE.standardSize();
             String timelineLabel = i18n.getString("cppanel.tabpane.timeline.label");
             Tab timelineTab = new Tab(timelineLabel, timelineController.getRoot());
+            timelineTab.setClosable(false);
             timelineButton.setGraphic(timelineIcon);
             timelineButton.setTooltip(new Tooltip(i18n.getString("cppanel.tabpane.timeline.tooltip")));
             timelineButton.setOnAction(e -> {
@@ -164,7 +166,7 @@ public class ConceptButtonPanesController {
 
     private TabPane getTabPane() {
         if (tabPane == null) {
-            tabPane = new JFXTabPane();
+            tabPane = new TabPane();
             tabPane.setSide(Side.BOTTOM);
         }
         return tabPane;
@@ -173,6 +175,7 @@ public class ConceptButtonPanesController {
     private void loadTabsFromPreferences() {
         Platform.runLater(() -> getTabPane().getTabs().clear());
         Optional<Preferences> tabsPrefsOpt = getTabsPreferences();
+        lockProperty.set(true);
         if (tabsPrefsOpt.isPresent()) {
             Preferences tabsPrefs = tabsPrefsOpt.get();
 
@@ -187,7 +190,7 @@ public class ConceptButtonPanesController {
                                             toolBox, tabsPrefs.node(tabName));
                                     controller.setLocked(lockProperty.get());
                                     Tab tab = new Tab(name, controller.getPane());
-                                    tab.setClosable(true);
+                                    tab.setClosable(false);
                                     tab.setOnClosed(e -> removeTab(tab));
                                     getTabPane().getTabs().add(tab);
                                 });
@@ -257,6 +260,8 @@ public class ConceptButtonPanesController {
         }
     }
 
+
+
     private void addTab() {
         User user = toolBox.getData().getUser();
         if (user == null) {
@@ -310,7 +315,7 @@ public class ConceptButtonPanesController {
                                 newTabPrefs);
                         dropPanel.setLocked(lockProperty.get());
                         Tab tab = new Tab(tabName, dropPanel.getPane());
-                        tab.setClosable(true);
+                        tab.setClosable(false);
                         tab.setOnClosed(e -> removeTab(tab));
                         getTabPane().getTabs().add(tab);
                         getTabPane().getSelectionModel().select(tab);

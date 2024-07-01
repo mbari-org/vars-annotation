@@ -8,7 +8,7 @@ import org.mbari.vars.core.util.StringUtils;
 import org.mbari.vars.services.RemoteAuthException;
 import org.mbari.vars.services.ConfigurationService;
 import org.mbari.vars.services.RemoteRequestException;
-import org.mbari.vars.services.gson.DurationConverter;
+import org.mbari.vars.services.etc.gson.DurationConverter;
 import org.mbari.vars.services.model.Authorization;
 import org.mbari.vars.services.model.EndpointConfig;
 import org.mbari.vars.services.model.HealthStatusCheck;

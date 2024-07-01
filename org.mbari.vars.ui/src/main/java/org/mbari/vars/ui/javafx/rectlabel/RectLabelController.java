@@ -4,8 +4,7 @@ package org.mbari.vars.ui.javafx.rectlabel;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXListView;
+
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,10 +16,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SelectionMode;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -96,16 +92,16 @@ public class RectLabelController {
     private ImageView imageView;
 
     @FXML
-    private JFXButton refreshButton;
+    private Button refreshButton;
 
     @FXML
-    private JFXButton deleteButton;
+    private Button deleteButton;
 
     @FXML
-    private JFXListView<Image> imageReferenceListView;
+    private ListView<Image> imageReferenceListView;
 
     @FXML
-    private JFXListView<Annotation> observationListView;
+    private ListView<Annotation> observationListView;
 
     @FXML
     private ScrollPane imageScrollPane;
@@ -625,11 +621,11 @@ public class RectLabelController {
         return root;
     }
 
-    public JFXButton getRefreshButton() {
+    public Button getRefreshButton() {
         return refreshButton;
     }
 
-    public JFXButton getDeleteButton() {
+    public Button getDeleteButton() {
         return deleteButton;
     }
 

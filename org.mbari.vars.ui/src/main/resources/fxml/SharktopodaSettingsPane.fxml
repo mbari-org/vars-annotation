@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -17,10 +16,10 @@
   </rowConstraints>
    <children>
       <Label text="%mediaplayer.sharktopoda.port" GridPane.hgrow="SOMETIMES" />
-      <JFXTextField fx:id="controlPortTextField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
-      <JFXTextField fx:id="framegrabPortTextField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+      <TextField fx:id="controlPortTextField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+      <TextField fx:id="framegrabPortTextField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
       <Label text="%mediaplayer.sharktopoda.framecapture.port" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="1" />
-      <JFXTextField fx:id="timeJumpTextField" promptText="%mediaplayer.sharktopoda.jump.prompt" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <TextField fx:id="timeJumpTextField" promptText="%mediaplayer.sharktopoda.jump.prompt" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <Label text="%mediaplayer.sharktopoda.jump" GridPane.rowIndex="2" />
       <Label text="%mediaplayer.sharktopoda.version" GridPane.rowIndex="3" />
       <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="3">

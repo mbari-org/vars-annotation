@@ -1,9 +1,10 @@
 package org.mbari.vars.ui.javafx.shared;
 
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXTextField;
+
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.ui.UIToolBox;
@@ -31,13 +32,13 @@ public class DetailEditorPaneController {
     private GridPane root;
 
     @FXML
-    private JFXTextField linkNameTextField;
+    private TextField linkNameTextField;
 
     @FXML
-    private JFXComboBox<String> toConceptComboBox;
+    private ComboBox<String> toConceptComboBox;
 
     @FXML
-    private JFXTextField linkValueTextField;
+    private TextField linkValueTextField;
 
     private HierarchicalConceptComboBoxDecorator toConceptComboBoxDecorator;
 
@@ -56,15 +57,15 @@ public class DetailEditorPaneController {
         return root;
     }
 
-    public JFXTextField getLinkNameTextField() {
+    public TextField getLinkNameTextField() {
         return linkNameTextField;
     }
 
-    public JFXComboBox<String> getToConceptComboBox() {
+    public ComboBox<String> getToConceptComboBox() {
         return toConceptComboBox;
     }
 
-    public JFXTextField getLinkValueTextField() {
+    public TextField getLinkValueTextField() {
         return linkValueTextField;
     }
 

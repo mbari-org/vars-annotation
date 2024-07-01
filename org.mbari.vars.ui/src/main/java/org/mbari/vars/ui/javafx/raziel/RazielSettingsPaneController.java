@@ -1,8 +1,8 @@
 package org.mbari.vars.ui.javafx.raziel;
 
-import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -44,7 +44,7 @@ public class RazielSettingsPaneController implements SettingsPane {
     private GridPane root;
 
     @FXML
-    private JFXButton testButton;
+    private Button testButton;
 
     @FXML
     private TextField urlTextfield;

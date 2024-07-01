@@ -15,7 +15,6 @@ import org.mbari.vars.ui.util.JFXUtilities;
 import java.io.File;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
-import com.jfoenix.controls.JFXTextField;
 
 public class BMSettingsPaneController implements SettingsPane {
 
@@ -28,16 +27,16 @@ public class BMSettingsPaneController implements SettingsPane {
     private GridPane root;
 
     @FXML
-    private JFXTextField hostTextfield;
+    private TextField hostTextfield;
 
     @FXML
-    private JFXTextField keyTextfield;
+    private TextField keyTextfield;
 
     @FXML
-    private JFXTextField portTextfield;
+    private TextField portTextfield;
 
     @FXML
-    private JFXTextField timeoutTextfield;
+    private TextField timeoutTextfield;
 
     @FXML
     private Button testButton;

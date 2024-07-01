@@ -5,6 +5,8 @@ import java.awt.Color;
 public enum Colors {
 
     ATTENTION(Color.decode("#FFB74D")),
+    ACTION_ADD(Color.decode("#00AB5F")),
+    ACTION_DELETE(Color.decode("#D32F2F")),
     CONCURRENT(Color.decode("#FDD835")),
     DEFAULT(Color.decode("#2b3940")),
     DEFAULT_DARKER(Color.decode("#222d33")),

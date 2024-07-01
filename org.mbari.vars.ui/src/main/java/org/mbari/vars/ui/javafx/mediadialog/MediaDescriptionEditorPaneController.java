@@ -1,14 +1,14 @@
 package org.mbari.vars.ui.javafx.mediadialog;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTextArea;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.Initializer;
@@ -41,16 +41,16 @@ public class MediaDescriptionEditorPaneController {
     private Label videoReferenceLabel;
 
     @FXML
-    private JFXButton saveButton;
+    private Button saveButton;
 
     @FXML
-    private JFXTextArea videoSequenceTextArea;
+    private TextArea videoSequenceTextArea;
 
     @FXML
-    private JFXTextArea videoTextArea;
+    private TextArea videoTextArea;
 
     @FXML
-    private JFXTextArea videoReferenceTextArea;
+    private TextArea videoReferenceTextArea;
 
     private final ObjectProperty<Media> media = new SimpleObjectProperty<>();
 

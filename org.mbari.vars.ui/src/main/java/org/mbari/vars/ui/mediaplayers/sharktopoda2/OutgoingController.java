@@ -3,13 +3,12 @@ package org.mbari.vars.ui.mediaplayers.sharktopoda2;
 import io.reactivex.rxjava3.disposables.Disposable;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Media;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
 import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.ui.mediaplayers.sharktopoda.localization.LocalizationController;
+import org.mbari.vars.ui.mediaplayers.sharktopoda.Constants;
 import org.mbari.vcr4j.remote.control.RVideoIO;
 import org.mbari.vcr4j.remote.control.commands.localization.*;
 import org.slf4j.Logger;
@@ -41,25 +40,25 @@ public class OutgoingController {
     private void init(EventBus eventBus) {
         disposables.add(eventBus.toObserverable()
                 .ofType(AnnotationsAddedEvent.class)
-                .filter(evt -> evt.getEventSource() != LocalizationController.EVENT_SOURCE)
+                .filter(evt -> evt.getEventSource() != Constants.LOCALIZATION_EVENT_SOURCE)
                 .filter(evt -> !evt.get().isEmpty())
                 .subscribe(evt -> handle(evt.get(), Action.Add)));
 
         disposables.add(eventBus.toObserverable()
                 .ofType(AnnotationsRemovedEvent.class)
-                .filter(evt -> evt.getEventSource() != LocalizationController.EVENT_SOURCE)
+                .filter(evt -> evt.getEventSource() != Constants.LOCALIZATION_EVENT_SOURCE)
                 .filter(evt -> !evt.get().isEmpty())
                 .subscribe(evt -> handle(evt.get(), Action.Remove)));
 
         disposables.add(eventBus.toObserverable()
                 .ofType(AnnotationsChangedEvent.class)
-                .filter(evt -> evt.getEventSource() != LocalizationController.EVENT_SOURCE)
+                .filter(evt -> evt.getEventSource() != Constants.LOCALIZATION_EVENT_SOURCE)
                 .filter(evt -> !evt.get().isEmpty())
                 .subscribe(evt -> handle(evt.get(), Action.Update)));
 
         disposables.add(eventBus.toObserverable()
                 .ofType(AnnotationsSelectedEvent.class)
-                .filter(evt -> evt.getEventSource() != LocalizationController.EVENT_SOURCE)
+                .filter(evt -> evt.getEventSource() != Constants.LOCALIZATION_EVENT_SOURCE)
                 .subscribe(evt -> handle(evt.get(), Action.Select)));
     }
 
