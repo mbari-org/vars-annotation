@@ -85,7 +85,7 @@ subprojects {
             implementation 'org.kordamp.ikonli:ikonli-material-pack:12.3.1'
             implementation 'org.kordamp.ikonli:ikonli-swing:12.3.1'
             implementation 'org.zeromq:jeromq:0.5.4'
-            implementation 'org.mbari:imgfx:0.0.15'
+            implementation 'org.mbari.imgfx:imgfx:0.0.16'
             implementation 'org.mbari.vcr4j:vcr4j-core:5.3.0'
             implementation 'org.mbari.vcr4j:vcr4j-remote:5.3.0'
 //            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client:5.3.0'
