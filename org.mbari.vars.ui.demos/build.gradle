@@ -8,6 +8,7 @@ dependencies {
     implementation project(':org.mbari.vars.core')
 
 
+    implementation 'com.google.code.gson:gson'
     implementation 'com.google.inject:guice'
     implementation 'com.jfoenix:jfoenix'
     implementation 'com.typesafe:config'
@@ -17,8 +18,8 @@ dependencies {
     implementation 'org.kordamp.ikonli:ikonli-material-pack'
     implementation 'org.mbari:mbarix4j'
     implementation 'org.mbari.vcr4j:vcr4j-core'
-    implementation 'org.mbari.vcr4j:vcr4j-sharktopoda'
-    implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client'
+//    implementation 'org.mbari.vcr4j:vcr4j-sharktopoda'
+//    implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client'
     implementation 'org.slf4j:slf4j-api'
 
     implementation('eu.hansolo:Medusa') {

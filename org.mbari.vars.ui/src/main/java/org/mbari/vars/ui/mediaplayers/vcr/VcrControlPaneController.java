@@ -14,10 +14,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.ui.javafx.controls.JFXSlider;
 import org.mbari.vcr4j.VideoController;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
@@ -70,7 +70,7 @@ public class VcrControlPaneController {
     private Button ejectButton;
 
     @FXML
-    private JFXSlider speedSlider;
+    private Slider speedSlider;
 
 
     private Disposable stateDisposable;

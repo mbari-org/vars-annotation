@@ -149,10 +149,12 @@ public class AssociationEditorPaneController {
         Text addIcon = Icons.ADD.standardSize();
         addButton.setText(null);
         addButton.setGraphic(addIcon);
+        addButton.getStyleClass().add("ok-button");
         //addButton.defaultButtonProperty().bind(addButton.focusedProperty()); // Enter triggers button
         Text cancelIcon = Icons.CANCEL.standardSize();
         cancelButton.setText(null);
         cancelButton.setGraphic(cancelIcon);
+        cancelButton.getStyleClass().add("cancel-button");
         //cancelButton.defaultButtonProperty().bind(cancelButton.focusedProperty()); // Enter triggers button
         linkNameTextField.setDisable(true);
 

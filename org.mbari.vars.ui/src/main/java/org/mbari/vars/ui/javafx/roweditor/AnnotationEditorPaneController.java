@@ -111,6 +111,7 @@ public class AnnotationEditorPaneController {
         removeButton.setText(null);
         removeButton.setGraphic(deleteIcon);
         removeButton.setDisable(true);
+        removeButton.getStyleClass().add("cancel-button");
         removeButton.defaultButtonProperty().bind(removeButton.focusedProperty()); // Enter triggers button
 
         Text editIcon = Icons.EDIT.standardSize();
@@ -125,6 +126,7 @@ public class AnnotationEditorPaneController {
         addButton.setText(null);
         addButton.setGraphic(addIcon);
         addButton.setDisable(true);
+        addButton.getStyleClass().add("ok-button");
         addButton.defaultButtonProperty().bind(addButton.focusedProperty()); // Enter triggers button
 
         // Enable buttons based on state

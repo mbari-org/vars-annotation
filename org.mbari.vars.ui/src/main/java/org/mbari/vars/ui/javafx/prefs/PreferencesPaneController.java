@@ -1,5 +1,6 @@
 package org.mbari.vars.ui.javafx.prefs;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.mbari.vars.ui.UIToolBox;
@@ -44,6 +45,7 @@ public class PreferencesPaneController implements IPrefs {
         tab.setClosable(false);
         tab.setContent(controller.getPane());
         root.getTabs().add(tab);
+        controller.getPane().setPadding(new Insets(20));
         prefs.add(controller);
     }
 
