@@ -1,7 +1,5 @@
 package org.mbari.vars.ui.mediaplayers.sharktopoda;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXSlider;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
 import javafx.application.Platform;
@@ -9,11 +7,13 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.javafx.controls.JFXSlider;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.ui.javafx.Icons;
 import org.mbari.vars.services.model.Media;
@@ -21,7 +21,7 @@ import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.commands.RemoteCommands;
-import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
+//import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,7 +111,7 @@ public class SharktoptodaControlPane extends Pane {
         durationLabel.relocate(395, 47);
     }
 
-    protected JFXSlider getSpeedSlider() {
+    protected Slider getSpeedSlider() {
         if (speedSlider == null) {
             // We'll use 4 as the max shuttle rate for now
             double v = 4.0 * 1000;
@@ -134,7 +134,7 @@ public class SharktoptodaControlPane extends Pane {
 //            Text icon = glyphsFactory.createIcon(MaterialIcon.KEYBOARD_ARROW_RIGHT, "30px");
             Text icon = Icons.KEYBOARD_ARROW_RIGHT.standardSize();
             icon.setFill(color);
-            frameAdvanceButton = new JFXButton();
+            frameAdvanceButton = new Button();
             frameAdvanceButton.setGraphic(icon);
             frameAdvanceButton.setPrefSize(30, 30);
             frameAdvanceButton.setOnAction(e -> {
@@ -151,12 +151,12 @@ public class SharktoptodaControlPane extends Pane {
 //            Text icon = glyphsFactory.createIcon(MaterialIcon.FAST_FORWARD, "30px");
             Text icon = Icons.FAST_FORWARD.standardSize();
             icon.setFill(color);
-            fastForwardButton = new JFXButton();
+            fastForwardButton = new Button();
             fastForwardButton.setGraphic(icon);
             fastForwardButton.setPrefSize(30, 30);
             fastForwardButton.setOnAction(e -> {
                 if (mediaPlayer != null) {
-                    double speed = getSpeedSlider().getValue() / 1000D / SharktopodaVideoIO.MAX_SHUTTLE_RATE;
+                    double speed = getSpeedSlider().getValue() / 1000D / Constants.MAX_SHUTTLE_RATE;
                     mediaPlayer.shuttle(speed);
                 }
             });
@@ -169,12 +169,12 @@ public class SharktoptodaControlPane extends Pane {
 //            Text icon = glyphsFactory.createIcon(MaterialIcon.FAST_REWIND, "30px");
             Text icon = Icons.FAST_REWIND.standardSize();
             icon.setFill(color);
-            rewindButton = new JFXButton();
+            rewindButton = new Button();
             rewindButton.setGraphic(icon);
             rewindButton.setPrefSize(30, 30);
             rewindButton.setOnAction(e -> {
                 if (mediaPlayer != null) {
-                    double speed = getSpeedSlider().getValue() / 1000D / SharktopodaVideoIO.MAX_SHUTTLE_RATE;
+                    double speed = getSpeedSlider().getValue() / 1000D / Constants.MAX_SHUTTLE_RATE;
                     mediaPlayer.shuttle(-speed);
                 }
             });
@@ -186,7 +186,7 @@ public class SharktoptodaControlPane extends Pane {
         if (playButton == null) {
             playIcon.setFill(color);
             pauseIcon.setFill(color);
-            playButton = new JFXButton();
+            playButton = new Button();
             playButton.setGraphic(playIcon);
             playButton.setPrefSize(30, 30);
             playButton.setOnAction(e -> {
@@ -203,11 +203,13 @@ public class SharktoptodaControlPane extends Pane {
         return playButton;
     }
 
-    public JFXSlider getScrubber() {
+    public Slider getScrubber() {
         if (scrubber == null) {
             // The scrubber represents the position into the video in Millisecs
             scrubber = new JFXSlider(0, 1000, 0);
             scrubber.setPrefWidth(325);
+
+            // TODO THis is useful with JFoenix. Can I recreate in JavaFX?
             StringBinding binding = Bindings.createStringBinding(() ->
                     formatSeconds(Math.round(scrubber.getValue() / 1000D)),
                     scrubber.valueProperty());
@@ -217,17 +219,7 @@ public class SharktoptodaControlPane extends Pane {
                     long millis = Math.round(scrubber.getValue());
                     mediaPlayer.seek(Duration.ofMillis(millis));
                 }
-//                else {
-//                    String s = formatSeconds(Math.round(scrubber.getValue() / 1000D));
-//                    scrubber.setValue();
-//                }
             });
-//            scrubber.setOnMouseReleased(v -> {
-//                if (mediaPlayer != null) {
-//                    long millis = Math.round(scrubber.getValue());
-//                    mediaPlayer.seek(Duration.ofMillis(millis));
-//                }
-//            });
         }
         return scrubber;
     }

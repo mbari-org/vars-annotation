@@ -1,8 +1,6 @@
 package org.mbari.vars.ui.mediaplayers.vcr;
 
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXSlider;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -14,7 +12,9 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import org.mbari.vars.ui.javafx.Icons;
@@ -46,31 +46,31 @@ public class VcrControlPaneController {
     private Label timecodeLabel;
 
     @FXML
-    private JFXButton shuttleFwdButton;
+    private Button shuttleFwdButton;
 
     @FXML
-    private JFXButton playButton;
+    private Button playButton;
 
     @FXML
-    private JFXButton shuttleReverseButton;
+    private Button shuttleReverseButton;
 
     @FXML
-    private JFXButton gotoButton;
+    private Button gotoButton;
 
     @FXML
-    private JFXButton fastforwardButton;
+    private Button fastforwardButton;
 
     @FXML
-    private JFXButton stopButton;
+    private Button stopButton;
 
     @FXML
-    private JFXButton rewindButton;
+    private Button rewindButton;
 
     @FXML
-    private JFXButton ejectButton;
+    private Button ejectButton;
 
     @FXML
-    private JFXSlider speedSlider;
+    private Slider speedSlider;
 
 
     private Disposable stateDisposable;

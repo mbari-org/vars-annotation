@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.javafx.abpanel;
 
-import com.jfoenix.controls.JFXButton;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
@@ -47,7 +46,7 @@ public class AssocButtonFactory {
         String name = namedAssociation.getName();
         Association association = namedAssociation.asAssociation();
 
-        Button button = new JFXButton(name);
+        Button button = new Button(name);
         button.setUserData(namedAssociation);
         button.getStyleClass().add(styleClass);
         button.setOnAction(event -> {

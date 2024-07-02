@@ -75,6 +75,8 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         v1RadioButton.setToggleGroup(group);
         v2RadioButton.setToggleGroup(group);
 
+        v1RadioButton.setDisable(true);
+
         load();
     }
 

@@ -1,7 +1,5 @@
 package org.mbari.vars.ui.javafx;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -105,7 +103,7 @@ public class ImageViewController2 {
 //            Text icon = iconFactory.createIcon(MaterialIcon.SAVE, "30px");
             Text icon = Icons.SAVE.standardSize();
             String tooltip = toolBox.getI18nBundle().getString("imageview.button.save");
-            Button saveBtn = new JFXButton();
+            Button saveBtn = new Button();
             saveBtn.setTooltip(new Tooltip(tooltip));
             saveBtn.setGraphic(icon);
             saveBtn.setOnAction(evt -> saveImage(imageStage.getOwner()));
@@ -125,7 +123,7 @@ public class ImageViewController2 {
 
     public ComboBox<ImageReference> getComboBox() {
         if (comboBox == null) {
-            comboBox = new JFXComboBox<>();
+            comboBox = new ComboBox<>();
             comboBox.setCellFactory(param ->  new ListCell<ImageReference>() {
                 @Override
                 protected void updateItem(ImageReference item, boolean empty) {

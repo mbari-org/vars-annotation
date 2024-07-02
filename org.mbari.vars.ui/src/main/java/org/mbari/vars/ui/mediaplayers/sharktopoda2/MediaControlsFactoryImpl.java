@@ -8,6 +8,7 @@ import org.mbari.vars.ui.mediaplayers.MediaControls;
 import org.mbari.vars.ui.mediaplayers.MediaControlsFactory;
 import org.mbari.vars.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.ui.mediaplayers.SettingsPane;
+import org.mbari.vars.ui.mediaplayers.sharktopoda.SettingsPaneImpl;
 import org.mbari.vars.ui.mediaplayers.sharktopoda.SharktopodaSettingsPaneController;
 import org.mbari.vars.ui.mediaplayers.sharktopoda.SharktoptodaControlPane;
 import org.mbari.vcr4j.VideoError;
@@ -23,9 +24,9 @@ import java.util.concurrent.CompletableFuture;
 public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
     private final ImageCaptureServiceImpl imageCaptureService = new ImageCaptureServiceImpl();
-    private RemoteControl remoteControl;
     private SharktoptodaControlPane controlPane;
     private final UIToolBox toolBox;
+    private SettingsPaneImpl settingsPane;
 
     public MediaControlsFactoryImpl() {
         this.toolBox = Initializer.getToolBox();
@@ -34,7 +35,10 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
     @Override
     public SettingsPane getSettingsPane() {
-        return null;
+        if (settingsPane == null) {
+            settingsPane = new SettingsPaneImpl(toolBox);
+        }
+        return settingsPane;
     }
 
     @Override

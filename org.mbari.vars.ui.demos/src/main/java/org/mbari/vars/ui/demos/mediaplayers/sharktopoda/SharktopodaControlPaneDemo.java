@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.mediaplayers.sharktopoda.SharktoptodaControlPane;
+//import org.mbari.vars.ui.mediaplayers.sharktopoda.SharktoptodaControlPane;
 
 /**
  * @author Brian Schlining
@@ -20,13 +20,13 @@ public class SharktopodaControlPaneDemo extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Pane pane = new SharktoptodaControlPane(Initializer.getToolBox());
-        Scene scene = new Scene(pane);
-        primaryStage.setScene(scene);
-        primaryStage.setOnCloseRequest(e -> {
-            Platform.exit();
-            System.exit(0);
-        });
+//        Pane pane = new SharktoptodaControlPane(Initializer.getToolBox());
+//        Scene scene = new Scene(pane);
+//        primaryStage.setScene(scene);
+//        primaryStage.setOnCloseRequest(e -> {
+//            Platform.exit();
+//            System.exit(0);
+//        });
         primaryStage.show();
     }
 }

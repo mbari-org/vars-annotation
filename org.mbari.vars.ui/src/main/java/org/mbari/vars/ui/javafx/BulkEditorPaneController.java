@@ -1,7 +1,5 @@
 package org.mbari.vars.ui.javafx;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
 
 import java.net.URL;
 import java.util.*;
@@ -77,10 +75,10 @@ public class BulkEditorPaneController {
     private VBox root;
 
     @FXML
-    private JFXCheckBox conceptCheckBox;
+    private CheckBox conceptCheckBox;
 
     @FXML
-    private JFXCheckBox associationCheckBox;
+    private CheckBox associationCheckBox;
 
     @FXML
     private ComboBox<String> conceptCombobox;
@@ -90,25 +88,25 @@ public class BulkEditorPaneController {
 
 
     @FXML
-    private JFXButton moveFramesButton;
+    private Button moveFramesButton;
 
     @FXML
-    private JFXButton renameObservationsButton;
+    private Button renameObservationsButton;
 
     @FXML
-    private JFXButton deleteObservationsButton;
+    private Button deleteObservationsButton;
 
     @FXML
-    private JFXButton addAssociationButton;
+    private Button addAssociationButton;
 
     @FXML
-    private JFXButton replaceAssociationButton;
+    private Button replaceAssociationButton;
 
     @FXML
-    private JFXButton deleteAssociationButton;
+    private Button deleteAssociationButton;
 
     @FXML
-    private JFXButton searchButton;
+    private Button searchButton;
 
     @FXML
     private ComboBox<String> groupComboBox;

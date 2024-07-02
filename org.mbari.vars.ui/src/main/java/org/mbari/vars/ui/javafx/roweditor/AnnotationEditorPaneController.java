@@ -1,8 +1,5 @@
 package org.mbari.vars.ui.javafx.roweditor;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXListView;
 import java.net.URL;
 import java.util.*;
 
@@ -44,19 +41,19 @@ public class AnnotationEditorPaneController {
     private URL location;
 
     @FXML
-    private JFXButton addButton;
+    private Button addButton;
 
     @FXML
-    private JFXButton editButton;
+    private Button editButton;
 
     @FXML
-    private JFXButton removeButton;
+    private Button removeButton;
 
     @FXML
-    private JFXComboBox<String> conceptComboBox;
+    private ComboBox<String> conceptComboBox;
 
     @FXML
-    private JFXListView<Association> associationListView;
+    private ListView<Association> associationListView;
 
     private final UIToolBox toolBox = Initializer.getToolBox();
     private final EventBus eventBus = toolBox.getEventBus();
@@ -67,15 +64,15 @@ public class AnnotationEditorPaneController {
         return root;
     }
 
-    public JFXButton getAddButton() {
+    public Button getAddButton() {
         return addButton;
     }
 
-    public JFXButton getEditButton() {
+    public Button getEditButton() {
         return editButton;
     }
 
-    public JFXButton getRemoveButton() {
+    public Button getRemoveButton() {
         return removeButton;
     }
 
@@ -114,6 +111,7 @@ public class AnnotationEditorPaneController {
         removeButton.setText(null);
         removeButton.setGraphic(deleteIcon);
         removeButton.setDisable(true);
+        removeButton.getStyleClass().add("cancel-button");
         removeButton.defaultButtonProperty().bind(removeButton.focusedProperty()); // Enter triggers button
 
         Text editIcon = Icons.EDIT.standardSize();
@@ -128,6 +126,7 @@ public class AnnotationEditorPaneController {
         addButton.setText(null);
         addButton.setGraphic(addIcon);
         addButton.setDisable(true);
+        addButton.getStyleClass().add("ok-button");
         addButton.defaultButtonProperty().bind(addButton.focusedProperty()); // Enter triggers button
 
         // Enable buttons based on state

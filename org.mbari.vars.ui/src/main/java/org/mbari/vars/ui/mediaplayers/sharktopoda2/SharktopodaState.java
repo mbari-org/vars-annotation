@@ -1,7 +1,5 @@
 package org.mbari.vars.ui.mediaplayers.sharktopoda2;
 
-import org.mbari.vcr4j.sharktopoda.client.localization.Localization;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

@@ -1,7 +1,6 @@
 package org.mbari.vars.ui.javafx.mlstage;
 
 
-import com.jfoenix.controls.JFXButton;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
@@ -71,14 +70,14 @@ public class MachineLearningStage extends Stage {
         HBox.setHgrow(expander, Priority.ALWAYS);
         var saveAnnotationsIcon = Icons.SAVE.standardSize();
 
-        saveAnnotationsButton = new JFXButton(null, saveAnnotationsIcon);
+        saveAnnotationsButton = new Button(null, saveAnnotationsIcon);
 
 
         var saveAllIcon = Icons.UPLOAD_FILE.standardSize();
-        saveAllButton = new JFXButton(null, saveAllIcon);
+        saveAllButton = new Button(null, saveAllIcon);
 
         var cancelIcon = Icons.CANCEL.standardSize();
-        cancelButton = new JFXButton(null, cancelIcon);
+        cancelButton = new Button(null, cancelIcon);
         var hbox = new HBox(expander, cancelButton, saveAnnotationsButton, saveAllButton);
 
         root.setBottom(hbox);

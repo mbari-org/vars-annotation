@@ -1,7 +1,5 @@
 package org.mbari.vars.ui.javafx.mlstage;
 
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXComboBox;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -32,7 +30,7 @@ public class LocalizationEditorController {
     }
 
     private void init() {
-        conceptComboBox = new JFXComboBox<>();
+        conceptComboBox = new ComboBox<>();
         new FilteredComboBoxDecorator<>(conceptComboBox, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
         conceptComboBox.setEditable(false);
         conceptComboBox.setValue(localization.getLabel());
@@ -43,7 +41,7 @@ public class LocalizationEditorController {
             }
         });
 
-        checkBox = new JFXCheckBox();
+        checkBox = new CheckBox();
 //        Color c = (Color) localization.getDataView().getView().getFill();
 //        Color nonOpaque = Color.color(c.getRed(), c.getGreen(), c.getBlue());
 //        checkBox.setCheckedColor(nonOpaque);

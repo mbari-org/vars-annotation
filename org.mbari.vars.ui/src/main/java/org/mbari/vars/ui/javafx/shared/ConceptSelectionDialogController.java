@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.javafx.shared;
 
-import com.jfoenix.controls.JFXComboBox;
 import io.reactivex.rxjava3.core.Observable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -46,7 +45,7 @@ public class ConceptSelectionDialogController {
 
     public ComboBox<String> getComboBox() {
         if (comboBox == null) {
-            comboBox = new JFXComboBox<>();
+            comboBox = new ComboBox<>();
             new FilteredComboBoxDecorator<>(comboBox,
                     FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
         }

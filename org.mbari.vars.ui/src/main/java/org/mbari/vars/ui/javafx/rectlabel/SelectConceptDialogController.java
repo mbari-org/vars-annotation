@@ -1,10 +1,10 @@
 package org.mbari.vars.ui.javafx.rectlabel;
 
-import com.jfoenix.controls.JFXComboBox;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import org.mbari.vars.ui.UIToolBox;
@@ -18,7 +18,7 @@ import java.util.ResourceBundle;
  * @since 2018-05-10T16:46:00
  */
 public class SelectConceptDialogController {
-    private JFXComboBox<String> conceptComboBox;
+    private ComboBox<String> conceptComboBox;
     private Image image;
     private final UIToolBox toolBox;
     private Dialog<String> dialog;
@@ -48,9 +48,9 @@ public class SelectConceptDialogController {
         return dialog;
     }
 
-    public JFXComboBox<String> getConceptComboBox() {
+    public ComboBox<String> getConceptComboBox() {
         if (conceptComboBox == null) {
-            conceptComboBox = new JFXComboBox<>();
+            conceptComboBox = new ComboBox<>();
             new FilteredComboBoxDecorator<>(conceptComboBox,
                     FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
             conceptComboBox.setEditable(false);

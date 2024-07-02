@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
+<?import javafx.scene.control.TextField?>
 <GridPane fx:id="root" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="org.mbari.vars.ui.javafx.mlstage.MLSettingsPaneController">
   <columnConstraints>
     <ColumnConstraints hgrow="NEVER" />
@@ -16,6 +16,6 @@
   </rowConstraints>
    <children>
       <Label text="%ml.pane.url" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER" />
-      <JFXTextField fx:id="urlTextField" GridPane.columnIndex="1" />
+      <TextField fx:id="urlTextField" GridPane.columnIndex="1" />
    </children>
 </GridPane>

@@ -1,9 +1,5 @@
 package org.mbari.vars.ui.javafx;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXTabPane;
 import io.reactivex.rxjava3.core.Observable;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -78,8 +74,8 @@ public class AppPaneController {
     private ToolBar toolBar;
     private final UIToolBox toolBox;
     private ComboBox<String> usersComboBox;
-    ComboBox<String> groupCombobox = new JFXComboBox<>();
-    ComboBox<String> activityCombobox = new JFXComboBox<>();
+    ComboBox<String> groupCombobox = new ComboBox<>();
+    ComboBox<String> activityCombobox = new ComboBox<>();
     private CheckBox showConcurrentCheckBox;
     private CheckBox showJsonAssociationsCheckBox;
     private CheckBox showCurrentGroupOnlyCheckBox;
@@ -270,7 +266,7 @@ public class AppPaneController {
 
     public TabPane getTabPane() {
         if (tabPane == null) {
-            tabPane = new JFXTabPane();
+            tabPane = new TabPane();
 
             Observable<Object> observable = toolBox.getEventBus().toObserverable();
 
@@ -332,7 +328,7 @@ public class AppPaneController {
             ResourceBundle bundle = toolBox.getI18nBundle();
 
             Text openIcon = Icons.VIDEO_LIBRARY.standardSize();
-            Button openButton = new JFXButton();
+            Button openButton = new Button();
             openButton.setGraphic(openIcon);
             openButton.setOnAction(e -> getOpenPopOver().show(openButton));
             openButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.open")));
@@ -349,7 +345,7 @@ public class AppPaneController {
                     });
 
             Text closeIcon = Icons.CLOSE.standardSize();
-            Button closeButton = new JFXButton();
+            Button closeButton = new Button();
             closeButton.setGraphic(closeIcon);
             closeButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.close")));
             closeButton.setOnAction(e -> {
@@ -359,31 +355,31 @@ public class AppPaneController {
             });
 
             Text undoIcon = Icons.UNDO.standardSize();
-            Button undoButton = new JFXButton();
+            Button undoButton = new Button();
             undoButton.setGraphic(undoIcon);
             undoButton.setOnAction(e -> toolBox.getEventBus().send(new UndoMsg()));
             undoButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.undo")));
 
             Text redoIcon = Icons.REDO.standardSize();
-            Button redoButton = new JFXButton();
+            Button redoButton = new Button();
             redoButton.setGraphic(redoIcon);
             redoButton.setOnAction(e -> toolBox.getEventBus().send(new RedoMsg()));
             redoButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.redo")));
 
             Text refreshIcon = Icons.CACHED.standardSize();
-            Button refreshButton = new JFXButton();
+            Button refreshButton = new Button();
             refreshButton.setGraphic(refreshIcon);
             refreshButton.setOnAction(e -> toolBox.getEventBus().send(new ReloadServicesMsg()));
             refreshButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.refresh")));
 
             Text prefsIcon = Icons.SETTINGS.standardSize();
-            Button prefsButton = new JFXButton();
+            Button prefsButton = new Button();
             prefsButton.setGraphic(prefsIcon);
             prefsButton.setOnAction(e -> preferencesDialogController.show());
             prefsButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.prefs")));
 
             Text usersIcon = Icons.PERSON_ADD.standardSize();
-            Button createUserButton = new JFXButton();
+            Button createUserButton = new Button();
             createUserButton.setGraphic(usersIcon);
             createUserButton.setOnAction(e -> {
                 CreateUserDialog dialog = new CreateUserDialog(toolBox);
@@ -394,13 +390,13 @@ public class AppPaneController {
             createUserButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.user")));
 
             Text deploymentIcon = Icons.GRID_ON.standardSize();
-            Button showDeploymentButton = new JFXButton();
+            Button showDeploymentButton = new Button();
             showDeploymentButton.setGraphic(deploymentIcon);
             showDeploymentButton.setOnAction(e -> annotationViewController.show());
             showDeploymentButton.setTooltip(new Tooltip(bundle.getString("apppane.toolbar.button.deployment")));
 
             Text rectLabelIcon = Icons.PICTURE_IN_PICTURE.standardSize();
-            Button rectLabelButton = new JFXButton();
+            Button rectLabelButton = new Button();
             rectLabelButton.setGraphic(rectLabelIcon);
 //            rectLabelButton.setOnAction(e -> rectLabelStageController.show());
 //            rectLabelButton.setOnAction(e -> ifxStageController.setVisible(true));
@@ -455,7 +451,7 @@ public class AppPaneController {
             ResourceBundle i18n = toolBox.getI18nBundle();
 
             Text remoteIcon = Icons.VIDEO_LIBRARY.standardSize();
-            Button remoteButton = new JFXButton(null, remoteIcon);
+            Button remoteButton = new Button(null, remoteIcon);
             remoteButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.remote")));
             remoteButton.setOnAction(e -> {
                 Optional<Media> media = selectMediaDialog.showAndWait();
@@ -463,7 +459,7 @@ public class AppPaneController {
             });
 
             Text localIcon = Icons.FOLDER.standardSize();
-            Button localButton = new JFXButton(null, localIcon);
+            Button localButton = new Button(null, localIcon);
             localButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.local")));
             FileBrowsingDecorator decorator = new FileBrowsingDecorator(toolBox);
             localButton.setOnAction(e ->
@@ -483,7 +479,7 @@ public class AppPaneController {
 //            });
 
             Text realtimeIcon = Icons.DIRECTIONS_BOAT.standardSize();
-            Button realtimeButton = new JFXButton(null, realtimeIcon);
+            Button realtimeButton = new Button(null, realtimeIcon);
             realtimeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.realtime")));
             realtimeButton.setOnAction(e -> {
                 realTimeDialog.refresh();
@@ -506,7 +502,7 @@ public class AppPaneController {
     public ComboBox<String> getUsersComboBox() {
         if (usersComboBox == null) {
 
-            usersComboBox = new JFXComboBox<>();
+            usersComboBox = new ComboBox<>();
             new FilteredComboBoxDecorator<>(usersComboBox, FilteredComboBoxDecorator.CONTAINS_CHARS_IN_ORDER);
             Comparator<String> sorter = Comparator.comparing(String::toString, String.CASE_INSENSITIVE_ORDER);
 
@@ -707,7 +703,7 @@ public class AppPaneController {
 
     private CheckBox getShowConcurrentCheckBox() {
         if (showConcurrentCheckBox == null) {
-            showConcurrentCheckBox = new JFXCheckBox(toolBox.getI18nBundle()
+            showConcurrentCheckBox = new CheckBox(toolBox.getI18nBundle()
                     .getString("apppane.statusbar.label.concurrent"));
             showConcurrentCheckBox.getStyleClass().add("utility-label");
             Boolean isSelected = loadBooleanPreference(concurrentStatusKey);
@@ -716,17 +712,13 @@ public class AppPaneController {
             showConcurrentCheckBox.selectedProperty()
                     .addListener((obs, oldv, newv) ->
                             toolBox.getEventBus().send(new ShowConcurrentAnnotationsMsg(newv)));
-            // When the media is changed unselect the check box
-//            toolBox.getData()
-//                    .mediaProperty()
-//                    .addListener((obs, oldv, newv) -> showConcurrentCheckBox.setSelected(false));
         }
         return showConcurrentCheckBox;
     }
 
     private CheckBox getShowJsonAssociationsCheckBox() {
         if (showJsonAssociationsCheckBox == null) {
-            showJsonAssociationsCheckBox = new JFXCheckBox(toolBox.getI18nBundle()
+            showJsonAssociationsCheckBox = new CheckBox(toolBox.getI18nBundle()
                     .getString("apppane.statusbar.label.json"));
             showJsonAssociationsCheckBox.getStyleClass().add("utility-label");
             Boolean isSelected = loadBooleanPreference(jsonStatusKey);
@@ -741,7 +733,7 @@ public class AppPaneController {
 
     private CheckBox getShowCurrentGroupOnlyCheckBox() {
         if (showCurrentGroupOnlyCheckBox == null) {
-            showCurrentGroupOnlyCheckBox = new JFXCheckBox(toolBox.getI18nBundle()
+            showCurrentGroupOnlyCheckBox = new CheckBox(toolBox.getI18nBundle()
                     .getString("apppane.statusbar.label.current"));
             showCurrentGroupOnlyCheckBox.getStyleClass().add("utility-label");
             Boolean isSelected = loadBooleanPreference(currentGroupKey);

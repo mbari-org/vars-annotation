@@ -1,7 +1,5 @@
 package org.mbari.vars.ui.mediaplayers.ships;
 
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
@@ -31,10 +29,10 @@ public class MediaParamsPaneController {
     private GridPane root;
 
     @FXML
-    private JFXComboBox<String> cameraIdComboBox;
+    private ComboBox<String> cameraIdComboBox;
 
     @FXML
-    private JFXTextField sequenceNumberTextField;
+    private TextField sequenceNumberTextField;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 

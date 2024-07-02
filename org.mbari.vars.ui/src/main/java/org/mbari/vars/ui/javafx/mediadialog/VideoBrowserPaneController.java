@@ -1,6 +1,5 @@
 package org.mbari.vars.ui.javafx.mediadialog;
 
-import com.jfoenix.controls.JFXSlider;
 import javafx.application.Platform;
 import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
@@ -8,8 +7,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import org.mbari.vars.ui.Initializer;
 import org.mbari.vars.services.model.Media;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.MediaService;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.javafx.shared.DateTimePickerController;
 import org.mbari.vars.ui.messages.ReloadServicesMsg;
@@ -41,7 +38,7 @@ public class VideoBrowserPaneController {
     private ListView<Media> mediaListView;
     private StackPane centerPane;
     private Pane topPane;
-    private JFXSlider timeSlider;
+    private Slider timeSlider;
     private Label fromLabel = new Label();
     private Label toLabel = new Label();
     private final ResourceBundle uiBundle;
@@ -227,18 +224,19 @@ public class VideoBrowserPaneController {
         return root;
     }
 
-    public JFXSlider getTimeSlider() {
+    public Slider getTimeSlider() {
         if (timeSlider == null) {
-            timeSlider = new JFXSlider();
-            timeSlider.setIndicatorPosition(JFXSlider.IndicatorPosition.RIGHT);
-            timeSlider.setValueFactory(slider ->
-                new StringBinding() {
-                    @Override
-                    protected String computeValue() {
-                        Instant timestamp  = getFromDateController().getTimestamp();
-                        return timestamp.toString();
-                    }
-                });
+            timeSlider = new Slider();
+            // TODO this was for JFXSLider, can we don something like this in JavafX?
+//            timeSlider.setIndicatorPosition(JFXSlider.IndicatorPosition.RIGHT);
+//            timeSlider.setValueFactory(slider ->
+//                new StringBinding() {
+//                    @Override
+//                    protected String computeValue() {
+//                        Instant timestamp  = getFromDateController().getTimestamp();
+//                        return timestamp.toString();
+//                    }
+//                });
 
         }
         return timeSlider;

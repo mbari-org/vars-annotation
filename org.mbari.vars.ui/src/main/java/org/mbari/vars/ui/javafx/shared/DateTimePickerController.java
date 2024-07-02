@@ -1,11 +1,10 @@
 package org.mbari.vars.ui.javafx.shared;
 
-import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXTimePicker;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.scene.control.DatePicker;
 import javafx.scene.layout.HBox;
 
 import java.time.*;
@@ -18,23 +17,24 @@ public class DateTimePickerController {
 
     private final HBox root;
 
-    private final JFXDatePicker datePicker = new JFXDatePicker(LocalDate.now());
-    private final JFXTimePicker timePicker = new JFXTimePicker(LocalTime.now());
+    private final DatePicker datePicker = new DatePicker(LocalDate.now());
+//    private final TimePicker timePicker = new TimePicker(LocalTime.now());
     private final ReadOnlyObjectWrapper<Instant> timestampProperty  = new ReadOnlyObjectWrapper<>();
 
 
     public DateTimePickerController() {
 
-        root = new HBox(datePicker, timePicker);
+       //root = new HBox(datePicker, timePicker);
+        root = new HBox(datePicker);
 
         ObjectBinding<Instant> dateBinding = Bindings.createObjectBinding(
                 this::getTimestamp, datePicker.valueProperty());
 
-        ObjectBinding<Instant> timeBinding = Bindings.createObjectBinding(
-                this::getTimestamp, timePicker.valueProperty());
+//        ObjectBinding<Instant> timeBinding = Bindings.createObjectBinding(
+//                this::getTimestamp, timePicker.valueProperty());
 
         timestampProperty.bind(dateBinding);
-        timestampProperty.bind(timeBinding);
+//        timestampProperty.bind(timeBinding);
 
     }
 
@@ -42,13 +42,13 @@ public class DateTimePickerController {
         return timestampProperty.getReadOnlyProperty();
     }
 
-    public JFXDatePicker getDatePicker() {
+    public DatePicker getDatePicker() {
         return datePicker;
     }
 
-    public JFXTimePicker getTimePicker() {
-        return timePicker;
-    }
+//    public JFXTimePicker getTimePicker() {
+//        return timePicker;
+//    }
 
     public HBox getRoot() {
         return root;
@@ -56,15 +56,15 @@ public class DateTimePickerController {
 
     public Instant getTimestamp() {
         LocalDate localDate = datePicker.getValue();
-        LocalTime localTime = timePicker.getValue();
-        return LocalDateTime.of(localDate, localTime)
+//        LocalTime localTime = timePicker.getValue();
+        return LocalDateTime.of(localDate, LocalTime.now())
                 .toInstant(OffsetDateTime.now().getOffset());
     }
 
     public void setTimestamp(Instant timestamp) {
         LocalDateTime localDateTime = timestamp.atZone(ZoneId.systemDefault()).toLocalDateTime();
         datePicker.setValue(localDateTime.toLocalDate());
-        timePicker.setValue(localDateTime.toLocalTime());
+//        timePicker.setValue(localDateTime.toLocalTime());
     }
 
 

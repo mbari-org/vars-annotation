@@ -1,13 +1,14 @@
 package org.mbari.vars.ui.mediaplayers.macos.avf;
 
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXRadioButton;
+
 import java.net.URL;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
@@ -38,16 +39,16 @@ public class MacImageCaptureSettingsPaneController implements SettingsPane  {
     private GridPane root;
 
     @FXML
-    private JFXRadioButton noneRadioButton;
+    private RadioButton noneRadioButton;
 
     @FXML
-    private JFXRadioButton avfRadioButton;
+    private RadioButton avfRadioButton;
 
     @FXML
-    private JFXRadioButton bmRadioButton;
+    private RadioButton bmRadioButton;
 
     @FXML
-    private JFXComboBox<String> deviceComboBox;
+    private ComboBox<String> deviceComboBox;
 
     private final ToggleGroup toggleGroup = new ToggleGroup();
 
