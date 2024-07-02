@@ -14,7 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.prefs.Preferences;
@@ -39,6 +42,7 @@ public class ConceptButtonPaneController {
     private static final String BAD_KEY = "__unknown__";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     /**
      *
@@ -69,6 +73,7 @@ public class ConceptButtonPaneController {
             pane = new FlowPane();
             pane.setUserData(this);
             pane.setPrefSize(800, 250);
+            pane.setCache(false);
             dragPaneDecorator.decorate(pane);
             loadButtonsFromPreferences();
             // Save everything when a new button is added or removed
@@ -88,8 +93,7 @@ public class ConceptButtonPaneController {
                 new ConceptButtonFactory(toolBox);
         var eventBus = toolBox.getEventBus();
         // Load async so we don't block ui
-//        toolBox.getExecutorService().submit(() -> {
-        Thread.ofVirtual().start(() -> {
+        executorService.submit(() -> {
             try {
                 // NOTE: Don't add any progress bar. That's done in ConceptButtonPanesController
                 List<Button> buttons = Arrays.stream(panePreferences.childrenNames())
@@ -103,8 +107,10 @@ public class ConceptButtonPaneController {
                         .filter(buttonPref -> !buttonPref.getButton().getText().equals(BAD_KEY))
                         .sorted(Comparator.comparingInt(ButtonPref::getOrder))
                         .map(ButtonPref::getButton)
-                        .collect(Collectors.toList());
-                Platform.runLater(() -> getPane().getChildren().addAll(buttons));
+                        .toList();
+                Platform.runLater(() -> {
+                    getPane().getChildren().addAll(buttons);
+                });
             }
             catch (Exception e) {
                 eventBus.send(new ShowNonfatalErrorAlert(
@@ -121,46 +127,51 @@ public class ConceptButtonPaneController {
      * When removing the tab pane
      */
     private void saveButtonsToPreferences() {
-        List<Button> buttons = getPane().getChildren()
-                .stream()
-                .filter(n -> n.getUserData().toString().equalsIgnoreCase(ConceptButtonFactory.USERDATA))
-                .map(n -> (Button) n)
-                .toList();
 
-        // Store existing buttons
-        IntStream.range(0, buttons.size())
-                .forEach(i -> {
-                    Button button = buttons.get(i);
-                    String name = button.getText();
-                    Preferences prefs = panePreferences.node(name);
-                    prefs.putInt(PREF_BUTTON_ORDER, i);
-                    prefs.put(PREF_BUTTON_NAME, name);
+        executorService.submit(() -> {
+
+            List<Button> buttons = getPane().getChildren()
+                    .stream()
+                    .filter(n -> n.getUserData().toString().equalsIgnoreCase(ConceptButtonFactory.USERDATA))
+                    .map(n -> (Button) n)
+                    .toList();
+
+
+            // Store existing buttons
+            IntStream.range(0, buttons.size())
+                    .forEach(i -> {
+                        Button button = buttons.get(i);
+                        String name = button.getText();
+                        Preferences prefs = panePreferences.node(name);
+                        prefs.putInt(PREF_BUTTON_ORDER, i);
+                        prefs.put(PREF_BUTTON_NAME, name);
+                    });
+
+            // Remove non-longer used buttons
+            try {
+                // Arrays.asList returns unmodifiable list. Need to create ArrayList.
+                List<String> storedButtons = new ArrayList<>(Arrays.asList(panePreferences.childrenNames()));
+                List<String> existingButtons = buttons.stream()
+                        .map(Button::getText)
+                        .toList();
+                storedButtons.removeAll(existingButtons);
+                storedButtons.forEach(s -> {
+                    try {
+                        panePreferences.node(s).removeNode();
+                    }
+                    catch (Exception e) {
+                        log.error("Failed to delete concept button named '" + s + "'.", e);
+                    }
                 });
-
-        // Remove non-longer used buttons
-        try {
-            // Arrays.asList returns unmodifiable list. Need to create ArrayList.
-            List<String> storedButtons = new ArrayList<>(Arrays.asList(panePreferences.childrenNames()));
-            List<String> existingButtons = buttons.stream()
-                    .map(Button::getText)
-                    .collect(Collectors.toList());
-            storedButtons.removeAll(existingButtons);
-            storedButtons.forEach(s -> {
-                try {
-                    panePreferences.node(s).removeNode();
-                }
-                catch (Exception e) {
-                    log.error("Failed to delete concept button named '" + s + "'.", e);
-                }
-            });
-        }
-        catch (Exception e) {
-            eventBus.send(new ShowNonfatalErrorAlert(
-                    i18n.getString("cbpanel.alert.prefsfail.save.title"),
-                    i18n.getString("cbpanel.alert.prefsfail.save.header"),
-                    i18n.getString("cbpanel.alert.prefsfail.save.content"),
-                    e));
-        }
+            }
+            catch (Exception e) {
+                eventBus.send(new ShowNonfatalErrorAlert(
+                        i18n.getString("cbpanel.alert.prefsfail.save.title"),
+                        i18n.getString("cbpanel.alert.prefsfail.save.header"),
+                        i18n.getString("cbpanel.alert.prefsfail.save.content"),
+                        e));
+            }
+        });
 
     }
 }

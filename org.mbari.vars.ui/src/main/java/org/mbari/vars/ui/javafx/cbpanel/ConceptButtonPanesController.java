@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.mbari.vars.core.util.Preconditions;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.events.ForceRedrawEvent;
 import org.mbari.vars.ui.javafx.timeline.TimelineController;
 import org.mbari.vars.ui.messages.*;
 import org.mbari.vars.ui.javafx.Icons;
@@ -71,6 +72,7 @@ public class ConceptButtonPanesController {
             root = new BorderPane();
             root.setCenter(getTabPane());
             root.setRight(getControlPane());
+            root.setCache(false);
 
         }
         return root;
@@ -180,12 +182,22 @@ public class ConceptButtonPanesController {
             Preferences tabsPrefs = tabsPrefsOpt.get();
 
             toolBox.getExecutorService().submit(() -> {
-                try {
-                    Arrays.stream(tabsPrefs.childrenNames())
-                            .forEach(tabName -> {
-                                Preferences tabPrefs = tabsPrefs.node(tabName);
-                                String name = tabPrefs.get(PREFKEY_TABNAME, "dummy");
-                                Platform.runLater(() -> {
+                    Platform.runLater(() -> {
+
+                        String[] childNames;
+                        try {
+                            childNames = tabsPrefs.childrenNames();
+                        }
+                        catch (BackingStoreException e) {
+                            log.error("VARS had a problem loading user tabs for user: " + toolBox.getData().getUser());
+                            childNames = new String[]{};
+                        }
+
+                        Arrays.stream(childNames)
+                                .forEach(tabName -> {
+                                    Preferences tabPrefs = tabsPrefs.node(tabName);
+                                    String name = tabPrefs.get(PREFKEY_TABNAME, "dummy");
+
                                     ConceptButtonPaneController controller = new ConceptButtonPaneController(
                                             toolBox, tabsPrefs.node(tabName));
                                     controller.setLocked(lockProperty.get());
@@ -193,13 +205,11 @@ public class ConceptButtonPanesController {
                                     tab.setClosable(false);
                                     tab.setOnClosed(e -> removeTab(tab));
                                     getTabPane().getTabs().add(tab);
-                                });
 
-                            });
-                }
-                catch (BackingStoreException e) {
-                    log.error("VARS had a problem loading user tabs for user: " + toolBox.getData().getUser());
-                }
+                                });
+                        toolBox.getEventBus().send(new ForceRedrawEvent());
+                    });
+
             });
 
         }

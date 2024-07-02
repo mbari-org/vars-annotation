@@ -2,6 +2,7 @@ package org.mbari.vars.ui;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
@@ -69,7 +70,6 @@ public class AppController {
             scene.getStylesheets()
                     .addAll(toolBox.getStylesheets());
             new KeyMapping(toolBox, scene, paneController);
-
         }
         return scene;
 
@@ -181,6 +181,8 @@ public class AppController {
                 .subscribe(alerts::showAlert);
 
     }
+
+
 
     private void saveImage(SaveImageMsg msg) {
         URL url = msg.getUrl();

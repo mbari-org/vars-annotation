@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import org.mbari.vars.ui.commands.CommandManager;
 import org.mbari.vars.core.util.ActiveAppBeacon;
 import org.mbari.vars.core.util.ActiveAppPinger;
+import org.mbari.vars.ui.events.ForceRedrawEvent;
 import org.mbari.vars.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,6 +111,28 @@ public class App extends Application {
             Platform.exit();
             System.exit(0);
         });
+
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(ForceRedrawEvent.class)
+                .subscribe(e -> {
+                    var width = primaryStage.getWidth();
+                    toolBox.getExecutorService().submit(() -> {
+                        Platform.runLater(() -> {
+                            primaryStage.setWidth(width + 1);
+                        });
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ex) {
+                            // no-op
+                        }
+                        Platform.runLater(() -> {
+                            primaryStage.setWidth(width);
+                        });
+                    });
+
+                });
+
         primaryStage.show();
     }
 
