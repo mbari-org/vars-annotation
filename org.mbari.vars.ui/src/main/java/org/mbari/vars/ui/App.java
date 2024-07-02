@@ -121,6 +121,7 @@ public class App extends Application {
                         Platform.runLater(() -> {
                             primaryStage.setWidth(width + 1);
                         });
+                        // Let the UI thread catch up and redraw
                         try {
                             Thread.sleep(100);
                         } catch (InterruptedException ex) {
@@ -130,7 +131,6 @@ public class App extends Application {
                             primaryStage.setWidth(width);
                         });
                     });
-
                 });
 
         primaryStage.show();

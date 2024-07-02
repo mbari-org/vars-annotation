@@ -499,6 +499,20 @@ public class AppPaneController {
         return openPopOver;
     }
 
+    private void setUser(String username) {
+        if (username != null) {
+            toolBox.getServices()
+                    .getUserService()
+                    .findAllUsers()
+                    .thenAccept(users -> {
+                        Optional<User> opt = users.stream()
+                                .filter(u -> u.getUsername().equals(username))
+                                .findFirst();
+                        opt.ifPresent(user -> toolBox.getEventBus().send(new UserChangedEvent(user)));
+                    });
+        }
+    }
+
     public ComboBox<String> getUsersComboBox() {
         if (usersComboBox == null) {
 
@@ -520,25 +534,29 @@ public class AppPaneController {
                             ObservableList<String> items = FXCollections.observableList(newItems);
                             usersComboBox.setItems(items);
                             usersComboBox.getSelectionModel().select(user.getUsername());
+                            setUser(user.getUsername());
                         });
                     });
 
-            // When a username is selected send a change event
-            usersComboBox.getSelectionModel()
-                    .selectedItemProperty()
-                    .addListener((obs, oldv, newv) -> {
-                if (newv != null) {
-                    toolBox.getServices()
-                            .getUserService()
-                            .findAllUsers()
-                            .thenAccept(users -> {
-                                Optional<User> opt = users.stream()
-                                        .filter(u -> u.getUsername().equals(newv))
-                                        .findFirst();
-                                opt.ifPresent(user -> eventBus.send(new UserChangedEvent(user)));
-                            });
+            usersComboBox.showingProperty().addListener((obs, oldv, newv) -> {
+                if (newv != null && !newv) {
+                    setUser(usersComboBox.getSelectionModel().getSelectedItem());
                 }
             });
+
+            usersComboBox.onHiddenProperty().addListener((obs, oldv, newv) -> {
+                setUser(usersComboBox.getSelectionModel().getSelectedItem());
+            });
+
+
+            // When a username is selected send a change event
+//            usersComboBox.getSelectionModel()
+//                    .selectedItemProperty()
+//                    .addListener((obs, oldv, newv) -> {
+//                if (newv != null && !usersComboBox.isShowing()) {
+//                    setUser(newv);
+//                }
+//            });
 
             loadUsers();
 
@@ -571,6 +589,7 @@ public class AppPaneController {
                         String defaultUser = System.getProperty("user.name");
                         if (usernames.contains(defaultUser)) {
                             usersComboBox.getSelectionModel().select(defaultUser);
+                            setUser(defaultUser);
                         }
                     });
                 });
