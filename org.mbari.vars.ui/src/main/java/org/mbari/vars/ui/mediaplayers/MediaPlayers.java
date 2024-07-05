@@ -2,6 +2,7 @@ package org.mbari.vars.ui.mediaplayers;
 
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.ui.events.ForceReloadLocalizationsEvent;
 import org.mbari.vars.ui.events.MediaChangedEvent;
 import org.mbari.vars.ui.events.MediaControlsChangedEvent;
 import org.mbari.vars.ui.events.MediaPlayerChangedEvent;
@@ -58,6 +59,7 @@ public class MediaPlayers {
         // Close the old one
         synchronized (lock) {
             close();
+            var eventBus = toolBox.getEventBus();
 
             try {
                 StreamUtilities.toStream(serviceLoader.iterator())
@@ -68,20 +70,21 @@ public class MediaPlayers {
                         .ifPresent(factory -> {
                             try {
                                 var mediaControls = factory.safeOpen(media);
-                                toolBox.getEventBus()
-                                        .send(new MediaControlsChangedEvent(MediaPlayers.this,
+                                eventBus.send(new MediaControlsChangedEvent(MediaPlayers.this,
                                                 mediaControls));
                             } catch (Exception e) {
                                 log.error("Unable to load services", e);
-                                toolBox.getEventBus()
-                                        .send(new MediaPlayerChangedEvent(null, null));
+                                eventBus.send(new MediaPlayerChangedEvent(null, null));
                             }
+                            // #174: Annotations are sometimes send before the media
+                            // is ready. So this triggers a clear and reload in the
+                            // OutgoingController
+                            eventBus.send(new ForceReloadLocalizationsEvent());
                         });
 
             } catch (ServiceConfigurationError e) {
                 log.error("Unable to load services", e);
-                toolBox.getEventBus()
-                        .send(new MediaPlayerChangedEvent(null, null));
+                eventBus.send(new MediaPlayerChangedEvent(null, null));
             }
         }
     }

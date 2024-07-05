@@ -73,9 +73,7 @@ public class IncomingController {
             var annotation = localizedAnnotation.annotation();
             var association = localizedAnnotation.association();
 
-            // https://github.com/mbari-org/vars-annotation/issues/170
-            remoteControl.getVideoIO().send(new RemoveLocalizationsCmd(remoteControl.getVideoIO().getUuid(),
-                    List.of(loc.getUuid())));
+
             var videoIndex = new VideoIndex(localizedAnnotation.annotation().getElapsedTime());
             var cmd = new CreateAnnotationAtIndexWithAssociationCmd(videoIndex,
                     annotation.getConcept(),
@@ -83,6 +81,15 @@ public class IncomingController {
                     IncomingController.class);
                     //LocalizationController.EVENT_SOURCE); #170
             toolBox.getEventBus().send(cmd);
+
+            // Two issues here. The first is that we need to get the localization UUID to match the
+            // corresponding association UUID.So we just create a new localization and delete the original
+            // The second issue is that the localization was being removed too quickly. So we send the
+            // remove after the new one has been created (Yes order is important here.).
+            // https://github.com/mbari-org/vars-annotation/issues/170
+            // https://github.com/mbari-org/vars-annotation/issues/174
+            remoteControl.getVideoIO().send(new RemoveLocalizationsCmd(remoteControl.getVideoIO().getUuid(),
+                    List.of(loc.getUuid())));
 
         });
 

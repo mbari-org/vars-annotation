@@ -4,10 +4,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.AnnotationsAddedEvent;
-import org.mbari.vars.ui.events.AnnotationsChangedEvent;
-import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
-import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.ui.events.*;
 import org.mbari.vars.ui.mediaplayers.sharktopoda.Constants;
 import org.mbari.vcr4j.remote.control.RVideoIO;
 import org.mbari.vcr4j.remote.control.commands.localization.*;
@@ -38,32 +35,48 @@ public class OutgoingController {
     }
 
     private void init(EventBus eventBus) {
-        disposables.add(eventBus.toObserverable()
+
+        var observable = eventBus.toObserverable();
+
+        disposables.add(observable
                 .ofType(AnnotationsAddedEvent.class)
                 .filter(evt -> evt.getEventSource() != Constants.LOCALIZATION_EVENT_SOURCE)
                 .filter(evt -> !evt.get().isEmpty())
                 .subscribe(evt -> handle(evt.get(), Action.Add)));
 
-        disposables.add(eventBus.toObserverable()
+        disposables.add(observable
                 .ofType(AnnotationsRemovedEvent.class)
                 .filter(evt -> evt.getEventSource() != Constants.LOCALIZATION_EVENT_SOURCE)
                 .filter(evt -> !evt.get().isEmpty())
                 .subscribe(evt -> handle(evt.get(), Action.Remove)));
 
-        disposables.add(eventBus.toObserverable()
+        disposables.add(observable
                 .ofType(AnnotationsChangedEvent.class)
                 .filter(evt -> evt.getEventSource() != Constants.LOCALIZATION_EVENT_SOURCE)
                 .filter(evt -> !evt.get().isEmpty())
                 .subscribe(evt -> handle(evt.get(), Action.Update)));
 
-        disposables.add(eventBus.toObserverable()
+        disposables.add(observable
                 .ofType(AnnotationsSelectedEvent.class)
                 .filter(evt -> evt.getEventSource() != Constants.LOCALIZATION_EVENT_SOURCE)
                 .subscribe(evt -> handle(evt.get(), Action.Select)));
+
+        // #174: Force reload localizations in the video player
+        disposables.add(observable
+                .ofType(ForceReloadLocalizationsEvent.class)
+                .subscribe(evt -> forceReload()));
+    }
+
+    /**
+     * Clear and re-send the localizations to the video player
+     */
+    private void forceReload() {
+        io.send(new ClearLocalizationsCmd(new ClearLocalizationsCmd.Request(io.getUuid())));
+        handle(toolBox.getData().getAnnotations(), Action.Add);
     }
 
     private void handle(Collection<Annotation> annotations, Action action) {
-        var media = toolBox.getData().getMedia();
+//        var media = toolBox.getData().getMedia();
         List<Localization> localizations = LocalizedAnnotation.from(annotations)
                 .stream()
                 .flatMap(opt -> opt.toLocalization(toolBox).stream())

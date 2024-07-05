@@ -1,30 +1,34 @@
 package org.mbari.vars.ui.mediaplayers.sharktopoda2;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class SharktopodaState {
 
-    private final List<UUID> selectedLocalizations = new CopyOnWriteArrayList<>();
+    private final Set<UUID> selectedLocalizations = new CopyOnWriteArraySet<>();
+    private final ReentrantLock lock = new ReentrantLock();
 
     public void setSelectedLocalizations(Collection<UUID> selectedLocalizations) {
-        synchronized (this.selectedLocalizations) {
+            lock.lock();
             this.selectedLocalizations.clear();
-            this.selectedLocalizations.addAll(selectedLocalizations);
-        }
+            if (selectedLocalizations != null) {
+                this.selectedLocalizations.addAll(selectedLocalizations);
+            }
+            lock.unlock();
     }
 
     public boolean isDifferentThanSelected(Collection<UUID> localizations) {
+//        var selected = new HashSet<>(selectedLocalizations);
+//        var copy = new HashSet<>(localizations);
+//        return !selected.equals(copy);
         var isDiff = true;
         if (!localizations.isEmpty() && !selectedLocalizations.isEmpty()) {
-            var copy = new ArrayList<>(localizations);
-            var copySelected = new ArrayList<>(selectedLocalizations);
+            var copy = new HashSet<>(localizations);
+            var copySelected = new HashSet<>(selectedLocalizations);
             if (copy.size() == copySelected.size()) {
                 copy.removeAll(copySelected);
-                isDiff = copy.size() != 0;
+                isDiff = !copy.isEmpty();
             }
         }
         return isDiff;

@@ -95,6 +95,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                         remoteControl.close();
                         incomingController.close();
                         outgoingController.close();
+                        sharktopodaState.setSelectedLocalizations(null);
                     });
 
         });

@@ -23,11 +23,16 @@ public class MediaPlayer<S extends VideoState, E extends VideoError> extends org
     private final Runnable shutdownHook;
     private final Media media;
 
-    public MediaPlayer(Media media, ImageCaptureService imageCaptureService, VideoIO<S, E> videoIO) {
+    public MediaPlayer(Media media,
+                       ImageCaptureService imageCaptureService,
+                       VideoIO<S, E> videoIO) {
         this(media, imageCaptureService, videoIO, () -> {});
     }
 
-    public MediaPlayer(Media media, ImageCaptureService imageCaptureService, VideoIO<S, E> io, Runnable shutdownHook) {
+    public MediaPlayer(Media media,
+                       ImageCaptureService imageCaptureService,
+                       VideoIO<S, E> io,
+                       Runnable shutdownHook) {
         super(io);
         this.media = media;
         this.imageCaptureService = imageCaptureService;
