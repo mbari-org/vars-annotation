@@ -62,6 +62,10 @@ public class JXAnnotationTableController {
                     SwingUtilities.invokeLater(() -> {
                         Collection<Annotation> annotations = e.get();
                         annotations.forEach(tableModel::updateAnnotation);
+                        if (annotations.size() > 20) {
+                            table.revalidate();
+                            table.repaint();
+                        }
                         toolBox.getEventBus()
                                 .send(new AnnotationsSelectedEvent(JXAnnotationTableController.this, annotations));
                     });
