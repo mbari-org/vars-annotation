@@ -63,6 +63,7 @@ public class JXAnnotationTableController {
                         Collection<Annotation> annotations = e.get();
                         annotations.forEach(tableModel::updateAnnotation);
                         if (annotations.size() > 20) {
+                            // #155 - force redraw of the table if we have a lot of changes
                             table.revalidate();
                             table.repaint();
                         }
