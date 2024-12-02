@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URI;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -81,10 +82,11 @@ public class RazielSettingsPaneController implements SettingsPane {
             var ok = urlText != null && userText != null && pwdText != null &&
                     urlText.length() > 0 && userText.length() > 0 && pwdText.length() > 0;
             if (ok) {
-                if (!urlText.startsWith("http://")) {
-                    urlText = "http://" + urlText;
-                }
-                URL url = new URL(urlText);
+
+                // if (!urlText.startsWith("http://")) {
+                //     urlText = "http://" + urlText;
+                // }
+                URL url = URI.create(urlText).toURL();
                 var rcp = new RazielConnectionParams(url, userText, pwdText);
                 return Optional.of(rcp);
             }

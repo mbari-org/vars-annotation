@@ -4,6 +4,7 @@ import org.mbari.vars.core.crypto.AES;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -21,7 +22,7 @@ public record RazielConnectionParams(URL url, String username, String password) 
         if (Files.exists(file)) {
             try {
                 var lines = Files.readAllLines(file);
-                var url = new URL(lines.get(0));
+                var url = URI.create(lines.get(0)).toURL();
                 var username  = aes.decrypt(lines.get(1));
                 var password = aes.decrypt(lines.get(2));
                 return Optional.of(new RazielConnectionParams(url, username, password));

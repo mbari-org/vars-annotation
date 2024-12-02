@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URI;
 import java.time.Duration;
 import java.util.function.Function;
 
@@ -25,7 +26,7 @@ public abstract class BaseConfig {
   public BaseConfig(Config config) {
     this.config = config;
     try {
-      defaultUrl = new URL("http://localhost");
+      defaultUrl = URI.create("http://localhost").toURL();
     }
     catch (MalformedURLException e) {
       throw new RuntimeException("Unable to create a default URL for config values", e);
@@ -46,7 +47,7 @@ public abstract class BaseConfig {
     String url = null;
     try {
       url = config.getString(path);
-      return new URL(url);
+      return URI.create(url).toURL();
     }
     catch (MalformedURLException e) {
       log.warn("The URL {} defined in the config at {} is malformed", url, path);
