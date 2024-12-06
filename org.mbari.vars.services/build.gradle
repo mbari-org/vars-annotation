@@ -32,7 +32,7 @@ dependencies {
     implementation 'jakarta.activation:jakarta.activation-api'
     implementation 'javax.inject:javax.inject'
     implementation 'org.mbari.vcr4j:vcr4j-core'
-    implementation 'org.mbari:mbarix4j'
+    // implementation 'org.mbari:mbarix4j'
     implementation 'org.slf4j:slf4j-api'
 
 //    implementation('com.google.inject:guice') {

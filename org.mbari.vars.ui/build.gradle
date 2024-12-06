@@ -20,7 +20,7 @@ dependencies {
     implementation 'org.mbari.vcr4j:vcr4j-remote'
 //    implementation 'org.mbari.vcr4j:vcr4j-sharktopoda'
 //    implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client'
-    implementation 'org.mbari:mbarix4j'
+    // implementation 'org.mbari:mbarix4j'
     implementation 'org.slf4j:slf4j-api'
     implementation 'org.swinglabs.swingx:swingx-all'
 

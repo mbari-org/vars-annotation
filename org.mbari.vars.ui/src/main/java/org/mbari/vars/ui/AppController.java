@@ -6,7 +6,6 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
-import mbarix4j.io.IOUtilities;
 import org.mbari.vars.core.EventBus;
 import org.mbari.vars.services.CachedMediaService;
 import org.mbari.vars.services.MediaService;
@@ -23,6 +22,8 @@ import org.mbari.vars.ui.javafx.Alerts;
 import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
 import org.mbari.vars.ui.services.ConcurrentAnnotationDecorator;
 import org.mbari.vars.ui.javafx.AppPaneController;
+
+import mbarix4j.io.IOUtilities;
 import mbarix4j.net.URLUtilities;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;

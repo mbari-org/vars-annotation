@@ -11,7 +11,7 @@ module org.mbari.vars.ui {
   requires javafx.media;
   requires javafx.swing;
   requires javax.inject;
-  requires mbarix4j;
+  // requires mbarix4j;
   requires org.controlsfx.controls;
   requires org.kordamp.ikonli.core;
   requires org.kordamp.ikonli.javafx;
