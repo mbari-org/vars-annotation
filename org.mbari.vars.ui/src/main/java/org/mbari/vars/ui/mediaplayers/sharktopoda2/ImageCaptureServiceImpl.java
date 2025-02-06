@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.time.Duration;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class ImageCaptureServiceImpl implements ImageCaptureService {
 
@@ -52,12 +53,16 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
     @Override
     public Framegrab capture(File file) {
         if (io != null) {
+
             var observable = eventBus.toObserverable()
                     .ofType(FrameCaptureDoneCmd.class)
                     .observeOn(Schedulers.io())
                     .map(this::captureDone);
+            // log.atWarn().log("Sending frame capture command to Sharktopoda. Saving image to {}", file.getAbsolutePath());
             io.send(new FrameCaptureCmd(io.getUuid(), UUID.randomUUID(), file.getAbsolutePath()));
-            return observable.blockingFirst();
+            // log.atWarn().log("Waiting for frame capture done command from Sharktopoda");
+            return observable.timeout(10, TimeUnit.SECONDS).blockingFirst();
+//            return observable.blockingFirst();
         }
         else {
             throw new IllegalStateException("The video io object is null. Unable to send a command to Sharktopoda");
