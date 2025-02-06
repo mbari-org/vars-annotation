@@ -140,6 +140,7 @@ public class FramegrabCmd implements Command {
                                     MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer) {
 
 
+        //log.atWarn().log("Capturing framegrab for " + media.getVideoName() + " at " + media.getUri());
         // -- Capture image
         File imageFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".png");
         Optional<ImageData> imageDataOpt = FrameCaptureService.capture(imageFile, media, mediaPlayer);

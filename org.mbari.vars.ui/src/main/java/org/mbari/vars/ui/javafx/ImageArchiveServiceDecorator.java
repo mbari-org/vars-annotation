@@ -173,19 +173,23 @@ public class ImageArchiveServiceDecorator {
         CompletableFuture<org.mbari.vars.services.model.Image> readImageFuture = CompletableFuture.supplyAsync(() -> {
             String ext = parseExtension(imageUrl);
             String description = null;
+            String formatName = "";
             switch (ext) {
                 case "jpg":
                     description = "compressed image";
+                    formatName = "jpeg";
                     break;
                 case "png":
                     description = "uncompressed image";
+                    formatName = "png";
                     break;
                 default:
                     description = null;
+                    formatName = ext;
             }
             BufferedImage bi = imageData.getBufferedImage();
             org.mbari.vars.services.model.Image image = new org.mbari.vars.services.model.Image();
-            image.setFormat("image/" + ext);
+            image.setFormat("image/" + formatName);
             image.setHeight(bi.getHeight());
             image.setWidth(bi.getWidth());
             image.setVideoReferenceUuid(imageData.getVideoReferenceUuid());

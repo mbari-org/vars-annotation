@@ -1,5 +1,7 @@
 package org.mbari.vars.ui.commands;
 
+import org.mbari.vars.services.ConceptService;
+import org.mbari.vars.services.model.ConceptDetails;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Association;
@@ -35,18 +37,50 @@ public class CreateAssociationsCmd implements Command {
     @Override
     public void apply(UIToolBox toolBox) {
         AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        CompletableFuture[] futures = originalAnnotations.stream()
-                .map(anno -> annotationService.createAssociation(anno.getObservationUuid(), associationTemplate)
-                        .thenAccept(association -> addedAssociations.add(association)))
-                .toArray(i -> new CompletableFuture[i]);
-        CompletableFuture.allOf(futures)
-                .thenAccept(v -> {
-                    AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
-                    Set<UUID> uuids = originalAnnotations.stream()
-                            .map(Annotation::getObservationUuid)
-                            .collect(Collectors.toSet());
-                    asd.refreshAnnotationsView(uuids);
+        ConceptService conceptService = toolBox.getServices().getConceptService();
+
+        // Check that the toConcept is a primary name if it is actually in the knowledgebase. If not
+        // then we will use the template as is.
+        conceptService.findDetails(associationTemplate.getToConcept())
+                .thenAccept(opt -> {
+
+                    final var finalTemplate = getAssociation(opt);
+                    var futures = originalAnnotations.stream()
+                            .map(anno -> annotationService.createAssociation(anno.getObservationUuid(), finalTemplate)
+                                    .thenAccept(association -> addedAssociations.add(association)))
+                            .toArray(CompletableFuture[]::new);
+
+                    CompletableFuture.allOf(futures)
+                            .thenAccept(v -> {
+                                AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
+                                Set<UUID> uuids = originalAnnotations.stream()
+                                        .map(Annotation::getObservationUuid)
+                                        .collect(Collectors.toSet());
+                                asd.refreshAnnotationsView(uuids);
+                            });
+
                 });
+
+    }
+
+    /**
+     * If the toConcept is not present in the database then we will use the template as is. Otherwise
+     * @param opt
+     * @return
+     */
+    private Association getAssociation(Optional<ConceptDetails> opt) {
+        var template = associationTemplate;
+        if (opt.isPresent()) {
+            var conceptDetails = opt.get();
+            if (!conceptDetails.getName().equals(template.getToConcept())) {
+                template = new Association(associationTemplate.getLinkName(),
+                        conceptDetails.getName(),
+                        associationTemplate.getLinkValue(),
+                        associationTemplate.getMimeType());
+            }
+        }
+
+        return template;
     }
 
     @Override

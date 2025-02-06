@@ -51,8 +51,8 @@ public class SharktoptodaControlPane extends Pane {
     Button fastForwardButton;
     Button playButton;
     Button frameAdvanceButton;
-    Label elapsedTimeLabel = new Label("00:00");
-    Label durationLabel = new Label("00:00");
+    Label elapsedTimeLabel = new Label("00:00:00");
+    Label durationLabel = new Label("00:00:00");
     Label recordedTimestampLabel = new Label("--:--:--");
     private Color color = Color.LIGHTGRAY;
 //    Text speedUpIcon = glyphsFactory.createIcon(MaterialIcon.ADD, "20px");
@@ -307,7 +307,8 @@ public class SharktoptodaControlPane extends Pane {
     }
 
     private String formatSeconds(long seconds) {
-        return String.format("%02d:%02d", (seconds % 3600) / 60, (seconds % 60));
+        return String.format("%02d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60);
+//        return String.format("%02d:%02d", (seconds % 3600) / 60, (seconds % 60));
     }
 
     private void updateState(VideoState videoState) {
