@@ -173,7 +173,7 @@ public class ImageArchiveServiceDecorator {
         CompletableFuture<org.mbari.vars.services.model.Image> readImageFuture = CompletableFuture.supplyAsync(() -> {
             String ext = parseExtension(imageUrl);
             String description = null;
-            String formatName = ""
+            String formatName = "";
             switch (ext) {
                 case "jpg":
                     description = "compressed image";
