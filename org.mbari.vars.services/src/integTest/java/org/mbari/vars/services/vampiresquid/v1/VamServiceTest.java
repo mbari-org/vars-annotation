@@ -2,12 +2,8 @@ package org.mbari.vars.services.vampiresquid.v1;
 
 import static org.junit.Assert.*;
 
-import mbarix4j.net.URLUtilities;
 import org.junit.Test;
-import org.mbari.vars.services.AssertUtils;
-import org.mbari.vars.services.MediaService;
-import org.mbari.vars.services.TestToolbox;
-import org.mbari.vars.services.TestUtils;
+import org.mbari.vars.services.*;
 import org.mbari.vars.services.model.Media;
 
 public class VamServiceTest {

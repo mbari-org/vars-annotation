@@ -20,9 +20,10 @@ module org.mbari.vars.services {
   requires retrofit2.converter.gson;
   requires typesafe.config;
   requires vcr4j.core;
+    requires java.net.http;
 
 
-  opens org.mbari.vars.services.impl.ml to com.google.gson;
+    opens org.mbari.vars.services.impl.ml to com.google.gson;
   opens org.mbari.vars.services.model to com.google.gson;
 
   exports org.mbari.vars.services;

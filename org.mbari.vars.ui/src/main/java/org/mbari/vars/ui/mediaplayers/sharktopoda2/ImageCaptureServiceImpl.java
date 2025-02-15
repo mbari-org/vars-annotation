@@ -56,7 +56,7 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
 
             var observable = eventBus.toObserverable()
                     .ofType(FrameCaptureDoneCmd.class)
-                    .observeOn(Schedulers.io())
+//                    .observeOn(Schedulers.io())
                     .map(this::captureDone);
             // log.atWarn().log("Sending frame capture command to Sharktopoda. Saving image to {}", file.getAbsolutePath());
             io.send(new FrameCaptureCmd(io.getUuid(), UUID.randomUUID(), file.getAbsolutePath()));

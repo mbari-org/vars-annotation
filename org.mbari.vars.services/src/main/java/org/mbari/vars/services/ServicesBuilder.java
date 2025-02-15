@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.mbari.vars.services.impl.annosaurus.v1.AnnoService;
 import org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory;
 import org.mbari.vars.services.impl.annosaurus.v1.AnnosaurusHttpClient;
+import org.mbari.vars.services.impl.panoptes.v1.PanoptesHttpClient;
 import org.mbari.vars.services.impl.panoptes.v1.PanoptesService;
 import org.mbari.vars.services.impl.panoptes.v1.PanoptesWebServiceFactory;
 import org.mbari.vars.services.impl.vampiresquid.v1.VamService;
@@ -199,13 +200,14 @@ public class ServicesBuilder {
   }
 
   public static ImageArchiveService buildImageArchiveService(String endpoint, Duration timeout, String clientSecret) {
-    PanoptesWebServiceFactory factory =
-            new PanoptesWebServiceFactory(endpoint, timeout);
-    RetrofitServiceFactory authFactory =
-            new BasicJWTAuthServiceFactorySC(endpoint, timeout);
-    AuthService authService =
-            new BasicJWTAuthService(authFactory, new Authorization("APIKEY", clientSecret));
-    return new PanoptesService(factory, authService);
+//    PanoptesWebServiceFactory factory =
+//            new PanoptesWebServiceFactory(endpoint, timeout);
+//    RetrofitServiceFactory authFactory =
+//            new BasicJWTAuthServiceFactorySC(endpoint, timeout);
+//    AuthService authService =
+//            new BasicJWTAuthService(authFactory, new Authorization("APIKEY", clientSecret));
+//    return new PanoptesService(factory, authService);
+    return new PanoptesHttpClient(endpoint, timeout, clientSecret);
   }
 
   private ImageArchiveService buildImageArchiveService() {

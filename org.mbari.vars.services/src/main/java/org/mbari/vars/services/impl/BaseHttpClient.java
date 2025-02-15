@@ -24,6 +24,7 @@ public class BaseHttpClient {
     public BaseHttpClient(HttpClient client, URI baseUri) {
         this.client = client;
         this.baseUri = baseUri;
+        log.atInfo().log("Base URI for " + getClass().getName() + " is " + baseUri);
     }
 
     public URI buildUri(String path) {
@@ -69,7 +70,7 @@ public class BaseHttpClient {
                 debugLog.logResponse(response);
                 if (response.statusCode() != okCode) {
                     future.completeExceptionally(new RuntimeException("Expected a status code of " + okCode
-                            + " but it was " +  response.statusCode() + " from " + request.method() + " " + request.uri()));
+                            + " but it was " +  response.statusCode() + " from " + request.method() + " " + request.uri() + "\n" + response.body()));
                     return;
                 }
                 if (fn != null) {

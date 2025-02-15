@@ -10,7 +10,7 @@ plugins {
 
 subprojects {
 
-    version = "2.2.0"
+    version = "2.2.3"
 
     apply plugin: 'com.adarshr.test-logger'
     apply plugin: 'com.github.ben-manes.versions'
@@ -53,19 +53,19 @@ subprojects {
     }
 
     ext {
-        javafxVersion = "23.0.1"
+        javafxVersion = "23.0.2"
     }
 
 
     dependencies {
 
         constraints {
-            implementation 'com.auth0:java-jwt:4.4.0'
+            implementation 'com.auth0:java-jwt:4.5.0'
             implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
             implementation 'com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2'
-            implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
-            implementation 'com.github.mizosoft.methanol:methanol:1.7.0'
-            implementation 'com.google.code.gson:gson:2.11.0'
+            implementation 'com.github.ben-manes.caffeine:caffeine:3.2.0'
+            implementation 'com.github.mizosoft.methanol:methanol:1.8.1'
+            implementation 'com.google.code.gson:gson:2.12.1'
             implementation 'com.google.inject:guice:7.0.0'
             implementation 'com.jfoenix:jfoenix:9.0.10'
             implementation 'com.squareup.okhttp3:logging-interceptor:3.14.4'
@@ -97,7 +97,7 @@ subprojects {
             implementation 'org.slf4j:slf4j-jdk-platform-logging:2.0.12'
             implementation 'org.slf4j:jul-to-slf4j:2.0.12'
             implementation 'org.swinglabs.swingx:swingx-all:1.6.5-1'
-            runtimeOnly 'ch.qos.logback:logback-classic:1.5.12'
+            runtimeOnly 'ch.qos.logback:logback-classic:1.5.16'
             runtimeOnly 'org.fusesource.jansi:jansi:2.4.1'
         }
 

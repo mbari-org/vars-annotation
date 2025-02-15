@@ -73,6 +73,7 @@ javafx {
  */
 
 def runtimeJvmArgs = [
+        '-Djdk.httpclient.HttpClient.log=requests,headers,content',
         '-XX:+TieredCompilation',
         '-XX:TieredStopAtLevel=1',
         '-Xms1g',

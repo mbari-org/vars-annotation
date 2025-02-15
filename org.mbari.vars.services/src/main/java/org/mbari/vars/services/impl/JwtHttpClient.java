@@ -56,6 +56,7 @@ public class JwtHttpClient extends BaseHttpClient {
 
 
     public CompletableFuture<Authorization> authorize() {
+        log.atInfo().log("Authorizing at " + getBaseUri());
         var request = HttpRequest.newBuilder()
                 .uri(getBaseUri())
                 .header(authHeaderKey, authHeaderValue) // .header("Authorization", "APIKEY " + apikey)
