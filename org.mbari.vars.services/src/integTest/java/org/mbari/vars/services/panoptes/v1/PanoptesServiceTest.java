@@ -24,11 +24,11 @@ import java.util.concurrent.CompletableFuture;
  */
 public class PanoptesServiceTest {
 
-    private Duration timeout = Duration.ofMillis(45000);
-    private ImageArchiveService service = TestToolbox.getServices().getImageArchiveService();
+    private final Duration timeout = Duration.ofMillis(45000);
+    private final ImageArchiveService service = TestToolbox.getServices().getImageArchiveService();
 
     @Test
-    public void testUpload() {
+    public void testJpgUpload() {
         URL imageUrl = getClass().getResource("/images/20191120T221422Z--be9152f9-cb21-4d4f-8b40-00085ebba626.jpg");
         File imageFile = URLUtilities.toFile(imageUrl);
         CompletableFuture<ImageUploadResults> f = service.upload("i2MAP", "9999",
@@ -36,10 +36,18 @@ public class PanoptesServiceTest {
         Optional<ImageUploadResults> results = await(f, timeout);
         assertTrue(results.isPresent());
         System.out.println(results.get());
-
     }
 
+    @Test
+    public void testPngUpload() {
+        URL imageUrl = getClass().getResource("/images/Ventana 3657 20111018T165317Z--d221b3f7-a9cc-4c31-ba29-86aaec9a11df--20250217T184259.137Z.png");
+        File imageFile = URLUtilities.toFile(imageUrl);
+        CompletableFuture<ImageUploadResults> f = service.upload("Ventana", "Ventana 3657",
+                "Ventana 3657 20111018T165317Z--d221b3f7-a9cc-4c31-ba29-86aaec9a11df--20250217T184259.137Z.png", imageFile.toPath());
+        Optional<ImageUploadResults> results = await(f, timeout);
+        assertTrue(results.isPresent());
+        System.out.println(results.get());
 
-
+    }
 
 }

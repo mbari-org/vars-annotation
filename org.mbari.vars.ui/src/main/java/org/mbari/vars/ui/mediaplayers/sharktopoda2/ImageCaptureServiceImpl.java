@@ -74,11 +74,13 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
         var elapsedTime = Duration.ofMillis(request.getElapsedTimeMillis());
         var videoIndex = new VideoIndex(elapsedTime);
         BufferedImage image = null;
+        var imageLocation = new File(request.getImageLocation());
         try {
-            image = ImageIO.read(new File(request.getImageLocation()));
+            image = ImageIO.read(imageLocation);
         } catch (Exception e) {
             log.warn("Image capture failed. Unable to read image back off disk", e);
         }
+        log.atDebug().log("Image capture complete. Read " + imageLocation.length() + " bytes from " + imageLocation.getAbsolutePath());
         return new Framegrab(image, videoIndex);
     }
 
