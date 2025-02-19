@@ -49,7 +49,7 @@ public class AppConfig extends ServiceConfig  {
     }
 
     public int getSharktopodaDefaultsFramegrabPort() {
-        return read("sharktopoda.defaults.framegrab.port", config::getInt, 5000);
+        return read("sharktopoda.defaults.framegrab.port", config::getInt, 5001);
     }
 
     public int getLocalizationDefaultsIncomingPort() {
