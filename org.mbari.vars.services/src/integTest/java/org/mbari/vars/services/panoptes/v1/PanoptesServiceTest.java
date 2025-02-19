@@ -9,13 +9,18 @@ import static org.mbari.vars.core.util.AsyncUtils.await;
 import org.mbari.vars.services.ImageArchiveService;
 import org.mbari.vars.services.TestToolbox;
 import org.mbari.vars.services.URLUtilities;
+import org.mbari.vars.services.model.ImageData;
 import org.mbari.vars.services.model.ImageUploadResults;
+import org.mbari.vcr4j.VideoIndex;
 
+import javax.imageio.ImageIO;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -39,7 +44,7 @@ public class PanoptesServiceTest {
     }
 
     @Test
-    public void testPngUpload() {
+    public void testPngUploadFile() {
         URL imageUrl = getClass().getResource("/images/Ventana 3657 20111018T165317Z--d221b3f7-a9cc-4c31-ba29-86aaec9a11df--20250217T184259.137Z.png");
         File imageFile = URLUtilities.toFile(imageUrl);
         CompletableFuture<ImageUploadResults> f = service.upload("Ventana", "Ventana 3657",
@@ -47,7 +52,19 @@ public class PanoptesServiceTest {
         Optional<ImageUploadResults> results = await(f, timeout);
         assertTrue(results.isPresent());
         System.out.println(results.get());
+    }
 
+    @Test
+    public void testPngUploadBytes() {
+        URL imageUrl = getClass().getResource("/images/Ventana 3657 20111018T165317Z--d221b3f7-a9cc-4c31-ba29-86aaec9a11df--20250217T184259.137Z.png");
+        File imageFile = URLUtilities.toFile(imageUrl);
+        var imageData = ImageData.from(UUID.randomUUID(), new VideoIndex(Instant.now()), imageFile.toPath());
+        var pngBytes = imageData.getPngBytes();
+        CompletableFuture<ImageUploadResults> f = service.upload("Ventana", "Ventana 3657",
+                "Ventana 3657 20111018T165317Z--d221b3f7-a9cc-4c31-ba29-86aaec9a11df--20250217T184259.137Z.png", pngBytes);
+        Optional<ImageUploadResults> results = await(f, timeout);
+        assertTrue(results.isPresent());
+        System.out.println(results.get());
     }
 
 }

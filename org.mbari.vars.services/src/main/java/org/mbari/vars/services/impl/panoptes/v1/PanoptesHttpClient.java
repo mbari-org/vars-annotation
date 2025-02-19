@@ -40,6 +40,15 @@ public class PanoptesHttpClient extends BaseHttpClient implements ImageArchiveSe
         this(newHttpClient(timeout), URI.create(baseUri), apiKey);
     }
 
+    @Override
+    public CompletableFuture<ImageUploadResults> locate(String cameraId, String deploymentId, String filename) {
+        var uri = buildUri(cameraId, deploymentId, filename);
+        var request = MutableRequest.GET(uri)
+                .header("Accept", "application/json")
+                .build();
+        return submit(request, 200, body -> gson.fromJson(body, ImageUploadResults.class));
+    }
+
 
     @Override
     public CompletableFuture<ImageUploadResults> upload(String cameraId, String deploymentId, String filename, Path image) {
@@ -62,15 +71,6 @@ public class PanoptesHttpClient extends BaseHttpClient implements ImageArchiveSe
     }
 
     @Override
-    public CompletableFuture<ImageUploadResults> locate(String cameraId, String deploymentId, String filename) {
-        var uri = buildUri(cameraId, deploymentId, filename);
-        var request = MutableRequest.GET(uri)
-                .header("Accept", "application/json")
-                .build();
-        return submit(request, 200, body -> gson.fromJson(body, ImageUploadResults.class));
-    }
-
-    @Override
     public CompletableFuture<ImageUploadResults> upload(String cameraId, String deploymentId, String filename, byte[] imageByes) {
         var auth = jwtHttpClient.authorizeIfNeeded();
         log.atInfo().log("Authorized! " + auth);
@@ -81,7 +81,7 @@ public class PanoptesHttpClient extends BaseHttpClient implements ImageArchiveSe
         try {
             var bodyPublisher = MoreBodyPublishers.ofMediaType(HttpRequest.BodyPublishers.ofByteArray(imageByes), methanolMediaType);
             var multipartBody = MultipartBodyPublisher.newBuilder()
-                    .formPart("file", bodyPublisher)
+                    .formPart("file", filename, bodyPublisher)
                     .build();
             var request = MutableRequest.POST(uri, multipartBody)
                     .header("Authorization", "Bearer " + auth.getAccessToken())
