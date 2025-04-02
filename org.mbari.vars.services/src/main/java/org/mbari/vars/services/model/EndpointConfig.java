@@ -63,7 +63,7 @@ public class EndpointConfig {
      * @return
      */
     public static List<EndpointConfig> decoratedNoWriteEndpoints(Collection<EndpointConfig> configs) {
-        var noSecretNames = List.of("charybdis", "vars-kb-server");
+        var noSecretNames = List.of("charybdis", "vars-kb-server", "skimmer");
         return configs.stream()
                 .map(ec -> {
                     if (noSecretNames.contains(ec.name)) {
