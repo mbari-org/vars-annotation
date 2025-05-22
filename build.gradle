@@ -20,8 +20,8 @@ subprojects {
     apply plugin: 'org.javamodularity.moduleplugin'
     apply plugin: 'org.kordamp.gradle.jdeps'
 
-    sourceCompatibility = 21
-    targetCompatibility = 21
+    sourceCompatibility = 24
+    targetCompatibility = 24
 
     repositories {
 //        jcenter()
