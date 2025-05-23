@@ -1,14 +1,18 @@
 package org.mbari.vars.services.impl.annosaurus.v1;
 
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.mbari.vars.core.util.InstantUtils;
 import org.mbari.vars.core.util.MapUtils;
 import org.mbari.vars.services.AnnotationService;
+import org.mbari.vars.services.etc.gson.*;
 import org.mbari.vars.services.impl.BaseHttpClient;
 import org.mbari.vars.services.impl.JwtHttpClient;
 import org.mbari.vars.services.model.*;
+import org.mbari.vcr4j.time.Timecode;
 
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -28,7 +32,7 @@ public class AnnosaurusHttpClient extends BaseHttpClient implements AnnotationSe
 
     private final JwtHttpClient jwtHttpClient;
 
-    private final Gson gson = AnnoWebServiceFactory.newGson();
+    private final Gson gson = newGson();
     private final Type TYPE_LIST_ANCILLARY_DATA = new TypeToken<ArrayList<AncillaryData>>(){}.getType();
     private final Type TYPE_LIST_ANNOTATION = new TypeToken<ArrayList<Annotation>>(){}.getType();
     private final Type TYPE_LIST_ANNOTATION_COUNT = new TypeToken<ArrayList<AnnotationCount>>(){}.getType();
@@ -50,6 +54,23 @@ public class AnnosaurusHttpClient extends BaseHttpClient implements AnnotationSe
 
     public AnnosaurusHttpClient(String baseUri, Duration timeout, String apikey) {
         this(newHttpClient(timeout), URI.create(baseUri), apikey);
+    }
+
+    public static Gson newGson() {
+        GsonBuilder gsonBuilder = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                .registerTypeAdapter(ImagedMoment.class, new AnnotationCreator())
+                .registerTypeAdapter(Duration.class, new DurationConverter())
+                .registerTypeAdapter(Timecode.class, new TimecodeConverter())
+                .registerTypeAdapter(Instant.class, new InstantConverter())
+                .registerTypeAdapter(byte[].class, new ByteArrayConverter());
+
+        return gsonBuilder.create();
+
+        // Register java.time.Instant
+//        return Converters.registerInstant(gsonBuilder)
+//                .create();
     }
 
     private Authorization authorizeIfNeeded() {

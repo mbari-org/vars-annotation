@@ -30,8 +30,9 @@ module org.mbari.vars.ui {
 //  requires transitive vcr4j.sharktopoda.client;
   requires io.reactivex.rxjava3;
   requires swingx.all;
+    requires oni.java.sdk;
 
-  uses org.mbari.vars.ui.mediaplayers.MediaControlsFactory;
+    uses org.mbari.vars.ui.mediaplayers.MediaControlsFactory;
 
   provides org.mbari.vars.ui.mediaplayers.MediaControlsFactory
       with 

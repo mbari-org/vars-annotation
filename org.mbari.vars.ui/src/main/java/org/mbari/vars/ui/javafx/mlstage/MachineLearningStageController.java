@@ -7,7 +7,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import org.mbari.vars.core.util.Requirements;
 
 import org.mbari.vars.services.impl.ml.JdkMegalodonService;
-import org.mbari.vars.services.impl.ml.OkHttpMegalodonService;
 import org.mbari.vars.ui.UIToolBox;
 import org.mbari.vars.ui.commands.BulkCreateAnnotations;
 import org.mbari.vars.ui.commands.FramegrabUploadCmd;

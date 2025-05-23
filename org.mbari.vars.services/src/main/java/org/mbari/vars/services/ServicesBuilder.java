@@ -2,6 +2,7 @@ package org.mbari.vars.services;
 
 import com.typesafe.config.Config;
 
+import java.net.URI;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
@@ -10,16 +11,13 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.mbari.vars.services.impl.annosaurus.v1.AnnoService;
-import org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory;
+import org.mbari.vars.oni.sdk.OniFactory;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.oni.sdk.r1.OniKiotaClient;
 import org.mbari.vars.services.impl.annosaurus.v1.AnnosaurusHttpClient;
 import org.mbari.vars.services.impl.panoptes.v1.PanoptesHttpClient;
-import org.mbari.vars.services.impl.panoptes.v1.PanoptesService;
-import org.mbari.vars.services.impl.panoptes.v1.PanoptesWebServiceFactory;
 import org.mbari.vars.services.impl.vampiresquid.v1.VamService;
 import org.mbari.vars.services.impl.vampiresquid.v1.VamWebServiceFactory;
-import org.mbari.vars.services.impl.varskbserver.v1.KBConceptService;
-import org.mbari.vars.services.impl.varskbserver.v1.KBWebServiceFactory;
 import org.mbari.vars.services.impl.varsuserserver.v1.*;
 import org.mbari.vars.services.model.Authorization;
 import org.mbari.vars.services.model.EndpointConfig;
@@ -107,11 +105,6 @@ public class ServicesBuilder {
   }
 
   public static AnnotationService buildAnnotationService(String endpoint, Duration timeout, String clientSecret) {
-//    AnnoWebServiceFactory factory =
-//            new AnnoWebServiceFactory(endpoint, timeout);
-//    AuthService authService =
-//            new BasicJWTAuthService(factory, new Authorization("APIKEY", clientSecret));
-//    return new AnnoService(factory, authService);
     return new AnnosaurusHttpClient(endpoint, timeout, clientSecret);
   }
 
@@ -134,9 +127,7 @@ public class ServicesBuilder {
   }
 
   public static ConceptService buildConceptService(String endpoint, Duration timeout, String clientSecret) {
-    KBWebServiceFactory factory =
-            new KBWebServiceFactory(endpoint, timeout, new ForkJoinPool());
-    KBConceptService service = new KBConceptService(factory);
+    var service = new OniKiotaClient(URI.create(endpoint));
     // --- Using a local cache
     return new CachedConceptService(service);
   }
@@ -145,9 +136,7 @@ public class ServicesBuilder {
                              Duration timeout,
                              String clientSecret,
                              List<String> associationTemplateFilterRegex) {
-    KBWebServiceFactory factory =
-            new KBWebServiceFactory(endpoint, timeout, defaultExecutor);
-    KBConceptService service = new KBConceptService(factory);
+    var service = new OniKiotaClient(URI.create(endpoint), clientSecret);
     // --- Create a service that munges the data from the service for a better UI experience.
     ModifyingConceptService modService = new ModifyingConceptService(service, associationTemplateFilterRegex);
     // --- Using a local cache
@@ -156,9 +145,7 @@ public class ServicesBuilder {
 
   public ConceptService buildConceptService() {
     ServiceConfig.ServiceParams params = appConfig.getConceptServiceParamsV1();
-    KBWebServiceFactory factory =
-        new KBWebServiceFactory(params.getEndpoint(), params.getTimeout(), defaultExecutor);
-    KBConceptService service = new KBConceptService(factory);
+    var service = new OniKiotaClient(URI.create(params.getEndpoint()));
     // --- Create a service that munges the data from the service for a better UI experience.
     ModifyingConceptService modService = new ModifyingConceptService(service, config);
     // --- Using a local cache

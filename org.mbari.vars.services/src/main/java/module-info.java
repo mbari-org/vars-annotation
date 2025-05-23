@@ -9,6 +9,7 @@ module org.mbari.vars.services {
   requires java.desktop;
   requires java.prefs;
   requires java.sql;
+  requires java.xml;
   requires javax.inject; 
   requires methanol;
   requires okhttp3;
@@ -20,10 +21,12 @@ module org.mbari.vars.services {
   requires retrofit2.converter.gson;
   requires typesafe.config;
   requires vcr4j.core;
-    requires java.net.http;
+  requires java.net.http;
+  requires annosaurus.java.sdk;
+  requires oni.java.sdk;
 
 
-    opens org.mbari.vars.services.impl.ml to com.google.gson;
+  opens org.mbari.vars.services.impl.ml to com.google.gson;
   opens org.mbari.vars.services.model to com.google.gson;
 
   exports org.mbari.vars.services;
@@ -33,7 +36,6 @@ module org.mbari.vars.services {
   exports org.mbari.vars.services.impl.panoptes.v1;
   exports org.mbari.vars.services.impl.raziel;
   exports org.mbari.vars.services.impl.vampiresquid.v1;
-  exports org.mbari.vars.services.impl.varskbserver.v1;
   exports org.mbari.vars.services.impl.varsuserserver.v1;
   exports org.mbari.vars.services.model;
   exports org.mbari.vars.services.util;

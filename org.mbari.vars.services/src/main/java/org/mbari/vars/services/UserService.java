@@ -10,13 +10,8 @@ import java.util.concurrent.CompletableFuture;
  * @author Brian Schlining
  * @since 2017-06-08T16:20:00
  */
-public interface UserService {
+public interface UserService extends org.mbari.vars.oni.sdk.r1.UserService {
 
-    CompletableFuture<List<User>> findAllUsers();
-
-    CompletableFuture<User> create(User user);
-
-    CompletableFuture<Optional<User>> update(User user);
 
 
 }

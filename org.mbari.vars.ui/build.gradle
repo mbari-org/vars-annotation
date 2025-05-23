@@ -16,6 +16,9 @@ dependencies {
     implementation 'org.kordamp.ikonli:ikonli-material-pack'
     implementation 'org.zeromq:jeromq'
     implementation 'org.mbari.imgfx:imgfx'
+    implementation('org.mbari.vars:oni-java-sdk') {
+        exclude group: 'javax.xml.stream', module: 'stax-api'
+    }
     implementation 'org.mbari.vcr4j:vcr4j-core'
     implementation 'org.mbari.vcr4j:vcr4j-remote'
 //    implementation 'org.mbari.vcr4j:vcr4j-sharktopoda'

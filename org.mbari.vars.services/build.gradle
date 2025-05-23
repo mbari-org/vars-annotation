@@ -31,6 +31,15 @@ dependencies {
     implementation 'com.typesafe:config'
     implementation 'jakarta.activation:jakarta.activation-api'
     implementation 'javax.inject:javax.inject'
+    implementation('org.mbari.vars:annosaurus-java-sdk') {
+        exclude group: 'javax.xml.stream', module: 'stax-api'
+    }
+    implementation('org.mbari.vars:oni-java-sdk') {
+        exclude group: 'javax.xml.stream', module: 'stax-api'
+    }
+    implementation('org.mbari.vars:vampire-squid-java-sdk') {
+        exclude group: 'javax.xml.stream', module: 'stax-api'
+    }
     implementation 'org.mbari.vcr4j:vcr4j-core'
     // implementation 'org.mbari:mbarix4j'
     implementation 'org.slf4j:slf4j-api'

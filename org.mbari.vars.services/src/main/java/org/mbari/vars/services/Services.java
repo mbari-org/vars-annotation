@@ -1,6 +1,8 @@
 package org.mbari.vars.services;
 
 import javax.inject.Inject;
+
+import org.mbari.vars.oni.sdk.r1.ConceptService;
 import org.mbari.vars.services.util.PreferencesFactory;
 
 /**

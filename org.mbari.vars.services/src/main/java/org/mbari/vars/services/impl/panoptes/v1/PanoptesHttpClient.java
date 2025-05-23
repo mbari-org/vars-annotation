@@ -4,29 +4,34 @@ import com.github.mizosoft.methanol.MoreBodyPublishers;
 import com.github.mizosoft.methanol.MultipartBodyPublisher;
 import com.github.mizosoft.methanol.MutableRequest;
 import com.google.gson.Gson;
-import okhttp3.MediaType;
+import com.google.gson.GsonBuilder;
 import org.mbari.vars.core.util.UriUtils;
 import org.mbari.vars.services.ImageArchiveService;
+import org.mbari.vars.services.etc.gson.ByteArrayConverter;
+import org.mbari.vars.services.etc.gson.DurationConverter;
+import org.mbari.vars.services.etc.gson.InstantConverter;
+import org.mbari.vars.services.etc.gson.TimecodeConverter;
 import org.mbari.vars.services.impl.BaseHttpClient;
 import org.mbari.vars.services.impl.JwtHttpClient;
-import org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory;
 import org.mbari.vars.services.impl.annosaurus.v1.AnnosaurusHttpClient;
 import org.mbari.vars.services.model.Authorization;
 import org.mbari.vars.services.model.ImageUploadResults;
+import org.mbari.vcr4j.time.Timecode;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 
 public class PanoptesHttpClient extends BaseHttpClient implements ImageArchiveService {
 
     private final JwtHttpClient jwtHttpClient;
 
-    private final Gson gson = PanoptesWebServiceFactory.newGson();
-    private final Gson snakeCaseGson = AnnoWebServiceFactory.newGson();
+    private final Gson gson = newGson();
+    private final Gson snakeCaseGson = AnnosaurusHttpClient.newGson();
 
     public PanoptesHttpClient(HttpClient client, URI baseUri, String apiKey) {
         super(client, baseUri);
@@ -38,6 +43,21 @@ public class PanoptesHttpClient extends BaseHttpClient implements ImageArchiveSe
 
     public PanoptesHttpClient(String baseUri, Duration timeout, String apiKey) {
         this(newHttpClient(timeout), URI.create(baseUri), apiKey);
+    }
+
+    public static Gson newGson() {
+        GsonBuilder gsonBuilder = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                .registerTypeAdapter(Duration.class, new DurationConverter())
+                .registerTypeAdapter(Timecode.class, new TimecodeConverter())
+                .registerTypeAdapter(Instant.class, new InstantConverter())
+                .registerTypeAdapter(byte[].class, new ByteArrayConverter());
+
+        return gsonBuilder.create();
+
+        // Register java.time.Instant
+//        return Converters.registerInstant(gsonBuilder)
+//                .create();
     }
 
     @Override

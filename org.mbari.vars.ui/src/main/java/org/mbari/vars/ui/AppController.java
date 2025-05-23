@@ -17,11 +17,11 @@ import org.mbari.vars.ui.events.*;
 import org.mbari.vars.services.model.Annotation;
 import org.mbari.vars.services.model.Media;
 import org.mbari.vars.services.CachedConceptService;
-import org.mbari.vars.services.ConceptService;
 import org.mbari.vars.ui.javafx.Alerts;
 import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
 import org.mbari.vars.ui.services.ConcurrentAnnotationDecorator;
 import org.mbari.vars.ui.javafx.AppPaneController;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
 
 import mbarix4j.io.IOUtilities;
 import mbarix4j.net.URLUtilities;
@@ -120,7 +120,7 @@ public class AppController {
         eventObservable.ofType(ReloadServicesMsg.class)
                 .subscribe(e -> {
                     // Clear KB cache
-                    ConceptService conceptService = toolBox.getServices().getConceptService();
+                    org.mbari.vars.oni.sdk.r1.ConceptService conceptService = toolBox.getServices().getConceptService();
                     if (conceptService instanceof CachedConceptService) {
                         ((CachedConceptService) conceptService).clear();
                     }

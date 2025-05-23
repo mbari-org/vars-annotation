@@ -3,9 +3,11 @@ package org.mbari.vars.services;
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import org.mbari.vars.services.model.Concept;
-import org.mbari.vars.services.model.ConceptAssociationTemplate;
-import org.mbari.vars.services.model.ConceptDetails;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.oni.sdk.r1.models.Concept;
+import org.mbari.vars.oni.sdk.r1.models.ConceptAssociationTemplate;
+import org.mbari.vars.oni.sdk.r1.models.ConceptDetails;
+
 
 import java.util.Collections;
 import java.util.List;
