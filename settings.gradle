@@ -2,7 +2,7 @@
 // WARNING: https://github.com/java9-modularity/gradle-modules-plugin/issues/135
 pluginManagement {
   plugins {
-    id 'com.adarshr.test-logger' version '2.1.1'
+    // id 'com.adarshr.test-logger' version '2.1.1'
     id 'nebula.facet' version '9.6.3'
     id 'nebula.maven-publish' version '17.3.2'
     id 'org.beryx.jlink' version "3.1.1"

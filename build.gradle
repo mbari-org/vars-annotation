@@ -1,9 +1,9 @@
 plugins {
-    id 'com.adarshr.test-logger' apply false
-    id 'com.github.spotbugs' apply  false
+    // id 'com.adarshr.test-logger' apply false
+    // id 'com.github.spotbugs' apply  false
     id 'org.kordamp.gradle.jdeps' apply false
     id "com.github.ben-manes.versions" apply false
-    id "org.javamodularity.moduleplugin" apply false
+    // id "org.javamodularity.moduleplugin" apply false
 }
 
 
@@ -12,16 +12,18 @@ subprojects {
 
     version = "2.2.5"
 
-    apply plugin: 'com.adarshr.test-logger'
+    // apply plugin: 'com.adarshr.test-logger'
     apply plugin: 'com.github.ben-manes.versions'
-    apply plugin: 'com.github.spotbugs'
+    // apply plugin: 'com.github.spotbugs'
     apply plugin: 'java'
     apply plugin: 'maven-publish'
-    apply plugin: 'org.javamodularity.moduleplugin'
+    // apply plugin: 'org.javamodularity.moduleplugin'
     apply plugin: 'org.kordamp.gradle.jdeps'
 
-    sourceCompatibility = 24
-    targetCompatibility = 24
+    java {
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
+    }
 
     repositories {
 //        jcenter()
@@ -44,12 +46,12 @@ subprojects {
 
     test {
         useJUnitPlatform()
-        moduleOptions {
-            runOnClasspath = true
-        }
-        testlogger {
-            theme 'mocha' // task level
-        }
+        // moduleOptions {
+        //     runOnClasspath = true
+        // }
+        // testlogger {
+        //     theme 'mocha' // task level
+        // }
     }
 
     ext {
@@ -111,9 +113,9 @@ subprojects {
 
     task tree(type: DependencyReportTask) {}
 
-    spotbugs {
-        ignoreFailures = true
-    }
+    // spotbugs {
+    //     ignoreFailures = true
+    // }
 
     jdepsReport {
         classpaths = ['compileClasspath', 'runtimeClasspath']
