@@ -1,35 +1,36 @@
-module org.mbari.vars.core {
+module org.mbari.vars.annotation {
 
-  requires java.scripting;
-  requires io.reactivex.rxjava3;
-  requires org.slf4j;
-  requires typesafe.config;
-    requires java.net.http;
-
-    requires com.auth0.jwt;
+  requires com.auth0.jwt;
   requires com.fasterxml.jackson.databind; // required by java-jwt
   requires com.github.benmanes.caffeine;
   requires com.google.gson;
-//  requires gson.javatime.serialisers;
   requires io.reactivex.rxjava3;
   requires java.desktop;
+  requires java.net.http;
   requires java.prefs;
+  requires java.scripting;
   requires java.sql;
   requires java.xml;
-  requires javax.inject; 
+  requires javafx.base;
+  requires javafx.controls;
+  requires javafx.fxml;
+  requires javafx.media;
+  requires jakarta.inject;
   requires methanol;
-  requires okhttp3;
   requires okhttp3.logging;
+  requires okhttp3;
   requires okio;
-  requires org.mbari.vars.core;
   requires org.slf4j;
-  requires retrofit2;
-  requires retrofit2.converter.gson;
   requires typesafe.config;
   requires vcr4j.core;
-  requires java.net.http;
-  requires annosaurus.java.sdk;
-  requires oni.java.sdk;
+  requires vcr4j.remote;
+  requires org.mbari.imgfx;
+
+
+  requires org.mbari.vars.raziel.sdk;
+  requires org.mbari.vars.annosaurus.sdk;
+  requires org.mbari.vars.oni.sdk;
+  requires org.mbari.vars.vampiresquid.sdk;
 
 
   opens org.mbari.vars.services.impl.ml to com.google.gson;
@@ -46,7 +47,7 @@ module org.mbari.vars.core {
   exports org.mbari.vars.services.model;
   exports org.mbari.vars.services.util;
 
-    exports org.mbari.vars.core;
+  exports org.mbari.vars.core;
   exports org.mbari.vars.core.util;
   exports org.mbari.vars.core.crypto;
 }

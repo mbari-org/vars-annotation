@@ -2,13 +2,29 @@ plugins {
     id 'application'
     id 'org.openjfx.javafxplugin'
     id 'org.beryx.jlink'
+    id 'nebula.facet'
+}
+
+facets {
+    integTest {
+        parentSourceSet = 'test'
+        testTaskName = 'integrationTest'
+        includeInCheckLifecycle = false
+    }
 }
 
 dependencies {
-    implementation project(':org.mbari.vars.core')
-    implementation project(':org.mbari.vars.services')
 
-//    implementation 'com.jfoenix:jfoenix'
+    implementation 'com.auth0:java-jwt'
+    implementation 'com.fasterxml.jackson.core:jackson-databind' // used java-jwt
+    implementation 'com.github.mizosoft.methanol:methanol'
+    implementation 'com.google.code.gson:gson'
+    implementation 'com.squareup.okhttp3:logging-interceptor'
+    implementation 'com.squareup.retrofit2:converter-gson'
+    implementation 'com.squareup.retrofit2:retrofit'
+    implementation 'com.typesafe:config'
+    implementation 'jakarta.activation:jakarta.activation-api'
+    implementation 'javax.inject:javax.inject'
     implementation 'com.typesafe:config'
     implementation 'javax.inject:javax.inject'
     implementation 'org.kordamp.ikonli:ikonli-javafx'
@@ -16,24 +32,31 @@ dependencies {
     implementation 'org.kordamp.ikonli:ikonli-material-pack'
     implementation 'org.zeromq:jeromq'
     implementation 'org.mbari.imgfx:imgfx'
+    implementation 'org.mbari.vcr4j:vcr4j-core'
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'com.typesafe:config'
+    implementation 'io.reactivex.rxjava3:rxjava'
+    implementation 'org.slf4j:slf4j-api'
+
     implementation('org.mbari.vars:oni-java-sdk') {
         exclude group: 'javax.xml.stream', module: 'stax-api'
     }
     implementation 'org.mbari.vcr4j:vcr4j-core'
     implementation 'org.mbari.vcr4j:vcr4j-remote'
-//    implementation 'org.mbari.vcr4j:vcr4j-sharktopoda'
-//    implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client'
-    // implementation 'org.mbari:mbarix4j'
+
     implementation 'org.slf4j:slf4j-api'
     implementation 'org.swinglabs.swingx:swingx-all'
 
+    implementation('org.mbari.vars:annosaurus-java-sdk') {
+        exclude group: 'javax.xml.stream', module: 'stax-api'
+    }
+    implementation('org.mbari.vars:oni-java-sdk') {
+        exclude group: 'javax.xml.stream', module: 'stax-api'
+    }
+    implementation('org.mbari.vars:vampire-squid-java-sdk') {
+        exclude group: 'javax.xml.stream', module: 'stax-api'
+    }
 
-//    implementation('io.reactivex.rxjava2:rxjavafx') {
-//        exclude group: 'org.openjfx', module: 'javafx-base'
-//        exclude group: 'org.openjfx', module: 'javafx-controls'
-//        exclude group: 'org.openjfx', module: 'javafx-graphics'
-//        because("If not excluded we end up with both mac and linux javafx jars which cause jlink to fail")
-//    }
 
     implementation('org.controlsfx:controlsfx') {
         exclude group: 'org.openjfx', module: 'javafx-base'
@@ -42,17 +65,19 @@ dependencies {
         because("If not excluded we end up with both mac and linux javafx jars which cause jlink to fail")
     }
 
+    implementation('com.github.ben-manes.caffeine:caffeine') {
+        exclude group: 'org.checkerframework', module: 'checker-qual'
+    }
+
     runtimeOnly('ch.qos.logback:logback-classic') {
         exclude group: 'javax.activation'
     }
     runtimeOnly 'javax.servlet:javax.servlet-api'
     runtimeOnly 'org.fusesource.jansi:jansi'
     runtimeOnly 'org.slf4j:slf4j-jdk-platform-logging'
+    runtimeOnly 'org.slf4j:jul-to-slf4j'
+    runtimeOnly 'ch.qos.logback:logback-classic:1.5.26'
 
-    // For command line comment out runtime and add implementation so we see log output.
-//    runtimeOnly 'org.slf4j:slf4j-jdk14'
-//    implementation 'org.slf4j:slf4j-jdk14'
-//    runtimeOnly 'com.fazecast:jSerialComm'
 }
 
 javafx {
@@ -308,4 +333,8 @@ tasks.jpackageImage.doLast {
 
         }
     }
+}
+
+tasks.withType(Test) {
+    systemProperty("jdk.httpclient.HttpClient.log", "requests,headers,content")
 }
