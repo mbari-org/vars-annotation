@@ -1,6 +1,6 @@
-package org.mbari.vars.services.noop;
+package org.mbari.vars.annotation.services.noop;
 
-import org.mbari.vars.services.util.PreferencesFactory;
+import org.mbari.vars.annotation.services.oni.PreferencesFactory;
 
 import java.util.prefs.Preferences;
 

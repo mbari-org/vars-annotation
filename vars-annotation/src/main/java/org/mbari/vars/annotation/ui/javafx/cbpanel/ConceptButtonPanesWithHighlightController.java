@@ -1,11 +1,11 @@
-package org.mbari.vars.ui.javafx.cbpanel;
+package org.mbari.vars.annotation.ui.javafx.cbpanel;
 
 import javafx.application.Platform;
 import javafx.scene.layout.HBox;
-import org.mbari.vars.core.util.Preconditions;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.services.model.User;
-import org.mbari.vars.ui.messages.ReloadServicesMsg;
+import org.mbari.vars.annotation.util.Preconditions;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.oni.sdk.r1.models.User;
+import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

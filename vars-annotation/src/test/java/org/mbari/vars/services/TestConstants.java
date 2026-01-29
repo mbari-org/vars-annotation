@@ -3,7 +3,7 @@ package org.mbari.vars.services;
 import com.google.gson.Gson;
 import com.typesafe.config.ConfigFactory;
 import org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory;
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 
 import java.io.InputStream;
 import java.net.URL;

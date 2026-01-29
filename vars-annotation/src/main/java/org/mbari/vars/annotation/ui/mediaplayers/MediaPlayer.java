@@ -1,13 +1,12 @@
-package org.mbari.vars.ui.mediaplayers;
+package org.mbari.vars.annotation.ui.mediaplayers;
 
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.services.ImageCaptureService;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.services.ImageCaptureService;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIO;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.commands.VideoCommands;
-import org.mbari.vcr4j.time.Timecode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

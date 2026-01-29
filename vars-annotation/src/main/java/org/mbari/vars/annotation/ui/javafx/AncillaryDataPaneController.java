@@ -1,11 +1,11 @@
-package org.mbari.vars.ui.javafx;
+package org.mbari.vars.annotation.ui.javafx;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.BorderPane;
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.property.BeanPropertyUtils;
-import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.services.model.AncillaryData;
 
 import java.util.UUID;
@@ -51,7 +51,7 @@ public class AncillaryDataPaneController {
         Platform.runLater(() -> getPropertySheet().getItems().clear());
         if (observationUuid != null) {
             toolBox.getServices()
-                    .getAnnotationService()
+                    .annotationService()
                     .findAncillaryData(observationUuid)
                     .thenAccept(this::setAncillaryData);
         }

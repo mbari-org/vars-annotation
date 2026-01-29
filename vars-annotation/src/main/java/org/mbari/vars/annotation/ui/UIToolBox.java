@@ -1,14 +1,16 @@
-package org.mbari.vars.ui;
+package org.mbari.vars.annotation.ui;
 
 
 import com.typesafe.config.Config;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.stage.Stage;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.core.crypto.AES;
-import org.mbari.vars.ui.mediaplayers.MediaPlayer;
-import org.mbari.vars.services.Services;
+import org.mbari.vars.annotation.AppConfig;
+
+import org.mbari.vars.annotation.etc.jdk.crypto.AES;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.services.Services;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 

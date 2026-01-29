@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.messages;
+package org.mbari.vars.annotation.ui.messages;
 
 /**
  * This class does nothing except trigger the newAnnotationBC's apply method. It's useful

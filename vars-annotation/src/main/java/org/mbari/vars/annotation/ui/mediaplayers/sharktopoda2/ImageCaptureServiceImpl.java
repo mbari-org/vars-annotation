@@ -1,8 +1,7 @@
-package org.mbari.vars.ui.mediaplayers.sharktopoda2;
+package org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2;
 
-import io.reactivex.rxjava3.schedulers.Schedulers;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.services.ImageCaptureService;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.services.ImageCaptureService;
 import org.mbari.vars.services.model.Framegrab;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.remote.control.commands.FrameCaptureCmd;

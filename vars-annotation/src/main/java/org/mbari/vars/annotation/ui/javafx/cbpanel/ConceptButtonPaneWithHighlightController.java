@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.cbpanel;
+package org.mbari.vars.annotation.ui.javafx.cbpanel;
 
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
@@ -8,10 +8,10 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.services.ConceptService;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;

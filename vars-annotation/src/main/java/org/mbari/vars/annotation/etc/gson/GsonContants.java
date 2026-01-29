@@ -1,4 +1,4 @@
-package org.mbari.vars.services.etc.gson;
+package org.mbari.vars.annotation.etc.gson;
 
 public class GsonContants {
 }

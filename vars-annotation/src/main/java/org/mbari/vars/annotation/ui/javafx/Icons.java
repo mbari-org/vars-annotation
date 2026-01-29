@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx;
+package org.mbari.vars.annotation.ui.javafx;
 
 import javafx.scene.text.Text;
 import org.kordamp.ikonli.Ikon;

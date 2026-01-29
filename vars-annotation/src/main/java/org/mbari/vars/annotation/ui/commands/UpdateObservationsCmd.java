@@ -1,10 +1,10 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.services.ConceptService;
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.services.model.ObservationsUpdate;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
 
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +34,7 @@ public abstract class UpdateObservationsCmd implements Command {
 
         Runnable runnable = () -> {
             if(observationsUpdate.concept() != null) {
-                ConceptService conceptService = toolBox.getServices().getConceptService();
+                ConceptService conceptService = toolBox.getServices().conceptService();
                 var conceptOpt = conceptService.findConcept(observationsUpdate.concept()).join();
                 if (conceptOpt.isEmpty()) {
                     throw new RuntimeException("Concept " + observationsUpdate.concept() + " does not exist");
@@ -43,7 +43,7 @@ public abstract class UpdateObservationsCmd implements Command {
                     observationsUpdate = observationsUpdate.withConcept(conceptOpt.get().getName());
                 }
             }
-            var annotationService = toolBox.getServices().getAnnotationService();
+            var annotationService = toolBox.getServices().annotationService();
             annotationService.updateObservations(observationsUpdate).join();
             AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
             Set<UUID> uuids = new HashSet<>(observationsUpdate.observationUuids());
@@ -56,7 +56,7 @@ public abstract class UpdateObservationsCmd implements Command {
     @Override
     public void unapply(UIToolBox toolBox) {
         toolBox.getServices()
-                .getAnnotationService()
+                .annotationService()
                 .updateAnnotations(originalAnnotations)
                 .thenAccept(as -> {
                     AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);

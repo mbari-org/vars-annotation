@@ -31,6 +31,7 @@ module org.mbari.vars.ui {
   requires io.reactivex.rxjava3;
   requires swingx.all;
     requires oni.java.sdk;
+    requires org.mbari.vars.annotation;
 
     uses org.mbari.vars.ui.mediaplayers.MediaControlsFactory;
 

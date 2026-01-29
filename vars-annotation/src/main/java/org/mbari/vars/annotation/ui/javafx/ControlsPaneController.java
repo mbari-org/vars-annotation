@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx;
+package org.mbari.vars.annotation.ui.javafx;
 
 
 import javafx.application.Platform;
@@ -8,15 +8,15 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.ui.events.MediaControlsChangedEvent;
-import org.mbari.vars.ui.mediaplayers.MediaControls;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.ui.services.CachedReferenceNumberDecorator;
-import org.mbari.vars.ui.javafx.abpanel.AssocButtonPanesController;
-import org.mbari.vars.ui.javafx.buttons.*;
-import org.mbari.vars.ui.javafx.roweditor.RowEditorController;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.annotation.ui.events.MediaControlsChangedEvent;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaControls;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annotation.ui.services.CachedReferenceNumberDecorator;
+import org.mbari.vars.annotation.ui.javafx.abpanel.AssocButtonPanesController;
+import org.mbari.vars.annotation.ui.javafx.buttons.*;
+import org.mbari.vars.annotation.ui.javafx.roweditor.RowEditorController;
 
 import java.util.Collection;
 import java.util.prefs.Preferences;

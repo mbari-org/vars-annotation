@@ -1,17 +1,17 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
 import io.reactivex.rxjava3.core.Observable;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.AnnotationsAddedEvent;
-import org.mbari.vars.ui.events.AnnotationsChangedEvent;
-import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
-import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.ui.messages.ShowAlert;
-import org.mbari.vars.ui.messages.ShowExceptionAlert;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.ConceptDetails;
-import org.mbari.vars.core.util.AsyncUtils;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsChangedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsRemovedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.annotation.ui.messages.ShowAlert;
+import org.mbari.vars.annotation.ui.messages.ShowExceptionAlert;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annotation.etc.rxjava.AsyncUtils;
+import org.mbari.vars.oni.sdk.r1.models.ConceptDetails;
 import org.mbari.vcr4j.VideoIndex;
 
 import java.util.*;
@@ -39,7 +39,7 @@ public class CreateAnnotationFromConceptCmd implements Command {
         eventBus.send(new AnnotationsSelectedEvent(a0));
 
         toolBox.getServices()
-                .getAnnotationService()
+                .annotationService()
                 .createAnnotation(a0)
                 .handle((a, throwable) -> {
                     if (throwable != null) {
@@ -58,7 +58,7 @@ public class CreateAnnotationFromConceptCmd implements Command {
 
 
 //        Observable<Annotation> observable = AsyncUtils.observe(toolBox.getServices()
-//                .getAnnotationService()
+//                .annotationService()
 //                .createAnnotation(a0));
 //
 //        observable.filter(Objects::nonNull)
@@ -93,7 +93,7 @@ public class CreateAnnotationFromConceptCmd implements Command {
                 AsyncUtils.observe(toolBox.getMediaPlayer()
                     .requestVideoIndex()));
         Observable<Optional<ConceptDetails>> conceptObservable = AsyncUtils.observe(toolBox.getServices()
-                .getConceptService()
+                .conceptService()
                 .findDetails(concept));
         Observable<CreateDatum> lookupObservable = Observable.combineLatest(conceptObservable,
                 videoIndexObservable,
@@ -111,7 +111,7 @@ public class CreateAnnotationFromConceptCmd implements Command {
     public void unapply(UIToolBox toolBox) {
         if (annotation != null) {
             toolBox.getServices()
-                    .getAnnotationService()
+                    .annotationService()
                     .deleteAnnotation(annotation.getObservationUuid())
                     .thenAccept(a -> {
                         toolBox.getEventBus()

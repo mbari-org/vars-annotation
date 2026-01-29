@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.concepttree;
+package org.mbari.vars.annotation.ui.javafx.concepttree;
 
 import javafx.application.Platform;
 import javafx.scene.control.ContextMenu;
@@ -9,11 +9,11 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import org.mbari.vars.services.model.Concept;
 import org.mbari.vars.services.model.ConceptMedia;
-import org.mbari.vars.services.ConceptService;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.shared.ImageStage;
-import org.mbari.vars.ui.javafx.shared.FilterableTreeItem;
-import org.mbari.vars.ui.messages.ReloadServicesMsg;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.shared.ImageStage;
+import org.mbari.vars.annotation.ui.javafx.shared.FilterableTreeItem;
+import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,7 +100,7 @@ public class TreeViewController {
 
     private void loadRoot() {
         toolBox.getServices()
-                .getConceptService()
+                .conceptService()
                 .findRoot()
                 .thenAccept(root -> {
                     Platform.runLater(() -> {

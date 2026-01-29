@@ -3,7 +3,7 @@ package org.mbari.vars.services.annosaurus.v1;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.mbari.vars.services.TestConstants;
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 
 
 /**

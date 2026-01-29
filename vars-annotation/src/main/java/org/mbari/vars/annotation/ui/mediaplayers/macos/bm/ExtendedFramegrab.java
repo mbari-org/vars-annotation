@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.macos.bm;
+package org.mbari.vars.annotation.ui.mediaplayers.macos.bm;
 
 import org.mbari.vars.services.model.Framegrab;
 

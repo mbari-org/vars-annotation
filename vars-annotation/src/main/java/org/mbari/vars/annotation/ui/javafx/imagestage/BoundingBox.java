@@ -1,11 +1,11 @@
-package org.mbari.vars.ui.javafx.imagestage;
+package org.mbari.vars.annotation.ui.javafx.imagestage;
 
 import javafx.scene.image.ImageView;
 import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.RectangleData;
 import org.mbari.imgfx.roi.RectangleView;
-import org.mbari.vars.services.model.Association;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 
 import java.util.Optional;
 import java.util.UUID;

@@ -1,6 +1,6 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.UIToolBox;
 
 /**
  * @author Brian Schlining

@@ -1,8 +1,8 @@
-package org.mbari.vars.services.noop;
+package org.mbari.vars.annotation.services.noop;
 
-import org.mbari.vars.services.MediaService;
-import org.mbari.vars.services.model.LastUpdate;
-import org.mbari.vars.services.model.Media;
+import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
+import org.mbari.vars.vampiresquid.sdk.r1.models.LastUpdate;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 
 import java.net.URI;
 import java.time.Duration;
@@ -105,7 +105,7 @@ public class NoopMediaService implements MediaService {
 
     @Override
     public CompletableFuture<LastUpdate> findLastVideoSequenceUpdate(UUID uuid) {
-        return null;
+        return CompletableFuture.completedFuture(new LastUpdate(Instant.EPOCH));
     }
 
     @Override
@@ -125,6 +125,11 @@ public class NoopMediaService implements MediaService {
 
     @Override
     public CompletableFuture<List<String>> findVideoNamesByVideoSequenceName(String videoSequenceName) {
+        return CompletableFuture.completedFuture(Collections.emptyList());
+    }
+
+    @Override
+    public CompletableFuture<List<Media>> listVideoSequences(int pageNumber, int pageSize) {
         return CompletableFuture.completedFuture(Collections.emptyList());
     }
 }

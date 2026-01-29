@@ -1,7 +1,7 @@
-package org.mbari.vars.services.noop;
+package org.mbari.vars.annotation.services.noop;
 
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.model.*;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.annosaurus.sdk.r1.models.*;
 
 import java.net.URL;
 import java.time.Instant;
@@ -27,6 +27,11 @@ public class NoopAnnotationService implements AnnotationService {
     @Override
     public CompletableFuture<MultiRequestCount> countByMultiRequest(MultiRequest multiRequest) {
         return CompletableFuture.completedFuture(new MultiRequestCount(multiRequest, 0L));
+    }
+
+    @Override
+    public CompletableFuture<Count> countImagesByVideoReferenceUuid(UUID videoReferenceUuid) {
+        return null;
     }
 
     @Override
@@ -91,6 +96,11 @@ public class NoopAnnotationService implements AnnotationService {
 
     @Override
     public CompletableFuture<Boolean> deleteAnnotations(Collection<UUID> observationUuids) {
+        return CompletableFuture.failedFuture(new UnsupportedOperationException());
+    }
+
+    @Override
+    public CompletableFuture<DeleteCount> deleteAnnotationsByVideoReferenceUuid(UUID videoReferenceUuid) {
         return CompletableFuture.failedFuture(new UnsupportedOperationException());
     }
 
@@ -230,6 +240,11 @@ public class NoopAnnotationService implements AnnotationService {
     }
 
     @Override
+    public CompletableFuture<List<Image>> findImagesByVideoReferenceUuid(UUID videoReferenceUuid, Long limit, Long offset) {
+        return CompletableFuture.failedFuture(new UnsupportedOperationException());
+    }
+
+    @Override
     public CompletableFuture<List<ImagedMoment>> findImagedMomentsByVideoReferenceUuid(UUID videoReferenceUuid) {
         return CompletableFuture.completedFuture(Collections.emptyList());
     }
@@ -252,6 +267,11 @@ public class NoopAnnotationService implements AnnotationService {
     @Override
     public CompletableFuture<ConceptsRenamed> renameConcepts(String oldConcept, String newConcept) {
         return CompletableFuture.completedFuture(null);
+    }
+
+    @Override
+    public CompletableFuture<ConceptsRenamed> renameToConcepts(String oldConcept, String newConcept) {
+        return CompletableFuture.failedFuture(new UnsupportedOperationException());
     }
 
     @Override

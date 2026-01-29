@@ -1,12 +1,12 @@
-package org.mbari.vars.ui.javafx.annotable;
+package org.mbari.vars.annotation.ui.javafx.annotable;
 
 import javafx.scene.control.TableCell;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
-import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.ui.javafx.Icons;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 
 
 /**

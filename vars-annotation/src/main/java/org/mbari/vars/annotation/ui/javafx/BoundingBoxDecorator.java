@@ -1,9 +1,9 @@
-package org.mbari.vars.ui.javafx;
+package org.mbari.vars.annotation.ui.javafx;
 
 import org.mbari.vars.services.model.BoundingBox;
 import org.mbari.vars.services.model.Image;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.ui.UIToolBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +36,7 @@ public class BoundingBoxDecorator {
             final Image image;
             try {
                 image = toolBox.getServices()
-                        .getAnnotationService()
+                        .annotationService()
                         .findImageByUuid(imageReferenceUuid)
                         .get(timeout.toMillis(), TimeUnit.MILLISECONDS);
                 if (image != null) {
@@ -58,7 +58,7 @@ public class BoundingBoxDecorator {
             final Media media;
             try {
                 media = toolBox.getServices()
-                        .getMediaService()
+                        .mediaService()
                         .findByUuid(videoReferenceUuid)
                         .get(timeout.toMillis(), TimeUnit.MILLISECONDS);
                 if (media != null) {

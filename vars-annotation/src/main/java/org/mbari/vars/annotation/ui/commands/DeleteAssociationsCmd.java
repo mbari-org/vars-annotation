@@ -1,10 +1,10 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.core.util.Preconditions;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.services.model.Association;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.annotation.util.Preconditions;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -30,7 +30,7 @@ public class DeleteAssociationsCmd implements Command {
 
     @Override
     public void apply(UIToolBox toolBox) {
-        AnnotationService service = toolBox.getServices().getAnnotationService();
+        AnnotationService service = toolBox.getServices().annotationService();
         Collection<UUID> uuids = associationMap.keySet()
                 .stream()
                 .map(Association::getUuid)
@@ -45,7 +45,7 @@ public class DeleteAssociationsCmd implements Command {
 
     @Override
     public void unapply(UIToolBox toolBox) {
-        AnnotationService service = toolBox.getServices().getAnnotationService();
+        AnnotationService service = toolBox.getServices().annotationService();
         Map<Association, UUID> newMap = new ConcurrentHashMap<>();
         CompletableFuture[] futures = associationMap.entrySet()
                 .stream()

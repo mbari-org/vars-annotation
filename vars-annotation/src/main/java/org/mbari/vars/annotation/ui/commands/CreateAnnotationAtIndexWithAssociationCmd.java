@@ -1,19 +1,17 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.core.util.Preconditions;
-import org.mbari.vars.services.ConceptService;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.AnnotationsAddedEvent;
-import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
-import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsRemovedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vcr4j.VideoIndex;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
@@ -56,7 +54,7 @@ public class CreateAnnotationAtIndexWithAssociationCmd implements Command  {
 
     @Override
     public void apply(UIToolBox toolBox) {
-        ConceptService conceptService = toolBox.getServices().getConceptService();
+        ConceptService conceptService = toolBox.getServices().conceptService();
 
         conceptService
                 .findConcept(concept)
@@ -70,7 +68,7 @@ public class CreateAnnotationAtIndexWithAssociationCmd implements Command  {
                     Association as = new Association(associationTemplate);
                     a.setAssociations(Collections.singletonList(as));
                     toolBox.getServices()
-                            .getAnnotationService()
+                            .annotationService()
                             .createAnnotations(Collections.singletonList(a))
                             .thenAccept(a1 -> {
                                 var match = a1.stream()
@@ -102,7 +100,7 @@ public class CreateAnnotationAtIndexWithAssociationCmd implements Command  {
     public void unapply(UIToolBox toolBox) {
         if (annotation != null) {
             toolBox.getServices()
-                    .getAnnotationService()
+                    .annotationService()
                     .deleteAnnotation(annotation.getObservationUuid())
                     .thenAccept(a -> {
                         toolBox.getEventBus()

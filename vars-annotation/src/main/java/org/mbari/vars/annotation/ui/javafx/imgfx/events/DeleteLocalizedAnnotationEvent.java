@@ -1,6 +1,6 @@
-package org.mbari.vars.ui.javafx.imgfx.events;
+package org.mbari.vars.annotation.ui.javafx.imgfx.events;
 
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 
 public record DeleteLocalizedAnnotationEvent(Annotation annotation) implements DeleteLocalizationEvent {
 }

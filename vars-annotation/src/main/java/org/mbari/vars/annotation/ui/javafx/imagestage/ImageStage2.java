@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.imagestage;
+package org.mbari.vars.annotation.ui.javafx.imagestage;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -15,9 +15,9 @@ import javafx.stage.StageStyle;
 import org.mbari.imgfx.imageview.ImagePaneController;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.RectangleView;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

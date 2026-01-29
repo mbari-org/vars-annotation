@@ -1,12 +1,12 @@
-package org.mbari.vars.ui.javafx.mediadialog;
+package org.mbari.vars.annotation.ui.javafx.mediadialog;
 
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.MediaService;
-import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
+import org.mbari.vars.annotation.ui.UIToolBox;
 
 import java.util.ResourceBundle;
 

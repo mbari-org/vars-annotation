@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.imgfx;
+package org.mbari.vars.annotation.ui.javafx.imgfx;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -6,7 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.mbari.vars.services.model.Image;
-import org.mbari.vars.ui.javafx.imgfx.domain.VarsLocalization;
+import org.mbari.vars.annotation.ui.javafx.imgfx.domain.VarsLocalization;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.events;
+package org.mbari.vars.annotation.ui.events;
 
 public class ForceReloadLocalizationsEvent {
 }

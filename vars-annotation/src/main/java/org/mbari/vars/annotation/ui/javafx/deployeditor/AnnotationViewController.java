@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.deployeditor;
+package org.mbari.vars.annotation.ui.javafx.deployeditor;
 
 
 import io.reactivex.rxjava3.core.Observable;
@@ -12,21 +12,21 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.controlsfx.control.StatusBar;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.AnnotationsAddedEvent;
-import org.mbari.vars.ui.events.AnnotationsChangedEvent;
-import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
-import org.mbari.vars.ui.events.MediaChangedEvent;
-import org.mbari.vars.ui.messages.HideProgress;
-import org.mbari.vars.ui.messages.SetProgress;
-import org.mbari.vars.ui.messages.SetStatusBarMsg;
-import org.mbari.vars.ui.messages.ShowProgress;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.services.MultiAnnotationDecorator;
-import org.mbari.vars.ui.javafx.BulkEditorPaneController;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsChangedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsRemovedEvent;
+import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
+import org.mbari.vars.annotation.ui.messages.HideProgress;
+import org.mbari.vars.annotation.ui.messages.SetProgress;
+import org.mbari.vars.annotation.ui.messages.SetStatusBarMsg;
+import org.mbari.vars.annotation.ui.messages.ShowProgress;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.ui.services.MultiAnnotationDecorator;
+import org.mbari.vars.annotation.ui.javafx.BulkEditorPaneController;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

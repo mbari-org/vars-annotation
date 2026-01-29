@@ -1,13 +1,13 @@
-package org.mbari.vars.ui.javafx.concepttree;
+package org.mbari.vars.annotation.ui.javafx.concepttree;
 
 import javafx.application.Platform;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.cell.TextFieldTreeCell;
 import javafx.scene.input.*;
 import org.mbari.vars.services.model.Concept;
-import org.mbari.vars.services.model.ConceptDetails;
-import org.mbari.vars.services.ConceptService;
-import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.oni.sdk.r1.models.ConceptDetails;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.annotation.ui.UIToolBox;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +51,7 @@ class TreeCellFactory {
             itemProperty().addListener((obs, oldItem, newItem) -> {
                 if (newItem != null && newItem.getConceptDetails() == null) {
                     toolBox.getServices()
-                            .getConceptService()
+                            .conceptService()
                             .findDetails(newItem.getName())
                             .thenAccept(opt -> {
                                 opt.ifPresent(cd -> {

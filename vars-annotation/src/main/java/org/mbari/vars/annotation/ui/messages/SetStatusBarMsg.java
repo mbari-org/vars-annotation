@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.messages;
+package org.mbari.vars.annotation.ui.messages;
 
 /**
  * Change the message shown in the status bar

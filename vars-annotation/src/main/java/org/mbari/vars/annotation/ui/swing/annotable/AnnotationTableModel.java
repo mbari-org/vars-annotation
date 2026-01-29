@@ -1,6 +1,6 @@
-package org.mbari.vars.ui.swing.annotable;
+package org.mbari.vars.annotation.ui.swing.annotable;
 
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;

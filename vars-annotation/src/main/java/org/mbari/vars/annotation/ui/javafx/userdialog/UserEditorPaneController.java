@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.userdialog;
+package org.mbari.vars.annotation.ui.javafx.userdialog;
 
 import java.net.URL;
 import java.util.Optional;
@@ -7,13 +7,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.events.UserAddedEvent;
-import org.mbari.vars.ui.messages.ShowInfoAlert;
-import org.mbari.vars.services.model.User;
-import org.mbari.vars.services.UserService;
-import org.mbari.vars.ui.util.FXMLUtils;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.events.UserAddedEvent;
+import org.mbari.vars.annotation.ui.messages.ShowInfoAlert;
+import org.mbari.vars.oni.sdk.r1.models.User;
+import org.mbari.vars.oni.sdk.r1.UserService;
+import org.mbari.vars.annotation.ui.util.FXMLUtils;
 
 /**
  * @author Brian Schlining

@@ -1,8 +1,8 @@
-package org.mbari.vars.ui.javafx.shared;
+package org.mbari.vars.annotation.ui.javafx.shared;
 
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
-import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.UIToolBox;
 
 import java.util.ArrayList;
 import java.util.List;

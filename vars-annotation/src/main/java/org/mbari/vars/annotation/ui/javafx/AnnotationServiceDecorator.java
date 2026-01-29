@@ -1,26 +1,31 @@
-package org.mbari.vars.ui.javafx;
+package org.mbari.vars.annotation.ui.javafx;
 
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.AnnotationsAddedEvent;
-import org.mbari.vars.ui.events.AnnotationsChangedEvent;
-import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
-import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.ui.messages.HideProgress;
-import org.mbari.vars.ui.messages.SetProgress;
-import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
-import org.mbari.vars.ui.messages.ShowProgress;
-import org.mbari.vars.services.model.*;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.MediaService;
-import org.mbari.vars.services.RequestPager;
-import org.mbari.vars.core.util.AsyncUtils;
-import org.mbari.vars.ui.util.JFXUtilities;
-import org.mbari.vars.ui.services.CachedReferenceNumberDecorator;
-import org.mbari.vars.ui.services.ConcurrentAnnotationDecorator;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.AnnotationCount;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annosaurus.sdk.r1.models.ImagedMoment;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsChangedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsRemovedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.annotation.ui.messages.HideProgress;
+import org.mbari.vars.annotation.ui.messages.SetProgress;
+import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
+import org.mbari.vars.annotation.ui.messages.ShowProgress;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
+import org.mbari.vars.annotation.etc.rxjava.RequestPager;
+import org.mbari.vars.annotation.etc.rxjava.AsyncUtils;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.ui.services.CachedReferenceNumberDecorator;
+import org.mbari.vars.annotation.ui.services.ConcurrentAnnotationDecorator;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +99,7 @@ public class AnnotationServiceDecorator {
      * @param videoReferenceUuid
      */
     public CompletableFuture<Void>  findAnnotations(UUID videoReferenceUuid, ExecutorService executor) {
-        AnnotationService service = toolBox.getServices().getAnnotationService();
+        AnnotationService service = toolBox.getServices().annotationService();
         EventBus eventBus = toolBox.getEventBus();
         AtomicInteger loadedAnnotationCount = new AtomicInteger(0);
         return service.countAnnotations(videoReferenceUuid)
@@ -142,7 +147,7 @@ public class AnnotationServiceDecorator {
                                                          ExecutorService executor) {
 
         AnnotationService service = toolBox.getServices()
-                .getAnnotationService();
+                .annotationService();
 
         EventBus eventBus = toolBox.getEventBus();
 
@@ -291,7 +296,7 @@ public class AnnotationServiceDecorator {
                                                        Media media) {
 
 
-        AnnotationService service = toolBox.getServices().getAnnotationService();
+        AnnotationService service = toolBox.getServices().annotationService();
         EventBus eventBus = toolBox.getEventBus();
 
         return service.findAnnotations(videoReferenceUuid, limit, offset, false)
@@ -357,7 +362,7 @@ public class AnnotationServiceDecorator {
      */
     @Deprecated(forRemoval = true)
     public void findConcurrentAnnotations(Collection<UUID> videoReferenceUuids) {
-        AnnotationService service = toolBox.getServices().getAnnotationService();
+        AnnotationService service = toolBox.getServices().annotationService();
         List<AnnotationCount> annotationCounts = videoReferenceUuids.stream()
                 .map(uuid -> service.countAnnotations(uuid).join())
                 .filter(ac -> ac.getCount() > 0)
@@ -419,7 +424,7 @@ public class AnnotationServiceDecorator {
     public void refreshAnnotationsView(Set<UUID> observationUuids) {
 
         final EventBus eventBus = toolBox.getEventBus();
-        final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        final AnnotationService annotationService = toolBox.getServices().annotationService();
         AsyncUtils.collectAll(observationUuids, annotationService::findByUuid)
                 .thenAccept(annotations -> eventBus.send(new AnnotationsChangedEvent(annotations)));
 
@@ -458,8 +463,8 @@ public class AnnotationServiceDecorator {
     @Deprecated(forRemoval = true)
     public CompletableFuture<List<Association>> findReferenceNumberAssociations(Media media, String associationKey) {
         CompletableFuture<List<Association>> f = new CompletableFuture<>();
-        MediaService mediaService = toolBox.getServices().getMediaService();
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        MediaService mediaService = toolBox.getServices().mediaService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
 
         mediaService.findByVideoSequenceName(media.getVideoSequenceName())
                 .thenCompose(medias -> AsyncUtils.collectAll(medias, m ->
@@ -488,8 +493,8 @@ public class AnnotationServiceDecorator {
                                                                                           String concept) {
 
         CompletableFuture<List<Association>> f = new CompletableFuture<>();
-        MediaService mediaService = toolBox.getServices().getMediaService();
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        MediaService mediaService = toolBox.getServices().mediaService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
 
         mediaService.findByVideoSequenceName(media.getVideoSequenceName())
                 .thenCompose(medias ->
@@ -508,7 +513,7 @@ public class AnnotationServiceDecorator {
     }
 
     public CompletableFuture<List<Annotation>> findAnnotationsForImages(Collection<Image> images) {
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
         Function<Image, CompletableFuture<List<Annotation>>> findAnnosFn = image ->
                 annotationService.findByImageReference(image.getImageReferenceUuid());
 

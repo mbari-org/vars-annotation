@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.cbpanel;
+package org.mbari.vars.annotation.ui.javafx.cbpanel;
 
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
@@ -6,10 +6,10 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.messages.*;
-import org.mbari.vars.services.ConceptService;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.messages.*;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

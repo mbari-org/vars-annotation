@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.macos.avf;
+package org.mbari.vars.annotation.ui.mediaplayers.macos.avf;
 
 /**
  * This package contains mac specific code for accessing video capture hardware via AVFoundation.

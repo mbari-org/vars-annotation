@@ -1,17 +1,17 @@
-package org.mbari.vars.ui.javafx.buttons;
+package org.mbari.vars.annotation.ui.javafx.buttons;
 
 
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.text.Text;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.commands.CreateAssociationsCmd;
-import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.services.CachedReferenceNumberDecorator;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.commands.CreateAssociationsCmd;
+import org.mbari.vars.annotation.ui.javafx.Icons;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.ui.services.CachedReferenceNumberDecorator;
 
 import java.util.*;
 import java.util.function.Function;

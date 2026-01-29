@@ -1,14 +1,18 @@
-package org.mbari.vars.ui.javafx;
+package org.mbari.vars.annotation.ui.javafx;
 
 
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.commands.CommandUtil;
-import org.mbari.vars.ui.events.AnnotationsChangedEvent;
-import org.mbari.vars.services.model.*;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.core.util.AsyncUtils;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.ImageUploadResults;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.commands.CommandUtil;
+import org.mbari.vars.annotation.ui.events.AnnotationsChangedEvent;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.annotation.etc.rxjava.AsyncUtils;
+import org.mbari.vars.annotation.model.CreatedImageData;
+import org.mbari.vars.annotation.model.ImageData;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
 import org.slf4j.Logger;
@@ -20,11 +24,9 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -102,7 +104,7 @@ public class ImageArchiveServiceDecorator {
                 " as " + type.extension + " with byte[" + bytes.length + "]");
 
         CompletableFuture<org.mbari.vars.services.model.Image> future = toolBox.getServices()
-                .getImageArchiveService()
+                .imageArchiveService()
                 .upload(media.getCameraId(), deploymentId, name, bytes)
                 .thenCompose(imageUploadResults -> {
                     createdImageData.setImageUploadResults(imageUploadResults);
@@ -132,7 +134,7 @@ public class ImageArchiveServiceDecorator {
 
 
     public void refreshRelatedAnnotations(UUID imageReferenceUuid, boolean deleteImage) {
-        final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        final AnnotationService annotationService = toolBox.getServices().annotationService();
         final EventBus eventBus = toolBox.getEventBus();
         toolBox.getExecutorService().submit(() -> {
             try {
@@ -203,7 +205,7 @@ public class ImageArchiveServiceDecorator {
             return image;
         });
 
-        final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        final AnnotationService annotationService = toolBox.getServices().annotationService();
         return readImageFuture.thenCompose(annotationService::createImage);
 
     }

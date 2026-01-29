@@ -1,6 +1,6 @@
-package org.mbari.vars.ui.javafx.abpanel;
+package org.mbari.vars.annotation.ui.javafx.abpanel;
 
-import org.mbari.vars.services.model.Association;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

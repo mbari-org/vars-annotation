@@ -1,27 +1,23 @@
-package org.mbari.vars.ui;
+package org.mbari.vars.annotation.ui;
 
 import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.services.CachedMediaService;
-import org.mbari.vars.services.MediaService;
-import org.mbari.vars.services.impl.varsuserserver.v1.CachedKBPrefService;
-import org.mbari.vars.ui.mediaplayers.MediaPlayer;
-import org.mbari.vars.ui.mediaplayers.MediaPlayers;
-import org.mbari.vars.ui.messages.*;
-import org.mbari.vars.ui.events.*;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.services.CachedConceptService;
-import org.mbari.vars.ui.javafx.Alerts;
-import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
-import org.mbari.vars.ui.services.ConcurrentAnnotationDecorator;
-import org.mbari.vars.ui.javafx.AppPaneController;
-import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.annotation.services.vampiresquid.CachedMediaService;
+import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
+import org.mbari.vars.annotation.services.oni.CachedPreferencesService;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayers;
+import org.mbari.vars.annotation.ui.messages.*;
+import org.mbari.vars.annotation.ui.events.*;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.services.oni.CachedConceptService;
+import org.mbari.vars.annotation.ui.javafx.Alerts;
+import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.annotation.ui.services.ConcurrentAnnotationDecorator;
+import org.mbari.vars.annotation.ui.javafx.AppPaneController;
 
 import mbarix4j.io.IOUtilities;
 import mbarix4j.net.URLUtilities;
@@ -36,7 +32,6 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This is the main controller for the App
@@ -120,20 +115,20 @@ public class AppController {
         eventObservable.ofType(ReloadServicesMsg.class)
                 .subscribe(e -> {
                     // Clear KB cache
-                    org.mbari.vars.oni.sdk.r1.ConceptService conceptService = toolBox.getServices().getConceptService();
+                    org.mbari.vars.oni.sdk.r1.ConceptService conceptService = toolBox.getServices().conceptService();
                     if (conceptService instanceof CachedConceptService) {
                         ((CachedConceptService) conceptService).clear();
                     }
 
-                    MediaService mediaService = toolBox.getServices().getMediaService();
+                    MediaService mediaService = toolBox.getServices().mediaService();
                     if (mediaService instanceof CachedMediaService) {
                         ((CachedMediaService) mediaService).clear();
                     }
 
                     // Clear pref cache
-                    var preferenceService = toolBox.getServices().getPreferencesService();
-                    if (preferenceService instanceof CachedKBPrefService) {
-                        ((CachedKBPrefService) preferenceService).clear();
+                    var preferenceService = toolBox.getServices().preferencesService();
+                    if (preferenceService instanceof CachedPreferencesService) {
+                        ((CachedPreferencesService) preferenceService).clear();
                     }
                     // Close open media, reopen current media
                     // https://github.com/mbari-media-management/vars-annotation/issues/157
@@ -145,7 +140,7 @@ public class AppController {
                                 eventBus.send(new ShowInfoAlert("VARS", "Reopening video", "Reopening " + lastOpenedMedia.getVideoName() + " after refresh"));
                                 Thread.sleep(1500);
                                 toolBox.getServices()
-                                        .getMediaService()
+                                        .mediaService()
                                         .findByUuid(lastOpenedMedia.getVideoReferenceUuid())
                                         .thenAccept(media -> {
                                             eventBus.send(new MediaChangedEvent(AppController.this, lastOpenedMedia));

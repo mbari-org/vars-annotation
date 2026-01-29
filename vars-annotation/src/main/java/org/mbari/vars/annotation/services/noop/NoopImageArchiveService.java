@@ -1,6 +1,6 @@
-package org.mbari.vars.services.noop;
+package org.mbari.vars.annotation.services.noop;
 
-import org.mbari.vars.services.ImageArchiveService;
+import org.mbari.vars.annotation.services.ImageArchiveService;
 import org.mbari.vars.services.model.ImageUploadResults;
 
 import java.nio.file.Path;

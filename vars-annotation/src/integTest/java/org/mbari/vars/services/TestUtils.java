@@ -1,6 +1,6 @@
 package org.mbari.vars.services;
 
-import org.mbari.vars.core.util.InstantUtils;
+import org.mbari.vars.annotation.etc.jdk.Instants;
 import org.mbari.vars.core.util.StringUtils;
 import org.mbari.vars.services.model.*;
 import org.mbari.vcr4j.time.FrameRates;
@@ -31,7 +31,7 @@ public class TestUtils {
             var startTime = Instant.now();
             var duration = Duration.ofSeconds(random.nextInt(3600));
             var videoSequenceName = cameraId + "-" + diveNumber;
-            var videoName = videoSequenceName + "_" + InstantUtils.COMPACT_TIME_FORMATTER.format(startTime);
+            var videoName = videoSequenceName + "_" + Instants.COMPACT_TIME_FORMATTER.format(startTime);
             var uri = URI
                     .create("http://www.foo.bar/" + cameraId + "/" + cameraId.charAt(0) + "_" + diveNumber + ".mp4");
 

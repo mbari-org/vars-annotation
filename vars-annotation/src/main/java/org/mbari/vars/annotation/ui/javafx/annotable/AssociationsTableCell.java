@@ -1,13 +1,13 @@
-package org.mbari.vars.ui.javafx.annotable;
+package org.mbari.vars.annotation.ui.javafx.annotable;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
-import org.mbari.vars.ui.Initializer;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.ui.Initializer;
 
 import java.util.ArrayList;
 import java.util.Collections;

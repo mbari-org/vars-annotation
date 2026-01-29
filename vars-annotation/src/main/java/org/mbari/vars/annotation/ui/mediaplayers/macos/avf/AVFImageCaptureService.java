@@ -1,7 +1,7 @@
-package org.mbari.vars.ui.mediaplayers.macos.avf;
+package org.mbari.vars.annotation.ui.mediaplayers.macos.avf;
 
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.mediaplayers.MediaPlayer;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.services.model.Framegrab;
 //import org.mbari.vars.avfoundation.AVFImageCapture;
 import org.mbari.vcr4j.VideoError;

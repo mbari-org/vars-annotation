@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.controls;
+package org.mbari.vars.annotation.ui.javafx.controls;
 
 
 import javafx.animation.Interpolator;

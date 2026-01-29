@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.mbari.vars.services.impl.varskbserver.v1.KBConceptService;
 import org.mbari.vars.services.impl.varskbserver.v1.KBWebServiceFactory;
 import org.mbari.vars.services.model.Concept;
-import org.mbari.vars.services.model.ConceptDetails;
+import org.mbari.vars.oni.sdk.r1.models.ConceptDetails;
 
 
 import java.time.Duration;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class CachedConceptServiceTest {
 
-    ConceptService conceptService = TestToolbox.getServices().getConceptService();
+    ConceptService conceptService = TestToolbox.getServices().conceptService();
 
     @Test
     public void testFetchConceptTree() throws InterruptedException, ExecutionException {

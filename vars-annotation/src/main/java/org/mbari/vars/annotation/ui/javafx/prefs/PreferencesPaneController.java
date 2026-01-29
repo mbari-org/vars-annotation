@@ -1,14 +1,14 @@
-package org.mbari.vars.ui.javafx.prefs;
+package org.mbari.vars.annotation.ui.javafx.prefs;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.mlstage.MLSettingsPaneController;
-import org.mbari.vars.ui.javafx.raziel.RazielSettingsPaneController;
-//import org.mbari.vars.ui.mediaplayers.sharktopoda.localization.LocalizationSettingsPaneController;
-import org.mbari.vars.ui.mediaplayers.MediaPlayers;
-import org.mbari.vars.ui.mediaplayers.SettingsPane;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.mlstage.MLSettingsPaneController;
+import org.mbari.vars.annotation.ui.javafx.raziel.RazielSettingsPaneController;
+//import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda.localization.LocalizationSettingsPaneController;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayers;
+import org.mbari.vars.annotation.ui.mediaplayers.SettingsPane;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,10 +1,10 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.services.model.Image;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.util.Preconditions;
 import org.slf4j.Logger;
@@ -103,7 +103,7 @@ public class MoveImagesCmd implements Command {
         Duration timeout = getTimeout(toolBox);
         
         AnnotationService annotationService = toolBox.getServices()
-                .getAnnotationService();
+                .annotationService();
 
         for (Image i : images) {
             try {

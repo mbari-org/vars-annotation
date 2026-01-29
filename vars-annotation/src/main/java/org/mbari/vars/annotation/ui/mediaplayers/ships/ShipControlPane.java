@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.ships;
+package org.mbari.vars.annotation.ui.mediaplayers.ships;
 
 //import eu.hansolo.medusa.Clock;
 //import eu.hansolo.medusa.ClockBuilder;

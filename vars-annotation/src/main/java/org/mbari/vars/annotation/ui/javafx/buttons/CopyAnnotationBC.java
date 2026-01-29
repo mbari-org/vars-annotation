@@ -1,18 +1,18 @@
-package org.mbari.vars.ui.javafx.buttons;
+package org.mbari.vars.annotation.ui.javafx.buttons;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.commands.CopyAnnotationsCmd;
-import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.ui.mediaplayers.MediaPlayer;
-import org.mbari.vars.ui.messages.CopyAnnotationMsg;
-import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.services.model.User;
-import org.mbari.vars.core.util.AsyncUtils;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.commands.CopyAnnotationsCmd;
+import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
+import org.mbari.vars.annotation.ui.messages.CopyAnnotationMsg;
+import org.mbari.vars.annotation.ui.javafx.Icons;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.oni.sdk.r1.models.User;
+import org.mbari.vars.annotation.etc.rxjava.AsyncUtils;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 

@@ -1,8 +1,8 @@
-package org.mbari.vars.ui.mediaplayers.vcr;
+package org.mbari.vars.annotation.ui.mediaplayers.vcr;
 
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.MediaChangedEvent;
-import org.mbari.vars.services.MediaService;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
+import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,7 @@ public class OpenTapeService {
     }
 
     public void open(MediaParams mediaParams) {
-        MediaService mediaService = toolBox.getServices().getMediaService();
+        MediaService mediaService = toolBox.getServices().mediaService();
         if (mediaParams.getSerialPort() != null) {
             // Save serial port to preferences, so MediaControlsFactoryImplOriginal can look it up later
             MediaControlsFactoryImpl.setSelectedSerialPort(mediaParams.getSerialPort());

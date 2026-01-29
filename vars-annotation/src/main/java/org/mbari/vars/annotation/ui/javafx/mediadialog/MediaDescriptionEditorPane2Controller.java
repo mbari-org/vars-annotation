@@ -1,9 +1,9 @@
-package org.mbari.vars.ui.javafx.mediadialog;
+package org.mbari.vars.annotation.ui.javafx.mediadialog;
 
 import java.net.MalformedURLException;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javafx.application.Platform;
@@ -169,7 +169,7 @@ public class MediaDescriptionEditorPane2Controller {
         m.setVideoDescription(videoTextArea.getText());
         m.setDescription(videoReferenceTextArea.getText());
         toolBox.getServices()
-                .getMediaService()
+                .mediaService()
                 .update(m)
                 .thenAccept(this::setMedia);
     }

@@ -1,6 +1,7 @@
 package org.mbari.vars.services.model;
 
 import org.junit.Test;
+import org.mbari.vars.annotation.model.ImageData;
 import org.mbari.vcr4j.VideoIndex;
 
 import javax.imageio.ImageIO;

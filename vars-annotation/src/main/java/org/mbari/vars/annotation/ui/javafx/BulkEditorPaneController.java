@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx;
+package org.mbari.vars.annotation.ui.javafx;
 
 
 import java.net.URL;
@@ -25,21 +25,21 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import org.mbari.vars.core.EventBus;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.core.util.*;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.commands.*;
-import org.mbari.vars.ui.events.*;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.commands.*;
+import org.mbari.vars.annotation.ui.events.*;
 import org.mbari.vars.services.model.*;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.ConceptService;
-import org.mbari.vars.ui.javafx.mediadialog.SelectMediaDialog;
-import org.mbari.vars.ui.javafx.shared.ConceptSelectionDialogController;
-import org.mbari.vars.ui.javafx.shared.DetailsDialog;
-import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
-import org.mbari.vars.ui.messages.ReloadServicesMsg;
-import org.mbari.vars.ui.messages.ShowExceptionAlert;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.annotation.ui.javafx.mediadialog.SelectMediaDialog;
+import org.mbari.vars.annotation.ui.javafx.shared.ConceptSelectionDialogController;
+import org.mbari.vars.annotation.ui.javafx.shared.DetailsDialog;
+import org.mbari.vars.annotation.ui.javafx.shared.FilteredComboBoxDecorator;
+import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
+import org.mbari.vars.annotation.ui.messages.ShowExceptionAlert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -238,7 +238,7 @@ public class BulkEditorPaneController {
      */
     private void loadRootConcept(boolean force) {
         toolBox.getServices()
-                .getConceptService()
+                .conceptService()
                 .findRoot()
                 .thenAccept(c -> conceptDialogController.setConcept(c.getName(), force));
     }
@@ -385,7 +385,7 @@ public class BulkEditorPaneController {
             associationCombobox.setItems(FXCollections.observableArrayList(associations));
         });
 
-        final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        final AnnotationService annotationService = toolBox.getServices().annotationService();
         annotationService
                 .findGroups()
                 .thenAccept(groups -> Platform.runLater(() -> {
@@ -632,7 +632,7 @@ public class BulkEditorPaneController {
     private CompletableFuture<List<ConceptAssociationTemplate>> lookupTemplates(List<String> concepts) {
         CompletableFuture<List<ConceptAssociationTemplate>> future = new CompletableFuture<>();
         List<ConceptAssociationTemplate> cats = new CopyOnWriteArrayList<>();
-        ConceptService conceptService = toolBox.getServices().getConceptService();
+        ConceptService conceptService = toolBox.getServices().conceptService();
         Observable<List<ConceptAssociationTemplate>> observable = AsyncUtils.observeAll(concepts, conceptService::findTemplates);
         observable.subscribe(cs -> {
                     if (cats.isEmpty()) {

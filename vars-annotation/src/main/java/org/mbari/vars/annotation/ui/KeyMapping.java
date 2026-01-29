@@ -1,16 +1,16 @@
-package org.mbari.vars.ui;
+package org.mbari.vars.annotation.ui;
 
 import javafx.scene.Scene;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.mediaplayers.MediaPlayer;
-import org.mbari.vars.ui.messages.*;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.ui.javafx.AppPaneController;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
+import org.mbari.vars.annotation.ui.messages.*;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annotation.ui.javafx.AppPaneController;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.commands.RemoteCommands;

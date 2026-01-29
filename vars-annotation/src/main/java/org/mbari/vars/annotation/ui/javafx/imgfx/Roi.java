@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.imgfx;
+package org.mbari.vars.annotation.ui.javafx.imgfx;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.Node;
@@ -9,7 +9,7 @@ import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.roi.Data;
 import org.mbari.imgfx.roi.DataView;
 import org.mbari.imgfx.roi.Localization;
-import org.mbari.vars.services.model.Association;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 
 import java.util.Optional;
 import java.util.UUID;

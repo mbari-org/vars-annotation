@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.rectlabel;
+package org.mbari.vars.annotation.ui.javafx.rectlabel;
 
 import io.reactivex.rxjava3.disposables.Disposable;
 import javafx.collections.FXCollections;
@@ -6,16 +6,16 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.commands.Command;
-import org.mbari.vars.ui.commands.DeleteAssociationsCmd;
-import org.mbari.vars.ui.events.AnnotationsAddedEvent;
-import org.mbari.vars.ui.events.MediaChangedEvent;
-import org.mbari.vars.services.model.Association;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.commands.Command;
+import org.mbari.vars.annotation.ui.commands.DeleteAssociationsCmd;
+import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
+import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 
 import java.util.Collections;
 import java.util.Map;
@@ -120,7 +120,7 @@ public class RectLabelStageController {
         }
         else {
             AnnotationService annotationService = toolBox.getServices()
-                    .getAnnotationService();
+                    .annotationService();
             annotationService.findImagesByVideoReferenceUuid(media.getVideoReferenceUuid())
                     .thenAccept(rectLabelController::setImages);
         }

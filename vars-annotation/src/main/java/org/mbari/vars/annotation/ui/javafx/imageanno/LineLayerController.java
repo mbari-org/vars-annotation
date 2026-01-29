@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.imageanno;
+package org.mbari.vars.annotation.ui.javafx.imageanno;
 
 public class LineLayerController {
 }

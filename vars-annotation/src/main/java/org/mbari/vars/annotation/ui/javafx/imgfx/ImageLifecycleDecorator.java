@@ -1,14 +1,14 @@
-package org.mbari.vars.ui.javafx.imgfx;
+package org.mbari.vars.annotation.ui.javafx.imgfx;
 
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.mbari.imgfx.etc.rx.events.RemoveLocalizationEvent;
-import org.mbari.vars.core.util.AsyncUtils;
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.annotation.etc.rxjava.AsyncUtils;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.services.model.Image;
 import org.mbari.vars.services.model.ImageReference;
-import org.mbari.vars.ui.events.MediaChangedEvent;
+import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,7 +149,7 @@ public class ImageLifecycleDecorator {
         Function<UUID, CompletableFuture<Image>> lookup = uuid ->
                 toolBox.getUIToolBox()
                         .getServices()
-                        .getAnnotationService()
+                        .annotationService()
                         .findImageByUuid(uuid);
 
         return AsyncUtils.collectAll(imageReferenceUuid, lookup);

@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.concepttree;
+package org.mbari.vars.annotation.ui.javafx.concepttree;
 
 import javafx.scene.control.TreeItem;
 

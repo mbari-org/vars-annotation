@@ -1,7 +1,7 @@
-package org.mbari.vars.ui.mediaplayers;
+package org.mbari.vars.annotation.ui.mediaplayers;
 
 import org.mbari.vars.services.model.Framegrab;
-import org.mbari.vars.services.ImageCaptureService;
+import org.mbari.vars.annotation.services.ImageCaptureService;
 
 import java.io.File;
 

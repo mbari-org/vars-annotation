@@ -4,8 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.services.model.BoundingBox;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.remote.control.commands.localization.Localization;

@@ -1,6 +1,6 @@
-package org.mbari.vars.ui.mediaplayers.macos.avf;
+package org.mbari.vars.annotation.ui.mediaplayers.macos.avf;
 
-import org.mbari.vars.ui.mediaplayers.NoopImageCaptureService;
+import org.mbari.vars.annotation.ui.mediaplayers.NoopImageCaptureService;
 
 import java.util.Collection;
 import java.util.Collections;

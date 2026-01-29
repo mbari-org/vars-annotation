@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.mlstage;
+package org.mbari.vars.annotation.ui.javafx.mlstage;
 
 import javafx.scene.image.ImageView;
 import org.mbari.imgfx.AutoscalePaneController;

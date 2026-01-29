@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.abpanel;
+package org.mbari.vars.annotation.ui.javafx.abpanel;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -6,7 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
-import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.UIToolBox;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;

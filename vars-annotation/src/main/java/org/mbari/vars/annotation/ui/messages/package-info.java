@@ -4,4 +4,4 @@
  * @author Brian Schlining
  * @since 2017-07-28T13:27:00
  */
-package org.mbari.vars.ui.messages;
+package org.mbari.vars.annotation.ui.messages;

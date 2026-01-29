@@ -1,12 +1,13 @@
-package org.mbari.vars.ui;
+package org.mbari.vars.annotation.ui;
 
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.services.model.User;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.oni.sdk.r1.models.User;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+
 
 import java.util.Collection;
 

@@ -1,11 +1,11 @@
-package org.mbari.vars.ui.javafx.prefs;
+package org.mbari.vars.annotation.ui.javafx.prefs;
 
 
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.text.Text;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.Icons;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.Icons;
 
 import java.util.Optional;
 import java.util.ResourceBundle;

@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.util;
+package org.mbari.vars.annotation.ui.util;
 
 import java.io.File;
 import java.net.URISyntaxException;

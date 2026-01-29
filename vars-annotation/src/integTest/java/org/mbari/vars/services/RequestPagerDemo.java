@@ -5,7 +5,7 @@ package org.mbari.vars.services;
 //import io.reactivex.subjects.Subject;
 
 import org.mbari.vars.services.TestToolbox;
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ public class RequestPagerDemo {
 //
 //        AnnotationService service = Initializer.getToolBox()
 //                .getServices()
-//                .getAnnotationService();
+//                .annotationService();
 //
 //        Function<RequestPager.Page, List<Annotation>> function = (page) -> {
 //            try {

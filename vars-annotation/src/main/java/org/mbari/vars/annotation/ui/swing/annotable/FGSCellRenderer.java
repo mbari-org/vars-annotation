@@ -1,10 +1,10 @@
-package org.mbari.vars.ui.swing.annotable;
+package org.mbari.vars.annotation.ui.swing.annotable;
 
 import org.kordamp.ikonli.swing.FontIcon;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.ui.javafx.annotable.FGSValue;
-import org.mbari.vars.ui.swing.JIcons;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annotation.ui.javafx.Icons;
+import org.mbari.vars.annotation.ui.javafx.annotable.FGSValue;
+import org.mbari.vars.annotation.ui.swing.JIcons;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;

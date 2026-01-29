@@ -1,18 +1,17 @@
-package org.mbari.vars.ui.services;
+package org.mbari.vars.annotation.ui.services;
 
 import mbarix4j.awt.image.ImageUtilities;
-import org.mbari.vars.services.ImageCaptureService;
+import org.mbari.vars.annotation.services.ImageCaptureService;
 import org.mbari.vars.services.model.Framegrab;
-import org.mbari.vars.services.model.ImageData;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.mediaplayers.MediaPlayer;
+import org.mbari.vars.annotation.model.ImageData;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.time.Instant;
 import java.util.Optional;

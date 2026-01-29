@@ -1,7 +1,7 @@
-package org.mbari.vars.ui.mediaplayers;
+package org.mbari.vars.annotation.ui.mediaplayers;
 
 import javafx.scene.layout.Pane;
-import org.mbari.vars.ui.javafx.prefs.IPrefs;
+import org.mbari.vars.annotation.ui.javafx.prefs.IPrefs;
 
 /**
  * @author Brian Schlining

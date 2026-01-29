@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.timeline;
+package org.mbari.vars.annotation.ui.javafx.timeline;
 
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
@@ -7,12 +7,12 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.ui.messages.SeekMsg;
-import org.mbari.vars.ui.util.ColorUtil;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.annotation.ui.messages.SeekMsg;
+import org.mbari.vars.annotation.ui.util.ColorUtil;
 
 import java.time.Duration;
 import java.util.List;

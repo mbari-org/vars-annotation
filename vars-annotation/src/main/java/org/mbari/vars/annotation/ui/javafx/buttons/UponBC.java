@@ -1,14 +1,14 @@
-package org.mbari.vars.ui.javafx.buttons;
+package org.mbari.vars.annotation.ui.javafx.buttons;
 
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.text.Text;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.commands.CreateAssociationsCmd;
-import org.mbari.vars.ui.javafx.Icons;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.commands.CreateAssociationsCmd;
+import org.mbari.vars.annotation.ui.javafx.Icons;
 import org.mbari.vars.services.model.*;
-import org.mbari.vars.ui.javafx.shared.ConceptSelectionDialogController;
+import org.mbari.vars.annotation.ui.javafx.shared.ConceptSelectionDialogController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

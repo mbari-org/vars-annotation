@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.rectlabel;
+package org.mbari.vars.annotation.ui.javafx.rectlabel;
 
 
 import com.google.gson.FieldNamingPolicy;
@@ -26,21 +26,21 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.commands.Command;
-import org.mbari.vars.ui.commands.CreateAnnotationAtIndexWithAssociationCmd;
-import org.mbari.vars.ui.commands.CreateAssociationsCmd;
-import org.mbari.vars.ui.events.AnnotationsChangedEvent;
-import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
-import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.commands.Command;
+import org.mbari.vars.annotation.ui.commands.CreateAnnotationAtIndexWithAssociationCmd;
+import org.mbari.vars.annotation.ui.commands.CreateAssociationsCmd;
+import org.mbari.vars.annotation.ui.events.AnnotationsChangedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsRemovedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.annotation.ui.javafx.Icons;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.services.model.Image;
-import org.mbari.vars.ui.javafx.shared.ConceptSelectionDialogController;
-import org.mbari.vars.ui.javafx.shared.ImageViewExt;
-import org.mbari.vars.services.util.FormatUtils;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.ui.javafx.shared.ConceptSelectionDialogController;
+import org.mbari.vars.annotation.ui.javafx.shared.ImageViewExt;
+import org.mbari.vars.annotation.util.FormatUtils;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.mbari.vcr4j.VideoIndex;
 
 /**
@@ -323,7 +323,7 @@ public class RectLabelController {
         dialogController = new ConceptSelectionDialogController(toolBox);
 
         toolBox.getServices()
-                .getConceptService()
+                .conceptService()
                 .findRoot()
                 .thenAccept(rootConcept -> dialogController.setConcept(rootConcept.getName(), false));
 
@@ -414,7 +414,7 @@ public class RectLabelController {
                 // lookup allAnnotations for that image
 
                 toolBox.getServices()
-                        .getAnnotationService()
+                        .annotationService()
                         .findByImageReference(image.getImageReferenceUuid())
                         .thenAccept(annotations -> JFXUtilities.runOnFXThread(() -> {
                             this.allAnnotations.addAll(annotations);

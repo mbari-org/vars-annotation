@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.sharktopoda2;
+package org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;

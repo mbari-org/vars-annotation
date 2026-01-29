@@ -3,4 +3,4 @@
  * @author Brian Schlining
  * @since 2018-10-23T13:49:00
  */
-package org.mbari.vars.ui.javafx.deployeditor;
+package org.mbari.vars.annotation.ui.javafx.deployeditor;

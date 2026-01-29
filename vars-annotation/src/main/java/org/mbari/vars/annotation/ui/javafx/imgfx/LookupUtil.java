@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.imgfx;
+package org.mbari.vars.annotation.ui.javafx.imgfx;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -7,10 +7,10 @@ import javafx.scene.shape.Shape;
 import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.roi.Data;
 import org.mbari.imgfx.roi.DataView;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.services.model.Image;
-import org.mbari.vars.ui.javafx.imgfx.domain.VarsLocalization;
+import org.mbari.vars.annotation.ui.javafx.imgfx.domain.VarsLocalization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

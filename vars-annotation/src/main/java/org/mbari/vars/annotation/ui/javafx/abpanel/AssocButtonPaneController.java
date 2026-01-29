@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.abpanel;
+package org.mbari.vars.annotation.ui.javafx.abpanel;
 
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
@@ -7,11 +7,11 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.ForceRedrawEvent;
-import org.mbari.vars.ui.messages.ReloadServicesMsg;
-import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
-import org.mbari.vars.services.model.Association;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.ForceRedrawEvent;
+import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
+import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

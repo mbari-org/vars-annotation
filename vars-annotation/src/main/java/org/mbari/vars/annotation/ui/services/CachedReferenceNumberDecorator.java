@@ -1,14 +1,14 @@
-package org.mbari.vars.ui.services;
+package org.mbari.vars.annotation.ui.services;
 
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.MediaChangedEvent;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
 
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.MediaService;
-import org.mbari.vars.services.model.Association;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.services.model.ConceptAssociation;
 import org.mbari.vars.services.model.ConceptAssociationRequest;
-import org.mbari.vars.services.model.Media;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,7 @@ public class CachedReferenceNumberDecorator {
 
         if (medias.isEmpty()) {
             return toolBox.getServices()
-                    .getMediaService()
+                    .mediaService()
                     .findByVideoSequenceName(media.getVideoSequenceName())
                     .thenApply(ms -> {
                         medias.addAll(ms);
@@ -73,7 +73,7 @@ public class CachedReferenceNumberDecorator {
                                 .collect(Collectors.toList());
                         ConceptAssociationRequest request = new ConceptAssociationRequest(associationKey, videoReferenceUuids);
                         return toolBox.getServices()
-                                .getAnnotationService()
+                                .annotationService()
                                 .findByConceptAssociationRequest(request)
                                 .thenApply(response -> {
                                     conceptAssociations.addAll(response.getConceptAssociations());

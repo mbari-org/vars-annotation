@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.mbari.vars.ui.javafx.shared;
+package org.mbari.vars.annotation.ui.javafx.shared;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -19,16 +19,14 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.transformation.SortedList;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
-import org.mbari.vars.ui.javafx.annotable.AssociationsTableCell;
-import org.mbari.vars.ui.javafx.annotable.FGSTableCell;
-import org.mbari.vars.ui.javafx.annotable.FGSValue;
-import org.mbari.vars.services.util.FormatUtils;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.ui.javafx.annotable.AssociationsTableCell;
+import org.mbari.vars.annotation.ui.javafx.annotable.FGSTableCell;
+import org.mbari.vars.annotation.ui.javafx.annotable.FGSValue;
+import org.mbari.vars.annotation.util.FormatUtils;
 import org.mbari.vcr4j.time.Timecode;
 
 /**

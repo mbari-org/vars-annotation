@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.imgfx;
+package org.mbari.vars.annotation.ui.javafx.imgfx;
 
 
 
@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.demos.imageview.editor.Localizations;
 
-import org.mbari.vars.ui.javafx.imgfx.events.DrawVarsLocalizationEvent;
+import org.mbari.vars.annotation.ui.javafx.imgfx.events.DrawVarsLocalizationEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

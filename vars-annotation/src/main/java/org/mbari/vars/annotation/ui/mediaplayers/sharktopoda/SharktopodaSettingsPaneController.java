@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.sharktopoda;
+package org.mbari.vars.annotation.ui.mediaplayers.sharktopoda;
 
 
 import java.util.ResourceBundle;
@@ -12,12 +12,12 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
-import org.mbari.vars.ui.AppConfig;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
-import org.mbari.vars.ui.javafx.prefs.IPrefs;
-import org.mbari.vars.ui.util.FXMLUtils;
+import org.mbari.vars.annotation.ui.AppConfig;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
+import org.mbari.vars.annotation.ui.javafx.prefs.IPrefs;
+import org.mbari.vars.annotation.ui.util.FXMLUtils;
 
 /**
  * @author Brian Schlining

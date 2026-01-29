@@ -33,13 +33,13 @@ module org.mbari.vars.annotation {
   requires org.mbari.vars.vampiresquid.sdk;
 
 
-  opens org.mbari.vars.services.impl.ml to com.google.gson;
+  opens org.mbari.vars.annotation.services.ml to com.google.gson;
   opens org.mbari.vars.services.model to com.google.gson;
 
   exports org.mbari.vars.services;
   exports org.mbari.vars.services.etc.gson;
   exports org.mbari.vars.services.impl.annosaurus.v1;
-  exports org.mbari.vars.services.impl.ml;
+  exports org.mbari.vars.annotation.services.ml;
   exports org.mbari.vars.services.impl.panoptes.v1;
   exports org.mbari.vars.services.impl.raziel;
   exports org.mbari.vars.services.impl.vampiresquid.v1;
@@ -50,4 +50,13 @@ module org.mbari.vars.annotation {
   exports org.mbari.vars.core;
   exports org.mbari.vars.core.util;
   exports org.mbari.vars.core.crypto;
+  exports org.mbari.vars.annotation.services.panopes;
+  exports org.mbari.vars.annotation.services.oni;
+    exports org.mbari.vars.annotation.util;
+  exports org.mbari.vars.annotation.etc.vcr4j;
+  exports org.mbari.vars.annotation.services.vampiresquid;
+    exports org.mbari.vars.annotation.etc.rxjava;
+  exports org.mbari.vars.annotation.services;
+  exports org.mbari.vars.annotation.model;
+  opens org.mbari.vars.annotation.model to com.google.gson;
 }

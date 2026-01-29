@@ -1,10 +1,10 @@
-package org.mbari.vars.ui.javafx.abpanel;
+package org.mbari.vars.annotation.ui.javafx.abpanel;
 
 import java.util.ResourceBundle;
 
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.core.util.Preconditions;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.Icons;
+import org.mbari.vars.annotation.util.Preconditions;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;

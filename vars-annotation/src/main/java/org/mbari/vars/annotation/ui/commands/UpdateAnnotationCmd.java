@@ -1,8 +1,8 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.AnnotationsChangedEvent;
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.AnnotationsChangedEvent;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -39,14 +39,14 @@ public class UpdateAnnotationCmd implements Command {
 
     private void doAction(UIToolBox toolBox, Annotation annotation) {
         toolBox.getServices()
-                .getConceptService()
+                .conceptService()
                 .findDetails(annotation.getConcept())
                 .thenAccept(opt -> {
                     if (opt.isPresent()) {
                         // Update to primary concept name
                         newAnnotation.setConcept(opt.get().getName());
                          toolBox.getServices()
-                                .getAnnotationService()
+                                .annotationService()
                                 .updateAnnotation(annotation)
                                 .thenAccept(a -> {
                                     a.setTransientKey(oldAnnotation.getTransientKey());

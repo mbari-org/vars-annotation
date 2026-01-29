@@ -1,11 +1,12 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.core.util.Preconditions;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.AnnotationsAddedEvent;
-import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.AnnotationService;
+
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsRemovedEvent;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.annotation.util.Preconditions;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public class DeleteAnnotationsCmd implements Command {
 
     @Override
     public void apply(UIToolBox toolBox) {
-        AnnotationService service = toolBox.getServices().getAnnotationService();
+        AnnotationService service = toolBox.getServices().annotationService();
         Collection<UUID> uuids = annotations.stream()
                 .map(Annotation::getObservationUuid)
                 .collect(Collectors.toList());
@@ -40,7 +41,7 @@ public class DeleteAnnotationsCmd implements Command {
 
     @Override
     public void unapply(UIToolBox toolBox) {
-        AnnotationService service = toolBox.getServices().getAnnotationService();
+        AnnotationService service = toolBox.getServices().annotationService();
         service.createAnnotations(annotations)
             .thenAccept(as -> {
                 annotations = Collections.unmodifiableList(new ArrayList<>(as));

@@ -1,12 +1,12 @@
-package org.mbari.vars.ui.javafx.mlstage;
+package org.mbari.vars.annotation.ui.javafx.mlstage;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.mediaplayers.SettingsPane;
-import org.mbari.vars.ui.util.FXMLUtils;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.mediaplayers.SettingsPane;
+import org.mbari.vars.annotation.ui.util.FXMLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

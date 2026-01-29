@@ -1,13 +1,13 @@
-package org.mbari.vars.ui.javafx.imgfx;
+package org.mbari.vars.annotation.ui.javafx.imgfx;
 
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import org.mbari.imgfx.demos.imageview.editor.AnnotationPaneController;
 import org.mbari.imgfx.etc.rx.events.RemoveLocalizationEvent;
-import org.mbari.vars.ui.javafx.imgfx.domain.VarsLocalization;
-import org.mbari.vars.ui.javafx.imgfx.events.AddLocalizationEventBuilder;
-import org.mbari.vars.ui.javafx.imgfx.events.DrawVarsLocalizationEvent;
-import org.mbari.vars.ui.messages.ReloadServicesMsg;
+import org.mbari.vars.annotation.ui.javafx.imgfx.domain.VarsLocalization;
+import org.mbari.vars.annotation.ui.javafx.imgfx.events.AddLocalizationEventBuilder;
+import org.mbari.vars.annotation.ui.javafx.imgfx.events.DrawVarsLocalizationEvent;
+import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +74,7 @@ public class IFXPaneController {
     private void loadConcepts() {
         toolBox.getUIToolBox()
                 .getServices()
-                .getConceptService()
+                .conceptService()
                 .findAllNames()
                 .thenAccept(concepts -> Platform.runLater(() -> annotationPaneController.setConcepts(concepts)));
 

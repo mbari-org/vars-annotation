@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.macos.bm;
+package org.mbari.vars.annotation.ui.mediaplayers.macos.bm;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -8,10 +8,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.mediaplayers.SettingsPane;
-import org.mbari.vars.ui.util.FXMLUtils;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.mediaplayers.SettingsPane;
+import org.mbari.vars.annotation.ui.util.FXMLUtils;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import java.io.File;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;

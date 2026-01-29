@@ -1,17 +1,17 @@
-package org.mbari.vars.ui.javafx.mediadialog;
+package org.mbari.vars.annotation.ui.javafx.mediadialog;
 
 import javafx.application.Platform;
 import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.shared.DateTimePickerController;
-import org.mbari.vars.ui.messages.ReloadServicesMsg;
-import org.mbari.vars.ui.util.FXMLUtils;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.shared.DateTimePickerController;
+import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
+import org.mbari.vars.annotation.ui.util.FXMLUtils;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,7 +100,7 @@ public class VideoBrowserPaneController {
     private void loadCameraIds() {
         // Populate the cameraIds
         toolBox.getServices()
-                .getMediaService()
+                .mediaService()
                 .findAllCameraIds()
                 .thenAccept(cameras -> {
                     Platform.runLater(() -> {
@@ -125,7 +125,7 @@ public class VideoBrowserPaneController {
                     .selectedItemProperty()
                     .addListener(((observable, oldValue, newValue) -> {
                         toolBox.getServices()
-                                .getMediaService()
+                                .mediaService()
                                 .findVideoSequenceNamesByCameraId(newValue)
                                 .thenAccept(vs -> Platform.runLater(() -> {
                                     getVideoSequenceListView().setItems(FXCollections.observableArrayList(vs));
@@ -151,7 +151,7 @@ public class VideoBrowserPaneController {
                     .selectedItemProperty()
                     .addListener((obs, oldValue, newValue) -> {
                         toolBox.getServices()
-                                .getMediaService()
+                                .mediaService()
                                 .findVideoNamesByVideoSequenceName(newValue)
                                 .thenAccept(vs -> Platform.runLater(() -> {
                                     getVideoListView().setItems(FXCollections.observableArrayList(vs));
@@ -179,7 +179,7 @@ public class VideoBrowserPaneController {
                     .addListener((obs, oldValue, newValue) -> {
                         if (newValue != null) {
                             toolBox.getServices()
-                                    .getMediaService()
+                                    .mediaService()
                                     .findByVideoName(newValue)
                                     .thenAccept(vs -> JFXUtilities.runOnFXThread(() -> {
                                         getMediaListView().setItems(FXCollections.observableArrayList(vs));
@@ -210,12 +210,12 @@ public class VideoBrowserPaneController {
             mediaListView.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldValue, newValue) -> {
-                        getMediaPaneController().setMedia(newValue, toolBox.getServices().getAnnotationService());
+                        getMediaPaneController().setMedia(newValue, toolBox.getServices().annotationService());
                     });
 
             mediaListView.getSelectionModel()
                     .selectedItemProperty()
-                    .addListener(obs -> getMediaPaneController().setMedia(null, toolBox.getServices().getAnnotationService()));
+                    .addListener(obs -> getMediaPaneController().setMedia(null, toolBox.getServices().annotationService()));
         }
         return mediaListView;
     }

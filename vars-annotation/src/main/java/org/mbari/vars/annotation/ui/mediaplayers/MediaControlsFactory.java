@@ -1,6 +1,6 @@
-package org.mbari.vars.ui.mediaplayers;
+package org.mbari.vars.annotation.ui.mediaplayers;
 
-import org.mbari.vars.services.model.Media;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 

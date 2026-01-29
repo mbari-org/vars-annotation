@@ -1,12 +1,12 @@
-package org.mbari.vars.ui.mediaplayers.macos.bm;
+package org.mbari.vars.annotation.ui.mediaplayers.macos.bm;
 
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.services.ImageCaptureService;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.services.ImageCaptureService;
 import org.mbari.vars.services.model.Framegrab;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.messages.ShowExceptionAlert;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.messages.ShowExceptionAlert;
 import org.mbari.vcr4j.VideoIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

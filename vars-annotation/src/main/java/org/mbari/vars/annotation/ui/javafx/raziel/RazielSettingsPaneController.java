@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.raziel;
+package org.mbari.vars.annotation.ui.javafx.raziel;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -9,13 +9,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import org.mbari.vars.services.impl.raziel.RazielConfigurationService;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.domain.RazielConnectionParams;
-import org.mbari.vars.ui.mediaplayers.SettingsPane;
-import org.mbari.vars.ui.messages.ReloadServicesMsg;
-import org.mbari.vars.ui.util.FXMLUtils;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.domain.RazielConnectionParams;
+import org.mbari.vars.annotation.ui.mediaplayers.SettingsPane;
+import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
+import org.mbari.vars.annotation.ui.util.FXMLUtils;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

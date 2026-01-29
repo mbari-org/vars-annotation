@@ -1,7 +1,7 @@
-package org.mbari.vars.services.etc.methanol;
+package org.mbari.vars.annotation.etc.methanol;
 
 import com.github.mizosoft.methanol.Methanol;
-import org.mbari.vars.core.util.Logging;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public final class LoggingInterceptor implements Methanol.Interceptor {
-    private static final Logging log = new Logging(LoggingInterceptor.class.getName());
+    private static final Loggers log = new Loggers(LoggingInterceptor.class.getName());
 
     @Override
     public <T> HttpResponse<T> intercept(HttpRequest request, Chain<T> chain)

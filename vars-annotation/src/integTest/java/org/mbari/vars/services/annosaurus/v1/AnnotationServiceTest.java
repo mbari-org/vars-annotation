@@ -4,12 +4,12 @@ import static org.junit.Assert.*;
 import static org.mbari.vars.core.util.AsyncUtils.*;
 
 import org.junit.Test;
-import org.mbari.vars.services.AnnotationService;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 
 import org.mbari.vars.services.TestToolbox;
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.services.model.AnnotationCount;
-import org.mbari.vars.services.model.Association;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.services.model.Image;
 
 
@@ -32,7 +32,7 @@ import java.util.concurrent.CompletableFuture;
 public class AnnotationServiceTest {
 
 
-    AnnotationService annoService = TestToolbox.getServices().getAnnotationService();
+    AnnotationService annoService = TestToolbox.getServices().annotationService();
     Duration timeout = Duration.ofMillis(15000);
 
     private final UUID uuid = UUID.fromString("c101ecb4-d22d-4f5c-aa9f-1d1048643086");

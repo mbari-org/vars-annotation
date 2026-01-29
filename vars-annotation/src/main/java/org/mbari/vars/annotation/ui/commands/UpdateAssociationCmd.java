@@ -1,10 +1,10 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.services.model.Association;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.ConceptService;
-import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
 
 import java.util.UUID;
 
@@ -26,7 +26,7 @@ public class UpdateAssociationCmd implements Command {
 
     @Override
     public void apply(UIToolBox toolBox) {
-        ConceptService conceptService = toolBox.getServices().getConceptService();
+        ConceptService conceptService = toolBox.getServices().conceptService();
         // Make sure we're using a primary name in the toConcept
         conceptService.findConcept(newAssociation.getToConcept())
                 .thenAccept(opt -> {
@@ -45,7 +45,7 @@ public class UpdateAssociationCmd implements Command {
     }
 
     private void doUpdate(UIToolBox toolBox, Association association) {
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
         annotationService.updateAssociation(association)
                 .thenAccept(a -> {
                     AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);

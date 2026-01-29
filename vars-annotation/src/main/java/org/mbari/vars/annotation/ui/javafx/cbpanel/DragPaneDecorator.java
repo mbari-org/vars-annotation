@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.cbpanel;
+package org.mbari.vars.annotation.ui.javafx.cbpanel;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -9,9 +9,9 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.services.ConceptService;
-import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.annotation.ui.UIToolBox;
 
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -114,7 +114,7 @@ public class DragPaneDecorator {
         t.play();
 
         toolBox.getServices()
-                .getConceptService()
+                .conceptService()
                 .findAllNames()
                 .thenApply(names -> {
                     if (!names.contains(name)) {

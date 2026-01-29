@@ -3,12 +3,7 @@ package org.mbari.vars.services.annosaurus.v1;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.mbari.vars.services.AuthService;
-import org.mbari.vars.services.BasicJWTAuthService;
-import org.mbari.vars.services.TestToolbox;
 import org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory;
-import org.mbari.vars.services.model.Authorization;
-
-import java.util.Optional;
 
 
 /**

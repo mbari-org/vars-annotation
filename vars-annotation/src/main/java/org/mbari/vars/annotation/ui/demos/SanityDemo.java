@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.demos;
+package org.mbari.vars.annotation.ui.demos;
 
 public class SanityDemo {
 

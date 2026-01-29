@@ -24,4 +24,4 @@
  * @author Brian Schlining
  * @since 2017-08-22T14:18:00
  */
-package org.mbari.vars.ui.javafx.buttons;
+package org.mbari.vars.annotation.ui.javafx.buttons;

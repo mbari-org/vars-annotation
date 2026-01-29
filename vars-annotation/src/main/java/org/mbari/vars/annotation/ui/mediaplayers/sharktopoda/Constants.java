@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.sharktopoda;
+package org.mbari.vars.annotation.ui.mediaplayers.sharktopoda;
 
 public class Constants {
 

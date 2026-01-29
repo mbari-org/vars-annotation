@@ -4,10 +4,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 
-import org.mbari.vars.services.ConceptService;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
 import org.mbari.vars.services.TestToolbox;
 import org.mbari.vars.services.model.Concept;
-import org.mbari.vars.services.model.ConceptDetails;
+import org.mbari.vars.oni.sdk.r1.models.ConceptDetails;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +21,7 @@ public class KBConceptServiceTest {
 
     String endpoint = "http://localhost:8083/kb/v1/";
     //KBConceptService conceptService = Initializer.getInjector().getInstance(KBConceptService.class);
-    ConceptService conceptService = TestToolbox.getServices().getConceptService();
+    ConceptService conceptService = TestToolbox.getServices().conceptService();
 
 
     @Test

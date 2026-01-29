@@ -2,9 +2,9 @@ package org.mbari.vars.services;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mbari.vars.annotation.etc.rxjava.Pager;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PagerTest {

@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx;
+package org.mbari.vars.annotation.ui.javafx;
 
 import io.reactivex.rxjava3.core.Observable;
 import javafx.application.Platform;
@@ -17,36 +17,36 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.StatusBar;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.ui.events.MediaChangedEvent;
-import org.mbari.vars.ui.events.UserAddedEvent;
-import org.mbari.vars.ui.events.UserChangedEvent;
-import org.mbari.vars.ui.javafx.mediadialog.MediaDescriptionEditorPane2Controller;
-import org.mbari.vars.ui.javafx.mlstage.MachineLearningStageController;
-import org.mbari.vars.ui.mediaplayers.ships.MediaParams;
-import org.mbari.vars.ui.mediaplayers.ships.OpenRealTimeDialog;
-import org.mbari.vars.ui.mediaplayers.ships.OpenRealTimeService;
-import org.mbari.vars.ui.mediaplayers.vcr.OpenTapeDialog;
-import org.mbari.vars.ui.messages.*;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.services.model.User;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.ui.services.FileBrowsingDecorator;
-import org.mbari.vars.ui.javafx.annotable.AnnotationTableController;
-import org.mbari.vars.ui.javafx.cbpanel.ConceptButtonPanesController;
-import org.mbari.vars.ui.javafx.concepttree.SearchTreePaneController;
-import org.mbari.vars.ui.javafx.deployeditor.AnnotationViewController;
-import org.mbari.vars.ui.javafx.mediadialog.MediaPaneController;
-import org.mbari.vars.ui.javafx.mediadialog.SelectMediaDialog;
-import org.mbari.vars.ui.javafx.prefs.PreferencesDialogController;
-import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
-import org.mbari.vars.ui.javafx.userdialog.CreateUserDialog;
-import org.mbari.vars.ui.swing.annotable.Colors;
-import org.mbari.vars.ui.swing.annotable.JXAnnotationTableController;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
+import org.mbari.vars.annotation.ui.events.UserAddedEvent;
+import org.mbari.vars.annotation.ui.events.UserChangedEvent;
+import org.mbari.vars.annotation.ui.javafx.mediadialog.MediaDescriptionEditorPane2Controller;
+import org.mbari.vars.annotation.ui.javafx.mlstage.MachineLearningStageController;
+import org.mbari.vars.annotation.ui.mediaplayers.ships.MediaParams;
+import org.mbari.vars.annotation.ui.mediaplayers.ships.OpenRealTimeDialog;
+import org.mbari.vars.annotation.ui.mediaplayers.ships.OpenRealTimeService;
+import org.mbari.vars.annotation.ui.mediaplayers.vcr.OpenTapeDialog;
+import org.mbari.vars.annotation.ui.messages.*;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.oni.sdk.r1.models.User;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.annotation.ui.services.FileBrowsingDecorator;
+import org.mbari.vars.annotation.ui.javafx.annotable.AnnotationTableController;
+import org.mbari.vars.annotation.ui.javafx.cbpanel.ConceptButtonPanesController;
+import org.mbari.vars.annotation.ui.javafx.concepttree.SearchTreePaneController;
+import org.mbari.vars.annotation.ui.javafx.deployeditor.AnnotationViewController;
+import org.mbari.vars.annotation.ui.javafx.mediadialog.MediaPaneController;
+import org.mbari.vars.annotation.ui.javafx.mediadialog.SelectMediaDialog;
+import org.mbari.vars.annotation.ui.javafx.prefs.PreferencesDialogController;
+import org.mbari.vars.annotation.ui.javafx.shared.FilteredComboBoxDecorator;
+import org.mbari.vars.annotation.ui.javafx.userdialog.CreateUserDialog;
+import org.mbari.vars.annotation.ui.swing.annotable.Colors;
+import org.mbari.vars.annotation.ui.swing.annotable.JXAnnotationTableController;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -502,7 +502,7 @@ public class AppPaneController {
     private void setUser(String username) {
         if (username != null) {
             toolBox.getServices()
-                    .getUserService()
+                    .userService()
                     .findAllUsers()
                     .thenAccept(users -> {
                         Optional<User> opt = users.stream()
@@ -577,7 +577,7 @@ public class AppPaneController {
         Comparator<String> sorter = Comparator.comparing(String::toString, String.CASE_INSENSITIVE_ORDER);
         usersComboBox.setItems(FXCollections.observableList(new ArrayList<>()));
         toolBox.getServices()
-                .getUserService()
+                .userService()
                 .findAllUsers()
                 .thenAccept(users -> {
                     List<String> usernames = users.stream()
@@ -619,7 +619,7 @@ public class AppPaneController {
 //            ComboBox<String> groupCombobox = new JFXComboBox<>();
             groupCombobox.setEditable(true);
 //            toolBox.getServices()
-//                    .getAnnotationService()
+//                    .annotationService()
 //                    .findGroups()
 //                    .thenAccept(groups ->
 //                        Platform.runLater(() ->
@@ -648,7 +648,7 @@ public class AppPaneController {
             activityCombobox.setEditable(true);
 
 //            toolBox.getServices()
-//                    .getAnnotationService()
+//                    .annotationService()
 //                    .findActivities()
 //                    .thenAccept(activities -> {
 //                        Platform.runLater(() -> {
@@ -707,13 +707,13 @@ public class AppPaneController {
 
     private void reload() {
         toolBox.getServices()
-                .getAnnotationService()
+                .annotationService()
                 .findActivities()
                 .thenAccept(activities ->
                         Platform.runLater(() ->
                                 activityCombobox.getItems().addAll(activities)));
         toolBox.getServices()
-                .getAnnotationService()
+                .annotationService()
                 .findGroups()
                 .thenAccept(groups ->
                         Platform.runLater(() ->
@@ -771,7 +771,7 @@ public class AppPaneController {
     }
 
     private void showMediaOfSelectedRow(Collection<Annotation> annotations) {
-        final AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        final AnnotationService annotationService = toolBox.getServices().annotationService();
         if (annotations == null || annotations.size() != 1) {
             mediaPaneController.setMedia(null, annotationService);
             mediaDescriptionEditorPaneController.setMedia(null);
@@ -787,7 +787,7 @@ public class AppPaneController {
             }
             else {
                 toolBox.getServices()
-                        .getMediaService()
+                        .mediaService()
                         .findByUuid(annotation.getVideoReferenceUuid())
                         .thenAccept(m -> {
                             mediaPaneController.setMedia(m, annotationService);

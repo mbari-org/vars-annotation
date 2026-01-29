@@ -1,9 +1,9 @@
-package org.mbari.vars.ui.javafx.timeline;
+package org.mbari.vars.annotation.ui.javafx.timeline;
 
 import javafx.beans.binding.DoubleBinding;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
-import org.mbari.vars.services.model.Media;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 
 import java.util.List;
 

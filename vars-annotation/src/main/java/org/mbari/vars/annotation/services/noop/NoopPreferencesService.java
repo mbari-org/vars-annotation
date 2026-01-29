@@ -1,7 +1,7 @@
-package org.mbari.vars.services.noop;
+package org.mbari.vars.annotation.services.noop;
 
-import org.mbari.vars.services.PreferencesService;
-import org.mbari.vars.services.model.PreferenceNode;
+import org.mbari.vars.oni.sdk.r1.PreferencesService;
+import org.mbari.vars.oni.sdk.r1.models.PreferenceNode;
 
 import java.util.Collections;
 import java.util.List;

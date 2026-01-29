@@ -1,14 +1,14 @@
-package org.mbari.vars.ui.javafx.imageanno;
+package org.mbari.vars.annotation.ui.javafx.imageanno;
 
 import javafx.scene.control.ToolBar;
 
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Shape;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.services.model.Image;
-import org.mbari.vars.ui.javafx.shared.ImageViewExt;
+import org.mbari.vars.annotation.ui.javafx.shared.ImageViewExt;
 
 import java.util.ArrayList;
 import java.util.List;

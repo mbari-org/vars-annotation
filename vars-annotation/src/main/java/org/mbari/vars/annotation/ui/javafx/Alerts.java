@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx;
+package org.mbari.vars.annotation.ui.javafx;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -6,8 +6,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.messages.*;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

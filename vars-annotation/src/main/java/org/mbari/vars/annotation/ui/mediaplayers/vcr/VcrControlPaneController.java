@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.vcr;
+package org.mbari.vars.annotation.ui.mediaplayers.vcr;
 
 
 import java.net.URL;
@@ -17,7 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import org.mbari.vars.ui.javafx.Icons;
+import org.mbari.vars.annotation.ui.javafx.Icons;
 import org.mbari.vcr4j.VideoController;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;

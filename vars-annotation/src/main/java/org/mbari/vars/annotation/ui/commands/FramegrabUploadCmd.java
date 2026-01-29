@@ -1,21 +1,20 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.model.CreatedImageData;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.annotation.model.CreatedImageData;
 import org.mbari.vars.services.model.Image;
-import org.mbari.vars.services.model.ImageData;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.ImageArchiveServiceDecorator;
-import org.mbari.vars.ui.messages.ShowAlert;
-import org.mbari.vars.ui.messages.ShowExceptionAlert;
-import org.mbari.vars.ui.messages.ShowWarningAlert;
+import org.mbari.vars.annotation.model.ImageData;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.ImageArchiveServiceDecorator;
+import org.mbari.vars.annotation.ui.messages.ShowAlert;
+import org.mbari.vars.annotation.ui.messages.ShowExceptionAlert;
+import org.mbari.vars.annotation.ui.messages.ShowWarningAlert;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 public class FramegrabUploadCmd implements Command {
 
@@ -35,7 +34,7 @@ public class FramegrabUploadCmd implements Command {
             final var videoReferenceUuid = imageData.getVideoReferenceUuid();
             if (media.getVideoReferenceUuid() == videoReferenceUuid) {
 
-                final var annotationService = toolBox.getServices().getAnnotationService();
+                final var annotationService = toolBox.getServices().annotationService();
 
                 ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
                 decorator.createImageFromExistingImageData(media, imageData, ImageArchiveServiceDecorator.ImageTypes.PNG)
@@ -75,7 +74,7 @@ public class FramegrabUploadCmd implements Command {
     @Override
     public void unapply(UIToolBox toolBox) {
 
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
         ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
         EventBus eventBus = toolBox.getEventBus();
         List<CompletableFuture<?>> futures = new ArrayList<>();

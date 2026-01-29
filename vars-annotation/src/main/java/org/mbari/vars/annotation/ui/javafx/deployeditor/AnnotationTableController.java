@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.deployeditor;
+package org.mbari.vars.annotation.ui.javafx.deployeditor;
 
 
 import io.reactivex.rxjava3.core.Observable;
@@ -7,16 +7,16 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.UIToolBox;
 
-import org.mbari.vars.ui.commands.*;
-import org.mbari.vars.ui.events.*;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.MediaService;
-import org.mbari.vars.ui.javafx.shared.AnnotationTableViewFactory;
-import org.mbari.vars.core.util.AsyncUtils;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.ui.commands.*;
+import org.mbari.vars.annotation.ui.events.*;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
+import org.mbari.vars.annotation.ui.javafx.shared.AnnotationTableViewFactory;
+import org.mbari.vars.annotation.etc.rxjava.AsyncUtils;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.mbari.vars.core.util.ListUtils;
 
 import java.net.URI;
@@ -102,7 +102,7 @@ public class AnnotationTableController {
 
         if (newUuids.size() > 0) {
             videoReferenceUriMap.clear();
-            MediaService mediaService = toolBox.getServices().getMediaService();
+            MediaService mediaService = toolBox.getServices().mediaService();
             AsyncUtils.collectAll(uuids, mediaService::findByUuid)
                     .thenAccept(medias ->
                             medias.forEach(m -> videoReferenceUriMap.put(m.getVideoReferenceUuid(), m.getUri())))

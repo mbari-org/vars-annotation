@@ -1,7 +1,7 @@
-package org.mbari.vars.ui.javafx.abpanel;
+package org.mbari.vars.annotation.ui.javafx.abpanel;
 
-import org.mbari.vars.services.model.User;
-import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.oni.sdk.r1.models.User;
+import org.mbari.vars.annotation.ui.UIToolBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

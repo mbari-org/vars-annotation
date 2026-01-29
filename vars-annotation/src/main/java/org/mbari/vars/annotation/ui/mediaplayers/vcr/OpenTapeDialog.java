@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.vcr;
+package org.mbari.vars.annotation.ui.mediaplayers.vcr;
 
 
 import javafx.scene.control.ButtonBar;

@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.imgfx;
+package org.mbari.vars.annotation.ui.javafx.imgfx;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -8,10 +8,10 @@ import javafx.scene.shape.Shape;
 import org.mbari.imgfx.etc.rx.events.AddLocalizationEvent;
 import org.mbari.imgfx.etc.rx.events.RemoveLocalizationEvent;
 import org.mbari.imgfx.roi.*;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
-import org.mbari.vars.ui.commands.CreateAnnotationAtIndexWithAssociationCmd;
-import org.mbari.vars.ui.commands.CreateAssociationsCmd;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.ui.commands.CreateAnnotationAtIndexWithAssociationCmd;
+import org.mbari.vars.annotation.ui.commands.CreateAssociationsCmd;
 import org.mbari.vcr4j.VideoIndex;
 
 import java.util.ArrayList;

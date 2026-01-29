@@ -1,6 +1,6 @@
-package org.mbari.vars.ui.events;
+package org.mbari.vars.annotation.ui.events;
 
-import org.mbari.vars.services.model.User;
+import org.mbari.vars.oni.sdk.r1.models.User;
 
 /**
  * @author Brian Schlining

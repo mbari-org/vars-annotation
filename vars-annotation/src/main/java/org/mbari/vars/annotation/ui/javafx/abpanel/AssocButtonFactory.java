@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.abpanel;
+package org.mbari.vars.annotation.ui.javafx.abpanel;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -9,12 +9,12 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.commands.CreateAssociationsCmd;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
-import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.commands.CreateAssociationsCmd;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
 
 import java.util.ArrayList;
 import java.util.Optional;

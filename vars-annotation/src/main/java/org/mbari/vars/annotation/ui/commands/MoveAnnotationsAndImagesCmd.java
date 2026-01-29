@@ -1,12 +1,12 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.services.model.Image;
 import org.mbari.vars.services.model.ImagedMoment;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
 import org.mbari.vcr4j.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,7 +110,7 @@ public class MoveAnnotationsAndImagesCmd implements Command {
         Duration timeout = getTimeout(toolBox).multipliedBy(annotations.size());
         // We can update all annotations in one PUT request
         toolBox.getServices()
-                .getAnnotationService()
+                .annotationService()
                 .updateAnnotations(annotations)
                 .get(timeout.toMillis(), TimeUnit.MILLISECONDS);
     }
@@ -120,7 +120,7 @@ public class MoveAnnotationsAndImagesCmd implements Command {
         Duration timeout = getTimeout(toolBox);
 
         AnnotationService annotationService = toolBox.getServices()
-                .getAnnotationService();
+                .annotationService();
 
         // Unfortunatly, only 1 image can be updated per put request.
         for (Image i : images) {

@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.mbari.vars.ui.javafx.mediadialog;
+package org.mbari.vars.annotation.ui.javafx.mediadialog;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -20,12 +20,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.ui.util.FXMLUtils;
-import org.mbari.vars.services.util.FormatUtils;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.annotation.ui.util.FXMLUtils;
+import org.mbari.vars.annotation.util.FormatUtils;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

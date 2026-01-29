@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.mlstage;
+package org.mbari.vars.annotation.ui.javafx.mlstage;
 
 
 import javafx.application.Platform;
@@ -6,13 +6,13 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import org.mbari.vars.core.util.Requirements;
 
-import org.mbari.vars.services.impl.ml.JdkMegalodonService;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.commands.BulkCreateAnnotations;
-import org.mbari.vars.ui.commands.FramegrabUploadCmd;
-import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
-import org.mbari.vars.ui.services.MLAnalysisService;
-import org.mbari.vars.ui.services.MLImageInference;
+import org.mbari.vars.annotation.services.ml.JdkMegalodonService;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.commands.BulkCreateAnnotations;
+import org.mbari.vars.annotation.ui.commands.FramegrabUploadCmd;
+import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
+import org.mbari.vars.annotation.ui.services.MLAnalysisService;
+import org.mbari.vars.annotation.ui.services.MLImageInference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

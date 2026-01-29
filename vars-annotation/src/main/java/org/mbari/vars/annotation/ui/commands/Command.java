@@ -1,11 +1,10 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.UIToolBox;
 
 /**
  * Encapsulates some bit of executable code. Apply is used to execute, unapply should undo
- * everything. These commands are pushed onto the {@link EventBus}
+ * everything. These commands are pushed onto the {@link org.mbari.vars.annotation.etc.rxjava.EventBus}
  * and picked up and executed by the {@link CommandManager}.
  *
  * @author Brian Schlining

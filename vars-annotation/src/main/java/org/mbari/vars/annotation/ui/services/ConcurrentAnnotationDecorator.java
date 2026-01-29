@@ -1,17 +1,17 @@
-package org.mbari.vars.ui.services;
+package org.mbari.vars.annotation.ui.services;
 
-import org.mbari.vars.ui.AppConfig;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.AnnotationsAddedEvent;
-import org.mbari.vars.ui.messages.HideProgress;
-import org.mbari.vars.ui.messages.SetProgress;
-import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
+import org.mbari.vars.annotation.ui.AppConfig;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
+import org.mbari.vars.annotation.ui.messages.HideProgress;
+import org.mbari.vars.annotation.ui.messages.SetProgress;
+import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.services.model.*;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.MediaService;
-import org.mbari.vars.services.RequestPager;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
+import org.mbari.vars.annotation.etc.rxjava.RequestPager;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,9 +57,9 @@ public class ConcurrentAnnotationDecorator {
             final Instant start = media.getStartTimestamp();
             final Instant end = start.plus(media.getDuration());
 
-            AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+            AnnotationService annotationService = toolBox.getServices().annotationService();
             MediaService mediaService = toolBox.getServices()
-                    .getMediaService();
+                    .mediaService();
 
             return mediaService.findConcurrentByVideoReferenceUuid(uuid)
                     .thenCompose(ms -> {
@@ -133,7 +133,7 @@ public class ConcurrentAnnotationDecorator {
 
     public RequestPager.Runner<List<Annotation>> buildRequestRunner(ConcurrentRequestCount count) {
 
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
 
         Function<RequestPager.Page, List<Annotation>> function = (page) -> {
             try {

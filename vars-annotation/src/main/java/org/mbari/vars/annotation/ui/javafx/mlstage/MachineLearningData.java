@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.mlstage;
+package org.mbari.vars.annotation.ui.javafx.mlstage;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

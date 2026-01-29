@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.sharktopoda;
+package org.mbari.vars.annotation.ui.mediaplayers.sharktopoda;
 
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -12,11 +12,11 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.controls.JFXSlider;
-import org.mbari.vars.ui.mediaplayers.MediaPlayer;
-import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.services.model.Media;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.controls.JFXSlider;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
+import org.mbari.vars.annotation.ui.javafx.Icons;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;

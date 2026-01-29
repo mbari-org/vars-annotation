@@ -1,12 +1,12 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.messages.ClearCommandManagerMsg;
-import org.mbari.vars.ui.messages.RedoMsg;
-import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
-import org.mbari.vars.ui.messages.UndoMsg;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.messages.ClearCommandManagerMsg;
+import org.mbari.vars.annotation.ui.messages.RedoMsg;
+import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
+import org.mbari.vars.annotation.ui.messages.UndoMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

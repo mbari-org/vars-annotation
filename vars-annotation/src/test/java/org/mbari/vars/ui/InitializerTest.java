@@ -4,17 +4,10 @@ import static org.junit.Assert.*;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.mbari.vars.services.Services;
-import org.mbari.vars.services.UserService;
-import org.mbari.vars.services.model.User;
 
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Brian Schlining
@@ -52,7 +45,7 @@ public class InitializerTest {
 //        assertNotNull("Services in toolbox was null", data);
 //
 //        // -- Users
-//        UserService userService = services.getUserService();
+//        UserService userService = services.userService();
 //        assertNotNull("UserServices from toolbox was null", userService);
 //        CompletableFuture<List<User>> users = userService.findAllUsers();
 //        Duration userTimeout = toolBox.getConfig().getDuration("accounts.service.timeout");

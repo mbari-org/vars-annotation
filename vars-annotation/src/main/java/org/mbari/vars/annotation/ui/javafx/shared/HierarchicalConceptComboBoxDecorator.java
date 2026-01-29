@@ -1,11 +1,11 @@
-package org.mbari.vars.ui.javafx.shared;
+package org.mbari.vars.annotation.ui.javafx.shared;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
-import org.mbari.vars.services.model.Association;
-import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.ui.UIToolBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,7 @@ public class HierarchicalConceptComboBoxDecorator {
         Platform.runLater(() -> {
             if (concept != null) {
                 toolBox.getServices()
-                        .getConceptService()
+                        .conceptService()
                         .findConcept(concept)
                         .handle((opt, ex) -> {
 

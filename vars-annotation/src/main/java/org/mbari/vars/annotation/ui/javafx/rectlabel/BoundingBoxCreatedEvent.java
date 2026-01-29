@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.rectlabel;
+package org.mbari.vars.annotation.ui.javafx.rectlabel;
 
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Shape;

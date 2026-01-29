@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.vcr;
+package org.mbari.vars.annotation.ui.mediaplayers.vcr;
 
 import java.net.URL;
 import java.util.Optional;
@@ -13,9 +13,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.util.FXMLUtils;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.util.FXMLUtils;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +79,7 @@ public class MediaParamsPaneController {
     public void refresh() {
         Initializer.getToolBox()
                 .getServices()
-                .getMediaService()
+                .mediaService()
                 .findAllCameraIds()
                 .thenAccept(cameraIds -> {
                     JFXUtilities.runOnFXThread(() -> {

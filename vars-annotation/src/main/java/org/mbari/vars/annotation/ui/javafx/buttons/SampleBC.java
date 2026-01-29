@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.buttons;
+package org.mbari.vars.annotation.ui.javafx.buttons;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -7,16 +7,16 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.commands.CreateAssociationsCmd;
-import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
-import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
-import org.mbari.vars.ui.messages.ShowExceptionAlert;
-import org.mbari.vars.ui.messages.ShowWarningAlert;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.commands.CreateAssociationsCmd;
+import org.mbari.vars.annotation.ui.javafx.Icons;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.ui.javafx.shared.FilteredComboBoxDecorator;
+import org.mbari.vars.annotation.ui.messages.ShowExceptionAlert;
+import org.mbari.vars.annotation.ui.messages.ShowWarningAlert;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -150,7 +150,7 @@ public class SampleBC extends AbstractBC {
             // M3-10: Async _might_ be the cause of this. Trying sync instead
             try {
                 var opt = toolBox.getServices()
-                        .getConceptService()
+                        .conceptService()
                         .findConcept(defaultSampleConcept)
                         .get(timeout.toMillis(), TimeUnit.MILLISECONDS);
                 if (opt.isPresent()) {
@@ -171,7 +171,7 @@ public class SampleBC extends AbstractBC {
                         .send(new ShowExceptionAlert(title, header, content, e));
             }
 //            toolBox.getServices()
-//                    .getConceptService()
+//                    .conceptService()
 //                    .findConcept(defaultSampleConcept)
 //                    .handle((opt, ex) -> {
 //                        if (ex instanceof Exception) {

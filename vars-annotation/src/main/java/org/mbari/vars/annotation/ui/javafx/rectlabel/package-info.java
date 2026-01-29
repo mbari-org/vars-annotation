@@ -17,4 +17,4 @@
  * @author Brian Schlining
  * @since 2018-05-04T15:52:00
  */
-package org.mbari.vars.ui.javafx.rectlabel;
+package org.mbari.vars.annotation.ui.javafx.rectlabel;

@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.raziel;
+package org.mbari.vars.annotation.ui.javafx.raziel;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -10,7 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import org.mbari.vars.services.model.EndpointStatus;
-import org.mbari.vars.ui.javafx.Icons;
+import org.mbari.vars.annotation.ui.javafx.Icons;
 
 import java.util.Collection;
 import java.util.List;

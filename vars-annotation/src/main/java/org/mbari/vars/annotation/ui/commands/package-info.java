@@ -4,4 +4,4 @@
  * @author Brian Schlining
  * @since 2017-07-28T13:26:00
  */
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;

@@ -1,8 +1,8 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
 
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 
 import java.time.Duration;
 import java.util.List;

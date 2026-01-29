@@ -5,4 +5,4 @@
  * @author Brian Schlining
  * @since 2017-10-11T15:08:00
  */
-package org.mbari.vars.ui.javafx.abpanel;
+package org.mbari.vars.annotation.ui.javafx.abpanel;

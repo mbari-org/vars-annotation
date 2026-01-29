@@ -1,7 +1,8 @@
 package org.mbari.vars.services.util;
 
 import org.junit.Test;
-import org.mbari.vars.services.model.Media;
+import org.mbari.vars.annotation.etc.vcr4j.VideoIndexes;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoIndex;
 
 import java.time.Duration;
@@ -19,7 +20,7 @@ public class VideoIndexUtilsTest {
         var et = Duration.ofMinutes(2);
         var ts = now.plus(et);
         var vi = new VideoIndex(ts);
-        var rvi = VideoIndexUtils.resolve(vi, media1);
+        var rvi = VideoIndexes.resolve(vi, media1);
         assertTrue(rvi.getTimestamp().isPresent());
         assertEquals(ts, rvi.getTimestamp().get());
         assertTrue(rvi.getElapsedTime().isPresent());
@@ -31,7 +32,7 @@ public class VideoIndexUtilsTest {
         var et = Duration.ofMinutes(2);
         var ts = now.plus(et);
         var vi = new VideoIndex(et);
-        var rvi = VideoIndexUtils.resolve(vi, media1);
+        var rvi = VideoIndexes.resolve(vi, media1);
         assertTrue(rvi.getTimestamp().isPresent());
         assertEquals(ts, rvi.getTimestamp().get());
         assertTrue(rvi.getElapsedTime().isPresent());

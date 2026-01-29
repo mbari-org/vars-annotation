@@ -1,8 +1,8 @@
-package org.mbari.vars.ui.javafx.annotable;
+package org.mbari.vars.annotation.ui.javafx.annotable;
 
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Media;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 
 import java.util.List;
 

@@ -1,14 +1,12 @@
-package org.mbari.vars.ui;
+package org.mbari.vars.annotation.ui;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.core.crypto.AES;
-import org.mbari.vars.services.ServicesBuilder;
-import org.mbari.vars.services.Services;
-import org.mbari.vars.services.impl.raziel.RazielConfigurationService;
-import org.mbari.vars.ui.domain.RazielConnectionParams;
-import org.mbari.vars.ui.mediaplayers.sharktopoda.SharktopodaSettingsPaneController;
+import org.mbari.vars.annotation.etc.jdk.crypto.AES;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.services.Services;
+import org.mbari.vars.annotation.services.VarsServiceFactory;
+import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda.SharktopodaSettingsPaneController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,32 +60,8 @@ public class Initializer {
     }
 
     public static Services loadServices() {
-        var opt = loadConnectionParams();
-        if (opt.isPresent()) {
-            var rcp = opt.get();
-            final var service = new RazielConfigurationService();
-            var future = service.authenticate(rcp.url(), rcp.username(), rcp.password())
-                    .thenCompose(auth -> service.endpoints(rcp.url(), auth.getAccessToken()))
-                    .thenApply(ServicesBuilder::buildForUI)
-                    .handle((services, ex) -> {
-                        if (ex != null) {
-                            // TODO log it
-
-                            log.atWarn().setCause(ex).log(() -> "Failed to retrieve server configurations from Raziel at " + rcp.url());
-                            return ServicesBuilder.noop();
-                        }
-                        return services;
-                    });
-
-            try {
-                return future.get(10, TimeUnit.SECONDS);
-            } catch (Exception e) {
-                log.atWarn().setCause(e).log(() -> "Failed to retrieve server configurations from Raziel at " + rcp.url());
-                return ServicesBuilder.noop();
-            }
-
-        }
-        return ServicesBuilder.noop();
+        var serviceFactory = new VarsServiceFactory(getConfig());
+        return serviceFactory.newServices();
     }
 
 
@@ -122,21 +96,6 @@ public class Initializer {
     public static AES getAes() {
         return new AES("brian@mbari.org 1993-08-21");
     }
-
-    public static Path getConnectionParamsPath() {
-        var settingsDirectory = getSettingsDirectory();
-        return settingsDirectory.resolve("raziel.txt");
-    }
-
-    public static Optional<RazielConnectionParams> loadConnectionParams() {
-        var path = getConnectionParamsPath();
-        if (Files.exists(path)) {
-            return RazielConnectionParams.read(path, getAes());
-        }
-        return Optional.empty();
-    }
-
-
 
     /**
      * The settingsDirectory is scratch space for VARS

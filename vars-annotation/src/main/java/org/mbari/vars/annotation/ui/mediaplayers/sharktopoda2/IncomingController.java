@@ -1,12 +1,12 @@
-package org.mbari.vars.ui.mediaplayers.sharktopoda2;
+package org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2;
 
 import io.reactivex.rxjava3.disposables.Disposable;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.commands.CreateAnnotationAtIndexWithAssociationCmd;
-import org.mbari.vars.ui.commands.DeleteAssociationsCmd;
-import org.mbari.vars.ui.commands.UpdateAssociationCmd;
-import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.commands.CreateAnnotationAtIndexWithAssociationCmd;
+import org.mbari.vars.annotation.ui.commands.DeleteAssociationsCmd;
+import org.mbari.vars.annotation.ui.commands.UpdateAssociationCmd;
+import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.remote.control.RemoteControl;
 import org.mbari.vcr4j.remote.control.commands.localization.*;

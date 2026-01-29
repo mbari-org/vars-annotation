@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.prefs;
+package org.mbari.vars.annotation.ui.javafx.prefs;
 
 
 /**

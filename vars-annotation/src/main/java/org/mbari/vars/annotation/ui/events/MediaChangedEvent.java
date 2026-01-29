@@ -1,6 +1,6 @@
-package org.mbari.vars.ui.events;
+package org.mbari.vars.annotation.ui.events;
 
-import org.mbari.vars.services.model.Media;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 
 /**
  * Event that signals a new Media has been selected for annotation.

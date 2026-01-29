@@ -1,9 +1,9 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,7 +29,7 @@ public class DeleteDurationCmd implements Command {
 
     @Override
     public void apply(UIToolBox toolBox) {
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
         CompletableFuture[] futures = originalAnnotations.stream()
                 .map(Annotation::getObservationUuid)
                 .map(annotationService::deleteDuration)
@@ -40,7 +40,7 @@ public class DeleteDurationCmd implements Command {
 
     @Override
     public void unapply(UIToolBox toolBox) {
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
         annotationService.updateAnnotations(originalAnnotations)
                 .thenAccept(as -> refresh(toolBox, as));
     }

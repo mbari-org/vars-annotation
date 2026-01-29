@@ -1,10 +1,10 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.User;
-import org.mbari.vars.services.ConceptService;
-import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.oni.sdk.r1.models.User;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
 import org.mbari.vcr4j.util.Preconditions;
 
 import java.time.Instant;
@@ -70,7 +70,7 @@ public abstract class UpdateAnnotationsCmd implements Command {
             }
         }
         if (checkConceptName) {
-            ConceptService conceptService = toolBox.getServices().getConceptService();
+            ConceptService conceptService = toolBox.getServices().conceptService();
 
             CompletableFuture[] futures = changedAnnotations.stream()
                     .map(a -> conceptService.findConcept(a.getConcept())
@@ -97,7 +97,7 @@ public abstract class UpdateAnnotationsCmd implements Command {
 
     private void doUpdate(UIToolBox toolBox, List<Annotation> annotations) {
         toolBox.getServices()
-                .getAnnotationService()
+                .annotationService()
                 .updateAnnotations(annotations)
                 .thenAccept(as -> {
                     AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);

@@ -1,9 +1,9 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.AnnotationsAddedEvent;
-import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsRemovedEvent;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 
 import java.util.UUID;
 
@@ -25,14 +25,14 @@ public class CreateAnnotationCmd implements Command {
     public void apply(UIToolBox toolBox) {
         // Timecode/elapsedtime should have already been captured  from video
         toolBox.getServices()
-                .getConceptService()
+                .conceptService()
                 .findDetails(annotation.getConcept())
                 .thenAccept(opt -> {
                     if (opt.isPresent()) {
                         // Update to primary name
                         annotationTemplate.setConcept(opt.get().getName());
                         toolBox.getServices()
-                                .getAnnotationService()
+                                .annotationService()
                                 .createAnnotation(annotationTemplate)
                                 .thenAccept(a -> {
                                     annotation = a;
@@ -49,7 +49,7 @@ public class CreateAnnotationCmd implements Command {
     public void unapply(UIToolBox toolBox) {
         if (annotation != null) {
             toolBox.getServices()
-                    .getAnnotationService()
+                    .annotationService()
                     .deleteAnnotation(annotation.getObservationUuid())
                     .thenAccept(b -> {
                        annotation = null;

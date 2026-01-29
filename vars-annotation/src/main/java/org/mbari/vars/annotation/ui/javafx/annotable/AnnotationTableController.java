@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.annotable;
+package org.mbari.vars.annotation.ui.javafx.annotable;
 
 import io.reactivex.rxjava3.core.Observable;
 import javafx.collections.FXCollections;
@@ -9,18 +9,18 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import org.mbari.vars.core.util.ListUtils;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.Data;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.events.AnnotationsAddedEvent;
-import org.mbari.vars.ui.events.AnnotationsChangedEvent;
-import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
-import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.ui.messages.SeekMsg;
-import org.mbari.vars.ui.javafx.shared.AnnotationTableViewFactory;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.ui.Data;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsChangedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsRemovedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.annotation.ui.messages.SeekMsg;
+import org.mbari.vars.annotation.ui.javafx.shared.AnnotationTableViewFactory;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

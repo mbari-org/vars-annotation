@@ -1,16 +1,16 @@
-package org.mbari.vars.ui.javafx.buttons;
+package org.mbari.vars.annotation.ui.javafx.buttons;
 
 import io.reactivex.rxjava3.core.Observable;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.MediaChangedEvent;
-import org.mbari.vars.ui.events.UserChangedEvent;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.services.model.User;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
+import org.mbari.vars.annotation.ui.events.UserChangedEvent;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.oni.sdk.r1.models.User;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 
 /**
  * @author Brian Schlining

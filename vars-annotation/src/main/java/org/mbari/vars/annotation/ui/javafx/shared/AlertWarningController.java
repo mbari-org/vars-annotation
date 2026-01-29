@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.shared;
+package org.mbari.vars.annotation.ui.javafx.shared;
 
 /**
  * @author Brian Schlining

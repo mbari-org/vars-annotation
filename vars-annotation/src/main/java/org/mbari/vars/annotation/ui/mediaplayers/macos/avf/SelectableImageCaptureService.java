@@ -1,6 +1,6 @@
-package org.mbari.vars.ui.mediaplayers.macos.avf;
+package org.mbari.vars.annotation.ui.mediaplayers.macos.avf;
 
-import org.mbari.vars.services.ImageCaptureService;
+import org.mbari.vars.annotation.services.ImageCaptureService;
 
 import java.util.Collection;
 

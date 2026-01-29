@@ -1,9 +1,9 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
 
@@ -61,7 +61,7 @@ public class SetDurationCmd implements Command {
     }
 
     private void doAction(UIToolBox toolBox, List<Annotation> annotations) {
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
         CompletableFuture[] futures = annotations.stream()
                 .map(a -> annotationService.updateAnnotation(a))
                 .toArray(i -> new CompletableFuture[i]);

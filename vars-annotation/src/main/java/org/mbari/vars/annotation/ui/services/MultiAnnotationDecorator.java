@@ -1,20 +1,20 @@
-package org.mbari.vars.ui.services;
+package org.mbari.vars.annotation.ui.services;
 
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 import io.reactivex.rxjava3.subjects.Subject;
-import org.mbari.vars.ui.AppConfig;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.messages.HideProgress;
-import org.mbari.vars.ui.messages.SetProgress;
-import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
+import org.mbari.vars.annotation.ui.AppConfig;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.messages.HideProgress;
+import org.mbari.vars.annotation.ui.messages.SetProgress;
+import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.services.model.*;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.MediaService;
-import org.mbari.vars.services.RequestPager;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
+import org.mbari.vars.annotation.etc.rxjava.RequestPager;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,9 +60,9 @@ public class MultiAnnotationDecorator {
     private CompletableFuture<Optional<MultiRequestCount>> countMultiAnnotations(Media media) {
         log.debug("Counting concurrent annotations related to {}", media.getUri());
 
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
         MediaService mediaService = toolBox.getServices()
-                .getMediaService();
+                .mediaService();
 
         return mediaService.findByVideoSequenceName(media.getVideoSequenceName())
                 .thenCompose(ms -> {
@@ -143,7 +143,7 @@ public class MultiAnnotationDecorator {
 
     public RequestPager.Runner<List<Annotation>> buildRequestRunner(MultiRequestCount count) {
 
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
 
         Function<RequestPager.Page, List<Annotation>> function = (page) -> {
             try {

@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.imagestage;
+package org.mbari.vars.annotation.ui.javafx.imagestage;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;

@@ -1,7 +1,7 @@
 package org.mbari.vars.services;
 
 import org.mbari.vars.services.model.LastUpdate;
-import org.mbari.vars.services.model.Media;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 
 import java.net.URI;
 import java.time.Duration;

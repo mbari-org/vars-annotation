@@ -1,9 +1,9 @@
-package org.mbari.vars.ui.javafx.imageanno;
+package org.mbari.vars.annotation.ui.javafx.imageanno;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.UIToolBox;
 
 public class ImageAnnotationStageController {
 

@@ -5,7 +5,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 // import org.mbari.vars.avfoundation.AVFImageCapture;
 // import org.mbari.vars.services.model.Framegrab;
-// import org.mbari.vars.ui.mediaplayers.macos.avf.AVFImageCaptureService;
+// import org.mbari.vars.annotation.ui.mediaplayers.macos.avf.AVFImageCaptureService;
 
 import java.awt.*;
 import java.io.IOException;

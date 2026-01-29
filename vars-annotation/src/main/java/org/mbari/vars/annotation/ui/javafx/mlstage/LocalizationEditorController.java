@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.mlstage;
+package org.mbari.vars.annotation.ui.javafx.mlstage;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -12,8 +12,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.RectangleView;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.shared.FilteredComboBoxDecorator;
 
 public class LocalizationEditorController {
 
@@ -67,7 +67,7 @@ public class LocalizationEditorController {
     private void loadComboBoxData() {
 
         toolBox.getServices()
-                .getConceptService()
+                .conceptService()
                 .findAllNames()
                 .thenAccept(names -> {
                     FilteredList<String> cns = new FilteredList<>(FXCollections.observableArrayList(names));

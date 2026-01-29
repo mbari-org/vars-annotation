@@ -1,11 +1,11 @@
-package org.mbari.vars.ui.javafx.imageanno;
+package org.mbari.vars.annotation.ui.javafx.imageanno;
 
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Shape;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.services.model.Image;
 
 public class BoundingBoxLayerController implements LayerController {

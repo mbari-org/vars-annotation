@@ -1,12 +1,12 @@
-package org.mbari.vars.ui.javafx.shared;
+package org.mbari.vars.annotation.ui.javafx.shared;
 
 import io.reactivex.rxjava3.core.Observable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.messages.ReloadServicesMsg;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.services.model.Concept;
 
 /**
@@ -73,7 +73,7 @@ public class ConceptSelectionDialogController {
     private void refresh() {
         if (concept != null) {
             toolBox.getServices()
-                    .getConceptService()
+                    .conceptService()
                     .findConcept(concept)
                     .thenAccept(opt -> {
                         Platform.runLater(() -> {

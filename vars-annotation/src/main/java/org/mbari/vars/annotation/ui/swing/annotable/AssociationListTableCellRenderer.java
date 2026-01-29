@@ -1,9 +1,9 @@
-package org.mbari.vars.ui.swing.annotable;
+package org.mbari.vars.annotation.ui.swing.annotable;
 
 import mbarix4j.swing.ListListModel;
 import mbarix4j.swing.table.ListTableCellRenderer;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 
 import javax.swing.*;
 import java.awt.*;

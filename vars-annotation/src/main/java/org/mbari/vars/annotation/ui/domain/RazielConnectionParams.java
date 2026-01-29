@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.domain;
+package org.mbari.vars.annotation.ui.domain;
 
 import org.mbari.vars.core.crypto.AES;
 import org.slf4j.LoggerFactory;

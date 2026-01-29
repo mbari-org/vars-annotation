@@ -6,9 +6,9 @@ import static org.junit.Assert.*;
 import org.junit.Ignore;
 
 import org.junit.Test;
-import org.mbari.vars.services.MediaService;
+import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
 import org.mbari.vars.services.TestToolbox;
-import org.mbari.vars.services.model.Media;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,7 +27,7 @@ import java.util.concurrent.TimeoutException;
  * @since 2018-01-03T11:56:00
  */
 public class MediaServiceTest {
-    MediaService mediaService = TestToolbox.getServices().getMediaService();
+    MediaService mediaService = TestToolbox.getServices().mediaService();
 
     private byte[] randomSha512() {
         var b = new byte[64];

@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.shared;
+package org.mbari.vars.annotation.ui.javafx.shared;
 
 
 import javafx.collections.FXCollections;
@@ -6,11 +6,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.services.model.Association;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.services.model.Details;
-import org.mbari.vars.ui.util.FXMLUtils;
+import org.mbari.vars.annotation.ui.util.FXMLUtils;
 
 import java.net.URL;
 import java.util.Optional;

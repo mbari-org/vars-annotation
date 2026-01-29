@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.imgfx;
+package org.mbari.vars.annotation.ui.javafx.imgfx;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.image.ImageView;
@@ -6,9 +6,9 @@ import javafx.scene.paint.Color;
 import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.MarkerView;
-import org.mbari.vars.services.model.Association;
-import org.mbari.vars.ui.javafx.imagestage.Json;
-import org.mbari.vars.ui.javafx.imgfx.domain.Points;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.ui.javafx.imagestage.Json;
+import org.mbari.vars.annotation.ui.javafx.imgfx.domain.Points;
 
 import java.util.List;
 import java.util.Optional;

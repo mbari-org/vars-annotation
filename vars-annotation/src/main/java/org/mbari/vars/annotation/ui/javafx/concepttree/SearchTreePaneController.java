@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.concepttree;
+package org.mbari.vars.annotation.ui.javafx.concepttree;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -9,10 +9,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.shared.FilterableTreeItem;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.shared.FilterableTreeItem;
 import org.mbari.vars.services.model.Concept;
-import org.mbari.vars.ui.messages.ReloadServicesMsg;
+import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
 
 
 import java.util.List;

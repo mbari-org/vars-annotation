@@ -1,12 +1,12 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.services.ConceptService;
-import org.mbari.vars.services.model.ConceptDetails;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.oni.sdk.r1.models.ConceptDetails;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -36,8 +36,8 @@ public class CreateAssociationsCmd implements Command {
 
     @Override
     public void apply(UIToolBox toolBox) {
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        ConceptService conceptService = toolBox.getServices().getConceptService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
+        ConceptService conceptService = toolBox.getServices().conceptService();
 
         // Check that the toConcept is a primary name if it is actually in the knowledgebase. If not
         // then we will use the template as is.
@@ -85,7 +85,7 @@ public class CreateAssociationsCmd implements Command {
 
     @Override
     public void unapply(UIToolBox toolBox) {
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
         AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
         List<UUID> uuids = addedAssociations.stream()
                 .map(Association::getUuid)

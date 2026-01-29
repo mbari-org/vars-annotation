@@ -1,11 +1,11 @@
-package org.mbari.vars.ui.javafx.imgfx;
+package org.mbari.vars.annotation.ui.javafx.imgfx;
 
 import javafx.collections.ListChangeListener;
 import org.mbari.imgfx.demos.imageview.editor.Localizations;
 import org.mbari.imgfx.etc.rx.events.RemoveLocalizationEvent;
 
-import org.mbari.vars.ui.javafx.imgfx.domain.VarsLocalization;
-import org.mbari.vars.ui.javafx.imgfx.events.AddLocalizationEventBuilder;
+import org.mbari.vars.annotation.ui.javafx.imgfx.domain.VarsLocalization;
+import org.mbari.vars.annotation.ui.javafx.imgfx.events.AddLocalizationEventBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

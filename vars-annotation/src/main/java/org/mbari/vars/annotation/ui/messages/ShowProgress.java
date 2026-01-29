@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.messages;
+package org.mbari.vars.annotation.ui.messages;
 
 /**
  * Tells UI to show a progress bar

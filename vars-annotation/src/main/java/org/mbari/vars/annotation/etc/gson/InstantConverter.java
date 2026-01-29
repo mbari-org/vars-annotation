@@ -1,7 +1,7 @@
-package org.mbari.vars.services.etc.gson;
+package org.mbari.vars.annotation.etc.gson;
 
 import com.google.gson.*;
-import org.mbari.vars.core.util.InstantUtils;
+import org.mbari.vars.annotation.etc.jdk.Instants;
 
 import java.lang.reflect.Type;
 import java.time.Instant;
@@ -12,7 +12,7 @@ public class InstantConverter implements JsonSerializer<Instant>, JsonDeserializ
 
     @Override
     public Instant deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-            return InstantUtils.parseIso8601(jsonElement.getAsString()).orElse(null);
+            return Instants.parseIso8601(jsonElement.getAsString()).orElse(null);
     }
 
     @Override

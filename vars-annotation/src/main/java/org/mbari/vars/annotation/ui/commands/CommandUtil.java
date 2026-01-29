@@ -1,8 +1,8 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.ui.Data;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Media;
+import org.mbari.vars.annotation.ui.Data;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoIndex;
 
 import java.time.Instant;

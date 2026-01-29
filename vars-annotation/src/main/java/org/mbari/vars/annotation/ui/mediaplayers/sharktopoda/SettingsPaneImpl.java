@@ -1,8 +1,8 @@
-package org.mbari.vars.ui.mediaplayers.sharktopoda;
+package org.mbari.vars.annotation.ui.mediaplayers.sharktopoda;
 
 import javafx.scene.layout.Pane;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.mediaplayers.SettingsPane;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.mediaplayers.SettingsPane;
 
 /**
  * @author Brian Schlining

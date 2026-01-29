@@ -1,9 +1,9 @@
-package org.mbari.vars.ui.mediaplayers;
+package org.mbari.vars.annotation.ui.mediaplayers;
 
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.messages.SeekMsg;
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.messages.SeekMsg;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
 

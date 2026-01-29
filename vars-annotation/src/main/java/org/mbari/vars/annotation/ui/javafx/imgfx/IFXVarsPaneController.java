@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.imgfx;
+package org.mbari.vars.annotation.ui.javafx.imgfx;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -13,12 +13,12 @@ import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import org.mbari.imgfx.Autoscale;
 import org.mbari.imgfx.imageview.ImageViewAutoscale;
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.services.model.Image;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.ui.util.FXMLUtils;
-import org.mbari.vars.ui.util.URLUtils;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.annotation.ui.util.FXMLUtils;
+import org.mbari.vars.annotation.ui.util.URLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

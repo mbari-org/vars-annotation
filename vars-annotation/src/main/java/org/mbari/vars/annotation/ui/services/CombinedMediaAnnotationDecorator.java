@@ -1,10 +1,10 @@
-package org.mbari.vars.ui.services;
+package org.mbari.vars.annotation.ui.services;
 
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.services.model.Annotation;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.services.model.AnnotationCount;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.MediaService;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,8 +42,8 @@ public class CombinedMediaAnnotationDecorator {
 
         CompletableFuture<List<Annotation>> cf = new CompletableFuture<>();
 
-        MediaService mediaService = toolBox.getServices().getMediaService();
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        MediaService mediaService = toolBox.getServices().mediaService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
 
         // Store futures so that we cn wait on all of them to complete
         mediaService.findByVideoSequenceName(videoSequenceName)
@@ -77,7 +77,7 @@ public class CombinedMediaAnnotationDecorator {
      */
     public CompletableFuture<List<Annotation>> findAnnotations(UUID videoReferenceUuid) {
         CompletableFuture<List<Annotation>> cf = new CompletableFuture<>();
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
         annotationService.countAnnotations(videoReferenceUuid)
                 .thenApply(ac ->  loadAnnotationPages(ac)
                     .thenApply(cf::complete));
@@ -93,7 +93,7 @@ public class CombinedMediaAnnotationDecorator {
     private CompletableFuture<List<Annotation>> loadAnnotationPages(AnnotationCount ac) {
 
         CompletableFuture<List<Annotation>> cf = new CompletableFuture<>();
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
 
         Runnable task = () -> {
             // Iterate over pages of annotations making individual calls

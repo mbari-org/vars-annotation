@@ -3,7 +3,7 @@ package org.mbari.vars.services;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import org.mbari.vars.core.EventBus;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
 
 /**
  * @author Brian Schlining

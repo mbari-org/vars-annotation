@@ -1,7 +1,7 @@
-package org.mbari.vars.ui.mediaplayers.vcr;
+package org.mbari.vars.annotation.ui.mediaplayers.vcr;
 
 import javafx.scene.layout.Pane;
-import org.mbari.vars.ui.mediaplayers.SettingsPane;
+import org.mbari.vars.annotation.ui.mediaplayers.SettingsPane;
 
 /**
  * @author Brian Schlining

@@ -1,7 +1,7 @@
 package org.mbari.vars.services.model;
 
 
-import org.mbari.vars.core.util.Preconditions;
+import org.mbari.vars.annotation.util.Preconditions;
 
 /**
  * @author Brian Schlining

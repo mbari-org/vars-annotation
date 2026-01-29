@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.timeline;
+package org.mbari.vars.annotation.ui.javafx.timeline;
 
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;

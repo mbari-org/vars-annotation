@@ -1,16 +1,16 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.core.util.Preconditions;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.messages.ShowFatalErrorAlert;
-import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Image;
-import org.mbari.vars.services.model.ImageReference;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
-import org.mbari.vars.core.util.AsyncUtils;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
+import org.mbari.vars.annosaurus.sdk.r1.models.ImageReference;
+import org.mbari.vars.annotation.etc.rxjava.AsyncUtils;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.util.Preconditions;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.messages.ShowFatalErrorAlert;
+import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -42,7 +42,7 @@ public class DetachFramegrabCmd implements Command {
      */
     private CompletableFuture<Collection<Image>> findImagesToDelete(UIToolBox toolBox) {
 
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
 
         // Can't delete until we cache the images we're deleting. Store them in this future
         CompletableFuture<Collection<Image>> f = new CompletableFuture<>();
@@ -94,7 +94,7 @@ public class DetachFramegrabCmd implements Command {
 
     @Override
     public void apply(UIToolBox toolBox) {
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
         AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
 
 
@@ -117,7 +117,7 @@ public class DetachFramegrabCmd implements Command {
 
     @Override
     public void unapply(UIToolBox toolBox) {
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
         AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
 
         // Create an iamge and

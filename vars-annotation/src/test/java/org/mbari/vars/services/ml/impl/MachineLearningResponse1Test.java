@@ -5,11 +5,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import static  org.junit.Assert.*;
-import org.mbari.vars.services.impl.ml.MachineLearningResponse1;
+import org.mbari.vars.annotation.services.ml.MachineLearningResponse1;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 public class MachineLearningResponse1Test {
 

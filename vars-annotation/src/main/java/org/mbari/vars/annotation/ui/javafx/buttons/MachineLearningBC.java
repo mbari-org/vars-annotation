@@ -1,9 +1,9 @@
-package org.mbari.vars.ui.javafx.buttons;
+package org.mbari.vars.annotation.ui.javafx.buttons;
 
 import javafx.scene.control.Button;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.ui.javafx.mlstage.ApplyMLToVideoCmd;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.Icons;
+import org.mbari.vars.annotation.ui.javafx.mlstage.ApplyMLToVideoCmd;
 
 public class MachineLearningBC extends AbstractBC {
 

@@ -1,19 +1,24 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.AnnotationsAddedEvent;
-import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
-import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.ui.mediaplayers.MediaPlayer;
-import org.mbari.vars.ui.messages.ShowAlert;
-import org.mbari.vars.ui.messages.ShowExceptionAlert;
-import org.mbari.vars.ui.messages.ShowWarningAlert;
-import org.mbari.vars.services.model.*;
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.ConceptService;
-import org.mbari.vars.ui.javafx.ImageArchiveServiceDecorator;
-import org.mbari.vars.ui.services.FrameCaptureService;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
+import org.mbari.vars.annosaurus.sdk.r1.models.ImageUploadResults;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.model.CreatedImageData;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsRemovedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
+import org.mbari.vars.annotation.ui.messages.ShowAlert;
+import org.mbari.vars.annotation.ui.messages.ShowExceptionAlert;
+import org.mbari.vars.annotation.ui.messages.ShowWarningAlert;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.annotation.ui.javafx.ImageArchiveServiceDecorator;
+import org.mbari.vars.annotation.ui.services.FrameCaptureService;
+import org.mbari.vars.annotation.model.ImageData;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
@@ -85,7 +90,7 @@ public class FramegrabCmd implements Command {
 
     @Override
     public void unapply(UIToolBox toolBox) {
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
         ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
         EventBus eventBus = toolBox.getEventBus();
         List<CompletableFuture> futures = new ArrayList<>();
@@ -120,7 +125,7 @@ public class FramegrabCmd implements Command {
     private void applyFromCachedData(UIToolBox toolBox) {
 
         if (annotationRef != null && pngImageRef != null) {
-            AnnotationService annotationService  = toolBox.getServices().getAnnotationService();
+            AnnotationService annotationService  = toolBox.getServices().annotationService();
             ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
             List<CompletableFuture> futures = new ArrayList<>();
             futures.add(annotationService.createAnnotation(annotationRef));
@@ -224,8 +229,8 @@ public class FramegrabCmd implements Command {
 
 
     private CompletableFuture<Annotation> createAnnotationInDatastore(UIToolBox toolBox, VideoIndex videoIndex) {
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
-        ConceptService conceptService = toolBox.getServices().getConceptService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
+        ConceptService conceptService = toolBox.getServices().conceptService();
 
         return conceptService.findRoot()
                 .thenCompose(root -> {

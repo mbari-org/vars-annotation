@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.swing.annotable;
+package org.mbari.vars.annotation.ui.swing.annotable;
 
 import java.awt.Color;
 

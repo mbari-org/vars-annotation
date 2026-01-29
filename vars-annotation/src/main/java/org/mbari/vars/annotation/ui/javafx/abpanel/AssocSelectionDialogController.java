@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.abpanel;
+package org.mbari.vars.annotation.ui.javafx.abpanel;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -10,12 +10,12 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import org.mbari.vars.core.util.StringUtils;
-import org.mbari.vars.services.model.ConceptDetails;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
-import org.mbari.vars.ui.javafx.shared.HierarchicalConceptComboBoxDecorator;
-import org.mbari.vars.ui.messages.ReloadServicesMsg;
+import org.mbari.vars.oni.sdk.r1.models.ConceptDetails;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.shared.FilteredComboBoxDecorator;
+import org.mbari.vars.annotation.ui.javafx.shared.HierarchicalConceptComboBoxDecorator;
+import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.services.model.ConceptAssociationTemplate;
 import org.mbari.vars.core.util.ListUtils;
 
@@ -117,7 +117,7 @@ public class AssocSelectionDialogController {
                         String mappedToConcept;
                         try {
                             mappedToConcept = toolBox.getServices()
-                                    .getConceptService()
+                                    .conceptService()
                                     .findDetails(customToConcept)
                                     .get(5, TimeUnit.SECONDS)
                                     .map(ConceptDetails::getName)
@@ -160,7 +160,7 @@ public class AssocSelectionDialogController {
 
     private void updateControls() {
         toolBox.getServices()
-                .getConceptService()
+                .conceptService()
                 .findAllTemplates()
                 .thenAccept(cats -> {
                     Platform.runLater(() -> {

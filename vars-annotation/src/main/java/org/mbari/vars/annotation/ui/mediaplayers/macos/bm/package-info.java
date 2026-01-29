@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.macos.bm;
+package org.mbari.vars.annotation.ui.mediaplayers.macos.bm;
 
 /**
  * This package isn't really a media player. It contains the code to integrate MBARI's

@@ -1,12 +1,12 @@
-package org.mbari.vars.ui.services;
+package org.mbari.vars.annotation.ui.services;
 
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.MediaChangedEvent;
-import org.mbari.vars.ui.messages.ShowInfoAlert;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.services.util.FormatUtils;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
+import org.mbari.vars.annotation.ui.messages.ShowInfoAlert;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.util.FormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +70,7 @@ public class FileBrowsingDecorator {
      */
     private void fetchByFilename(File file) {
         toolBox.getServices()
-                .getMediaService()
+                .mediaService()
                 .findByFilename(file.getName())
                 .thenAccept(media -> {
                     if (media.isEmpty()) {
@@ -107,7 +107,7 @@ public class FileBrowsingDecorator {
 
     private void fetchBySha51(byte[] sha512, File file) {
         toolBox.getServices()
-                .getMediaService()
+                .mediaService()
                 .findBySha512(sha512)
                 .thenAccept(media -> {
                     if (media != null) {

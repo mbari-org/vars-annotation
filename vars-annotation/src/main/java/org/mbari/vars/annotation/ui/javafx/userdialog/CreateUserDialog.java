@@ -1,10 +1,10 @@
-package org.mbari.vars.ui.javafx.userdialog;
+package org.mbari.vars.annotation.ui.javafx.userdialog;
 
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.services.model.User;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.oni.sdk.r1.models.User;
 
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -36,7 +36,7 @@ public class CreateUserDialog extends Dialog<User> {
 
                 // Create opt in background
                 if (opt.isPresent()) {
-                    controller.createUser(toolBox.getServices().getUserService(),
+                    controller.createUser(toolBox.getServices().userService(),
                             toolBox.getEventBus());
                     user = opt.get();
                 }

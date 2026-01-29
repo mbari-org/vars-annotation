@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers;
+package org.mbari.vars.annotation.ui.mediaplayers;
 
 import javafx.scene.layout.Pane;
 import org.mbari.vcr4j.VideoError;

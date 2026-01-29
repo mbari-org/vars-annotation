@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.timeline;
+package org.mbari.vars.annotation.ui.javafx.timeline;
 
 import io.reactivex.rxjava3.disposables.Disposable;
 import javafx.application.Platform;
@@ -9,11 +9,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeLineCap;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.*;
-import org.mbari.vars.ui.mediaplayers.MediaPlayer;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.*;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
 import org.reactivestreams.Subscription;
 
 import java.util.ArrayList;

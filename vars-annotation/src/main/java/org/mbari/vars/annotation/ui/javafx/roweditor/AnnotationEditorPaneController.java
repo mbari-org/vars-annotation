@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.roweditor;
+package org.mbari.vars.annotation.ui.javafx.roweditor;
 
 import java.net.URL;
 import java.util.*;
@@ -19,15 +19,15 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.commands.DeleteAssociationsCmd;
-import org.mbari.vars.ui.commands.UpdateAnnotationCmd;
-import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Association;
-import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.commands.DeleteAssociationsCmd;
+import org.mbari.vars.annotation.ui.commands.UpdateAnnotationCmd;
+import org.mbari.vars.annotation.ui.javafx.Icons;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.ui.javafx.shared.FilteredComboBoxDecorator;
 
 public class AnnotationEditorPaneController {
 
@@ -156,7 +156,7 @@ public class AnnotationEditorPaneController {
                         !annotation.get().getConcept().equals(item)) {
 
                     toolBox.getServices()
-                            .getConceptService()
+                            .conceptService()
                             .findConcept(item)
                             .thenAccept(opt -> opt.ifPresent(concept -> {
                                 String primaryName = concept.getName();
@@ -208,7 +208,7 @@ public class AnnotationEditorPaneController {
         // -- When an annotation is selected set its associations in the listview
         if (isNull) {
             toolBox.getServices()
-                    .getConceptService()
+                    .conceptService()
                     .findRootDetails()
                     .thenApply(root -> {
                         Platform.runLater(() -> {
@@ -239,7 +239,7 @@ public class AnnotationEditorPaneController {
     private void loadComboBoxData() {
 
         toolBox.getServices()
-                .getConceptService()
+                .conceptService()
                 .findAllNames()
                 .thenAccept(names -> {
                     FilteredList<String> cns = new FilteredList<>(FXCollections.observableArrayList(names));

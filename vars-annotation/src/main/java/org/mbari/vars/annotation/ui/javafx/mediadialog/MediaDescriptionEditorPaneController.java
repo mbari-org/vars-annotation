@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.mediadialog;
+package org.mbari.vars.annotation.ui.javafx.mediadialog;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -10,11 +10,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.MediaChangedEvent;
-import org.mbari.vars.ui.util.FXMLUtils;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
+import org.mbari.vars.annotation.ui.util.FXMLUtils;
 
 /**
  * UI component for editing the 3 description fields associated with
@@ -115,7 +115,7 @@ public class MediaDescriptionEditorPaneController {
             m.setVideoDescription(videoTextArea.getText());
             m.setDescription(videoReferenceTextArea.getText());
             toolBox.getServices()
-                    .getMediaService()
+                    .mediaService()
                     .update(m)
                     .thenAccept(this::setMedia);
         }

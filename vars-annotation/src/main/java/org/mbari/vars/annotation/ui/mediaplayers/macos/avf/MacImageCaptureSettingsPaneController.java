@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.macos.avf;
+package org.mbari.vars.annotation.ui.mediaplayers.macos.avf;
 
 
 import java.net.URL;
@@ -13,10 +13,10 @@ import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.mediaplayers.SettingsPane;
-import org.mbari.vars.ui.util.FXMLUtils;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.mediaplayers.SettingsPane;
+import org.mbari.vars.annotation.ui.util.FXMLUtils;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 
 /**
  * @author Brian Schlining

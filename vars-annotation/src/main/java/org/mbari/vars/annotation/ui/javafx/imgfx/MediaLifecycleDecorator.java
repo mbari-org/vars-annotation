@@ -1,9 +1,9 @@
-package org.mbari.vars.ui.javafx.imgfx;
+package org.mbari.vars.annotation.ui.javafx.imgfx;
 
 import javafx.stage.Stage;
 import org.mbari.vars.services.model.Image;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.util.URLUtils;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.ui.util.URLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ public class MediaLifecycleDecorator {
             // Add all the images sorted by name
             toolBox.getUIToolBox()
                     .getServices()
-                    .getAnnotationService()
+                    .annotationService()
                     .findImagesByVideoReferenceUuid(media.getVideoReferenceUuid())
                     .thenAccept(images -> {
                         var sortedImages = images

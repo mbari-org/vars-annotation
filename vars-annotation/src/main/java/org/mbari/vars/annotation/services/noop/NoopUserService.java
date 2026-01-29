@@ -1,7 +1,7 @@
-package org.mbari.vars.services.noop;
+package org.mbari.vars.annotation.services.noop;
 
-import org.mbari.vars.services.UserService;
-import org.mbari.vars.services.model.User;
+import org.mbari.vars.oni.sdk.r1.UserService;
+import org.mbari.vars.oni.sdk.r1.models.User;
 
 import java.util.List;
 import java.util.Optional;

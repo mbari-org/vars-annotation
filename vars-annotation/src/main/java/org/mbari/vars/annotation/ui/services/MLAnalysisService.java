@@ -1,11 +1,11 @@
-package org.mbari.vars.ui.services;
+package org.mbari.vars.annotation.ui.services;
 
 import org.mbari.vars.core.util.Requirements;
-import org.mbari.vars.services.MachineLearningService;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.ImageArchiveServiceDecorator;
-import org.mbari.vars.ui.mediaplayers.MediaPlayer;
+import org.mbari.vars.annotation.services.MachineLearningService;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.ImageArchiveServiceDecorator;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 import org.slf4j.Logger;

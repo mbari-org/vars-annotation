@@ -1,8 +1,8 @@
-package org.mbari.vars.ui.javafx.imageanno;
+package org.mbari.vars.annotation.ui.javafx.imageanno;
 
 import javafx.beans.value.ChangeListener;
 import javafx.scene.shape.Shape;
-import org.mbari.vars.services.model.Association;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 
 public class LayerNode {
     private final Shape shape;

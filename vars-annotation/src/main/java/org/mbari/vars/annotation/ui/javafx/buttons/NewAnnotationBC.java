@@ -1,18 +1,18 @@
-package org.mbari.vars.ui.javafx.buttons;
+package org.mbari.vars.annotation.ui.javafx.buttons;
 
 
 import io.reactivex.rxjava3.core.Observable;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.commands.CreateAnnotationFromConceptCmd;
-import org.mbari.vars.ui.events.MediaPlayerChangedEvent;
-import org.mbari.vars.ui.mediaplayers.MediaPlayer;
-import org.mbari.vars.ui.messages.ReloadServicesMsg;
-import org.mbari.vars.ui.messages.NewAnnotationMsg;
-import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.services.model.User;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.commands.CreateAnnotationFromConceptCmd;
+import org.mbari.vars.annotation.ui.events.MediaPlayerChangedEvent;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
+import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
+import org.mbari.vars.annotation.ui.messages.NewAnnotationMsg;
+import org.mbari.vars.annotation.ui.javafx.Icons;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.oni.sdk.r1.models.User;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 
@@ -42,7 +42,7 @@ public class NewAnnotationBC extends AbstractBC {
         button.setDisable(true);
         defaultConceptName = null;
         toolBox.getServices()
-                .getConceptService()
+                .conceptService()
                 .findRoot()
                 .thenAccept(concept -> {
                     defaultConceptName = concept.getName();

@@ -1,12 +1,12 @@
-package org.mbari.vars.ui.commands;
+package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.services.AnnotationService;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.AnnotationsAddedEvent;
-import org.mbari.vars.ui.events.AnnotationsRemovedEvent;
-import org.mbari.vars.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.ui.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsRemovedEvent;
+import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
 import org.mbari.vcr4j.util.Preconditions;
 
 import java.util.Collection;
@@ -39,7 +39,7 @@ public class BulkCreateAnnotations implements Command {
 
     @Override
     public void apply(UIToolBox toolBox) {
-        AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+        AnnotationService annotationService = toolBox.getServices().annotationService();
         annotationService.createAnnotations(annotations)
                 .thenAccept(annos -> {
 //                    addedAnnotations = annos;
@@ -58,7 +58,7 @@ public class BulkCreateAnnotations implements Command {
     @Override
     public void unapply(UIToolBox toolBox) {
         if (addedAnnotations != null) {
-            AnnotationService annotationService = toolBox.getServices().getAnnotationService();
+            AnnotationService annotationService = toolBox.getServices().annotationService();
             Set<UUID> observationUuids = addedAnnotations.stream()
                     .map(Annotation::getObservationUuid)
                     .collect(Collectors.toSet());

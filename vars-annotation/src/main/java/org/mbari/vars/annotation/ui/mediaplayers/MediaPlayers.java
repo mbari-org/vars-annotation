@@ -1,12 +1,12 @@
-package org.mbari.vars.ui.mediaplayers;
+package org.mbari.vars.annotation.ui.mediaplayers;
 
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.ForceReloadLocalizationsEvent;
-import org.mbari.vars.ui.events.MediaChangedEvent;
-import org.mbari.vars.ui.events.MediaControlsChangedEvent;
-import org.mbari.vars.ui.events.MediaPlayerChangedEvent;
-import org.mbari.vars.services.model.Media;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.ForceReloadLocalizationsEvent;
+import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
+import org.mbari.vars.annotation.ui.events.MediaControlsChangedEvent;
+import org.mbari.vars.annotation.ui.events.MediaPlayerChangedEvent;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 
 import mbarix4j.util.stream.StreamUtilities;
 import org.slf4j.Logger;

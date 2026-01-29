@@ -5,9 +5,9 @@ import static org.mbari.vars.core.util.AsyncUtils.await;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.mbari.vars.services.PreferencesService;
+import org.mbari.vars.oni.sdk.r1.PreferencesService;
 import org.mbari.vars.services.TestToolbox;
-import org.mbari.vars.services.model.PreferenceNode;
+import org.mbari.vars.oni.sdk.r1.models.PreferenceNode;
 
 
 import java.time.Duration;
@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 public class KBPrefServiceTest {
 
     Random random = new Random();
-    PreferencesService prefService = TestToolbox.getServices().getPreferencesService();
+    PreferencesService prefService = TestToolbox.getServices().preferencesService();
 
     Duration timeout = Duration.ofSeconds(10);
     PreferenceNode node = new PreferenceNode("/brian/trashme/trash/" + random.nextInt(), "Foo", "Bar");

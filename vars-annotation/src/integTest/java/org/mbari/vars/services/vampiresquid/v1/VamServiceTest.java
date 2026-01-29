@@ -4,11 +4,11 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.mbari.vars.services.*;
-import org.mbari.vars.services.model.Media;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 
 public class VamServiceTest {
 
-    MediaService mediaService = TestToolbox.getServices().getMediaService();
+    MediaService mediaService = TestToolbox.getServices().mediaService();
 
     private Media createRandomMedia() {
         var media = TestUtils.buildRandomMedia();

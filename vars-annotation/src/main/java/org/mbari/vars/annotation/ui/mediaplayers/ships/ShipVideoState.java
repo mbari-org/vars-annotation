@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.mediaplayers.ships;
+package org.mbari.vars.annotation.ui.mediaplayers.ships;
 
 import org.mbari.vcr4j.VideoState;
 

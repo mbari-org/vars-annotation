@@ -1,9 +1,9 @@
-package org.mbari.vars.ui.mediaplayers.macos.bm;
+package org.mbari.vars.annotation.ui.mediaplayers.macos.bm;
 
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.ui.mediaplayers.MediaControls;
-import org.mbari.vars.ui.mediaplayers.MediaControlsFactory;
-import org.mbari.vars.ui.mediaplayers.SettingsPane;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaControls;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaControlsFactory;
+import org.mbari.vars.annotation.ui.mediaplayers.SettingsPane;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 import org.slf4j.Logger;

@@ -1,6 +1,8 @@
 package org.mbari.vars.services.util;
 
 import org.junit.Test;
+import org.mbari.vars.annotation.util.ImageUtils;
+
 import static  org.junit.Assert.*;
 
 import javax.imageio.ImageIO;

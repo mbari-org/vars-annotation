@@ -1,4 +1,4 @@
-package org.mbari.vars.ui;
+package org.mbari.vars.annotation;
 
 
 import javafx.application.Application;
@@ -8,11 +8,10 @@ import javafx.scene.control.Alert;
 
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import org.mbari.vars.ui.commands.CommandManager;
-import org.mbari.vars.core.util.ActiveAppBeacon;
-import org.mbari.vars.core.util.ActiveAppPinger;
-import org.mbari.vars.ui.events.ForceRedrawEvent;
-import org.mbari.vars.ui.util.JFXUtilities;
+import org.mbari.vars.annotation.ui.AppController;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.commands.CommandManager;
+import org.mbari.vars.annotation.util.ActiveAppBeacon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

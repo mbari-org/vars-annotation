@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.imgfx.domain;
+package org.mbari.vars.annotation.ui.javafx.imgfx.domain;
 
 import java.util.List;
 import java.util.UUID;

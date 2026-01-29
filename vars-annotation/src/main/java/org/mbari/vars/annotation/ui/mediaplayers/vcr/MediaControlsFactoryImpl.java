@@ -1,29 +1,18 @@
-package org.mbari.vars.ui.mediaplayers.vcr;
+package org.mbari.vars.annotation.ui.mediaplayers.vcr;
 
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.mediaplayers.MediaControls;
-import org.mbari.vars.ui.mediaplayers.MediaControlsFactory;
-import org.mbari.vars.ui.mediaplayers.MediaPlayer;
-import org.mbari.vars.ui.mediaplayers.NoopImageCaptureService;
-import org.mbari.vars.ui.mediaplayers.SettingsPane;
-import org.mbari.vars.ui.mediaplayers.macos.avf.MacImageCaptureServiceRef;
-import org.mbari.vars.ui.messages.ShowInfoAlert;
-import org.mbari.vars.ui.messages.ShowNonfatalErrorAlert;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.services.ImageCaptureService;
-import org.mbari.vars.services.MediaService;
-import mbarix4j.util.SystemUtilities;
-import org.mbari.vcr4j.SimpleVideoIO;
-import org.mbari.vcr4j.VideoController;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaControls;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaControlsFactory;
+import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
+import org.mbari.vars.annotation.ui.mediaplayers.NoopImageCaptureService;
+import org.mbari.vars.annotation.ui.mediaplayers.SettingsPane;
+import org.mbari.vars.annotation.ui.mediaplayers.macos.avf.MacImageCaptureServiceRef;
+import org.mbari.vars.annotation.ui.messages.ShowInfoAlert;
+import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoError;
-import org.mbari.vcr4j.VideoIO;
 import org.mbari.vcr4j.VideoState;
-import org.mbari.vcr4j.commands.VideoCommands;
-import org.mbari.vcr4j.decorators.SchedulerVideoIO;
-import org.mbari.vcr4j.decorators.StatusDecorator;
-import org.mbari.vcr4j.decorators.VCRSyncDecorator;
 //import org.mbari.vcr4j.jserialcomm.SerialCommVideoIO;
 //import org.mbari.vcr4j.rs422.RS422Error;
 //import org.mbari.vcr4j.rs422.RS422State;
@@ -31,13 +20,9 @@ import org.mbari.vcr4j.decorators.VCRSyncDecorator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
@@ -134,7 +119,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                                     Instant start = sorted.get(0).getRecordedTimestamp();
                                     Instant end = sorted.get(sorted.size() - 1).getRecordedTimestamp();
                                     Duration duration = Duration.between(start, end);
-                                    MediaService mediaService = toolBox.getServices().getMediaService();
+                                    MediaService mediaService = toolBox.getServices().mediaService();
                                     mediaService.update(media.getVideoUuid(), start, duration);
                                 }
                             }

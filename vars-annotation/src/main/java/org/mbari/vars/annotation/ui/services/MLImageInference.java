@@ -1,9 +1,8 @@
-package org.mbari.vars.ui.services;
+package org.mbari.vars.annotation.ui.services;
 
-import org.mbari.vars.services.model.ImageData;
+import org.mbari.vars.annotation.model.ImageData;
 import org.mbari.vars.services.model.MachineLearningLocalization;
 
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 

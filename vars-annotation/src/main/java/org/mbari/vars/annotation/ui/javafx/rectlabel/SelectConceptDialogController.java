@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.rectlabel;
+package org.mbari.vars.annotation.ui.javafx.rectlabel;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -7,9 +7,9 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
-import org.mbari.vars.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.services.model.Image;
-import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
+import org.mbari.vars.annotation.ui.javafx.shared.FilteredComboBoxDecorator;
 
 import java.util.ResourceBundle;
 
@@ -62,7 +62,7 @@ public class SelectConceptDialogController {
     private void loadComboBoxData() {
 
         toolBox.getServices()
-                .getConceptService()
+                .conceptService()
                 .findAllNames()
                 .thenAccept(names -> {
                     FilteredList<String> cns = new FilteredList<>(FXCollections.observableArrayList(names));

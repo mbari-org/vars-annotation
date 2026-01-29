@@ -1,17 +1,17 @@
-package org.mbari.vars.ui.mediaplayers.ships;
+package org.mbari.vars.annotation.ui.mediaplayers.ships;
 
 import javafx.scene.layout.Pane;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.mediaplayers.macos.avf.BMImageCaptureService;
-import org.mbari.vars.ui.mediaplayers.macos.avf.MacImageCaptureServiceRef;
-import org.mbari.vars.services.model.Annotation;
-import org.mbari.vars.services.model.Media;
-import org.mbari.vars.services.ImageCaptureService;
-import org.mbari.vars.services.MediaService;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.mediaplayers.macos.avf.BMImageCaptureService;
+import org.mbari.vars.annotation.ui.mediaplayers.macos.avf.MacImageCaptureServiceRef;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.services.ImageCaptureService;
+import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
 import mbarix4j.util.SystemUtilities;
-import org.mbari.vars.ui.mediaplayers.*;
-import org.mbari.vars.ui.mediaplayers.macos.bm.RXImageCaptureServiceImpl;
+import org.mbari.vars.annotation.ui.mediaplayers.*;
+import org.mbari.vars.annotation.ui.mediaplayers.macos.bm.RXImageCaptureServiceImpl;
 import org.mbari.vcr4j.SimpleVideoError;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
@@ -80,7 +80,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                             Instant start = sorted.get(0).getRecordedTimestamp();
                             Instant end = sorted.get(sorted.size() - 1).getRecordedTimestamp();
                             Duration duration = Duration.between(start, end);
-                            MediaService mediaService = toolBox.getServices().getMediaService();
+                            MediaService mediaService = toolBox.getServices().mediaService();
                             mediaService.update(media.getVideoUuid(), start, duration);
                         }
                     }

@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.mlstage;
+package org.mbari.vars.annotation.ui.javafx.mlstage;
 
 
 import javafx.beans.property.ObjectProperty;
@@ -15,10 +15,10 @@ import javafx.stage.Stage;
 import org.mbari.imgfx.imageview.ImagePaneController;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.RectangleView;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.ui.javafx.imagestage.ImageStage2;
-import org.mbari.vars.ui.services.MLImageInference;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.Icons;
+import org.mbari.vars.annotation.ui.javafx.imagestage.ImageStage2;
+import org.mbari.vars.annotation.ui.services.MLImageInference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

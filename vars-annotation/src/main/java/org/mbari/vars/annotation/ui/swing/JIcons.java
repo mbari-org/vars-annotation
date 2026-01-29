@@ -1,7 +1,7 @@
-package org.mbari.vars.ui.swing;
+package org.mbari.vars.annotation.ui.swing;
 
 import org.kordamp.ikonli.swing.FontIcon;
-import org.mbari.vars.ui.swing.annotable.Colors;
+import org.mbari.vars.annotation.ui.swing.annotable.Colors;
 
 import java.awt.Color;
 

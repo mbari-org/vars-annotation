@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.cbpanel;
+package org.mbari.vars.annotation.ui.javafx.cbpanel;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -9,21 +9,20 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import org.mbari.vars.core.util.Preconditions;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.events.ForceRedrawEvent;
-import org.mbari.vars.ui.javafx.timeline.TimelineController;
-import org.mbari.vars.ui.messages.*;
-import org.mbari.vars.ui.javafx.Icons;
-import org.mbari.vars.services.model.User;
-import org.mbari.vars.services.util.PreferenceUtils;
+import org.mbari.vars.annotation.util.Preconditions;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.ForceRedrawEvent;
+import org.mbari.vars.annotation.ui.javafx.timeline.TimelineController;
+import org.mbari.vars.annotation.ui.messages.*;
+import org.mbari.vars.annotation.ui.javafx.Icons;
+import org.mbari.vars.oni.sdk.r1.models.User;
+import org.mbari.vars.annotation.util.PreferenceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.IntStream;

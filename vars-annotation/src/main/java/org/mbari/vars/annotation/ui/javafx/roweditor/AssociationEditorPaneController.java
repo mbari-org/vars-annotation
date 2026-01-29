@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.roweditor;
+package org.mbari.vars.annotation.ui.javafx.roweditor;
 
 
 import java.net.URL;
@@ -18,15 +18,16 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.Initializer;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.javafx.Icons;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.Initializer;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.javafx.Icons;
 import org.mbari.vars.services.model.*;
-import org.mbari.vars.services.ConceptService;
-import org.mbari.vars.ui.javafx.shared.FilteredComboBoxDecorator;
-import org.mbari.vars.ui.javafx.shared.HierarchicalConceptComboBoxDecorator;
-import org.mbari.vars.ui.util.FXMLUtils;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
+import org.mbari.vars.annotation.ui.javafx.shared.FilteredComboBoxDecorator;
+import org.mbari.vars.annotation.ui.javafx.shared.HierarchicalConceptComboBoxDecorator;
+import org.mbari.vars.annotation.ui.util.FXMLUtils;
 import org.mbari.vars.core.util.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -252,7 +253,7 @@ public class AssociationEditorPaneController {
         associationComboBox.getItems().clear();
         associationComboBox.getItems().add(nil);
         if (annotation != null) {
-            ConceptService cs = toolBox.getServices().getConceptService();
+            ConceptService cs = toolBox.getServices().conceptService();
             final ConceptAssociationTemplate cat = defaultAssociation; // final to satisfy lambda
             cs.findTemplates(annotation.getConcept())
                     .thenApply(templates -> {

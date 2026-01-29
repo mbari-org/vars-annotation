@@ -6,16 +6,14 @@ import static org.junit.Assert.*;
 import static org.mbari.vars.core.util.AsyncUtils.await;
 
 
-import org.mbari.vars.services.ImageArchiveService;
+import org.mbari.vars.annotation.services.ImageArchiveService;
 import org.mbari.vars.services.TestToolbox;
 import org.mbari.vars.services.URLUtilities;
-import org.mbari.vars.services.model.ImageData;
+import org.mbari.vars.annotation.model.ImageData;
 import org.mbari.vars.services.model.ImageUploadResults;
 import org.mbari.vcr4j.VideoIndex;
 
-import javax.imageio.ImageIO;
 import java.io.File;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
@@ -30,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
 public class PanoptesServiceTest {
 
     private final Duration timeout = Duration.ofMillis(45000);
-    private final ImageArchiveService service = TestToolbox.getServices().getImageArchiveService();
+    private final ImageArchiveService service = TestToolbox.getServices().imageArchiveService();
 
     @Test
     public void testJpgUpload() {

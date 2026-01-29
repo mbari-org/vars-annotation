@@ -1,9 +1,9 @@
-package org.mbari.vars.ui.javafx.rectlabel;
+package org.mbari.vars.annotation.ui.javafx.rectlabel;
 
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import org.mbari.vars.core.EventBus;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
 
 /**
  * Usage:

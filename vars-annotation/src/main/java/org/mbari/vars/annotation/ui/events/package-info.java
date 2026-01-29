@@ -6,4 +6,4 @@
  * @author Brian Schlining
  * @since 2017-07-20T17:25:00
  */
-package org.mbari.vars.ui.events;
+package org.mbari.vars.annotation.ui.events;

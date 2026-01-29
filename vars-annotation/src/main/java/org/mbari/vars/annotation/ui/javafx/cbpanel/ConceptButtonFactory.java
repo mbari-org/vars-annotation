@@ -1,4 +1,4 @@
-package org.mbari.vars.ui.javafx.cbpanel;
+package org.mbari.vars.annotation.ui.javafx.cbpanel;
 
 import javafx.application.Platform;
 import javafx.scene.control.Button;
@@ -8,11 +8,11 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
-import org.mbari.vars.core.EventBus;
-import org.mbari.vars.ui.UIToolBox;
-import org.mbari.vars.ui.commands.CreateAnnotationFromConceptCmd;
-import org.mbari.vars.ui.messages.ShowConceptInTreeViewMsg;
-import org.mbari.vars.services.ConceptService;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.commands.CreateAnnotationFromConceptCmd;
+import org.mbari.vars.annotation.ui.messages.ShowConceptInTreeViewMsg;
+import org.mbari.vars.oni.sdk.r1.ConceptService;
 
 import java.util.ResourceBundle;
 
@@ -67,7 +67,7 @@ public class ConceptButtonFactory {
         });
 
         toolBox.getServices()
-                .getConceptService()
+                .conceptService()
                 .findAllNames()
                 .thenAccept(names -> {
                     if (!names.contains(name)) {
