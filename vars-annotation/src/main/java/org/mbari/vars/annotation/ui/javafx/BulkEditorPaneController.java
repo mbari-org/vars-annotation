@@ -8,9 +8,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-//import de.jensd.fx.glyphs.GlyphsFactory;
-//import de.jensd.fx.glyphs.materialicons.MaterialIcon;
-//import de.jensd.fx.glyphs.materialicons.utils.MaterialIconFactory;
+
 import io.reactivex.rxjava3.core.Observable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -25,13 +23,16 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.etc.jdk.Streams;
+import org.mbari.vars.annotation.etc.jdk.Strings;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
-import org.mbari.vars.core.util.*;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.commands.*;
 import org.mbari.vars.annotation.ui.events.*;
-import org.mbari.vars.services.model.*;
+import org.mbari.vars.annotation.util.Preconditions;
 import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 import org.mbari.vars.oni.sdk.r1.ConceptService;
 import org.mbari.vars.annotation.ui.javafx.mediadialog.SelectMediaDialog;
@@ -40,6 +41,7 @@ import org.mbari.vars.annotation.ui.javafx.shared.DetailsDialog;
 import org.mbari.vars.annotation.ui.javafx.shared.FilteredComboBoxDecorator;
 import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.annotation.ui.messages.ShowExceptionAlert;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -158,7 +160,7 @@ public class BulkEditorPaneController {
 
         // --- Configure comboboxes
         new FilteredComboBoxDecorator<>(associationCombobox,
-                (txt, assoc) -> StringUtils.containsOrderedChars(txt.toUpperCase(), assoc.toString().toUpperCase()));
+                (txt, assoc) -> Strings.containsOrderedChars(txt.toUpperCase(), assoc.toString().toUpperCase()));
         associationCombobox.setEditable(false);
 
         new FilteredComboBoxDecorator<>(conceptCombobox,
@@ -376,7 +378,7 @@ public class BulkEditorPaneController {
         List<Association> associations = annotations.stream()
                 .map(Annotation::getAssociations)
                 .flatMap(List::stream)
-                .filter(FnUtils.distinctBy(Association::toString))
+                .filter(Streams.distinctBy(Association::toString))
                 .sorted(Comparator.comparing(Association::toString))
                 .collect(Collectors.toList());
 

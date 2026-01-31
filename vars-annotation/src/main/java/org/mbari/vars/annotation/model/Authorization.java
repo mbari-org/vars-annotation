@@ -1,4 +1,4 @@
-package org.mbari.vars.services.model;
+package org.mbari.vars.annotation.model;
 
 /**
  * @author Brian Schlining

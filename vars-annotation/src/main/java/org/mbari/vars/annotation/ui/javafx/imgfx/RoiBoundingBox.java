@@ -8,7 +8,9 @@ import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.RectangleView;
 import org.mbari.imgfx.roi.RectangleViewEditor;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
-import org.mbari.vars.annotation.ui.javafx.imagestage.BoundingBox;
+import org.mbari.vars.annosaurus.sdk.r1.models.BoundingBox;
+import org.mbari.vars.annotation.etc.gson.Gsons;
+import org.mbari.vars.annotation.services.annosaurus.BoundingBoxes;
 import org.mbari.vars.annotation.ui.javafx.imagestage.Json;
 
 import java.util.Optional;
@@ -24,12 +26,12 @@ public class RoiBoundingBox implements Roi<RectangleView> {
                                                                             AutoscalePaneController<ImageView> paneController,
                                                                             ObjectProperty<Color> editedColor) {
 
-        var boundingBox = Json.GSON.fromJson(association.getLinkValue(), BoundingBox.class);
+        var boundingBox = Gsons.SNAKE_CASE_GSON.fromJson(association.getLinkValue(), BoundingBox.class);
         return RectangleView.fromImageCoords(
-                        boundingBox.getX().doubleValue(),
-                        boundingBox.getY().doubleValue(),
-                        boundingBox.getWidth().doubleValue(),
-                        boundingBox.getHeight().doubleValue(),
+                        (double) boundingBox.getX(),
+                        (double) boundingBox.getY(),
+                        (double) boundingBox.getWidth(),
+                        (double) boundingBox.getHeight(),
                         paneController.getAutoscale())
                 .map(dataView -> {
                     // Rectangles get an editor added
@@ -44,10 +46,11 @@ public class RoiBoundingBox implements Roi<RectangleView> {
                                                                             Association association,
                                                                             AutoscalePaneController<ImageView> paneController) {
         var boundingBox = Json.GSON.fromJson(association.getLinkValue(), BoundingBox.class);
-        return RectangleView.fromImageCoords(boundingBox.getX().doubleValue(),
-                        boundingBox.getY().doubleValue(),
-                        boundingBox.getWidth().doubleValue(),
-                        boundingBox.getHeight().doubleValue(),
+        return RectangleView.fromImageCoords(
+                        (double) boundingBox.getX(),
+                        (double) boundingBox.getY(),
+                        (double) boundingBox.getWidth(),
+                        (double) boundingBox.getHeight(),
                         paneController.getAutoscale())
                 .map(dataView -> new Localization<>(dataView, paneController, association.getUuid(), concept));
     }
@@ -61,7 +64,8 @@ public class RoiBoundingBox implements Roi<RectangleView> {
         var y = toInt(rect.getY());
         var width = toInt(rect.getWidth());
         var height = toInt(rect.getHeight());
-        var boundingBox = new BoundingBox(x, y, width, height, imageReferenceUuid, comment);
+        //TODO align with latest annosaurus-java-sdk constructor
+        var boundingBox = new BoundingBox(x, y, width, height, BoundingBoxes.GENERATOR, imageReferenceUuid, comment);
         var linkValue = Json.GSON.toJson(boundingBox);
         return new Association(LINK_NAME, Association.VALUE_SELF, linkValue, MEDIA_TYPE, localization.getUuid());
     }

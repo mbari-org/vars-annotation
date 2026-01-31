@@ -3,15 +3,12 @@ package org.mbari.vars.services;
 import org.junit.Test;
 import org.mbari.vars.services.impl.varskbserver.v1.KBConceptService;
 import org.mbari.vars.services.impl.varskbserver.v1.KBWebServiceFactory;
-import org.mbari.vars.services.model.Concept;
 import org.mbari.vars.oni.sdk.r1.models.ConceptDetails;
 
 
-import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

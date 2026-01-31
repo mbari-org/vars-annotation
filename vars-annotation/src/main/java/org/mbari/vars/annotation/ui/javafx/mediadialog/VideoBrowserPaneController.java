@@ -1,7 +1,6 @@
 package org.mbari.vars.annotation.ui.javafx.mediadialog;
 
 import javafx.application.Platform;
-import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;

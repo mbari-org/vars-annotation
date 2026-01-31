@@ -1,6 +1,6 @@
 package org.mbari.vars.annotation.services;
 
-import org.mbari.vars.services.model.MachineLearningLocalization;
+import org.mbari.vars.annotation.model.MachineLearningLocalization;
 
 import java.nio.file.Path;
 import java.util.List;

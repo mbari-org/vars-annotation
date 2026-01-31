@@ -1,6 +1,6 @@
 package org.mbari.vars.annotation.services;
 
-import org.mbari.vars.services.model.ImageUploadResults;
+import org.mbari.vars.annosaurus.sdk.r1.models.ImageUploadResults;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;

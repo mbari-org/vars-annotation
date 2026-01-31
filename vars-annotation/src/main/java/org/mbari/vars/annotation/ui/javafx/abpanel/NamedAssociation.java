@@ -1,7 +1,7 @@
 package org.mbari.vars.annotation.ui.javafx.abpanel;
 
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
-import org.mbari.vars.services.model.ConceptAssociationTemplate;
+import org.mbari.vars.annosaurus.sdk.r1.models.ConceptAssociationTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

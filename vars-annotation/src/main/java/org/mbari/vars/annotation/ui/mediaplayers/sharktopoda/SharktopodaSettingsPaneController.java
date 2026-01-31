@@ -12,7 +12,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
-import org.mbari.vars.annotation.ui.AppConfig;
+import org.mbari.vars.annotation.AppConfig;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;

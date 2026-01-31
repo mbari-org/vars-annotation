@@ -1,7 +1,5 @@
 package org.mbari.vars.annotation.ui.javafx.imgfx;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Shape;
 import org.mbari.imgfx.AutoscalePaneController;
@@ -9,7 +7,7 @@ import org.mbari.imgfx.roi.Data;
 import org.mbari.imgfx.roi.DataView;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
-import org.mbari.vars.services.model.Image;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
 import org.mbari.vars.annotation.ui.javafx.imgfx.domain.VarsLocalization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +63,7 @@ public class LookupUtil {
         var uniqueImagedMomentUuids = annotations.stream()
                 .map(Annotation::getImagedMomentUuid)
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
         if (uniqueImagedMomentUuids.size() != 1) {
             return  Collections.emptyList();
         }

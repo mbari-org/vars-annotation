@@ -10,7 +10,6 @@ import org.mbari.vars.annotation.services.ImageArchiveService;
 import org.mbari.vars.services.TestToolbox;
 import org.mbari.vars.services.URLUtilities;
 import org.mbari.vars.annotation.model.ImageData;
-import org.mbari.vars.services.model.ImageUploadResults;
 import org.mbari.vcr4j.VideoIndex;
 
 import java.io.File;

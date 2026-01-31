@@ -4,17 +4,20 @@ package org.mbari.vars.annotation.ui.services;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 import io.reactivex.rxjava3.subjects.Subject;
-import org.mbari.vars.annotation.ui.AppConfig;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.MultiRequest;
+import org.mbari.vars.annosaurus.sdk.r1.models.MultiRequestCount;
+import org.mbari.vars.annotation.AppConfig;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.messages.HideProgress;
 import org.mbari.vars.annotation.ui.messages.SetProgress;
 import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
-import org.mbari.vars.services.model.*;
 import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
 import org.mbari.vars.annotation.etc.rxjava.RequestPager;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,9 +55,9 @@ public class MultiAnnotationDecorator {
         this.toolBox = toolBox;
         this.notificationEventBus = notificationEventBus;
         AppConfig appConfig = toolBox.getAppConfig();
-        pageSize = appConfig.getAnnotationServiceV1PageSize();
-        pageTimeout = appConfig.getAnnotationServiceParamsV1().getTimeout();
-        numberSimultaneousPages = appConfig.getAnnotationsServiceV1PageCount();
+        pageSize = appConfig.getRoot().annotationService().pageSize();
+        pageTimeout = appConfig.getRoot().annotationService().timeout();
+        numberSimultaneousPages = appConfig.getRoot().annotationService().pageCount();
     }
 
     private CompletableFuture<Optional<MultiRequestCount>> countMultiAnnotations(Media media) {

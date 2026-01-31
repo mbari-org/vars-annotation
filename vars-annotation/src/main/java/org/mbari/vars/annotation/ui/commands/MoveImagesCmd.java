@@ -1,7 +1,7 @@
 package org.mbari.vars.annotation.ui.commands;
 
 import org.mbari.vars.annotation.ui.UIToolBox;
-import org.mbari.vars.services.model.Image;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;

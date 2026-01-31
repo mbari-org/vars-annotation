@@ -42,6 +42,7 @@ public class ServiceBuilder {
     private synchronized void loadConfigurations() {
         if (load && endpoints.isEmpty()) {
             try {
+
                 var razielConnectionParams = Raziel.ConnectionParams.load();
                 razielConnectionParams.ifPresent((params) -> {
                     var urlString = ServiceBuilder.adaptUrl(params.url().toString());

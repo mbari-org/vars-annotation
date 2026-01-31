@@ -31,9 +31,14 @@ module org.mbari.vars.annotation {
   requires org.mbari.vars.annosaurus.sdk;
   requires org.mbari.vars.oni.sdk;
   requires org.mbari.vars.vampiresquid.sdk;
+    requires org.controlsfx.controls;
+    requires javafx.swing;
+    requires org.kordamp.ikonli.swing;
+    requires org.kordamp.ikonli.material;
+    requires org.kordamp.ikonli.javafx;
 
 
-  opens org.mbari.vars.annotation.services.ml to com.google.gson;
+    opens org.mbari.vars.annotation.services.ml to com.google.gson;
   opens org.mbari.vars.services.model to com.google.gson;
 
   exports org.mbari.vars.services;
@@ -59,4 +64,5 @@ module org.mbari.vars.annotation {
   exports org.mbari.vars.annotation.services;
   exports org.mbari.vars.annotation.model;
   opens org.mbari.vars.annotation.model to com.google.gson;
+  exports org.mbari.vars.annotation.services.noop;
 }

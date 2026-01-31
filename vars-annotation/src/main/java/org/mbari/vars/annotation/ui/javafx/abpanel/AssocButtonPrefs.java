@@ -29,7 +29,7 @@ public class AssocButtonPrefs {
         User user = toolBox.getData().getUser();
         if (user != null) {
             Preferences userPreferences = toolBox.getServices()
-                    .getPreferencesFactory()
+                    .preferencesFactory()
                     .remoteUserRoot(user.getUsername());
             prefs = userPreferences.node(PREF_AP_NODE);
             log.debug("Using {}", prefs);

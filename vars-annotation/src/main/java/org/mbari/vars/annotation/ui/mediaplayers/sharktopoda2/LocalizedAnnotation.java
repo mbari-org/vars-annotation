@@ -5,10 +5,10 @@ import com.google.gson.GsonBuilder;
 import mbarix4j.util.Tuple2;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
-import org.mbari.vars.services.model.BoundingBox;
+import org.mbari.vars.annosaurus.sdk.r1.models.BoundingBox;
+import org.mbari.vars.annotation.etc.gson.DurationConverter;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vcr4j.remote.control.commands.localization.Localization;
-import org.mbari.vars.services.etc.gson.DurationConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

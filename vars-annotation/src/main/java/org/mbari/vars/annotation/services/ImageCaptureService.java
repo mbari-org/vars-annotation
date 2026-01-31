@@ -1,6 +1,6 @@
 package org.mbari.vars.annotation.services;
 
-import org.mbari.vars.services.model.Framegrab;
+import org.mbari.vars.annotation.model.Framegrab;
 
 import java.io.File;
 

@@ -2,9 +2,6 @@ package org.mbari.vars.annotation.ui.javafx.imagestage;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -17,6 +14,7 @@ import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.RectangleView;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.services.annosaurus.BoundingBoxes;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +76,7 @@ public class ImageStage2 extends Stage {
             var boundingBoxes = annotation.getAssociations()
                     .stream()
                     .filter(a -> a.getLinkName().equalsIgnoreCase(Association.NAME_LOCALIZATION))
-                    .map(a -> BoundingBox.fromAssociation(annotation.getConcept(), a, imagePaneController))
+                    .map(a -> BoundingBoxes.fromAssociation(annotation.getConcept(), a, imagePaneController))
                     .flatMap(Optional::stream)
                     .toList();
             if (!boundingBoxes.isEmpty()) {

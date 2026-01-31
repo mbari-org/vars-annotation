@@ -8,8 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import org.mbari.vars.annotation.etc.rxjava.EventBus;
-import org.mbari.vars.oni.sdk.r1.ConceptService;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
 

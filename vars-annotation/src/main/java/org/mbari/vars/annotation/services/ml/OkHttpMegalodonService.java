@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder;
 import okhttp3.*;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.mbari.vars.annotation.services.MachineLearningService;
-import org.mbari.vars.services.model.MachineLearningLocalization;
+import org.mbari.vars.annotation.model.MachineLearningLocalization;
 import org.mbari.vars.annotation.util.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

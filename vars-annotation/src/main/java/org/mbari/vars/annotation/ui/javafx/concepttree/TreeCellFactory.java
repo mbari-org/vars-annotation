@@ -4,14 +4,11 @@ import javafx.application.Platform;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.cell.TextFieldTreeCell;
 import javafx.scene.input.*;
-import org.mbari.vars.services.model.Concept;
-import org.mbari.vars.oni.sdk.r1.models.ConceptDetails;
-import org.mbari.vars.oni.sdk.r1.ConceptService;
 import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.oni.sdk.r1.models.Concept;
+import org.mbari.vars.oni.sdk.r1.models.ConceptDetails;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**

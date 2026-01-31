@@ -4,13 +4,13 @@ import com.github.mizosoft.methanol.MoreBodyPublishers;
 import com.github.mizosoft.methanol.MultipartBodyPublisher;
 import com.github.mizosoft.methanol.MutableRequest;
 import com.google.gson.Gson;
+import org.mbari.vars.annosaurus.sdk.r1.models.ImageUploadResults;
 import org.mbari.vars.annotation.etc.jdk.Uris;
 import org.mbari.vars.annotation.etc.gson.*;
 import org.mbari.vars.annotation.services.ImageArchiveService;
 import org.mbari.vars.annotation.etc.methanol.BaseHttpClient;
 import org.mbari.vars.annotation.etc.methanol.JwtHttpClient;
-import org.mbari.vars.services.model.Authorization;
-import org.mbari.vars.services.model.ImageUploadResults;
+import org.mbari.vars.annotation.model.Authorization;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -23,8 +23,8 @@ public class PanoptesHttpClient extends BaseHttpClient implements ImageArchiveSe
 
     private final JwtHttpClient jwtHttpClient;
 
-    private final Gson camelCaseGson = Gsons.newCamelCaseGson();
-    private final Gson snakeCaseGson = Gsons.newSnakeCaseGson();
+    private final Gson camelCaseGson = Gsons.CAMEL_CASE_GSON;
+    private final Gson snakeCaseGson = Gsons.SNAKE_CASE_GSON;
 
     public PanoptesHttpClient(HttpClient client, URI baseUri, String apiKey) {
         super(client, baseUri);

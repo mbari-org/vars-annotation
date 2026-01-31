@@ -11,10 +11,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
+import org.mbari.vars.annosaurus.sdk.r1.models.ImageReference;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.messages.SaveImageMsg;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
-import org.mbari.vars.services.model.ImageReference;
 import org.mbari.vars.annotation.ui.javafx.shared.ImageStage;
 
 import java.util.List;

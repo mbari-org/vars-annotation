@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import org.mbari.vars.services.model.Image;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
 import org.mbari.vars.annotation.ui.javafx.imgfx.domain.VarsLocalization;
 
 import java.util.*;

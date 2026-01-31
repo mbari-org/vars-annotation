@@ -2,7 +2,7 @@ package org.mbari.vars.annotation.etc.methanol;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import org.mbari.vars.services.model.Authorization;
+import org.mbari.vars.annotation.model.Authorization;
 
 import java.net.URI;
 import java.net.http.HttpClient;

@@ -8,9 +8,8 @@ import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 
 import org.mbari.vars.services.TestToolbox;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
-import org.mbari.vars.services.model.AnnotationCount;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
-import org.mbari.vars.services.model.Image;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
 
 
 import java.io.UnsupportedEncodingException;

@@ -15,6 +15,9 @@ import java.util.UUID;
 
 public class Gsons {
 
+    public static Gson SNAKE_CASE_GSON = newSnakeCaseGson();
+    public static Gson CAMEL_CASE_GSON = newCamelCaseGson();
+
     public static Gson newSnakeCaseGson() {
         GsonBuilder gsonBuilder = new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
@@ -39,6 +42,7 @@ public class Gsons {
 
         return gsonBuilder.create();
     }
+
 
     public final Type TYPE_LIST_ANCILLARY_DATA = new TypeToken<ArrayList<AncillaryData>>(){}.getType();
     public final Type TYPE_LIST_ANNOTATION = new TypeToken<ArrayList<Annotation>>(){}.getType();

@@ -14,7 +14,7 @@ import javafx.util.Callback;
 import org.mbari.imgfx.Autoscale;
 import org.mbari.imgfx.imageview.ImageViewAutoscale;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
-import org.mbari.vars.services.model.Image;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.annotation.ui.util.FXMLUtils;

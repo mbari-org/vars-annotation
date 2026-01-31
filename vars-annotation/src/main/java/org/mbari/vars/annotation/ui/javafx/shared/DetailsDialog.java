@@ -2,7 +2,6 @@ package org.mbari.vars.annotation.ui.javafx.shared;
 
 import javafx.scene.control.*;
 import org.mbari.vars.annotation.ui.UIToolBox;
-import org.mbari.vars.services.model.Details;
 
 import java.util.ResourceBundle;
 

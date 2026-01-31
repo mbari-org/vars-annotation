@@ -29,13 +29,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import org.mbari.vars.annotation.etc.jdk.ListUtils;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
-import org.mbari.vars.services.model.ConceptAssociationTemplate;
-import org.mbari.vars.services.model.Details;
 import org.mbari.vars.annotation.ui.util.FXMLUtils;
-import org.mbari.vars.core.util.ListUtils;
 
 /**
  * @author Brian Schlining

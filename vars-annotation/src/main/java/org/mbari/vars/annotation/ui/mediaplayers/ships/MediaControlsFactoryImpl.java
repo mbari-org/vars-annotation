@@ -3,8 +3,6 @@ package org.mbari.vars.annotation.ui.mediaplayers.ships;
 import javafx.scene.layout.Pane;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
-import org.mbari.vars.annotation.ui.mediaplayers.macos.avf.BMImageCaptureService;
-import org.mbari.vars.annotation.ui.mediaplayers.macos.avf.MacImageCaptureServiceRef;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.services.ImageCaptureService;

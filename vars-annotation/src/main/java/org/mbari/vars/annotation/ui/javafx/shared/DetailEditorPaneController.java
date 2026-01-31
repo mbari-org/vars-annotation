@@ -9,7 +9,6 @@ import javafx.scene.layout.GridPane;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
-import org.mbari.vars.services.model.Details;
 import org.mbari.vars.annotation.ui.util.FXMLUtils;
 
 import java.net.URL;

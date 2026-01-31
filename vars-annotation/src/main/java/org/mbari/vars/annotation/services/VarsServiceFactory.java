@@ -36,10 +36,10 @@ public class VarsServiceFactory implements ServiceFactory {
         var defaultTimeout = Duration.ofSeconds(20);
         // Fetch info from Raziel and build services
         var serviceBuilder = new ServiceBuilder(true);
-        var annosaurusClient = serviceBuilder.annotationService();
-        var oniClient = serviceBuilder.conceptService();
-        var vampireSquidClient = serviceBuilder.mediaService();
-        var panoptesClient = serviceBuilder.imageArchiveService();
+        var annosaurusClient = serviceBuilder.getAnnotationService();
+        var oniClient = serviceBuilder.getConceptService();
+        var vampireSquidClient = serviceBuilder.getMediaService();
+        var panoptesClient = serviceBuilder.getImageArchiveService();
 
         // The concept service has a lot of parts. We cache data and filter out unwanted link templates
         List<String> regex = config.getStringList(CONFIG_KEY);

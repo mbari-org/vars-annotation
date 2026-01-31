@@ -2,7 +2,7 @@ package org.mbari.vars.annotation.ui.mediaplayers.macos.bm;
 
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annotation.services.ImageCaptureService;
-import org.mbari.vars.services.model.Framegrab;
+import org.mbari.vars.annotation.model.Framegrab;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.messages.ShowExceptionAlert;
 import org.mbari.vcr4j.VideoIndex;

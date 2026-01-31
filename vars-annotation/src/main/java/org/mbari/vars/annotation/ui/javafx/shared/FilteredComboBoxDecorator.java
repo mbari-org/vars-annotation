@@ -11,7 +11,7 @@ import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Window;
-import org.mbari.vars.core.util.StringUtils;
+import org.mbari.vars.annotation.etc.jdk.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,9 +80,9 @@ public class FilteredComboBoxDecorator<T>  {
             filteredItems.setPredicate(p);
         }
 
-        if (!StringUtils.isBlank(newValue)) {
+        if (!Strings.isBlank(newValue)) {
             comboBox.show();
-            if (StringUtils.isBlank(filter.get())) {
+            if (Strings.isBlank(filter.get())) {
                 restoreOriginalItems();
             }
             else {
@@ -176,11 +176,11 @@ public class FilteredComboBoxDecorator<T>  {
                     .startsWith(txt.replace(" ", "").toUpperCase());
 
     public static AutoCompleteComparator<String> CONTAINS_CHARS_IN_ORDER =
-            (txt, obj) -> StringUtils.containsOrderedChars(txt.toUpperCase(), obj.toUpperCase());
+            (txt, obj) -> Strings.containsOrderedChars(txt.toUpperCase(), obj.toUpperCase());
 
     public static AutoCompleteComparator<String> STARTSWITH_FIRST_THEN_CONTAINS_CHARS_IN_ORDER =
             (txt, obj) -> obj.substring(0, 1).equalsIgnoreCase(txt.substring(0, 1)) &&
-                    StringUtils.containsOrderedChars(txt.toUpperCase(), obj.toUpperCase());
+                    Strings.containsOrderedChars(txt.toUpperCase(), obj.toUpperCase());
 
 
 }

@@ -10,7 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
-import org.mbari.vars.services.model.Image;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
 import org.mbari.vars.annotation.ui.javafx.shared.ImageViewExt;
 
 import java.net.URL;

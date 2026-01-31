@@ -6,7 +6,6 @@ import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.annotation.ui.events.AnnotationsRemovedEvent;
 import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
 import org.mbari.vcr4j.util.Preconditions;
 
 import java.util.Collection;

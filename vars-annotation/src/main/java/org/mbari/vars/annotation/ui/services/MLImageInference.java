@@ -1,7 +1,7 @@
 package org.mbari.vars.annotation.ui.services;
 
 import org.mbari.vars.annotation.model.ImageData;
-import org.mbari.vars.services.model.MachineLearningLocalization;
+import org.mbari.vars.annotation.model.MachineLearningLocalization;
 
 import java.util.Collections;
 import java.util.List;

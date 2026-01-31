@@ -1,7 +1,6 @@
 package org.mbari.vars.annotation.ui.javafx;
 
-import org.mbari.vars.services.model.BoundingBox;
-import org.mbari.vars.services.model.Image;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.slf4j.Logger;
@@ -9,9 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class BoundingBoxDecorator {
     private final UIToolBox toolBox;

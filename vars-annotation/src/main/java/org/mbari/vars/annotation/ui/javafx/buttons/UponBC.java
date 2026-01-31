@@ -4,10 +4,11 @@ package org.mbari.vars.annotation.ui.javafx.buttons;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.text.Text;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.commands.CreateAssociationsCmd;
 import org.mbari.vars.annotation.ui.javafx.Icons;
-import org.mbari.vars.services.model.*;
 import org.mbari.vars.annotation.ui.javafx.shared.ConceptSelectionDialogController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +31,8 @@ public class UponBC extends AbstractBC {
 
     public UponBC(Button button, UIToolBox toolBox) {
         super(button, toolBox);
-        this.associationKey = toolBox.getConfig()
-                .getString("app.annotation.upon.linkname");
-        this.uponRoot = toolBox.getConfig().getString("app.annotation.upon.root");
+        this.associationKey = toolBox.getAppConfig().getRoot().app().annotation().uponLinkname();
+        this.uponRoot = toolBox.getAppConfig().getRoot().app().annotation().uponRoot();
         dialogController = new ConceptSelectionDialogController(toolBox);
         dialogController.setConcept(this.uponRoot, false);
     }

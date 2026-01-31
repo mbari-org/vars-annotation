@@ -7,7 +7,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Shape;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
-import org.mbari.vars.services.model.Image;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
 import org.mbari.vars.annotation.ui.javafx.shared.ImageViewExt;
 
 import java.util.ArrayList;

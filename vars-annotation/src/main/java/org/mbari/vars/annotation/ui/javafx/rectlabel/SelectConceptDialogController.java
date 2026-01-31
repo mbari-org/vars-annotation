@@ -8,7 +8,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import org.mbari.vars.annotation.ui.UIToolBox;
-import org.mbari.vars.services.model.Image;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
 import org.mbari.vars.annotation.ui.javafx.shared.FilteredComboBoxDecorator;
 
 import java.util.ResourceBundle;

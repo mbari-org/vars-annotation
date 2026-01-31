@@ -2,7 +2,7 @@ package org.mbari.vars.annotation.ui.services;
 
 import mbarix4j.awt.image.ImageUtilities;
 import org.mbari.vars.annotation.services.ImageCaptureService;
-import org.mbari.vars.services.model.Framegrab;
+import org.mbari.vars.annotation.model.Framegrab;
 import org.mbari.vars.annotation.model.ImageData;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;

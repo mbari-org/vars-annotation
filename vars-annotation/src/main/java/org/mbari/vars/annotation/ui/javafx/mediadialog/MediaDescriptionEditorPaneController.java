@@ -13,7 +13,6 @@ import javafx.scene.layout.GridPane;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
-import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
 import org.mbari.vars.annotation.ui.util.FXMLUtils;
 
 /**

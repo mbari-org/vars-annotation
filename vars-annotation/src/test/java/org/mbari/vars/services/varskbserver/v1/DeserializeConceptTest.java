@@ -3,10 +3,8 @@ package org.mbari.vars.services.varskbserver.v1;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mbari.vars.services.impl.varskbserver.v1.KBWebServiceFactory;
-import org.mbari.vars.services.model.Concept;
 
 import java.net.URI;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;

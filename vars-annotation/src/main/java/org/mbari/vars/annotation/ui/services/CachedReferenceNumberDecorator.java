@@ -3,11 +3,7 @@ package org.mbari.vars.annotation.ui.services;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
 
-import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
-import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
-import org.mbari.vars.services.model.ConceptAssociation;
-import org.mbari.vars.services.model.ConceptAssociationRequest;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

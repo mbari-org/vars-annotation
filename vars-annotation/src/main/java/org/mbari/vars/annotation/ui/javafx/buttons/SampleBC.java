@@ -1,6 +1,5 @@
 package org.mbari.vars.annotation.ui.javafx.buttons;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -145,7 +144,7 @@ public class SampleBC extends AbstractBC {
             String content = i18n.getString("buttons.sample.warning.content");
 
             // TODO listen for cache reset to clear and repopulate dialog
-            Duration timeout = toolBox.getAppConfig().getConceptServiceParamsV1().getTimeout();
+            Duration timeout = toolBox.getAppConfig().getRoot().conceptService().timeout();
 
             // M3-10: Async _might_ be the cause of this. Trying sync instead
             try {

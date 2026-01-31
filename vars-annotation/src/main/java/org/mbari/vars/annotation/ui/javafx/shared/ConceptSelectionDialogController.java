@@ -7,7 +7,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
-import org.mbari.vars.services.model.Concept;
 
 /**
  * @author Brian Schlining

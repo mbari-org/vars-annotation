@@ -36,7 +36,7 @@ import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.annotation.ui.javafx.Icons;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
-import org.mbari.vars.services.model.Image;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
 import org.mbari.vars.annotation.ui.javafx.shared.ConceptSelectionDialogController;
 import org.mbari.vars.annotation.ui.javafx.shared.ImageViewExt;
 import org.mbari.vars.annotation.util.FormatUtils;

@@ -7,6 +7,7 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
+import org.mbari.vars.annotation.etc.jdk.ListUtils;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annotation.ui.UIToolBox;
 
@@ -17,7 +18,6 @@ import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
 import org.mbari.vars.annotation.ui.javafx.shared.AnnotationTableViewFactory;
 import org.mbari.vars.annotation.etc.rxjava.AsyncUtils;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
-import org.mbari.vars.core.util.ListUtils;
 
 import java.net.URI;
 import java.util.ArrayList;

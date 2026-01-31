@@ -2,7 +2,7 @@ package org.mbari.vars.annotation.ui.mediaplayers.macos.avf;
 
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
-import org.mbari.vars.services.model.Framegrab;
+import org.mbari.vars.annotation.model.Framegrab;
 //import org.mbari.vars.avfoundation.AVFImageCapture;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
@@ -12,9 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
-import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;

@@ -1,7 +1,6 @@
 package org.mbari.vars.annotation.services.noop;
 
 import org.mbari.vars.annotation.services.ImageArchiveService;
-import org.mbari.vars.services.model.ImageUploadResults;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;

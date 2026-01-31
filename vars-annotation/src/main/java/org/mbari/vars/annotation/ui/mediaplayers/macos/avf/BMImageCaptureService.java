@@ -3,7 +3,7 @@ package org.mbari.vars.annotation.ui.mediaplayers.macos.avf;
 //import org.mbari.m3.blackmagic.BlackmagicImageCapture;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
-import org.mbari.vars.services.model.Framegrab;
+import org.mbari.vars.annotation.model.Framegrab;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;

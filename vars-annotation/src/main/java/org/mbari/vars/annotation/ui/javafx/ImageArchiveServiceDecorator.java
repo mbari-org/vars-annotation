@@ -2,8 +2,10 @@ package org.mbari.vars.annotation.ui.javafx;
 
 
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
 import org.mbari.vars.annosaurus.sdk.r1.models.ImageUploadResults;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.model.ImageData;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.commands.CommandUtil;
@@ -11,7 +13,6 @@ import org.mbari.vars.annotation.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 import org.mbari.vars.annotation.etc.rxjava.AsyncUtils;
 import org.mbari.vars.annotation.model.CreatedImageData;
-import org.mbari.vars.annotation.model.ImageData;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
@@ -19,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.awt.Image;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
 import java.awt.image.BufferedImage;
@@ -103,7 +103,7 @@ public class ImageArchiveServiceDecorator {
         log.atDebug().log(() -> "Creating image for " + media.getUri() + " at " + imageData.getVideoIndex() +
                 " as " + type.extension + " with byte[" + bytes.length + "]");
 
-        CompletableFuture<org.mbari.vars.services.model.Image> future = toolBox.getServices()
+        CompletableFuture<Image> future = toolBox.getServices()
                 .imageArchiveService()
                 .upload(media.getCameraId(), deploymentId, name, bytes)
                 .thenCompose(imageUploadResults -> {
@@ -163,7 +163,7 @@ public class ImageArchiveServiceDecorator {
 
     }
 
-    public CompletableFuture<org.mbari.vars.services.model.Image> createImageInDatastore(ImageData imageData, URL imageUrl) {
+    public CompletableFuture<Image> createImageInDatastore(ImageData imageData, URL imageUrl) {
 
 
         // FIXME - Taking a framegrab of annotation with existing framegrab will
@@ -172,7 +172,7 @@ public class ImageArchiveServiceDecorator {
         // to one already in the database, the database will throw an error.
         // Also the image metadata is not getting updated either as the insert fails
 
-        CompletableFuture<org.mbari.vars.services.model.Image> readImageFuture = CompletableFuture.supplyAsync(() -> {
+        CompletableFuture<Image> readImageFuture = CompletableFuture.supplyAsync(() -> {
             String ext = parseExtension(imageUrl);
             String description = null;
             String formatName = "";
@@ -190,7 +190,7 @@ public class ImageArchiveServiceDecorator {
                     formatName = ext;
             }
             BufferedImage bi = imageData.getBufferedImage();
-            org.mbari.vars.services.model.Image image = new org.mbari.vars.services.model.Image();
+            Image image = new Image();
             image.setFormat("image/" + formatName);
             image.setHeight(bi.getHeight());
             image.setWidth(bi.getWidth());
@@ -224,7 +224,7 @@ public class ImageArchiveServiceDecorator {
      * @param  overlayText  The text to overlay onto the image
      * @return
      */
-    public static BufferedImage createImageWithOverlay(final Image image, final String[] overlayText) {
+    public static BufferedImage createImageWithOverlay(final java.awt.Image image, final String[] overlayText) {
 
         // Copy BufferedImage and set .jpg file name
         final BufferedImage bi = new BufferedImage(image.getWidth(null), image.getHeight(null),

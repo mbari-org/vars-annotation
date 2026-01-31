@@ -4,14 +4,17 @@ import javafx.scene.image.ImageView;
 import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.RectangleView;
-import org.mbari.vars.services.impl.annosaurus.v1.AnnoWebServiceFactory;
-import org.mbari.vars.services.model.*;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.BoundingBox;
+import org.mbari.vars.annotation.etc.gson.Gsons;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.model.MachineLearningLocalization;
 import org.mbari.vcr4j.VideoIndex;
+import static org.mbari.vars.annotation.util.MathUtil.doubleToInt;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import static org.mbari.vars.core.util.MathUtil.doubleToInt;
 
 public class MLUtil {
 
@@ -46,7 +49,7 @@ public class MLUtil {
             final var width = doubleToInt(data.getWidth());
             final var height = doubleToInt(data.getHeight());
             final var boundingBox = new BoundingBox(x, y, width, height, "VARS Annotation");
-            final var gson = AnnoWebServiceFactory.newGson();
+            final var gson = Gsons.SNAKE_CASE_GSON;
             final var json = gson.toJson(boundingBox);
             final var association = new Association(BoundingBox.LINK_NAME, Association.VALUE_SELF, json, "application/json");
 

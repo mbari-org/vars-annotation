@@ -1,7 +1,7 @@
 package org.mbari.vars.annotation.ui.services;
 
-import org.mbari.vars.core.util.Requirements;
 import org.mbari.vars.annotation.services.MachineLearningService;
+import org.mbari.vars.annotation.util.Requirements;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.javafx.ImageArchiveServiceDecorator;

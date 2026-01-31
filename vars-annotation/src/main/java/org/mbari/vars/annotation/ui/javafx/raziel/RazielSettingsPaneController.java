@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import org.mbari.vars.annotation.services.raziel.Raziel;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.domain.RazielConnectionParams;
 import org.mbari.vars.annotation.ui.mediaplayers.SettingsPane;
@@ -73,7 +74,7 @@ public class RazielSettingsPaneController implements SettingsPane {
         JFXUtilities.attractAttention(testButton);
     }
 
-    private Optional<RazielConnectionParams> parseRazielConnectionParams() {
+    private Optional<Raziel.ConnectionParams> parseRazielConnectionParams() {
         try {
             var urlText = urlTextfield.getText();
             var userText = usernameTextfield.getText();
@@ -85,9 +86,10 @@ public class RazielSettingsPaneController implements SettingsPane {
                 // if (!urlText.startsWith("http://")) {
                 //     urlText = "http://" + urlText;
                 // }
+
                 URL url = URI.create(urlText).toURL();
-                var rcp = new RazielConnectionParams(url, userText, pwdText);
-                return Optional.of(rcp);
+                var connectionParams = new Raziel.ConnectionParams(url, userText, pwdText);
+                return Optional.of(connectionParams);
             }
         }
         catch (Exception e) {
@@ -112,9 +114,8 @@ public class RazielSettingsPaneController implements SettingsPane {
             Platform.runLater(() -> msgLabel.setText(msg));
             return;
         }
-        var service = new RazielConfigurationService();
         var rcp = opt.get();
-        service.checkStatus(rcp.url(), rcp.username(), rcp.password())
+        Raziel.checkStatus(rcp.url(), rcp.username(), rcp.password())
                         .handle((statuses, ex) -> {
                             if (ex != null) {
                                 var s = resources.getString("raziel.pane.msg.authfailed");
@@ -125,7 +126,7 @@ public class RazielSettingsPaneController implements SettingsPane {
                             }
                             else {
                                 var sortedStatuses = statuses.stream()
-                                        .sorted(Comparator.comparing(es -> es.getEndpointConfig().getName()))
+                                        .sorted(Comparator.comparing(es -> es.endpointConfig().name()))
                                         .collect(Collectors.toList());
                                 var panes = EndpointStatusPaneController.from(sortedStatuses)
                                         .stream()

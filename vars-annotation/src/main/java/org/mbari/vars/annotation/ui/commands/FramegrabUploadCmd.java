@@ -1,9 +1,9 @@
 package org.mbari.vars.annotation.ui.commands;
 
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 import org.mbari.vars.annotation.model.CreatedImageData;
-import org.mbari.vars.services.model.Image;
 import org.mbari.vars.annotation.model.ImageData;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.javafx.ImageArchiveServiceDecorator;

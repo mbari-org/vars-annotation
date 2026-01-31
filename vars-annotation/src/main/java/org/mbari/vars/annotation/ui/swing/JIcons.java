@@ -11,7 +11,7 @@ public class JIcons {
         // no instantiation
     }
 
-    public static FontIcon asSwing(org.mbari.vars.ui.javafx.Icons icon, int size, Color color) {
+    public static FontIcon asSwing(org.mbari.vars.annotation.ui.javafx.Icons icon, int size, Color color) {
         var c = color == null ? Colors.DEFAULT_TEXT.getColor() : color;
         return FontIcon.of(icon.getIkon(), size, c);
     }

@@ -11,9 +11,7 @@ import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class IFXPaneController {
 
@@ -81,7 +79,7 @@ public class IFXPaneController {
     }
 
 
-    private void setImage(org.mbari.vars.services.model.Image image) {
+    private void setImage(org.mbari.vars.annosaurus.sdk.r1.models.Image image) {
         var jfxImage = image == null ? null : new Image(image.getUrl().toExternalForm());
         annotationPaneController.resetUsingImage(jfxImage);
     }

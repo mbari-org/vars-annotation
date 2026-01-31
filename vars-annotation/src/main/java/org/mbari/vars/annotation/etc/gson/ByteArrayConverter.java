@@ -14,7 +14,7 @@
 package org.mbari.vars.annotation.etc.gson;
 
 import com.google.gson.*;
-import org.mbari.vars.core.util.HexUtils;
+import org.mbari.vars.annotation.util.HexUtils;
 
 import java.lang.reflect.Type;
 import java.util.Base64;

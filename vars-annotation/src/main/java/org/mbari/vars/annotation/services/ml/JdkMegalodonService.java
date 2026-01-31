@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.mbari.vars.annotation.services.MachineLearningService;
 import org.mbari.vars.annotation.etc.methanol.LoggingInterceptor;
-import org.mbari.vars.services.model.MachineLearningLocalization;
+import org.mbari.vars.annotation.model.MachineLearningLocalization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

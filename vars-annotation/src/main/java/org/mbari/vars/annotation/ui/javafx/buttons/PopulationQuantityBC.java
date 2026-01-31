@@ -1,6 +1,5 @@
 package org.mbari.vars.annotation.ui.javafx.buttons;
 
-import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;

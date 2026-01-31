@@ -2,7 +2,6 @@ package org.mbari.vars.annotation.ui.services;
 
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
-import org.mbari.vars.services.model.AnnotationCount;
 import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
 import org.slf4j.Logger;

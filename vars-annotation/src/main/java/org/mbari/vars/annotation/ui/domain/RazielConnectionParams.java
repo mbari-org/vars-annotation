@@ -1,6 +1,6 @@
 package org.mbari.vars.annotation.ui.domain;
 
-import org.mbari.vars.core.crypto.AES;
+import org.mbari.vars.annotation.etc.jdk.crypto.AES;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;

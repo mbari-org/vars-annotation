@@ -6,7 +6,6 @@ import javafx.scene.control.TabPane;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.javafx.mlstage.MLSettingsPaneController;
 import org.mbari.vars.annotation.ui.javafx.raziel.RazielSettingsPaneController;
-//import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda.localization.LocalizationSettingsPaneController;
 import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayers;
 import org.mbari.vars.annotation.ui.mediaplayers.SettingsPane;
 

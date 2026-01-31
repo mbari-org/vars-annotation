@@ -1,7 +1,7 @@
 package org.mbari.vars.annotation.ui.javafx.imgfx;
 
 import javafx.stage.Stage;
-import org.mbari.vars.services.model.Image;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.util.URLUtils;
 import org.slf4j.Logger;

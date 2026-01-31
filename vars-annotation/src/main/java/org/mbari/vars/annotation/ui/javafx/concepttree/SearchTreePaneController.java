@@ -2,8 +2,6 @@ package org.mbari.vars.annotation.ui.javafx.concepttree;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
@@ -11,8 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.javafx.shared.FilterableTreeItem;
-import org.mbari.vars.services.model.Concept;
-import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
+import org.mbari.vars.oni.sdk.r1.models.Concept;
 
 
 import java.util.List;
@@ -95,7 +92,7 @@ public class SearchTreePaneController {
                                 String t = c.getName();
                                 List<String> alternativeNames = c.getAlternativeNames();
                                 if (alternativeNames != null && !alternativeNames.isEmpty()) {
-                                    t = t + alternativeNames.stream().collect(Collectors.joining());
+                                    t = t + String.join("", alternativeNames);
                                 }
                                 return t.toLowerCase().contains(tf.getText().toLowerCase());
                             };

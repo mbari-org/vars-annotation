@@ -79,7 +79,7 @@ public class ConceptButtonPanesWithHighlightController {
         User user = toolBox.getData().getUser();
         if (user != null) {
             Preferences userPreferences = toolBox.getServices()
-                    .getPreferencesFactory()
+                    .preferencesFactory()
                     .remoteUserRoot(user.getUsername());
             cpPrefs = userPreferences.node(ConceptButtonPanesController.PREF_CP_NODE);
         }

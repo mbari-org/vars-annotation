@@ -1,7 +1,6 @@
 package org.mbari.vars.annotation.services.ml;
 
-import org.mbari.vars.services.model.BoundingBox;
-import org.mbari.vars.services.model.MachineLearningLocalization;
+import org.mbari.vars.annotation.model.MachineLearningLocalization;
 
 import java.util.ArrayList;
 import java.util.List;

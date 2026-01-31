@@ -1,6 +1,5 @@
 package org.mbari.vars.annotation.ui.javafx.imgfx.events;
 
-import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Shape;
 import org.mbari.imgfx.etc.rx.events.*;
