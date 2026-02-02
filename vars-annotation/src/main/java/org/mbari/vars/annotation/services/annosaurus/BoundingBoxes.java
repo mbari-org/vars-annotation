@@ -28,11 +28,11 @@ public class BoundingBoxes {
     public static Optional<Localization<RectangleView, ImageView>> fromAssociation(String concept,
                                                                                    Association association,
                                                                                    AutoscalePaneController<ImageView> paneController) {
-        var boundingBox = Json.GSON.fromJson(association.getLinkValue(), org.mbari.vars.annotation.model.BoundingBox.class);
-        return RectangleView.fromImageCoords(boundingBox.getX().doubleValue(),
-                        boundingBox.getY().doubleValue(),
-                        boundingBox.getWidth().doubleValue(),
-                        boundingBox.getHeight().doubleValue(),
+        var boundingBox = Json.GSON.fromJson(association.getLinkValue(), BoundingBox.class);
+        return RectangleView.fromImageCoords((double) boundingBox.getX(),
+                        (double) boundingBox.getY(),
+                        (double) boundingBox.getWidth(),
+                        (double) boundingBox.getHeight(),
                         paneController.getAutoscale())
                 .map(dataView -> new Localization<>(dataView, paneController, association.getUuid(), concept));
     }

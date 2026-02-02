@@ -54,7 +54,7 @@ public class SnapTime {
     /**
      * @return  The timezone offset between local and GMT
      */
-    String getGmtOffset() {
+    public String getGmtOffset() {
         return timezoneFormat.format(observationDate);
     }
 
@@ -101,7 +101,7 @@ public class SnapTime {
     /**
      * @return  YYYY
      */
-    String getYear() {
+    public String getYear() {
         return format4i.format(gmtCalendar.get(Calendar.YEAR));
     }
 
@@ -115,7 +115,7 @@ public class SnapTime {
     /**
      * @return time formatted for the GMT timezone
      */
-    String getFormattedGmtTime() {
+    public String getFormattedGmtTime() {
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return dateFormat.format(getObservationDate());
     }

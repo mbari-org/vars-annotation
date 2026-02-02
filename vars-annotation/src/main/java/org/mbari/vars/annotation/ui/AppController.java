@@ -4,6 +4,7 @@ import io.reactivex.rxjava3.core.Observable;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
+import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annotation.services.vampiresquid.CachedMediaService;
 import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
 import org.mbari.vars.annotation.services.oni.CachedPreferencesService;

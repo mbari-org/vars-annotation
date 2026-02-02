@@ -5,8 +5,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.layout.BorderPane;
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.property.BeanPropertyUtils;
+import org.mbari.vars.annosaurus.sdk.r1.models.AncillaryData;
 import org.mbari.vars.annotation.ui.UIToolBox;
-import org.mbari.vars.services.model.AncillaryData;
 
 import java.util.UUID;
 

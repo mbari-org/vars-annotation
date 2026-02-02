@@ -1,8 +1,11 @@
 package org.mbari.vars.annotation.ui.javafx.shared;
 
 import javafx.scene.control.*;
+import org.mbari.vars.oni.sdk.r1.models.ConceptAssociationTemplate;
+import org.mbari.vars.oni.sdk.r1.models.Details;
 import org.mbari.vars.annotation.ui.UIToolBox;
 
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -34,11 +37,11 @@ public class DetailsDialog extends Dialog<Details> {
                 .focusedProperty()
                 .addListener((obj, oldv, newv) -> okButton.setDefaultButton(!newv));
 
-
-
         setResultConverter(buttonType -> {
             if (buttonType == ok) {
-                return controller.getCustomAssociation().orElse(null);
+                return controller.getCustomAssociation()
+                        .flatMap(a -> Optional.of(new ConceptAssociationTemplate(a.getLinkName(), a.getToConcept(), a.getLinkValue())))
+                        .orElse(null);
             }
             else {
                 return null;

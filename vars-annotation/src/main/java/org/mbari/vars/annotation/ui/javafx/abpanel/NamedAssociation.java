@@ -26,6 +26,11 @@ class NamedAssociation extends Association {
         this.name = name;
     }
 
+    public NamedAssociation(org.mbari.vars.oni.sdk.r1.models.ConceptAssociationTemplate cat, String name) {
+        super(cat.getLinkName(), cat.getToConcept(), cat.getLinkValue());
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

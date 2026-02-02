@@ -1,5 +1,7 @@
 package org.mbari.vars.annotation.ui.services;
 
+import org.mbari.vars.annosaurus.sdk.r1.models.ConceptAssociation;
+import org.mbari.vars.annosaurus.sdk.r1.models.ConceptAssociationRequest;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
 

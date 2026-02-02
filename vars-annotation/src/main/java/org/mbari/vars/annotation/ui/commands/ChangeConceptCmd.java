@@ -1,6 +1,7 @@
 package org.mbari.vars.annotation.ui.commands;
 
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.ObservationsUpdate;
 import org.mbari.vars.oni.sdk.r1.models.User;
 import org.mbari.vars.annotation.ui.UIToolBox;
 

@@ -17,6 +17,7 @@ plugins {
     id("com.github.ben-manes.versions") version "0.53.0"
     id("com.adarshr.test-logger") version "4.0.0"
     id("org.beryx.jlink") version "3.2.0"
+    id("org.gradlex.extra-java-module-info") version "1.11"
 }
 
 version = "2.1.0"
@@ -145,6 +146,12 @@ tasks.named<Test>("test") {
     testLogging {
         events("passed")
     }
+}
+
+// Configure automatic module names for JARs without Automatic-Module-Name in their manifest
+extraJavaModuleInfo {
+    failOnMissingModuleInfo.set(false)
+    automaticModule("org.swinglabs.swingx:swingx-all", "swingx.all")
 }
 
 tasks.named<Test>("integrationTest") {

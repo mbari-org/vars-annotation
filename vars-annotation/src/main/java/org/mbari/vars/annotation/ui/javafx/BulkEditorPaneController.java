@@ -25,8 +25,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.services.annosaurus.Associations;
+import org.mbari.vars.oni.sdk.r1.models.ConceptAssociationTemplate;
+import org.mbari.vars.oni.sdk.r1.models.Details;
+import org.mbari.vars.annotation.etc.jdk.ListUtils;
 import org.mbari.vars.annotation.etc.jdk.Streams;
 import org.mbari.vars.annotation.etc.jdk.Strings;
+import org.mbari.vars.annotation.etc.rxjava.AsyncUtils;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
@@ -57,7 +62,8 @@ public class BulkEditorPaneController {
     private ObservableList<Annotation> selectedAnnotations = FXCollections.emptyObservableList();
     private EventBus eventBus;
 
-    private final EventHandler<ActionEvent> noopHandler = (event) -> {};
+    private final EventHandler<ActionEvent> noopHandler = (event) -> {
+    };
     private final EventHandler<ActionEvent> activityHandler = (event) -> changeActivity();
     private final EventHandler<ActionEvent> groupHandler = (event) -> changeGroups();
 
@@ -126,7 +132,6 @@ public class BulkEditorPaneController {
     private Label searchLabel;
 
     private ListChangeListener<Annotation> selectionChangeListener;
-
 
 
     @FXML
@@ -203,8 +208,7 @@ public class BulkEditorPaneController {
                 String text = toolBox.getI18nBundle().getString("bulkeditor.search.defaultlabel");
                 searchLabel.setText(text);
                 searchButton.setDisable(true);
-            }
-            else {
+            } else {
                 searchLabel.setText(sb.toString());
                 searchButton.setDisable(false);
             }
@@ -328,9 +332,8 @@ public class BulkEditorPaneController {
             controller.setAnnotations(annotations);
             controller.setSelectedAnnotations(selectedAnnotations);
             return controller;
-        }
-        catch (Exception e) {
-            throw  new RuntimeException("Failed to load BulkEditorPane from FXML", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load BulkEditorPane from FXML", e);
         }
     }
 
@@ -427,11 +430,9 @@ public class BulkEditorPaneController {
 
         if (searchConcepts && searchDetails) {
             predicate = conceptPredicate.and(associationPredicate);
-        }
-        else if (searchConcepts) {
+        } else if (searchConcepts) {
             predicate = conceptPredicate;
-        }
-        else if (searchDetails) {
+        } else if (searchDetails) {
             predicate = associationPredicate;
         }
 
@@ -499,7 +500,7 @@ public class BulkEditorPaneController {
         String title = i18n.getString("bulkeditor.concept.dialog.title");
         String header = i18n.getString("bulkeditor.concept.dialog.header");
         String content = i18n.getString("bulkeditor.concept.dialog.content1") + " " +
-                annosCopy.size()  + " " + i18n.getString("bulkeditor.concept.dialog.content2");
+                annosCopy.size() + " " + i18n.getString("bulkeditor.concept.dialog.content2");
 
         Dialog<String> dialog = conceptDialogController.getDialog();
         dialog.setTitle(title);
@@ -517,7 +518,7 @@ public class BulkEditorPaneController {
         String title = i18n.getString("bulkeditor.delete.anno.dialog.title");
         String header = i18n.getString("bulkeditor.delete.anno.dialog.header");
         String content = i18n.getString("bulkeditor.delete.anno.dialog.content1") + " " +
-                annosCopy.size()  + " " + i18n.getString("bulkeditor.delete.anno.dialog.content2");
+                annosCopy.size() + " " + i18n.getString("bulkeditor.delete.anno.dialog.content2");
         Runnable action = () -> eventBus.send(new DeleteAnnotationsCmd(annosCopy));
 
         doActionWithAlert(title, header, content, action);
@@ -554,8 +555,7 @@ public class BulkEditorPaneController {
                         String header = i18n.getString("bulkeditor.association.add.error.header");
                         String content = i18n.getString("bulkeditor.association.add.error.content");
                         eventBus.send(new ShowExceptionAlert(title, header, content, (Exception) ex));
-                    }
-                    else {
+                    } else {
                         try {
                             DetailsDialog dialog = new DetailsDialog(toolBox);
                             dialog.getController().setTemplates(templates);
@@ -563,7 +563,7 @@ public class BulkEditorPaneController {
                                 dialog.getDialogPane().getScene().getWindow().sizeToScene();
                                 Optional<Details> opt = dialog.showAndWait();
                                 opt.ifPresent(details -> {
-                                    Association a = Association.fromDetails(details);
+                                    Association a = Associations.fromDetails(details);
                                     toolBox.getEventBus()
                                             .send(new CreateAssociationsCmd(a, annosCopy));
                                 });
@@ -576,8 +576,7 @@ public class BulkEditorPaneController {
                                             dialog.getController()
                                                     .getSearchTextField()
                                                     .requestFocus()));
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             log.error("WTF?", e);
                         }
 
@@ -586,20 +585,22 @@ public class BulkEditorPaneController {
                 });
 
 
-
-
     }
-    private void changeAssociations() {}
+
+    private void changeAssociations() {
+    }
+
     private void deleteAssociations() {
-            // Get selected association
+        // Get selected association
         Association association = associationCombobox.getSelectionModel().getSelectedItem();
-        Details selectedDetails = association == null ? null : new ConceptAssociationTemplate(association);
+        Details selectedDetails = association == null ? null : new ConceptAssociationTemplate(association.getLinkName(),
+                association.getToConcept(), association.getLinkValue());
 
         // --- Get all associations in selected rows;
         List<Annotation> annosCopy = new ArrayList<>(selectedAnnotations);
         List<Details> details = selectedAnnotations.stream()
                 .flatMap(a -> a.getAssociations().stream())
-                .map(ConceptAssociationTemplate::new)
+                .map(a -> new ConceptAssociationTemplate(a.getLinkName(), a.getToConcept(), a.getLinkValue()))
                 .collect(Collectors.toList());
         if (!details.contains(selectedDetails)) {
             selectedDetails = null;
@@ -614,7 +615,7 @@ public class BulkEditorPaneController {
         detailsToDelete.ifPresent(d -> {
             Map<Association, UUID> map = new HashMap<>();
             for (Annotation a : annosCopy) {
-                for (Association ass: a.getAssociations()) {
+                for (Association ass : a.getAssociations()) {
                     if (ass.getLinkName().equals(d.getLinkName())
                             && ass.getToConcept().equals(d.getToConcept())
                             && ass.getLinkValue().equals(d.getLinkValue())) {
@@ -639,8 +640,7 @@ public class BulkEditorPaneController {
         observable.subscribe(cs -> {
                     if (cats.isEmpty()) {
                         cats.addAll(cs);
-                    }
-                    else {
+                    } else {
                         List<ConceptAssociationTemplate> intersection = ListUtils.intersection(cats, cs);
                         cats.clear();
                         cats.addAll(intersection);

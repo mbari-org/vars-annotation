@@ -14,7 +14,7 @@ public class WebPreferencesFactory implements PreferencesFactory {
 
     private final Preferences systemRoot;
 
-    public WebPreferencesFactory(PreferencesService service, @Named("PREFS_TIMEOUT") Long timeoutMillis) {
+    public WebPreferencesFactory(PreferencesService service, Long timeoutMillis) {
         Preconditions.checkNotNull(service, "Missing a PreferencesService");
         Preconditions.checkNotNull(timeoutMillis, "Missing a timeout argument");
         Preconditions.checkArgument(timeoutMillis > 100, "The timeout was less than 100 ms. This isn't allowed.");

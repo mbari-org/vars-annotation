@@ -1,5 +1,6 @@
 package org.mbari.vars.annotation.ui.services;
 
+import org.mbari.vars.annosaurus.sdk.r1.models.AnnotationCount;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;

@@ -3,6 +3,7 @@ package org.mbari.vars.annotation.etc.gson;
 import com.google.gson.InstanceCreator;
 
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.ImagedMoment;
 
 import java.lang.reflect.Type;
 

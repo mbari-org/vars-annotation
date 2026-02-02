@@ -9,12 +9,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annotation.services.annosaurus.Annotations;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.annotation.ui.messages.SeekMsg;
 import org.mbari.vars.annotation.ui.util.ColorUtil;
 
-import java.time.Duration;
 import java.util.List;
 
 record DisplayedAnnotation(Annotation annotation, Label label, Line line) {
@@ -29,7 +29,7 @@ record DisplayedAnnotation(Annotation annotation, Label label, Line line) {
         if (media == null) {
             return;
         }
-        var elapsedTimeOpt = media.toMediaElapsedTime(annotation);
+        var elapsedTimeOpt = Annotations.toMediaElapsedTime(media, annotation);
         if (elapsedTimeOpt.isEmpty()) {
             return;
         }

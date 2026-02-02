@@ -10,6 +10,7 @@ import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.annotation.ui.util.FXMLUtils;
+import org.mbari.vars.oni.sdk.r1.models.Details;
 
 import java.net.URL;
 import java.util.Optional;

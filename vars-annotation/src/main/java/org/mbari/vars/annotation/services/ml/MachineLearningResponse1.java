@@ -1,5 +1,6 @@
 package org.mbari.vars.annotation.services.ml;
 
+import org.mbari.vars.annosaurus.sdk.r1.models.BoundingBox;
 import org.mbari.vars.annotation.model.MachineLearningLocalization;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class MachineLearningResponse1 {
         return predictions.stream()
                 .map(p -> {
                     var box = new BoundingBox(p.getX(), p.getY(), p.getWidth(), p.getHeight());
-                    return new MachineLearningLocalization(p.getCategoryId(), p.getScores().get(0), box);
+                    return new MachineLearningLocalization(p.getCategoryId(), p.getScores().getFirst(), box);
                 })
                 .toList();
     }

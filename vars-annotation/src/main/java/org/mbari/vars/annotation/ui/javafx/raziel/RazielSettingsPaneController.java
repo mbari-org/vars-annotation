@@ -11,7 +11,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.mbari.vars.annotation.services.raziel.Raziel;
 import org.mbari.vars.annotation.ui.Initializer;
-import org.mbari.vars.annotation.ui.domain.RazielConnectionParams;
 import org.mbari.vars.annotation.ui.mediaplayers.SettingsPane;
 import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.annotation.ui.util.FXMLUtils;
@@ -146,7 +145,7 @@ public class RazielSettingsPaneController implements SettingsPane {
 
     @Override
     public void load() {
-        Initializer.loadConnectionParams()
+        Raziel.ConnectionParams.load()
                 .ifPresent(rcp -> {
                     urlTextfield.setText(rcp.url().toExternalForm());
                     usernameTextfield.setText(rcp.username());
@@ -158,7 +157,7 @@ public class RazielSettingsPaneController implements SettingsPane {
     @Override
     public void save() {
         parseRazielConnectionParams().ifPresent(rcp -> {
-            var path = Initializer.getConnectionParamsPath();
+            var path = Raziel.ConnectionParams.path();
             var aes = Initializer.getToolBox().getAes();
             try {
                 rcp.write(path, aes);

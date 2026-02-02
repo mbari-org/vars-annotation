@@ -1,5 +1,6 @@
 package org.mbari.vars.annotation.services.noop;
 
+import org.mbari.vars.annosaurus.sdk.r1.models.ImageUploadResults;
 import org.mbari.vars.annotation.services.ImageArchiveService;
 
 import java.nio.file.Path;
