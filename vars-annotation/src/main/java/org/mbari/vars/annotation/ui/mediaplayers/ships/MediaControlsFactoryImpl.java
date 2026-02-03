@@ -7,7 +7,7 @@ import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.services.ImageCaptureService;
 import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
-import mbarix4j.util.SystemUtilities;
+import org.mbari.vars.annotation.etc.jdk.SystemUtilities;
 import org.mbari.vars.annotation.ui.mediaplayers.*;
 import org.mbari.vars.annotation.ui.mediaplayers.macos.bm.RXImageCaptureServiceImpl;
 import org.mbari.vcr4j.SimpleVideoError;

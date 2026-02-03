@@ -15,7 +15,7 @@
  */
 
 
-package mbarix4j.swing.table;
+package org.mbari.vars.annotation.etc.swing.table;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -157,7 +157,7 @@ public class TableSorter extends AbstractTableModel {
     private MouseListener mouseListener;
     /**
 	 * @uml.property  name="sortingColumns"
-	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="mbarix4j.swing.table.TableSorter$Directive"
+	 * @uml.associationEnd  multiplicity="(0 -1)" elementType="org.mbari.vars.annotation.etc.swing.table.TableSorter$Directive"
 	 */
     private List sortingColumns = new ArrayList();
     /**
@@ -172,7 +172,7 @@ public class TableSorter extends AbstractTableModel {
     private TableModelListener tableModelListener;
     /**
 	 * @uml.property  name="viewToModel"
-	 * @uml.associationEnd  multiplicity="(0 -1)" inverse="this$0:mbarix4j.swing.table.TableSorter$Row"
+	 * @uml.associationEnd  multiplicity="(0 -1)" inverse="this$0:org.mbari.vars.annotation.etc.swing.table.TableSorter$Row"
 	 */
     private Row[] viewToModel;
 

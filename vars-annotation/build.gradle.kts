@@ -78,7 +78,7 @@ dependencies {
     implementation("org.mbari.commons:jcommons:0.0.7")
     implementation("org.mbari.imgfx:imgfx:0.0.17")
     implementation("org.mbari.vars:annosaurus-java-sdk:0.0.13")
-    implementation("org.mbari.vars:oni-java-sdk:0.0.8")
+    implementation("org.mbari.vars:oni-java-sdk:0.0.9")
     implementation("org.mbari.vars:raziel-java-sdk:0.0.5")
     implementation("org.mbari.vars:vampire-squid-java-sdk:0.0.14")
     implementation("org.mbari.vcr4j:vcr4j-core:5.3.1")
@@ -132,7 +132,7 @@ testing {
                 // Explicitly add SDK dependencies for integration tests
                 implementation("org.mbari.vars:vampire-squid-java-sdk:0.0.14")
                 implementation("org.mbari.vars:annosaurus-java-sdk:0.0.13")
-                implementation("org.mbari.vars:oni-java-sdk:0.0.8")
+                implementation("org.mbari.vars:oni-java-sdk:0.0.9")
                 implementation("org.mbari.vars:raziel-java-sdk:0.0.5")
             }
             targets {
@@ -286,7 +286,8 @@ jlink {
         uses("com.azure.core.http.policy.BeforeRetryPolicyProvider")
         uses("org.jdesktop.swingx.plaf.LookAndFeelAddons")
         // Ikonli icon font handler discovery
-        uses("org.kordamp.ikonli.IkonHandler")
+//        uses("org.kordamp.ikonli.IkonHandler")
+//        uses("org.mbari.vars.annotation.ui.mediaplayers.MediaControlsFactory")
     }
 
 //    launcher {

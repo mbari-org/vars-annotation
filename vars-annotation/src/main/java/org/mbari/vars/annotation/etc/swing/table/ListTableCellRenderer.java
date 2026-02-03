@@ -13,9 +13,9 @@
 
 
 
-package mbarix4j.swing.table;
+package org.mbari.vars.annotation.etc.swing.table;
 
-import mbarix4j.swing.ListListModel;
+import org.mbari.vars.annotation.etc.swing.ListListModel;
 
 import javax.swing.JLabel;
 import javax.swing.JList;

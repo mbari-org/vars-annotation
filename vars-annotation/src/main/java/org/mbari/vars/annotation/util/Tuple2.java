@@ -1,4 +1,4 @@
-package mbarix4j.util;
+package org.mbari.vars.annotation.util;
 
 /**
  * @author Brian Schlining

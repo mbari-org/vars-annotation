@@ -1,15 +1,13 @@
 package org.mbari.vars.annotation.ui.swing.annotable;
 
-import mbarix4j.swing.ListListModel;
-import mbarix4j.swing.table.ListTableCellRenderer;
+import org.mbari.vars.annotation.etc.swing.ListListModel;
+import org.mbari.vars.annotation.etc.swing.table.ListTableCellRenderer;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class AssociationListTableCellRenderer extends ListTableCellRenderer {
 

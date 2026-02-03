@@ -1,46 +1,10 @@
-/*
- * Copyright 2007 MBARI
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package org.mbari.vars.annotation.etc.jdk;
 
-
-/*
-URLUtilities.java
- *
-Created on March 8, 2007, 12:00 PM
- *
-To change this template, choose Tools | Template Manager
-and open the template in the editor.
- */
-
-package mbarix4j.net;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import mbarix4j.io.IOUtilities;
-
-/**
- *
- * @author brian
- */
-public class URLUtilities {
-
-    /** Creates a new instance of URLUtilities */
-    public URLUtilities() {}
+public class Urls {
 
     /**
      * Method description
@@ -61,7 +25,7 @@ public class URLUtilities {
             outputStream.close();
         }
     }
-    
+
     /**
      * Create a temp file for copying the contents of the URL into. This
      * temp file will have the same extension as the URL
@@ -77,7 +41,7 @@ public class URLUtilities {
         }
         return File.createTempFile("temp", ext);
     }
-    
+
     public static File copyToTempFile(URL url) throws IOException {
         File tmpFile = urlToTempFile(url);
         copy(url, tmpFile);
@@ -125,7 +89,7 @@ public class URLUtilities {
         return f;
     }
 
-    /** 
+    /**
      * Extract just the filename that the URL refers to
      * @param  url [description]
      * @return     [description]
@@ -134,4 +98,5 @@ public class URLUtilities {
         String urlString = url.getFile();
         return urlString.substring(urlString.lastIndexOf('/') + 1).split("\\?")[0].split("#")[0];
     }
+
 }

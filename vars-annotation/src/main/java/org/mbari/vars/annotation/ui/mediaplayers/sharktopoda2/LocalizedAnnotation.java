@@ -2,7 +2,7 @@ package org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import mbarix4j.util.Tuple2;
+import org.mbari.vars.annotation.util.Tuple2;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.annosaurus.sdk.r1.models.BoundingBox;

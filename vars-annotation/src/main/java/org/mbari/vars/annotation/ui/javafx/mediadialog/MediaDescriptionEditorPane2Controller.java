@@ -1,6 +1,8 @@
 package org.mbari.vars.annotation.ui.javafx.mediadialog;
 
 import java.net.MalformedURLException;
+
+import org.mbari.vars.annotation.etc.jdk.Urls;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
@@ -16,7 +18,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import mbarix4j.net.URLUtilities;
 
 public class MediaDescriptionEditorPane2Controller {
 
@@ -136,7 +137,7 @@ public class MediaDescriptionEditorPane2Controller {
         String name = uri.toString();
         if (scheme.startsWith("http") || scheme.startsWith("file")) {
           try {
-            name = URLUtilities.toFilename(uri.toURL());
+            name = Urls.toFilename(uri.toURL());
           } catch (MalformedURLException e) {
             // TODO Auto-generated catch block
           }

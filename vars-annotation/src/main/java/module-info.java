@@ -42,6 +42,8 @@ module org.mbari.vars.annotation {
 
     uses org.mbari.vars.annotation.ui.mediaplayers.MediaControlsFactory;
 
+    // We also have a META-INF/service/...MediaControlsFactory file for running it in IDEs
+    // That file is not used in the jlink/jpackage version
     provides org.mbari.vars.annotation.ui.mediaplayers.MediaControlsFactory
             with
                     org.mbari.vars.annotation.ui.mediaplayers.macos.bm.MediaControlsFactoryImpl,

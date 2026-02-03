@@ -15,7 +15,7 @@
  */
 
 
-package mbarix4j.swing;
+package org.mbari.vars.annotation.etc.swing;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -39,7 +39,7 @@ import javax.swing.AbstractListModel;
  *
  * <h2>Useage</h2>
  * <pre>
- * import mbarix4j.swing.ListListModel;
+ * import org.mbari.vars.annotation.etc.swing.ListListModel;
  * import mbarix4j.util.SortedArrayList;
  * import javax.swing.JList;
  *

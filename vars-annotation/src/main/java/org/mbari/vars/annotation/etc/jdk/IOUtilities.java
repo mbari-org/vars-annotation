@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package mbarix4j.io;
+package org.mbari.vars.annotation.etc.jdk;
 
 import java.io.IOException;
 import java.io.InputStream;

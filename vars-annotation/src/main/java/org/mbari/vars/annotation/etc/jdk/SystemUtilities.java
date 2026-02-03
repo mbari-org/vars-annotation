@@ -1,5 +1,5 @@
 //$Header: /home/cvs/iag/brian/mbari/src/main/java/org/mbari/util/SystemUtilities.java,v 1.1 2006/01/09 21:16:59 brian Exp $
-package mbarix4j.util;
+package org.mbari.vars.annotation.etc.jdk;
 
 import javax.swing.*;
 import java.awt.*;

@@ -455,6 +455,7 @@ public class AppPaneController {
             remoteButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.remote")));
             remoteButton.setOnAction(e -> {
                 Optional<Media> media = selectMediaDialog.showAndWait();
+                selectMediaDialog.clear();
                 media.ifPresent(m -> toolBox.getEventBus().send(new MediaChangedEvent(null, m)));
             });
 

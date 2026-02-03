@@ -13,7 +13,7 @@
 
 
 
-package mbarix4j.awt.image;
+package org.mbari.vars.annotation.etc.jdk.awt;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -45,9 +45,9 @@ import java.util.Hashtable;
  *
  * @author brian
  */
-public class ImageUtilities {
+public class Images {
 
-    private ImageUtilities() {
+    private Images() {
 
         // NO instantiation allowed
     }

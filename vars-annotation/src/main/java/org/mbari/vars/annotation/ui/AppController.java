@@ -4,6 +4,7 @@ import io.reactivex.rxjava3.core.Observable;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
+import org.mbari.vars.annotation.etc.jdk.Urls;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annotation.services.vampiresquid.CachedMediaService;
 import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
@@ -20,8 +21,7 @@ import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
 import org.mbari.vars.annotation.ui.services.ConcurrentAnnotationDecorator;
 import org.mbari.vars.annotation.ui.javafx.AppPaneController;
 
-import mbarix4j.io.IOUtilities;
-import mbarix4j.net.URLUtilities;
+import org.mbari.vars.annotation.etc.jdk.IOUtilities;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.time.Timecode;
@@ -184,7 +184,7 @@ public class AppController {
     private void saveImage(SaveImageMsg msg) {
         URL url = msg.getUrl();
         if (url != null ) {
-            String filename = URLUtilities.toFilename(url);
+            String filename = Urls.toFilename(url);
             fileChooser.setTitle(toolBox.getI18nBundle().getString("appcontroller.imagesave.title"));
             fileChooser.setInitialFileName(filename);
             File file = fileChooser.showSaveDialog(msg.getWindow());

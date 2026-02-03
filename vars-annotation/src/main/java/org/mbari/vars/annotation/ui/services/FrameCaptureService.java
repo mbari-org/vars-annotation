@@ -1,6 +1,6 @@
 package org.mbari.vars.annotation.ui.services;
 
-import mbarix4j.awt.image.ImageUtilities;
+import org.mbari.vars.annotation.etc.jdk.awt.Images;
 import org.mbari.vars.annotation.services.ImageCaptureService;
 import org.mbari.vars.annotation.model.Framegrab;
 import org.mbari.vars.annotation.model.ImageData;
@@ -36,7 +36,7 @@ public class FrameCaptureService {
                         framegrab.setVideoIndex(new VideoIndex(elapsedTime, recordedDate));
                     });
             if (framegrab.isComplete()) {
-                var bufferedImage = ImageUtilities.toBufferedImage(framegrab.getImage().get());
+                var bufferedImage = Images.toBufferedImage(framegrab.getImage().get());
                 var imageData = new ImageData(media.getVideoReferenceUuid(),
                         framegrab.getVideoIndex().get(),
                         bufferedImage);

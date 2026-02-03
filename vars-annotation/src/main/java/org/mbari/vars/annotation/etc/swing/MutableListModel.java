@@ -1,4 +1,4 @@
-package mbarix4j.swing;
+package org.mbari.vars.annotation.etc.swing;
 
 import javax.swing.ListModel;
 

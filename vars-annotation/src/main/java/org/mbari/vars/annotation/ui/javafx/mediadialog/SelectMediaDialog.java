@@ -22,16 +22,19 @@ public class SelectMediaDialog extends Dialog<Media> {
 //    private final MediaService mediaService;
     private final ResourceBundle uiBundle;
 
+    private final VideoBrowserPaneController controller;
+
     public SelectMediaDialog(UIToolBox toolBox,
                              ResourceBundle uiBundle) {
 //        this.annotationService = annotationService;
 //        this.mediaService = mediaService;
         this.uiBundle = uiBundle;
-        VideoBrowserPaneController controller = new VideoBrowserPaneController(toolBox, uiBundle);
+        controller = new VideoBrowserPaneController(toolBox, uiBundle);
         getDialogPane().setContent(controller.getRoot());
         ButtonType ok = new ButtonType(uiBundle.getString("global.ok"), ButtonBar.ButtonData.OK_DONE);
         ButtonType cancel = new ButtonType(uiBundle.getString("global.cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);
         getDialogPane().getButtonTypes().addAll(ok, cancel);
+
 
         setResultConverter(buttonType -> {
             if (buttonType == ok) {
@@ -42,5 +45,14 @@ public class SelectMediaDialog extends Dialog<Media> {
             }
         });
     }
+
+    /**
+     * Clear any state
+     */
+    public void clear() {
+        controller.clearFilters();
+    }
+
+
 
 }

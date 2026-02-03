@@ -13,8 +13,8 @@ import java.util.prefs.Preferences;
  */
 public class JFXUtilities {
 
-    private static final String CSS_ATTENTION_BUTTON = "attention-button";
-    private static final String CSS_ATTENTION_ICON = "attention-icon";
+    public static final String CSS_ATTENTION_BUTTON = "attention-button";
+    public static final String CSS_ATTENTION_ICON = "attention-icon";
 
     private static final String WIDTH_KEY = "stage-width";
     private static final String HEIGHT_KEY = "stage-height";

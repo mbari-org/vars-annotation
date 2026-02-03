@@ -25,11 +25,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.etc.jdk.Streams;
 import org.mbari.vars.annotation.services.annosaurus.Associations;
 import org.mbari.vars.oni.sdk.r1.models.ConceptAssociationTemplate;
 import org.mbari.vars.oni.sdk.r1.models.Details;
 import org.mbari.vars.annotation.etc.jdk.ListUtils;
-import org.mbari.vars.annotation.etc.jdk.Streams;
 import org.mbari.vars.annotation.etc.jdk.Strings;
 import org.mbari.vars.annotation.etc.rxjava.AsyncUtils;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
@@ -489,6 +489,7 @@ public class BulkEditorPaneController {
     private void moveAnnotations() {
         final List<Annotation> annosCopy = new ArrayList<>(selectedAnnotations);
         Optional<Media> opt = selectMediaDialog.showAndWait();
+        selectMediaDialog.clear();
         //opt.ifPresent(media -> eventBus.send(new MoveAnnotationsCmd(annosCopy, media)));
         opt.ifPresent(media -> eventBus.send(new MoveAnnotationsAndImagesCmd(annosCopy, media)));
     }

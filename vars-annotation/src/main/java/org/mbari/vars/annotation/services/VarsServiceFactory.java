@@ -60,7 +60,7 @@ public class VarsServiceFactory implements ServiceFactory {
     public static Services noop() {
         return new Services(
                 new NoopAnnotationService(),
-                new NoopConceptService(),
+                new org.mbari.vars.oni.sdk.r1.NoopConceptService(),
                 new NoopImageArchiveService(),
                 new NoopMediaService(),
                 new NoopUserService(),

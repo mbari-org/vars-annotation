@@ -1,7 +1,10 @@
+// java
 package org.mbari.vars.annotation.ui.javafx.mediadialog;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import org.mbari.vars.annotation.ui.Initializer;
@@ -14,10 +17,10 @@ import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
+import java.util.stream.Collectors;
 
 /**
  * @author Brian Schlining
@@ -26,7 +29,7 @@ import java.util.ResourceBundle;
 public class VideoBrowserPaneController {
 
     private final BorderPane root;
-//    private final AnnotationService annotationService;
+    //    private final AnnotationService annotationService;
 //    private final MediaService mediaService;
     private final UIToolBox toolBox;
     private DateTimePickerController fromDateController;
@@ -44,6 +47,10 @@ public class VideoBrowserPaneController {
     private MediaPaneController mediaPaneController;
     private Logger log = LoggerFactory.getLogger(getClass());
 
+    // New fields for filtering
+    private TextField sequenceFilterTextField;
+    private Button clearSequenceFilterButton;
+    private ObservableList<String> allVideoSequences = FXCollections.observableArrayList();
 
     public VideoBrowserPaneController(UIToolBox toolBox, ResourceBundle uiBundle) {
         this.toolBox = toolBox;
@@ -62,12 +69,87 @@ public class VideoBrowserPaneController {
     public StackPane getCenterPane() {
         if (centerPane == null) {
             HBox boxCenter = new HBox(getCameraIdListView(),
-                    getVideoSequenceListView(),
+                    getVideoSequencePane(),
                     getVideoListView(),
                     getMediaListView());
+            boxCenter.setSpacing(8);
             centerPane = new StackPane(boxCenter);
+            StackPane.setMargin(boxCenter, new Insets(8));
         }
         return centerPane;
+    }
+
+    public void clearFilters() {
+        getSequenceFilterTextField().setText("");
+        applySequenceFilter("");
+    }
+
+    private VBox getVideoSequencePane() {
+        // VBox that contains the filter combobox (+ clear button) and the list view
+        HBox filterRow = new HBox(getSequenceFilterTextField(), getClearSequenceFilterButton());
+        filterRow.setSpacing(4);
+        VBox vbox = new VBox(filterRow, getVideoSequenceListView());
+        vbox.setSpacing(6);
+        return vbox;
+    }
+
+    private TextField getSequenceFilterTextField() {
+        if (sequenceFilterTextField == null) {
+            sequenceFilterTextField = new TextField();
+            sequenceFilterTextField.setEditable(true);
+            sequenceFilterTextField.setPromptText("Filter sequences...");
+            sequenceFilterTextField.setMinWidth(200);
+
+            // When the editor text changes, apply the filter
+            sequenceFilterTextField.textProperty().addListener((obs, oldVal, newVal) -> {
+                applySequenceFilter(newVal);
+                if (newVal != null && !newVal.isEmpty()) {
+                    getClearSequenceFilterButton().getStyleClass().add(JFXUtilities.CSS_ATTENTION_BUTTON);
+                }
+                else {
+                    getClearSequenceFilterButton().getStyleClass().remove(JFXUtilities.CSS_ATTENTION_BUTTON);
+                }
+            });
+
+        }
+        return sequenceFilterTextField;
+    }
+
+    private Button getClearSequenceFilterButton() {
+        if (clearSequenceFilterButton == null) {
+            clearSequenceFilterButton = new Button("✕");
+            clearSequenceFilterButton.setTooltip(new Tooltip("Clear filter"));
+            clearSequenceFilterButton.setOnAction(e -> {
+                clearFilters();
+            });
+        }
+        return clearSequenceFilterButton;
+    }
+
+    private void applySequenceFilter(String filter) {
+        String f = filter == null ? "" : filter.trim().toLowerCase();
+        if (f.isEmpty()) {
+            // show all
+            Platform.runLater(() -> {
+                getVideoSequenceListView().setItems(FXCollections.observableArrayList(allVideoSequences));
+                // if only one, select it
+                if (allVideoSequences.size() == 1) {
+                    getVideoSequenceListView().getSelectionModel().select(0);
+                }
+            });
+        } else {
+            List<String> filtered = allVideoSequences.stream()
+                    .filter(s -> s.toLowerCase().contains(f))
+                    .collect(Collectors.toList());
+            Platform.runLater(() -> {
+                getVideoSequenceListView().setItems(FXCollections.observableArrayList(filtered));
+                if (filtered.size() == 1) {
+                    getVideoSequenceListView().getSelectionModel().select(0);
+                } else {
+                    getVideoSequenceListView().getSelectionModel().clearSelection();
+                }
+            });
+        }
     }
 
     public Pane getTopPane() {
@@ -127,13 +209,14 @@ public class VideoBrowserPaneController {
                                 .mediaService()
                                 .findVideoSequenceNamesByCameraId(newValue)
                                 .thenAccept(vs -> Platform.runLater(() -> {
-                                    getVideoSequenceListView().setItems(FXCollections.observableArrayList(vs));
+                                    // keep master list and apply current filter
+                                    allVideoSequences.setAll(vs);
+                                    applySequenceFilter(sequenceFilterTextField == null ? "" : sequenceFilterTextField.getText());
                                     if (vs.size() == 1) {
                                         getVideoSequenceListView().getSelectionModel().select(0);
                                     }
                                 }));
                     }));
-
 
         }
         return cameraIdListView;

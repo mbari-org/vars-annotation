@@ -8,12 +8,11 @@ import org.mbari.vars.annotation.ui.events.MediaControlsChangedEvent;
 import org.mbari.vars.annotation.ui.events.MediaPlayerChangedEvent;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 
-import mbarix4j.util.stream.StreamUtilities;
+import org.mbari.vars.annotation.etc.jdk.Streams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**
@@ -24,12 +23,12 @@ public class MediaPlayers {
 
     private final UIToolBox toolBox;
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private ServiceLoader<MediaControlsFactory> serviceLoader;
+    private final ServiceLoader<MediaControlsFactory> serviceLoader;
     private final Object lock = new byte[]{};
 
     public MediaPlayers(UIToolBox toolBox) {
         this.toolBox = toolBox;
-        serviceLoader = ServiceLoader.load(MediaControlsFactory.class);
+        serviceLoader = ServiceLoader.load(MediaControlsFactory.class, Thread.currentThread().getContextClassLoader());
         EventBus eventBus = toolBox.getEventBus();
         eventBus.toObserverable()
                 .ofType(MediaChangedEvent.class)
@@ -48,10 +47,14 @@ public class MediaPlayers {
     }
 
     public List<SettingsPane> getSettingsPanes() {
-        return StreamUtilities.toStream(serviceLoader.iterator())
+        log.atWarn().log("Loading MediaControlsFactories");
+//        for (var factory : serviceLoader) {
+//            log.warn("Discovered MediaControlsFactory: {}", factory.getClass().getName());
+//        }
+        return Streams.toStream(serviceLoader.iterator())
                 .map(MediaControlsFactory::getSettingsPane)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private void open(Media media) {
@@ -62,7 +65,7 @@ public class MediaPlayers {
             var eventBus = toolBox.getEventBus();
 
             try {
-                StreamUtilities.toStream(serviceLoader.iterator())
+                Streams.toStream(serviceLoader.iterator())
                         .peek(factory -> log.debug("ServiceLoader found a factory: {}", factory))
                         .filter(factory -> factory.canOpen(media))
                         .peek(factory -> log.debug("ServiceLoader using a factory: {}", factory))
@@ -76,7 +79,7 @@ public class MediaPlayers {
                                 log.error("Unable to load services", e);
                                 eventBus.send(new MediaPlayerChangedEvent(null, null));
                             }
-                            // #174: Annotations are sometimes send before the media
+                            // #174: Annotations are sometimes sent before the media
                             // is ready. So this triggers a clear and reload in the
                             // OutgoingController
                             eventBus.send(new ForceReloadLocalizationsEvent());
