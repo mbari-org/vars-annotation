@@ -1,4 +1,4 @@
-package org.mbari.vars.annotation.it.services;
+package org.mbari.vars.annotation.it.util;
 
 import org.mbari.vars.annotation.etc.jdk.Instants;
 import org.mbari.vars.annotation.etc.jdk.Strings;

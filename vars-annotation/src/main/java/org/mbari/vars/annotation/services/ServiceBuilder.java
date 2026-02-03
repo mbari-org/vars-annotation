@@ -5,12 +5,12 @@ import org.mbari.vars.annosaurus.sdk.r1.AnnosaurusHttpClient;
 import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 import org.mbari.vars.annosaurus.sdk.r1.NoopAnnotationService;
 import org.mbari.vars.annotation.etc.jdk.Loggers;
+import org.mbari.vars.annotation.services.noop.NoopConceptService;
 import org.mbari.vars.annotation.services.noop.NoopImageArchiveService;
 import org.mbari.vars.annotation.services.panopes.PanoptesHttpClient;
 import org.mbari.vars.annotation.services.raziel.Raziel;
 import org.mbari.vars.oni.sdk.r1.CachedPreferencesService;
 import org.mbari.vars.oni.sdk.r1.ConceptService;
-import org.mbari.vars.oni.sdk.r1.NoopConceptService;
 import org.mbari.vars.oni.sdk.r1.OniKiotaClient;
 import org.mbari.vars.oni.sdk.r1.PreferencesService;
 import org.mbari.vars.raziel.sdk.r1.RazielKiotaClient;
@@ -40,6 +40,11 @@ public class ServiceBuilder {
     private final AtomicReference<ImageArchiveService> imageArchiveService = new AtomicReference<>();
     private final AtomicReference<PreferencesService> preferencesService = new AtomicReference<>();
 
+    private final String NAME_ANNOSAURUS = "annosaurus";
+    private final String NAME_VAMPIRE_SQUID = "vampire-squid";
+    private final String NAME_ONI = "oni";
+    private final String NAME_PANOPTES = "panoptes";
+
     public ServiceBuilder(boolean load) {
         this.load = load;
     }
@@ -50,6 +55,7 @@ public class ServiceBuilder {
 
                 var razielConnectionParams = Raziel.ConnectionParams.load();
                 razielConnectionParams.ifPresent((params) -> {
+                    log.atInfo().log("Connecting to Raziel at " + params.url());
                     var urlString = ServiceBuilder.adaptUrl(params.url().toString());
                     var uri = URI.create(urlString);
                     var client = new RazielKiotaClient(uri);
@@ -62,14 +68,15 @@ public class ServiceBuilder {
                 log.atError().withCause(e).log("Failed to load Raziel connection parameters");
             }
         }
-        else {
+        else if (endpoints.isEmpty()){
             // Read from config
+            log.atInfo().log("Loading service endpoints from configuration (reference.conf)");
             try {
                 var names = Map.of(
-                        "annotation.service", "annosaurus",
-                        "media.service", "vampire-squid",
-                        "concept.service", "oni",
-                        "panoptes.service", "panoptes"
+                        "annotation.service", NAME_ANNOSAURUS,
+                        "media.service", NAME_VAMPIRE_SQUID,
+                        "concept.service", NAME_ONI,
+                        "panoptes.service", NAME_PANOPTES
                 );
 
                 var config = ConfigFactory.load();
@@ -92,7 +99,7 @@ public class ServiceBuilder {
         if (annotationService.get() == null) {
             loadConfigurations();
             var config = endpoints.stream()
-                    .filter(e -> e.name().equals("annosaurus"))
+                    .filter(e -> e.name().equals(NAME_ANNOSAURUS))
                     .findFirst();
             if (config.isPresent()) {
                 var endpoint = config.get();
@@ -113,7 +120,7 @@ public class ServiceBuilder {
         if (mediaService.get() == null) {
             loadConfigurations();
             var config = endpoints.stream()
-                    .filter(e -> e.name().equals("vampire-squid"))
+                    .filter(e -> e.name().equals(NAME_VAMPIRE_SQUID))
                     .map(this::adaptEndpointConfigForKiota)
                     .findFirst();
             if (config.isPresent()) {
@@ -137,13 +144,13 @@ public class ServiceBuilder {
         if (conceptService.get() == null) {
             loadConfigurations();
             var config = endpoints.stream()
-                    .filter(e -> e.name().equals("oni"))
+                    .filter(e -> e.name().equals(NAME_ONI))
                     .map(this::adaptEndpointConfigForKiota)
                     .findFirst();
             if (config.isPresent()) {
                 var endpoint = config.get();
                 var uri = URI.create(endpoint.url());
-                var client = new OniKiotaClient(uri);
+                var client = new OniKiotaClient(uri, endpoint.secret());
                 conceptService.set(client);
                 return client;
             } else {
@@ -158,7 +165,7 @@ public class ServiceBuilder {
         if (imageArchiveService.get() == null) {
             loadConfigurations();
             var config = endpoints.stream()
-                    .filter(e -> e.name().equals("panoptes"))
+                    .filter(e -> e.name().equals(NAME_PANOPTES))
                     .findFirst();
             if (config.isPresent()) {
                 var endpoint = config.get();
@@ -179,13 +186,13 @@ public class ServiceBuilder {
         if (preferencesService.get() == null) {
             loadConfigurations();
             var config = endpoints.stream()
-                    .filter(e -> e.name().equals("oni"))
+                    .filter(e -> e.name().equals(NAME_ONI))
                     .map(this::adaptEndpointConfigForKiota)
                     .findFirst();
             if (config.isPresent()) {
                 var endpoint = config.get();
                 var uri = URI.create(endpoint.url());
-                var client = new OniKiotaClient(uri);
+                var client = new OniKiotaClient(uri, endpoint.secret());
                 // OniKiotaClient implements PreferencesService, wrap it with CachedPreferencesService
                 var service = new CachedPreferencesService(client);
                 preferencesService.set(service);
@@ -197,8 +204,6 @@ public class ServiceBuilder {
         }
         return preferencesService.get();
     }
-
-
 
     public static String adaptUrl(String url) {
         if (url.endsWith("/config")) {

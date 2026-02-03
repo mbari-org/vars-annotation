@@ -1,10 +1,10 @@
-package org.mbari.vars.annotation.it.services.annosaurus.v1;
+package org.mbari.vars.annotation.it.services.annosaurus;
 
 import org.junit.Test;
 import org.mbari.vars.annotation.etc.jdk.Strings;
-import org.mbari.vars.annotation.it.services.AssertUtils;
+import org.mbari.vars.annotation.it.util.AssertUtils;
 import org.mbari.vars.annotation.it.services.TestToolbox;
-import org.mbari.vars.annotation.it.services.TestUtils;
+import org.mbari.vars.annotation.it.util.TestUtils;
 import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 import org.mbari.vars.annosaurus.sdk.r1.models.*;
 

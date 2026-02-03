@@ -1,12 +1,12 @@
-package org.mbari.vars.annotation.it.services.vampiresquid.v1;
+package org.mbari.vars.annotation.it.services.vampiresquid;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.mbari.vars.annotation.it.services.AssertUtils;
+import org.mbari.vars.annotation.it.util.AssertUtils;
 import org.mbari.vars.annotation.it.services.TestToolbox;
-import org.mbari.vars.annotation.it.services.TestUtils;
-import org.mbari.vars.annotation.it.services.URLUtilities;
+import org.mbari.vars.annotation.it.util.TestUtils;
+import org.mbari.vars.annotation.it.util.URLUtilities;
 import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 

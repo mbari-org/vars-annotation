@@ -6,25 +6,27 @@ module org.mbari.vars.annotation {
     requires transitive com.google.gson;
     requires transitive io.reactivex.rxjava3;
     requires transitive jakarta.inject;
-    requires transitive java.desktop;
-    requires transitive java.net.http;
-    requires transitive java.prefs;
-    requires transitive java.scripting;
-    requires transitive java.sql;
-    requires transitive java.xml;
-    requires transitive javafx.base;
-    requires transitive javafx.controls;
-    requires transitive javafx.fxml;
-    requires transitive javafx.media;
-    requires transitive javafx.swing;
-    requires transitive methanol;
+    requires java.desktop;
+    requires java.net.http;
+    requires java.prefs;
+    requires java.scripting;
+    requires java.sql;
+    requires java.xml;
+    requires javafx.base;
+    requires javafx.controls;
+    requires javafx.graphics;
+    requires javafx.fxml;
+    requires javafx.media;
+    requires javafx.swing;
+    requires methanol;
     requires okhttp3.logging;
     requires okhttp3;
-    requires transitive okio;
+    requires okio;
     requires transitive org.controlsfx.controls;
-    requires transitive org.kordamp.ikonli.javafx;
-    requires transitive org.kordamp.ikonli.material;
-    requires transitive org.kordamp.ikonli.swing;
+    requires org.kordamp.ikonli.core;
+    requires org.kordamp.ikonli.javafx;
+    requires org.kordamp.ikonli.material2;
+    requires org.kordamp.ikonli.swing;
     requires transitive org.mbari.imgfx;
     requires org.mbari.vars.annosaurus.sdk;
     requires org.mbari.vars.oni.sdk;
@@ -36,6 +38,8 @@ module org.mbari.vars.annotation {
     requires transitive vcr4j.core;
     requires transitive vcr4j.remote;
 
+    uses org.kordamp.ikonli.IkonHandler;
+
     uses org.mbari.vars.annotation.ui.mediaplayers.MediaControlsFactory;
 
     provides org.mbari.vars.annotation.ui.mediaplayers.MediaControlsFactory
@@ -44,6 +48,7 @@ module org.mbari.vars.annotation {
                     org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2.MediaControlsFactoryImpl,
                     org.mbari.vars.annotation.ui.mediaplayers.ships.MediaControlsFactoryImpl;
 
+    opens org.mbari.vars.annotation to javafx.graphics, com.google.gson;
     opens org.mbari.vars.annotation.model to com.google.gson;
     opens org.mbari.vars.annotation.services.ml to com.google.gson;
     opens org.mbari.vars.annotation.ui to javafx.graphics;

@@ -2,10 +2,7 @@ package org.mbari.vars.annotation.services;
 
 import com.typesafe.config.Config;
 import org.mbari.vars.annosaurus.sdk.r1.NoopAnnotationService;
-import org.mbari.vars.annotation.services.noop.NoopImageArchiveService;
-import org.mbari.vars.annotation.services.noop.NoopPreferencesFactory;
-import org.mbari.vars.annotation.services.noop.NoopPreferencesService;
-import org.mbari.vars.annotation.services.noop.NoopUserService;
+import org.mbari.vars.annotation.services.noop.*;
 import org.mbari.vars.annotation.services.oni.ModifyingConceptService;
 import org.mbari.vars.annotation.services.oni.PreferencesFactory;
 import org.mbari.vars.annotation.services.oni.WebPreferencesFactory;

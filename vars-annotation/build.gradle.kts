@@ -16,8 +16,8 @@ plugins {
     id("org.openjfx.javafxplugin") version "0.1.0"
     id("com.github.ben-manes.versions") version "0.53.0"
     id("com.adarshr.test-logger") version "4.0.0"
-    id("org.beryx.jlink") version "3.2.0"
-    id("org.gradlex.extra-java-module-info") version "1.11"
+    id("org.beryx.jlink") version "3.2.1"
+    id("org.gradlex.extra-java-module-info") version "1.14"
 }
 
 version = "2.1.0"
@@ -63,22 +63,23 @@ dependencies {
 //    implementation("com.squareup.okhttp3:okhttp:3.14.9")
 
     // This dependency is used by the application.
-    implementation("ch.qos.logback:logback-classic:1.5.24")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
-    implementation("com.github.mizosoft.methanol:methanol:1.8.2")
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.github.mizosoft.methanol:methanol:1.9.0")
+    implementation("com.google.code.gson:gson:2.13.2")
     implementation("com.squareup.okhttp3:logging-interceptor:3.14.4")
-    implementation("com.typesafe:config:1.4.3")
+    implementation("com.typesafe:config:1.4.5")
     implementation("jakarta.inject:jakarta.inject-api:2.0.1")
     implementation("org.controlsfx:controlsfx:11.2.3")
-    implementation("org.kordamp.ikonli:ikonli-javafx:12.4.0")
-    implementation("org.kordamp.ikonli:ikonli-swing:12.4.0")
-    implementation("org.kordamp.ikonli:ikonli-material-pack:12.4.0")
+    // IMPORTANT - ikonli version needs to be the same as the one used in imgfx or the icons won't render.
+    implementation("org.kordamp.ikonli:ikonli-core:12.3.1")
+    implementation("org.kordamp.ikonli:ikonli-javafx:12.3.1")
+    implementation("org.kordamp.ikonli:ikonli-swing:12.3.1")
+    implementation("org.kordamp.ikonli:ikonli-material2-pack:12.3.1")
     implementation("org.mbari.commons:jcommons:0.0.7")
     implementation("org.mbari.imgfx:imgfx:0.0.17")
-    implementation("org.mbari.vars:annosaurus-java-sdk:0.0.11")
-    implementation("org.mbari.vars:oni-java-sdk:0.0.6")
-    implementation("org.mbari.vars:raziel-java-sdk:0.0.4")
+    implementation("org.mbari.vars:annosaurus-java-sdk:0.0.13")
+    implementation("org.mbari.vars:oni-java-sdk:0.0.8")
+    implementation("org.mbari.vars:raziel-java-sdk:0.0.5")
     implementation("org.mbari.vars:vampire-squid-java-sdk:0.0.14")
     implementation("org.mbari.vcr4j:vcr4j-core:5.3.1")
     implementation("org.mbari.vcr4j:vcr4j-remote:5.3.1")
@@ -98,7 +99,7 @@ dependencies {
         exclude(group = "org.checkerframework", module = "checker-qual")
     }
 
-    runtimeOnly("ch.qos.logback:logback-classic:1.5.26") {
+    runtimeOnly("ch.qos.logback:logback-classic:1.5.27") {
         exclude(group = "javax.activation")
     }
 }
@@ -130,9 +131,9 @@ testing {
                 implementation(project())
                 // Explicitly add SDK dependencies for integration tests
                 implementation("org.mbari.vars:vampire-squid-java-sdk:0.0.14")
-                implementation("org.mbari.vars:annosaurus-java-sdk:0.0.11")
-                implementation("org.mbari.vars:oni-java-sdk:0.0.6")
-                implementation("org.mbari.vars:raziel-java-sdk:0.0.4")
+                implementation("org.mbari.vars:annosaurus-java-sdk:0.0.13")
+                implementation("org.mbari.vars:oni-java-sdk:0.0.8")
+                implementation("org.mbari.vars:raziel-java-sdk:0.0.5")
             }
             targets {
                 all {
@@ -266,7 +267,7 @@ jlink {
     options.set(listOf("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages", "--ignore-signing-information"))
 
     launcher {
-        name = "Mondrian"
+        name = "VARS Annotation"
         jvmArgs = runtimeJvmArgs
     }
 
@@ -284,6 +285,8 @@ jlink {
         uses("com.azure.core.http.policy.AfterRetryPolicyProvider")
         uses("com.azure.core.http.policy.BeforeRetryPolicyProvider")
         uses("org.jdesktop.swingx.plaf.LookAndFeelAddons")
+        // Ikonli icon font handler discovery
+        uses("org.kordamp.ikonli.IkonHandler")
     }
 
 //    launcher {

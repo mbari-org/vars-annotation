@@ -10,3 +10,5 @@
 
 rootProject.name = "vars-annotation"
 include("vars-annotation")
+
+

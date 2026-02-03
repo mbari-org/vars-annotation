@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="root" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.javafx.imgfx.IFXVarsPaneController">
+<VBox fx:id="root" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.annotation.ui.javafx.imgfx.IFXVarsPaneController">
    <children>
       <ImageView fx:id="imageView" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="NEVER" />
       <HBox spacing="5.0">

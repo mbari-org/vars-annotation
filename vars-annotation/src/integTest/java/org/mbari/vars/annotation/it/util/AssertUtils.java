@@ -1,4 +1,4 @@
-package org.mbari.vars.annotation.it.services;
+package org.mbari.vars.annotation.it.util;
 
 import org.mbari.vars.annosaurus.sdk.r1.models.AncillaryData;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;

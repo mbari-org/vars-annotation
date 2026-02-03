@@ -8,7 +8,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.TextField?>
-<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.mediaplayers.vcr.MediaParamsPaneController">
+<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.annotation.ui.mediaplayers.vcr.MediaParamsPaneController">
   <columnConstraints>
     <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />

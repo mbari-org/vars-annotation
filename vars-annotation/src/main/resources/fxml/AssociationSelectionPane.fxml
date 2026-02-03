@@ -8,7 +8,7 @@
 
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ComboBox?>
-<GridPane fx:id="root" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="500" vgap="10.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.javafx.abpanel.AssocSelectionDialogController">
+<GridPane fx:id="root" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="500" vgap="10.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.annotation.ui.javafx.abpanel.AssocSelectionDialogController">
     <columnConstraints>
         <ColumnConstraints hgrow="NEVER" minWidth="40.0"/>
         <ColumnConstraints hgrow="ALWAYS" minWidth="100.0"/>

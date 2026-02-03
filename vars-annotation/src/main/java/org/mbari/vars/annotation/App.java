@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 
 import javafx.scene.control.Label;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.mbari.vars.annotation.ui.AppController;
 import org.mbari.vars.annotation.ui.Initializer;

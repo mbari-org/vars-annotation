@@ -8,7 +8,7 @@
 
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ComboBox?>
-<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="gridpane-pref" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.mediaplayers.macos.avf.MacImageCaptureSettingsPaneController">
+<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="gridpane-pref" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.annotation.ui.mediaplayers.macos.avf.MacImageCaptureSettingsPaneController">
   <columnConstraints>
     <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
     <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />

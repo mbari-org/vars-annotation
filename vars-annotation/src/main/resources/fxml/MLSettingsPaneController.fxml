@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 
 <?import javafx.scene.control.TextField?>
-<GridPane fx:id="root" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="org.mbari.vars.ui.javafx.mlstage.MLSettingsPaneController">
+<GridPane fx:id="root" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="org.mbari.vars.annotation.ui.javafx.mlstage.MLSettingsPaneController">
   <columnConstraints>
     <ColumnConstraints hgrow="NEVER" />
     <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="500.0" />

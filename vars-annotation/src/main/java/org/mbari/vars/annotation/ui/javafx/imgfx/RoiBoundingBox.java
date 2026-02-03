@@ -65,7 +65,7 @@ public class RoiBoundingBox implements Roi<RectangleView> {
         var width = toInt(rect.getWidth());
         var height = toInt(rect.getHeight());
         //TODO align with latest annosaurus-java-sdk constructor
-        var boundingBox = new BoundingBox(x, y, width, height, BoundingBoxes.GENERATOR, imageReferenceUuid, comment);
+        var boundingBox = new BoundingBox(x, y, width, height, BoundingBoxes.GENERATOR, imageReferenceUuid, null, null, comment);
         var linkValue = Json.GSON.toJson(boundingBox);
         return new Association(LINK_NAME, Association.VALUE_SELF, linkValue, MEDIA_TYPE, localization.getUuid());
     }

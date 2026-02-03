@@ -38,6 +38,7 @@ public class Raziel {
 
         public static Optional<ConnectionParams> read(Path file, AES aes) {
             if (Files.exists(file)) {
+                log.atInfo().log("Reading Raziel connection parameters from file: " + file);
                 try {
                     var lines = Files.readAllLines(file);
                     var url = new URL(lines.get(0));

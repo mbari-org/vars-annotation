@@ -21,7 +21,6 @@ import org.mbari.vars.annotation.ui.javafx.imagestage.ImageStage2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -72,7 +71,7 @@ public class MachineLearningStage extends Stage {
         saveAnnotationsButton = new Button(null, saveAnnotationsIcon);
 
 
-        var saveAllIcon = Icons.UPLOAD_FILE.standardSize();
+        var saveAllIcon = Icons.FILE_UPLOAD.standardSize();
         saveAllButton = new Button(null, saveAllIcon);
 
         var cancelIcon = Icons.CANCEL.standardSize();

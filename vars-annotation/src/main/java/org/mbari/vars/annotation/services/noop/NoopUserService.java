@@ -25,4 +25,14 @@ public class NoopUserService implements UserService {
     public CompletableFuture<Optional<User>> update(User user) {
         return CompletableFuture.failedFuture(new UnsupportedOperationException());
     }
+
+    @Override
+    public CompletableFuture<Optional<User>> findByUsername(String s) {
+        return CompletableFuture.completedFuture(Optional.empty());
+    }
+
+    @Override
+    public CompletableFuture<Optional<User>> changePassword(String s, String s1, String s2) {
+        return CompletableFuture.failedFuture(new UnsupportedOperationException());
+    }
 }

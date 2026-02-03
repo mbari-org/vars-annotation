@@ -1,4 +1,4 @@
-package org.mbari.vars.annotation.it.services.util;
+package org.mbari.vars.annotation.it.services.oni;
 
 import org.junit.Test;
 import static org.junit.Assert.*;

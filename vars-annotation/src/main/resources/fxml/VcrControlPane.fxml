@@ -5,9 +5,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <?import javafx.scene.control.Button?>
-<?import org.mbari.vars.ui.javafx.controls.JFXSlider?>
+<?import org.mbari.vars.annotation.ui.javafx.controls.JFXSlider?>
 <?import javafx.scene.control.Slider?>
-<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="440.0" stylesheets="@../styles/vcr.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.ui.mediaplayers.vcr.VcrControlPaneController">
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="440.0" stylesheets="@../styles/vcr.css" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.annotation.ui.mediaplayers.vcr.VcrControlPaneController">
     <children>
         <Label styleClass="timecode" fx:id="timecodeLabel" layoutX="14.0" layoutY="10.0" prefHeight="17.0" prefWidth="166.0" text="--:--:--:--" />
         <Button fx:id="shuttleFwdButton" layoutX="367.0" layoutY="9.0" />

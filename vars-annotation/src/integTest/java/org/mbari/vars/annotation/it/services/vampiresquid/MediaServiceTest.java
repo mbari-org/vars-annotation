@@ -1,4 +1,4 @@
-package org.mbari.vars.annotation.it.services.vampiresquid.v1;
+package org.mbari.vars.annotation.it.services.vampiresquid;
 
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -33,7 +33,6 @@ public class MediaServiceTest {
 
     // This passes but we're turning it off so that we don't put
     // bogus values in the database
-    @Ignore
     @Test
     public void testCreate() throws InterruptedException,
             ExecutionException,
@@ -47,7 +46,6 @@ public class MediaServiceTest {
         assertNotNull(media);
     }
 
-    @Ignore
     @Test
     public void testCreateMedia() throws Exception {
         Instant now = Instant.now();
@@ -73,7 +71,6 @@ public class MediaServiceTest {
         assertEquals(media.getFrameRate(), m.getFrameRate());
     }
 
-    @Ignore
     @Test
     public void testUpdate() throws Exception {
         Instant now = Instant.now();
@@ -96,7 +93,6 @@ public class MediaServiceTest {
         assertEquals(then, m1.getStartTimestamp());
     }
 
-    @Ignore
     @Test
     public void testUpdateMedia() throws Exception {
         var now = Instant.now();
@@ -127,7 +123,6 @@ public class MediaServiceTest {
         assertEquals(m.getFrameRate(), m1.getFrameRate());
     }
 
-    @Ignore
     @Test
     public void testDelete() throws Exception {
         var now = Instant.now();
@@ -153,7 +148,6 @@ public class MediaServiceTest {
         assertTrue(!media.isEmpty());
     }
 
-    @Ignore
     @Test
     public void testFindByUri() throws Exception {
         var now = Instant.now();
