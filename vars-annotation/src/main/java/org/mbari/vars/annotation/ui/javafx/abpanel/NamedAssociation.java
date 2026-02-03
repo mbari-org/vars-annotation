@@ -49,7 +49,7 @@ class NamedAssociation extends Association {
         try {
             List<String> ss = Arrays.stream(s.split("[|]"))
                     .map(String::trim)
-                    .collect(Collectors.toList());
+                    .toList();
             if (ss.size() == 4) {
                 na = Optional.of(new NamedAssociation(ss.get(0), ss.get(1), ss.get(2), ss.get(3)));
             }

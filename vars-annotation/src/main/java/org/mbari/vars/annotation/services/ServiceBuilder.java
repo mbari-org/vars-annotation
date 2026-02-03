@@ -1,5 +1,6 @@
 package org.mbari.vars.annotation.services;
 
+import com.typesafe.config.ConfigFactory;
 import org.mbari.vars.annosaurus.sdk.r1.AnnosaurusHttpClient;
 import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 import org.mbari.vars.annosaurus.sdk.r1.NoopAnnotationService;
@@ -7,9 +8,11 @@ import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.services.noop.NoopImageArchiveService;
 import org.mbari.vars.annotation.services.panopes.PanoptesHttpClient;
 import org.mbari.vars.annotation.services.raziel.Raziel;
+import org.mbari.vars.oni.sdk.r1.CachedPreferencesService;
 import org.mbari.vars.oni.sdk.r1.ConceptService;
 import org.mbari.vars.oni.sdk.r1.NoopConceptService;
 import org.mbari.vars.oni.sdk.r1.OniKiotaClient;
+import org.mbari.vars.oni.sdk.r1.PreferencesService;
 import org.mbari.vars.raziel.sdk.r1.RazielKiotaClient;
 import org.mbari.vars.raziel.sdk.r1.models.EndpointConfig;
 import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
@@ -19,6 +22,7 @@ import org.mbari.vars.vampiresquid.sdk.r1.VampireSquidKiotaClient;
 import java.net.URI;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -34,6 +38,7 @@ public class ServiceBuilder {
     private final AtomicReference<VampireSquidKiotaClient> mediaService = new AtomicReference<>();
     private final AtomicReference<OniKiotaClient> conceptService = new AtomicReference<>();
     private final AtomicReference<ImageArchiveService> imageArchiveService = new AtomicReference<>();
+    private final AtomicReference<PreferencesService> preferencesService = new AtomicReference<>();
 
     public ServiceBuilder(boolean load) {
         this.load = load;
@@ -55,6 +60,30 @@ public class ServiceBuilder {
             }
             catch (Exception e) {
                 log.atError().withCause(e).log("Failed to load Raziel connection parameters");
+            }
+        }
+        else {
+            // Read from config
+            try {
+                var names = Map.of(
+                        "annotation.service", "annosaurus",
+                        "media.service", "vampire-squid",
+                        "concept.service", "oni",
+                        "panoptes.service", "panoptes"
+                );
+
+                var config = ConfigFactory.load();
+                names.forEach((configName, serviceName) -> {
+                    var uri = config.getString(configName + ".url");
+                    var timeout = config.getDuration(configName + ".timeout");
+                    var secret = config.getString(configName + ".client.secret");
+                    var endpoint = new EndpointConfig(serviceName, uri, timeout.toMillis(), secret);
+                    endpoints.add(endpoint);
+                });
+
+            }
+            catch (Exception e) {
+                log.atError().withCause(e).log("Failed to load configuration parameters");
             }
         }
     }
@@ -144,6 +173,29 @@ public class ServiceBuilder {
             }
         }
         return imageArchiveService.get();
+    }
+
+    public synchronized PreferencesService getPreferencesService() {
+        if (preferencesService.get() == null) {
+            loadConfigurations();
+            var config = endpoints.stream()
+                    .filter(e -> e.name().equals("oni"))
+                    .map(this::adaptEndpointConfigForKiota)
+                    .findFirst();
+            if (config.isPresent()) {
+                var endpoint = config.get();
+                var uri = URI.create(endpoint.url());
+                var client = new OniKiotaClient(uri);
+                // OniKiotaClient implements PreferencesService, wrap it with CachedPreferencesService
+                var service = new CachedPreferencesService(client);
+                preferencesService.set(service);
+                return service;
+            } else {
+                log.atWarn().log("No Oni endpoint found for preferences service");
+                return null;
+            }
+        }
+        return preferencesService.get();
     }
 
 

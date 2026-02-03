@@ -115,7 +115,8 @@ testing {
 
         // Integration test suite (replaces nebula.integtest plugin)
         register<JvmTestSuite>("integrationTest") {
-            useJUnitJupiter("5.10.2")
+            // Tests use JUnit 4
+            useJUnit("4.13.2")
             sources {
                 java {
                     srcDirs("src/integTest/java")
@@ -125,7 +126,13 @@ testing {
                 }
             }
             dependencies {
+                // Include main project and its dependencies
                 implementation(project())
+                // Explicitly add SDK dependencies for integration tests
+                implementation("org.mbari.vars:vampire-squid-java-sdk:0.0.14")
+                implementation("org.mbari.vars:annosaurus-java-sdk:0.0.11")
+                implementation("org.mbari.vars:oni-java-sdk:0.0.6")
+                implementation("org.mbari.vars:raziel-java-sdk:0.0.4")
             }
             targets {
                 all {
@@ -146,12 +153,17 @@ tasks.named<Test>("test") {
     testLogging {
         events("passed")
     }
+
+    // Disable module path for tests - Kiota has split packages that break JPMS
+    modularity.inferModulePath.set(false)
 }
 
 // Configure automatic module names for JARs without Automatic-Module-Name in their manifest
 extraJavaModuleInfo {
     failOnMissingModuleInfo.set(false)
     automaticModule("org.swinglabs.swingx:swingx-all", "swingx.all")
+    // Note: Microsoft Kiota libraries have split packages and cannot be modularized.
+    // They stay on the classpath automatically due to failOnMissingModuleInfo.set(false)
 }
 
 tasks.named<Test>("integrationTest") {
@@ -159,8 +171,20 @@ tasks.named<Test>("integrationTest") {
         events("passed", "skipped", "failed")
         showStandardStreams = true
     }
+
+    // Disable module path for tests - Kiota has split packages that break JPMS
+    modularity.inferModulePath.set(false)
 }
 
+// JVM args for development (classpath mode)
+val devJvmArgs = arrayListOf(
+    "-Djdk.httpclient.HttpClient.log=requests,headers,content",
+    "-XX:+TieredCompilation",
+    "-XX:TieredStopAtLevel=1",
+    "-Xms1g"
+)
+
+// JVM args for jpackaged application (uses merged module)
 val runtimeJvmArgs = arrayListOf(
     "-Djdk.httpclient.HttpClient.log=requests,headers,content",
     "-XX:+TieredCompilation",
@@ -174,23 +198,30 @@ val runtimeJvmArgs = arrayListOf(
 
 application {
     // Define the main class for the application.
-    mainModule.set("org.mbari.vars.annotation")
+    // Note: Don't set mainModule - Kiota has split packages that break JPMS at runtime
+    // The jpackage/jlink build uses mergedModule which handles this properly
     mainClass.set("org.mbari.vars.annotation.App")
     if(platform.equals("mac")) {
-        applicationDefaultJvmArgs = listOf("-Dsun.java2d.metal=true")
+        applicationDefaultJvmArgs = listOf("-Dsun.java2d.metal=true") + devJvmArgs
+    } else {
+        applicationDefaultJvmArgs = devJvmArgs
     }
-    applicationDefaultJvmArgs = runtimeJvmArgs
+}
+
+// Disable module path for run task - Kiota has split packages that break JPMS
+tasks.named<JavaExec>("run") {
+    modularity.inferModulePath.set(false)
 }
 
 tasks.register<JavaExec>("runDebug") {
     description = "Run the application with debug enabled on port 5005"
     group = "application"
     dependsOn(tasks.jar)
-    mainModule.set("org.mbari.vars.annotation")
     mainClass.set("org.mbari.vars.annotation.App")
     classpath = files(tasks.jar) + sourceSets["main"].runtimeClasspath
-    modularity.inferModulePath.set(true)
-    jvmArgs = runtimeJvmArgs + listOf(
+    // Disable module path - Kiota has split packages that break JPMS
+    modularity.inferModulePath.set(false)
+    jvmArgs = devJvmArgs + listOf(
         "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005"
     )
 }

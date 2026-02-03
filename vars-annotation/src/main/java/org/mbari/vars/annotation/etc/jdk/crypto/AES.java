@@ -1,6 +1,6 @@
 package org.mbari.vars.annotation.etc.jdk.crypto;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -20,12 +20,12 @@ public class AES {
 
     private void setKey(String myKey) {
         try {
-            var key0 = myKey.getBytes("UTF-8");
+            var key0 = myKey.getBytes(StandardCharsets.UTF_8);
             var sha = MessageDigest.getInstance("SHA-256");
             var key1 = sha.digest(key0);
             key = Arrays.copyOf(key1, 16);
             secretKey = new SecretKeySpec(key, "AES");
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
