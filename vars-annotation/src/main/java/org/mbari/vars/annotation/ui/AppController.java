@@ -4,6 +4,7 @@ import io.reactivex.rxjava3.core.Observable;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.etc.jdk.Urls;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annotation.services.vampiresquid.CachedMediaService;
@@ -25,14 +26,13 @@ import org.mbari.vars.annotation.etc.jdk.IOUtilities;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.time.Timecode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  * This is the main controller for the App
@@ -47,7 +47,7 @@ public class AppController {
 
     // Should automatically open the correct player. Listens for MediaChangedEvents
     private final MediaPlayers mediaPlayers;
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private final FileChooser fileChooser = new FileChooser();
     // Disabled ZeroMQ for https://github.com/mbari-media-management/vars-annotation/issues/148
 //    private final LocalizationLifecycleController localizationLifecycleController;
@@ -77,20 +77,20 @@ public class AppController {
         EventBus eventBus = toolBox.getEventBus();
         Data data = toolBox.getData();
         Observable<Object> eventObservable = eventBus.toObserverable();
-        eventObservable.subscribe(e -> log.debug("There's an event on the EventBus: " + e.toString()));
+        eventObservable.subscribe(e -> log.log(() -> "There's an event on the EventBus: " + e.toString()));
         eventObservable.ofType(AnnotationsAddedEvent.class)
                 .subscribe(e -> {
                             if (e.get() != null) {
                                 data.getAnnotations().addAll(e.get());
                             }
                         },
-                        er -> log.error("Subscriber failed", er));
+                        er -> log.atError().withCause(er).log("Subscriber failed"));
 
         eventObservable.ofType(AnnotationsRemovedEvent.class)
                 .subscribe(e -> {
                     // Remove from both annotations and selectedAnnotations.
                     // Reset selected to exclude any that were removed.
-                    log.info("Removing {} annotations from internal data cache", e.get().size() );
+                    log.atInfo().log(() -> String.format("Removing %d annotations from internal data cache", e.get().size()) );
                     ArrayList<Annotation> selected = new ArrayList<>(data.getSelectedAnnotations());
                     selected.removeAll(e.get());
                     eventBus.send(new AnnotationsSelectedEvent(selected));
@@ -149,7 +149,7 @@ public class AppController {
 
                             } catch (InterruptedException ex) {
                                 log.atWarn()
-                                        .setCause(ex)
+                                        .withCause(ex)
                                         .log("An error occurred while waiting to reopen " + lastOpenedMedia);
                             }
                         }).start();
@@ -195,7 +195,7 @@ public class AppController {
                     IOUtilities.copy(in, out);
                 }
                 catch (IOException e) {
-                    log.error("Failed to copy " + url + " to " + file);
+                    log.atError().withCause(e).log("Failed to copy " + url + " to " + file);
                 }
             }
         }

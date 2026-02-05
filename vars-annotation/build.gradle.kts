@@ -56,6 +56,28 @@ configurations.all {
     exclude(group = "stax", module = "stax-api")
 }
 
+// Define versions in variables to avoid hardcoding them in multiple places and to make it easier to update them.
+val annosaurusSdkVersion = "0.0.14"
+val caffeineVersion = "3.1.8"
+val configVersion = "1.4.5"
+val controlsFxVersion = "11.2.3"
+val gsonVerion = "2.13.2"
+val ikonliVersion = "12.3.1"
+val imgfxVersion = "0.0.17"
+val jeromqVersion = "0.6.0"
+val logbackVersion = "1.5.27"
+val mbariCommonsVersion = "0.0.7"
+val methanolVersion = "1.9.0"
+val okhttpLoggingInterceptorVersion = "3.14.4"
+val oniSdkVersion = "0.0.9"
+val razielSdkVersion = "0.0.4"
+val slf4jVersion = "2.0.17"
+val swingxVersion = "1.6.5-1"
+val vampireSquidSdkVersion = "0.0.14"
+val vcr4jVersion = "5.3.1"
+
+
+
 dependencies {
 
     // This has to match the okhttp version used in org.mbari.vars.services or
@@ -63,45 +85,49 @@ dependencies {
 //    implementation("com.squareup.okhttp3:okhttp:3.14.9")
 
     // This dependency is used by the application.
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
-    implementation("com.github.mizosoft.methanol:methanol:1.9.0")
-    implementation("com.google.code.gson:gson:2.13.2")
-    implementation("com.squareup.okhttp3:logging-interceptor:3.14.4")
-    implementation("com.typesafe:config:1.4.5")
-    implementation("jakarta.inject:jakarta.inject-api:2.0.1")
-    implementation("org.controlsfx:controlsfx:11.2.3")
+    implementation("ch.qos.logback:logback-classic:${logbackVersion}")
+    implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
+    implementation("com.github.mizosoft.methanol:methanol:$methanolVersion")
+    implementation("com.google.code.gson:gson:$gsonVerion")
+    implementation("com.squareup.okhttp3:logging-interceptor:$okhttpLoggingInterceptorVersion")
+    implementation("com.typesafe:config:$configVersion")
+    implementation("org.controlsfx:controlsfx:$controlsFxVersion")
     // IMPORTANT - ikonli version needs to be the same as the one used in imgfx or the icons won't render.
-    implementation("org.kordamp.ikonli:ikonli-core:12.3.1")
-    implementation("org.kordamp.ikonli:ikonli-javafx:12.3.1")
-    implementation("org.kordamp.ikonli:ikonli-swing:12.3.1")
-    implementation("org.kordamp.ikonli:ikonli-material2-pack:12.3.1")
-    implementation("org.mbari.commons:jcommons:0.0.7")
-    implementation("org.mbari.imgfx:imgfx:0.0.17")
-    implementation("org.mbari.vars:annosaurus-java-sdk:0.0.13")
-    implementation("org.mbari.vars:oni-java-sdk:0.0.9")
-    implementation("org.mbari.vars:raziel-java-sdk:0.0.5")
-    implementation("org.mbari.vars:vampire-squid-java-sdk:0.0.14")
-    implementation("org.mbari.vcr4j:vcr4j-core:5.3.1")
-    implementation("org.mbari.vcr4j:vcr4j-remote:5.3.1")
-    implementation("org.slf4j:slf4j-jdk-platform-logging:2.0.17")
-    implementation("org.swinglabs.swingx:swingx-all:1.6.5-1")
-    implementation("org.zeromq:jeromq:0.6.0")
+    implementation("org.kordamp.ikonli:ikonli-core:$ikonliVersion")
+    implementation("org.kordamp.ikonli:ikonli-javafx:$ikonliVersion")
+    implementation("org.kordamp.ikonli:ikonli-swing:$ikonliVersion")
+    implementation("org.kordamp.ikonli:ikonli-material2-pack:$ikonliVersion")
+    implementation("org.mbari.commons:jcommons:$mbariCommonsVersion")
+    implementation("org.mbari.imgfx:imgfx:$imgfxVersion")
+    implementation("org.mbari.vars:annosaurus-java-sdk:$annosaurusSdkVersion")
+    implementation("org.mbari.vars:oni-java-sdk:$oniSdkVersion")
+    implementation("org.mbari.vars:raziel-java-sdk:$razielSdkVersion")
+    implementation("org.mbari.vars:vampire-squid-java-sdk:$vampireSquidSdkVersion")
+    implementation("org.mbari.vcr4j:vcr4j-core:$vcr4jVersion")
+    implementation("org.mbari.vcr4j:vcr4j-remote:$vcr4jVersion")
+    implementation("org.slf4j:slf4j-jdk-platform-logging:$slf4jVersion")
+    implementation("org.swinglabs.swingx:swingx-all:$swingxVersion")
+    implementation("org.zeromq:jeromq:$jeromqVersion")
 
 
-    implementation("org.controlsfx:controlsfx:11.2.3") {
+    implementation("org.controlsfx:controlsfx:$controlsFxVersion") {
         exclude(group = "org.openjfx", module = "javafx-base")
         exclude(group = "org.openjfx", module = "javafx-controls")
         exclude(group = "org.openjfx", module = "javafx-graphics")
         because("If not excluded we end up with both mac and linux javafx jars which cause jlink to fail")
     }
 
-    implementation("com.github.ben-manes.caffeine:caffeine:3.2.3") {
+    implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion") {
         exclude(group = "org.checkerframework", module = "checker-qual")
     }
 
-    runtimeOnly("ch.qos.logback:logback-classic:1.5.27") {
-        exclude(group = "javax.activation")
-    }
+    // Gradle adds junit-platform-launcher to the test runtime but doesn't
+    // resolve its version from the test suite's useJUnitJupiter() declaration
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.2")
+
+//    implementation("ch.qos.logback:logback-classic:$logbackVersion") {
+//        exclude(group = "javax.activation")
+//    }
 }
 
 
@@ -130,11 +156,14 @@ testing {
                 // Include main project and its dependencies
                 implementation(project())
                 // Explicitly add SDK dependencies for integration tests
-                implementation("com.typesafe:config:1.4.5")
-                implementation("org.mbari.vars:vampire-squid-java-sdk:0.0.14")
-                implementation("org.mbari.vars:annosaurus-java-sdk:0.0.13")
-                implementation("org.mbari.vars:oni-java-sdk:0.0.9")
-                implementation("org.mbari.vars:raziel-java-sdk:0.0.5")
+                implementation("com.typesafe:config:$configVersion")
+                implementation("org.mbari.vars:vampire-squid-java-sdk:$vampireSquidSdkVersion")
+                implementation("org.mbari.vars:annosaurus-java-sdk:$annosaurusSdkVersion")
+                implementation("org.mbari.vars:oni-java-sdk:$oniSdkVersion")
+                implementation("org.mbari.vars:raziel-java-sdk:$razielSdkVersion")
+                implementation("org.junit.platform:junit-platform-launcher:1.10.2")
+                implementation("org.mbari.vcr4j:vcr4j-core:$vcr4jVersion")
+                implementation("org.mbari.vcr4j:vcr4j-remote:$vcr4jVersion")
             }
             targets {
                 all {
@@ -194,7 +223,9 @@ val runtimeJvmArgs = arrayListOf(
     "-Xms1g",
     "--add-opens", "java.base/java.lang.invoke=vars.annotation.merged.module",
     "--add-reads", "vars.annotation.merged.module=org.slf4j",
-    "--add-reads", "vars.annotation.merged.module=com.google.gson"
+    "--add-reads", "vars.annotation.merged.module=com.google.gson",
+    "--add-reads", "vars.annotation.merged.module=java.logging",
+    "--add-reads", "vars.annotation.merged.module=java.desktop"
 )
 
 

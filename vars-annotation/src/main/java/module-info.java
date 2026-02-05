@@ -5,7 +5,6 @@ module org.mbari.vars.annotation {
     requires transitive com.github.benmanes.caffeine;
     requires transitive com.google.gson;
     requires transitive io.reactivex.rxjava3;
-    requires transitive jakarta.inject;
     requires java.desktop;
     requires java.net.http;
     requires java.prefs;

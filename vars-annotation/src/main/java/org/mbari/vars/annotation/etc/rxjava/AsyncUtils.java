@@ -1,8 +1,8 @@
 package org.mbari.vars.annotation.etc.rxjava;
 
 import io.reactivex.rxjava3.core.Observable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
+
 
 import java.time.Duration;
 import java.util.Collection;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public class AsyncUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(AsyncUtils.class);
+    private static final Loggers log = new Loggers(AsyncUtils.class);
 
     public static <T> Optional<T> await(CompletableFuture<T> f, Duration timeout) {
         Optional<T> r;
@@ -28,7 +28,7 @@ public class AsyncUtils {
             r = Optional.ofNullable(f.get(timeout.toMillis(), TimeUnit.MILLISECONDS));
         }
         catch (Exception e) {
-            log.info("An exception was thrown when waiting for a future to complete", e);
+            log.atInfo().withCause(e).log("An exception was thrown when waiting for a future to complete");
             r = Optional.empty();
         }
         return r;

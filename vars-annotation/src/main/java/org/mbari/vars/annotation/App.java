@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.AppController;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
@@ -17,8 +18,6 @@ import org.mbari.vars.annotation.ui.events.ForceRedrawEvent;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.mbari.vars.annotation.util.ActiveAppBeacon;
 import org.mbari.vars.annotation.util.ActiveAppPinger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 import java.io.InputStream;
@@ -39,7 +38,7 @@ public class App extends Application {
             7407, 8169, 9069, 9669, 16569);
     private static final String BEACON_MESSAGE = "VARS Annotation (M3)";
     private static ActiveAppBeacon activeAppBeacon;
-    private static Logger log;
+    private static Loggers log;
     private AppController appController;
     private CommandManager commandManager;
 
@@ -49,10 +48,10 @@ public class App extends Application {
     public static void main(String[] args) throws Exception {
         System.getProperties().setProperty("user.timezone", "UTC");
         setupLogging();
-        log = LoggerFactory.getLogger(App.class);
+        log = new Loggers(App.class);
         //Log uncaught Exceptions
         Thread.setDefaultUncaughtExceptionHandler((thread, ex) -> {
-            log.error("Exception in thread [" + thread.getName() + "]", ex);
+            log.atError().withCause(ex).log("Exception in thread [" + thread.getName() + "]");
         });
         launch(args);
     }
@@ -155,7 +154,7 @@ public class App extends Application {
         var varsLogDir = Paths.get(varsDir.normalize().toString(), "logs");
         var createdDir = Initializer.createDirectory(varsLogDir);
         if (createdDir == null) {
-            log.warn("Failed to create " + varsLogDir);
+            log.atWarn().log("Failed to create " + varsLogDir);
         }
     }
 

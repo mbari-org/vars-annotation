@@ -1,8 +1,5 @@
 package org.mbari.vars.annotation.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -39,9 +36,9 @@ public class ActiveAppPinger {
             socket.close();
         }
         catch (Exception e) {
-            Logger log = LoggerFactory.getLogger(ActiveAppPinger.class);
-            if (log.isDebugEnabled()) {
-                log.debug("Failed to connect to port " + port, e);
+            var log = System.getLogger(ActiveAppPinger.class.getName());
+            if (log.isLoggable(System.Logger.Level.DEBUG)) {
+                log.log(System.Logger.Level.DEBUG, "Failed to connect to port " + port, e);
             }
         }
         return beaconExists;
