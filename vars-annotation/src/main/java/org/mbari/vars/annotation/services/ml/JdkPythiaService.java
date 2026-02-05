@@ -39,7 +39,7 @@ import java.util.UUID;
  *
  * 2024-03-18: This is now working. I switched to a virtual thread when calling it..
  */
-public class JdkMegalodonService implements MachineLearningService {
+public class JdkPythiaService implements MachineLearningService {
 
     // Example: http://prometheus.shore.mbari.org:8082/predictor/
     private final String endpoint;
@@ -47,12 +47,15 @@ public class JdkMegalodonService implements MachineLearningService {
     private final Gson gson = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create();
-    private static final Logger log = LoggerFactory.getLogger(JdkMegalodonService.class);
+    private static final Logger log = LoggerFactory.getLogger(JdkPythiaService.class);
 
-    public JdkMegalodonService(String endpoint) {
+    public JdkPythiaService(String endpoint) {
         this.endpoint = endpoint;
         this.client = Methanol
                 .newBuilder()
+                // HTTP/1.1 is required because uvicorn/starlette does not correctly
+                // handle multipart form data uploads over HTTP/2
+                .version(HttpClient.Version.HTTP_1_1)
                 .connectTimeout(Duration.ofSeconds(30))
                 .followRedirects(HttpClient.Redirect.ALWAYS)
                 .interceptor(new LoggingInterceptor())
@@ -61,18 +64,9 @@ public class JdkMegalodonService implements MachineLearningService {
 
     @Override
     public List<MachineLearningLocalization> predict(Path image) {
-        var mediaType = image.endsWith(".png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_JPEG;
-
         try {
-            var multipartBody = MultipartBodyPublisher.newBuilder()
-                    .textPart("model_type", "image_queue_yolov5", StandardCharsets.UTF_8)
-                    .filePart("file", image, mediaType)
-                    .build();
-            var request = MutableRequest.POST(endpoint, multipartBody)
-                    .header("Accept", "application/json");
-
-            return sendRequest(request);
-
+            var bytes = java.nio.file.Files.readAllBytes(image);
+            return predict(bytes);
         }
         catch (Exception e) {
             log.atWarn()
@@ -86,7 +80,7 @@ public class JdkMegalodonService implements MachineLearningService {
     public List<MachineLearningLocalization> predict(byte[] jpegBytes) {
 
         try {
-            log.atDebug().log("The JPEG image being send for prediction is " + jpegBytes.length + " bytes long");
+            log.atDebug().log("The JPEG image being sent for prediction is " + jpegBytes.length + " bytes long");
 
             var imagePart = MoreBodyPublishers.ofMediaType(
                     HttpRequest.BodyPublishers.ofByteArray(jpegBytes), MediaType.IMAGE_JPEG);
@@ -96,6 +90,7 @@ public class JdkMegalodonService implements MachineLearningService {
                             "file", UUID.randomUUID() + ".jpg", MoreBodyPublishers.ofMediaType(imagePart, MediaType.IMAGE_JPEG))
                     .build();
             var request = MutableRequest.POST(endpoint, multipartBody)
+                    .header("Content-Type", multipartBody.mediaType().toString())
                     .header("Accept", "application/json");
 
             return sendRequest(request);

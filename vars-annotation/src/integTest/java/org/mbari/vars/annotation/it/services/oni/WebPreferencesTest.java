@@ -1,8 +1,8 @@
 package org.mbari.vars.annotation.it.services.oni;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
 
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import org.mbari.vars.annotation.it.services.TestToolbox;
 import org.mbari.vars.annotation.services.oni.WebPreferencesFactory;
 import org.mbari.vars.oni.sdk.r1.PreferencesService;
@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.prefs.Preferences;
+
 
 /**
  * @author Brian Schlining
@@ -29,10 +30,10 @@ public class WebPreferencesTest {
         log.debug("userRoot = " + userRoot.absolutePath());
         userRoot.put("trash", "foo");
         String s0 = userRoot.get("trash", "bar");
-        assertTrue("Returned value was not what we expected", s0.equals("foo"));
+        assertEquals("foo", s0, "Returned value was not what we expected");
         userRoot.put("trash", "bar");
         String s1 = userRoot.get("trash", "bar");
-        assertTrue("Returned value was not what we expected", s1.equals("bar"));
+        assertEquals("bar", s1, "Returned value was not what we expected");
         userRoot.remove("trash");
 
     }

@@ -1,12 +1,13 @@
 package org.mbari.vars.annotation.it.services.panoptes;
 
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+
 
 import static org.mbari.vars.annotation.etc.rxjava.AsyncUtils.await;
 
 
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import org.mbari.vars.annosaurus.sdk.r1.models.ImageUploadResults;
 import org.mbari.vars.annotation.model.ImageData;
 import org.mbari.vars.annotation.services.ImageArchiveService;
@@ -14,9 +15,7 @@ import org.mbari.vars.annotation.it.services.TestToolbox;
 import org.mbari.vars.annotation.it.util.URLUtilities;
 import org.mbari.vcr4j.VideoIndex;
 
-import javax.imageio.ImageIO;
 import java.io.File;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;

@@ -1,8 +1,8 @@
 package org.mbari.vars.annotation.it.services.vampiresquid;
 
-import static org.junit.Assert.*;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
 import org.mbari.vars.annotation.it.services.TestToolbox;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;

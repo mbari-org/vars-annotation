@@ -1,6 +1,6 @@
 package org.mbari.vars.annotation.it.services.oni;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mbari.vars.annotation.it.services.TestToolbox;
 import org.mbari.vars.oni.sdk.r1.ConceptService;
 import org.mbari.vars.oni.sdk.r1.models.Concept;
@@ -10,8 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Brian Schlining

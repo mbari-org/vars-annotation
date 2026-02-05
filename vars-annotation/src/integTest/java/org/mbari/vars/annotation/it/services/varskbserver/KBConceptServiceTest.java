@@ -1,8 +1,8 @@
 package org.mbari.vars.annotation.it.services.varskbserver;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Test;
 import org.mbari.vars.oni.sdk.r1.ConceptService;
 import org.mbari.vars.annotation.it.services.TestToolbox;
 import org.mbari.vars.oni.sdk.r1.models.Concept;

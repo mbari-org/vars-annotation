@@ -12,7 +12,7 @@ import org.mbari.vcr4j.time.Timecode;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AssertUtils {
 

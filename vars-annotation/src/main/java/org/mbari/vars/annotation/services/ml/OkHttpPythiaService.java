@@ -19,21 +19,21 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class OkHttpMegalodonService  implements MachineLearningService {
+public class OkHttpPythiaService implements MachineLearningService {
 
     private final String endpoint;
     private final OkHttpClient client;
     private final MediaType jpegType = MediaType.parse("image/jpg");
-    private static final Logger log = LoggerFactory.getLogger(OkHttpMegalodonService.class);
+    private static final Logger log = LoggerFactory.getLogger(OkHttpPythiaService.class);
     private static final Gson gson = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create();
 
-    public OkHttpMegalodonService(String endpoint) {
+    public OkHttpPythiaService(String endpoint) {
         this(endpoint, Duration.ofSeconds(30));
     }
 
-    public OkHttpMegalodonService(String endpoint, Duration timeout) {
+    public OkHttpPythiaService(String endpoint, Duration timeout) {
         this.endpoint = endpoint;
         client = new OkHttpClient()
                 .newBuilder()

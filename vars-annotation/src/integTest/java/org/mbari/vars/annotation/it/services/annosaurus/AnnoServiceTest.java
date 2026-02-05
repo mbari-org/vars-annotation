@@ -1,6 +1,6 @@
 package org.mbari.vars.annotation.it.services.annosaurus;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mbari.vars.annotation.etc.jdk.Strings;
 import org.mbari.vars.annotation.it.util.AssertUtils;
 import org.mbari.vars.annotation.it.services.TestToolbox;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AnnoServiceTest {
 

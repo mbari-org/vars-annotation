@@ -1,8 +1,8 @@
 package org.mbari.vars.annotation.it.services.vampiresquid;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mbari.vars.annotation.it.util.AssertUtils;
 import org.mbari.vars.annotation.it.services.TestToolbox;
 import org.mbari.vars.annotation.it.util.TestUtils;

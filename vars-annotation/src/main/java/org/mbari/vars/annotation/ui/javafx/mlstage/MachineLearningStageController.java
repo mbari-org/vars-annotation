@@ -5,7 +5,7 @@ import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-import org.mbari.vars.annotation.services.ml.JdkMegalodonService;
+import org.mbari.vars.annotation.services.ml.JdkPythiaService;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.commands.BulkCreateAnnotations;
 import org.mbari.vars.annotation.ui.commands.FramegrabUploadCmd;
@@ -128,7 +128,7 @@ public class MachineLearningStageController {
         var mlRemoteUrlOpt = MLSettingsPaneController.getRemoteUrl();
         Requirements.validate(mlRemoteUrlOpt.isPresent(), "The URL for the machine learning web service was not set");
 //        var mlService = new OkHttpMegalodonService(mlRemoteUrlOpt.get());
-        var mlService = new JdkMegalodonService(mlRemoteUrlOpt.get());
+        var mlService = new JdkPythiaService(mlRemoteUrlOpt.get());
         try {
             log.atDebug().log("[START] ML analysis");
             var mlImageInference = MLAnalysisService.analyzeCurrentElapsedTime(toolBox, mlService);

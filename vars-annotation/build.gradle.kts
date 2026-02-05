@@ -116,8 +116,8 @@ testing {
 
         // Integration test suite (replaces nebula.integtest plugin)
         register<JvmTestSuite>("integrationTest") {
-            // Tests use JUnit 4
-            useJUnit("4.13.2")
+            // Tests use JUnit Jupiter test framework
+            useJUnitJupiter("5.10.2")
             sources {
                 java {
                     srcDirs("src/integTest/java")
@@ -130,6 +130,7 @@ testing {
                 // Include main project and its dependencies
                 implementation(project())
                 // Explicitly add SDK dependencies for integration tests
+                implementation("com.typesafe:config:1.4.5")
                 implementation("org.mbari.vars:vampire-squid-java-sdk:0.0.14")
                 implementation("org.mbari.vars:annosaurus-java-sdk:0.0.13")
                 implementation("org.mbari.vars:oni-java-sdk:0.0.9")
