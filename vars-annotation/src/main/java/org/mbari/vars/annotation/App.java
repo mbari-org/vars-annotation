@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.mbari.vars.annotation.etc.jdk.Loggers;
+import org.mbari.vars.annotation.etc.jdk.logging.Levels;
 import org.mbari.vars.annotation.ui.AppController;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
@@ -24,7 +25,10 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /**
  * This is the main entry point for the vars-annotation application
@@ -139,16 +143,35 @@ public class App extends Application {
         primaryStage.show();
     }
 
+
     private static void setupLogging() {
         // COnfigure JDK logging
+        try (InputStream is = App.class.getResourceAsStream("/logging.properties")) {
+            LogManager.getLogManager().readConfiguration(is);
+        }
+        catch (Exception e){
+            System.err.println("Failed to initialize logging: " +
+                    e.getClass() + " -> " + e.getLocalizedMessage());
+        }
+
+        var logbackLevel = System.getenv("LOGBACK_LEVEL");
+        if (logbackLevel != null) {
+
+            var logLevel = Levels.parseLogLevel(logbackLevel);
+
+            // 2. Access the Root Logger
+            Logger rootLogger = LogManager.getLogManager().getLogger("");
+            rootLogger.setLevel(logLevel);
+
+            // 3. Update all existing handlers (like the default ConsoleHandler)
+            for (Handler handler : rootLogger.getHandlers()) {
+                handler.setLevel(logLevel);
+            }
+
+            System.out.println("Global log level set to: " + rootLogger.getLevel());
+        }
+
         new Loggers(App.class).info("Starting VARS Annotation");
-//        try (InputStream is = App.class.getResourceAsStream("/logging.properties")) {
-//            LogManager.getLogManager().readConfiguration(is);
-//        }
-//        catch (Exception e){
-//            System.err.println("Failed to initialize logging: " +
-//                    e.getClass() + " -> " + e.getLocalizedMessage());
-//        }
 
         // Create directory to write logs to
         var varsDir = Initializer.getSettingsDirectory();

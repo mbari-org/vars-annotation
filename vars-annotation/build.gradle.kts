@@ -84,8 +84,8 @@ dependencies {
     // we get java.lang.NoClassDefFoundError: kotlin/jvm/internal/Intrinsics
 //    implementation("com.squareup.okhttp3:okhttp:3.14.9")
 
-    // This dependency is used by the application.
     implementation("ch.qos.logback:logback-classic:${logbackVersion}")
+    implementation("org.slf4j:slf4j-api:${slf4jVersion}")
     implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
     implementation("com.github.mizosoft.methanol:methanol:$methanolVersion")
     implementation("com.google.code.gson:gson:$gsonVerion")
@@ -105,7 +105,6 @@ dependencies {
     implementation("org.mbari.vars:vampire-squid-java-sdk:$vampireSquidSdkVersion")
     implementation("org.mbari.vcr4j:vcr4j-core:$vcr4jVersion")
     implementation("org.mbari.vcr4j:vcr4j-remote:$vcr4jVersion")
-    implementation("org.slf4j:slf4j-jdk-platform-logging:$slf4jVersion")
     implementation("org.swinglabs.swingx:swingx-all:$swingxVersion")
     implementation("org.zeromq:jeromq:$jeromqVersion")
 
@@ -130,7 +129,11 @@ dependencies {
 //    }
 }
 
-
+//tasks.withType<JavaExec>().configureEach {
+//    // This helps Gradle understand that all dependencies should
+//    // be treated as modules if they have a module-info or Automatic-Module-Name
+//    modularity.inferModulePath = true
+//}
 
 testing {
     suites {
@@ -221,6 +224,7 @@ val runtimeJvmArgs = arrayListOf(
     "-XX:+TieredCompilation",
     "-XX:TieredStopAtLevel=1",
     "-Xms1g",
+    "--enable-native-access=javafx.graphics",
     "--add-opens", "java.base/java.lang.invoke=vars.annotation.merged.module",
     "--add-reads", "vars.annotation.merged.module=org.slf4j",
     "--add-reads", "vars.annotation.merged.module=com.google.gson",
@@ -306,9 +310,6 @@ jlink {
     mergedModule {
         additive = true
 
-        // Add missing platform module requirements
-//        requires("java.logging")
-
         // Add uses clauses for Azure and OpenTelemetry service loaders if needed at runtime
         uses("io.opentelemetry.context.ContextStorageProvider")
         uses("com.azure.core.util.tracing.Tracer")
@@ -317,14 +318,8 @@ jlink {
         uses("com.azure.core.http.policy.AfterRetryPolicyProvider")
         uses("com.azure.core.http.policy.BeforeRetryPolicyProvider")
         uses("org.jdesktop.swingx.plaf.LookAndFeelAddons")
-        // Ikonli icon font handler discovery
-//        uses("org.kordamp.ikonli.IkonHandler")
-//        uses("org.mbari.vars.annotation.ui.mediaplayers.MediaControlsFactory")
     }
 
-//    launcher {
-//        noConsole = true
-//    }
     jpackage {
         val customInstallerOptions = arrayListOf(
             "--app-version", project.version.toString(),

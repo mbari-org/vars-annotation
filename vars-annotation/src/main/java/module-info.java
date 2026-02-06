@@ -1,5 +1,6 @@
 module org.mbari.vars.annotation {
 
+    requires ch.qos.logback.classic;
     requires com.auth0.jwt;
     requires com.fasterxml.jackson.databind; // required by java-jwt
     requires com.github.benmanes.caffeine;
@@ -49,6 +50,9 @@ module org.mbari.vars.annotation {
                     org.mbari.vars.annotation.ui.mediaplayers.macos.bm.MediaControlsFactoryImpl,
                     org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2.MediaControlsFactoryImpl,
                     org.mbari.vars.annotation.ui.mediaplayers.ships.MediaControlsFactoryImpl;
+
+    provides java.lang.System.LoggerFinder
+            with org.mbari.vars.annotation.etc.slf4j.Slf4jLoggerFinder;
 
     opens org.mbari.vars.annotation to javafx.graphics, com.google.gson;
     opens org.mbari.vars.annotation.model to com.google.gson;
