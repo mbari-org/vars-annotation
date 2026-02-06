@@ -5,7 +5,7 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 import io.reactivex.rxjava3.subjects.Subject;
 import org.mbari.vcr4j.util.Preconditions;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,8 +104,8 @@ public class RequestPager<B> {
         private void doError(Throwable e) {
             List<Runnable> rs = executor.shutdownNow();
             int unfinished = rs.size() + queue.size();
-            LoggerFactory.getLogger(getClass())
-                    .error("Page requests failed. " + unfinished +
+            new Loggers(getClass()).atError()
+                    .log("Page requests failed. " + unfinished +
                             " pages were not fetched");
             observable.onError(e);
         }

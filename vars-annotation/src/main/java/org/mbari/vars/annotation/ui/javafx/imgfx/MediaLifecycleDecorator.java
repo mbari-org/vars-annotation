@@ -2,10 +2,10 @@ package org.mbari.vars.annotation.ui.javafx.imgfx;
 
 import javafx.stage.Stage;
 import org.mbari.vars.annosaurus.sdk.r1.models.Image;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.util.URLUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,7 +17,7 @@ public class MediaLifecycleDecorator {
     private final Stage stage;
     private final Comparator<Image> imageComparator =
             Comparator.comparing(a -> URLUtils.filename(a.getUrl()));
-    private static final Logger log = LoggerFactory.getLogger(MediaLifecycleDecorator.class);
+    private static final Loggers log = new Loggers(MediaLifecycleDecorator.class);
 
     public MediaLifecycleDecorator(Stage stage, IFXToolBox toolBox) {
         this.stage = stage;
@@ -59,12 +59,12 @@ public class MediaLifecycleDecorator {
                                 .stream()
                                 .sorted(imageComparator)
                                 .collect(Collectors.toList());
-                        log.debug("Found {} images for media: {}", sortedImages.size(), media.getUri());
+                        log.atDebug().log(() -> String.format("Found %d images for media: %s", sortedImages.size(), media.getUri()));
                         try {
                             toolBox.getData().getImages().setAll(sortedImages);
                         }
                         catch (Exception e) {
-                            log.error("Failed to set images to IFXData object", e);
+                            log.atError().withCause(e).log("Failed to set images to IFXData object");
                         }
                     });
 

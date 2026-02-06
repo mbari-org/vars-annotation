@@ -7,8 +7,7 @@ import org.mbari.vcr4j.VideoIO;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.commands.VideoCommands;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -95,8 +94,8 @@ public class MediaPlayer<S extends VideoState, E extends VideoError> extends org
             getVideoIO().close();
         }
         catch (Exception e) {
-            Logger log = LoggerFactory.getLogger(getClass());
-            log.warn("An exception was thrown while shutting down a MediaPlayer", e);
+            Loggers log = new Loggers(getClass());
+            log.atWarn().withCause(e).log("An exception was thrown while shutting down a MediaPlayer");
         }
     }
 

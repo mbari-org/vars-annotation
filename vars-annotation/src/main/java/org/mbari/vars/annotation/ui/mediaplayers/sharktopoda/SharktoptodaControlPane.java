@@ -12,6 +12,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.javafx.controls.JFXSlider;
 import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
@@ -21,9 +22,6 @@ import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
 import org.mbari.vcr4j.commands.RemoteCommands;
-//import org.mbari.vcr4j.sharktopoda.SharktopodaVideoIO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -38,7 +36,7 @@ import java.util.Optional;
  * @since 2017-08-14T16:48:00
  */
 public class SharktoptodaControlPane extends Pane {
-    private static final Logger log = LoggerFactory.getLogger(SharktoptodaControlPane.class);
+    private static final Loggers log = new Loggers(SharktoptodaControlPane.class);
 
     private final UIToolBox toolBox;
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS'Z'")

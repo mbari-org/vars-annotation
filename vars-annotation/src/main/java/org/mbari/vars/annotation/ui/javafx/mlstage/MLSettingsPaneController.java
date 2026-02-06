@@ -4,11 +4,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.mediaplayers.SettingsPane;
 import org.mbari.vars.annotation.ui.util.FXMLUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,7 +27,7 @@ public class MLSettingsPaneController implements SettingsPane {
     private TextField urlTextField;
 
     private String name;
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private Preferences prefs = Preferences.userNodeForPackage(getClass());
     public static final String REMOTE_URL="ml-remote-url";
 
@@ -50,7 +49,7 @@ public class MLSettingsPaneController implements SettingsPane {
             prefs.put(REMOTE_URL, url.toExternalForm());
         }
         catch (MalformedURLException e) {
-            log.atWarn().setCause(e).log("Failed to save ML endpoint setting to preferences");
+            log.atWarn().withCause(e).log("Failed to save ML endpoint setting to preferences");
         }
     }
 

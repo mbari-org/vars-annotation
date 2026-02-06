@@ -7,8 +7,7 @@ import com.google.gson.GsonBuilder;
 import org.mbari.vars.annotation.services.MachineLearningService;
 import org.mbari.vars.annotation.etc.methanol.LoggingInterceptor;
 import org.mbari.vars.annotation.model.MachineLearningLocalization;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 
 import java.io.IOException;
@@ -47,7 +46,7 @@ public class JdkPythiaService implements MachineLearningService {
     private final Gson gson = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create();
-    private static final Logger log = LoggerFactory.getLogger(JdkPythiaService.class);
+    private static final Loggers log = new Loggers(JdkPythiaService.class);
 
     public JdkPythiaService(String endpoint) {
         this.endpoint = endpoint;
@@ -70,7 +69,7 @@ public class JdkPythiaService implements MachineLearningService {
         }
         catch (Exception e) {
             log.atWarn()
-                    .setCause(e)
+                    .withCause(e)
                     .log("Failed to run prediction on " + image );
         }
         return null;
@@ -97,7 +96,7 @@ public class JdkPythiaService implements MachineLearningService {
         }
         catch (Exception e) {
             log.atWarn()
-                    .setCause(e)
+                    .withCause(e)
                     .log("Failed to run prediction on image");
         }
         return null;

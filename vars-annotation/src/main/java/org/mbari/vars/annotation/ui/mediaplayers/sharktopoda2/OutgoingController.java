@@ -8,14 +8,13 @@ import org.mbari.vars.annotation.ui.events.*;
 import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda.Constants;
 import org.mbari.vcr4j.remote.control.RVideoIO;
 import org.mbari.vcr4j.remote.control.commands.localization.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.util.*;
 
 public class OutgoingController {
 
-    private static final Logger log = LoggerFactory.getLogger(OutgoingController.class);
+    private static final Loggers log = new Loggers(OutgoingController.class);
 
     private final UIToolBox toolBox;
     private final RVideoIO io;

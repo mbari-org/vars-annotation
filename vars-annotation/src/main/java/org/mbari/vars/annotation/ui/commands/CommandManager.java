@@ -7,8 +7,7 @@ import org.mbari.vars.annotation.ui.messages.ClearCommandManagerMsg;
 import org.mbari.vars.annotation.ui.messages.RedoMsg;
 import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.annotation.ui.messages.UndoMsg;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.util.Deque;
 import java.util.concurrent.BlockingQueue;
@@ -32,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class CommandManager {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private final int maxUndos = 25;
     private final BlockingQueue<CommandEvent> pendingQueue = new LinkedBlockingQueue<>();
     private final Deque<CommandEvent> undos = new LinkedBlockingDeque<>(maxUndos);
@@ -51,7 +50,7 @@ public class CommandManager {
             if (commandEvent != null) {
                 Command command = commandEvent.getCommand();
                 try {
-                    log.debug("Executing Command: " + commandEvent.getState() + " - " +
+                    log.atDebug().log("Executing Command: " + commandEvent.getState() + " - " +
                             command.getDescription());
 
                     // Execute the command (can be DO or UNDO operation)

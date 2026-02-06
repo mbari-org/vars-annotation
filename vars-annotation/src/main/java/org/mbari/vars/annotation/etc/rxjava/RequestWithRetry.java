@@ -1,8 +1,7 @@
 package org.mbari.vars.annotation.etc.rxjava;
 
 import io.reactivex.rxjava3.core.Observable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.util.function.Supplier;
 
@@ -15,6 +14,7 @@ import java.util.function.Supplier;
  */
 public class RequestWithRetry<T> implements Supplier<Observable<T>> {
 
+    private final Loggers log = new Loggers(getClass());
     private final Supplier<T> supplier;
     private final int retries;
 
@@ -52,18 +52,17 @@ public class RequestWithRetry<T> implements Supplier<Observable<T>> {
             }
             return v;
         } catch (Exception e) {
-            Logger log = LoggerFactory.getLogger(getClass());
             if (remainingRetries == 0) {
                 int attempts = retries + 1;
                 String msg = "Execution failed after " + attempts + " attempts. Terminating Request";
-                log.warn(msg, e);
+                log.atWarn().withCause(e).log(msg);
                 throw new RuntimeException(msg, e);
             }
             else {
                 int attempts = retries - remainingRetries + 1;
                 int allowedAttempts = retries + 1;
-                log.warn("Execution failed. Retrying (" + attempts +
-                        " of " + allowedAttempts + ")", e);
+                log.atWarn().withCause(e).log("Execution failed. Retrying (" + attempts +
+                        " of " + allowedAttempts + ")");
                 return execute(remainingRetries - 1);
             }
         }

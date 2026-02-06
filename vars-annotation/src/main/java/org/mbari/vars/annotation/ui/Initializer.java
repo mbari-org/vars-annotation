@@ -7,8 +7,7 @@ import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annotation.services.Services;
 import org.mbari.vars.annotation.services.VarsServiceFactory;
 import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda.SharktopodaSettingsPaneController;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,7 +25,7 @@ import java.util.concurrent.*;
  */
 public class Initializer {
 
-    private static final Logger log = LoggerFactory.getLogger(Initializer.class);
+    private static final Loggers log = new Loggers(Initializer.class);
     private static final byte[] lock = {0};
 
     private static Path settingsDirectory;
@@ -77,7 +76,7 @@ public class Initializer {
 
                 Data data = new Data();
                 Integer timeJump = SharktopodaSettingsPaneController.getTimeJump();
-                log.info("Setting Time Jump to {} millis", timeJump);
+                log.atInfo().log("Setting Time Jump to " + timeJump + " millis");
                 data.setTimeJump(timeJump);
 
                 toolBox = new UIToolBox(data,
@@ -109,7 +108,7 @@ public class Initializer {
             Path path = Paths.get(home, ".vars");
             settingsDirectory = createDirectory(path);
             if (settingsDirectory == null) {
-                log.warn("Failed to create settings directory at " + path);
+                log.atWarn().log("Failed to create settings directory at " + path);
             }
         }
         return settingsDirectory;
@@ -122,7 +121,7 @@ public class Initializer {
                 Path path = Paths.get(settingsDir.toString(), "images");
                 imageDirectory = createDirectory(path);
                 if (imageDirectory == null) {
-                    log.warn("Failed to create image directory at " + path);
+                    log.atWarn().log("Failed to create image directory at " + path);
                 }
             }
 
@@ -141,7 +140,7 @@ public class Initializer {
             }
             catch (IOException e) {
                 String msg = "Unable to create a directory at " + path + ".";
-                LoggerFactory.getLogger(Initializer.class).error(msg, e);
+                log.atError().withCause(e).log(msg);
                 createdPath = null;
             }
         }

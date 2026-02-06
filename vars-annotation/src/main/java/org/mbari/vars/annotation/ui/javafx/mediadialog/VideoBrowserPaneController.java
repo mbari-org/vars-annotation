@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.UIToolBox;
@@ -14,8 +15,6 @@ import org.mbari.vars.annotation.ui.javafx.shared.DateTimePickerController;
 import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.annotation.ui.util.FXMLUtils;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,8 +28,6 @@ import java.util.stream.Collectors;
 public class VideoBrowserPaneController {
 
     private final BorderPane root;
-    //    private final AnnotationService annotationService;
-//    private final MediaService mediaService;
     private final UIToolBox toolBox;
     private DateTimePickerController fromDateController;
     private DateTimePickerController toDateController;
@@ -45,7 +42,7 @@ public class VideoBrowserPaneController {
     private Label toLabel = new Label();
     private final ResourceBundle uiBundle;
     private MediaPaneController mediaPaneController;
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
 
     // New fields for filtering
     private TextField sequenceFilterTextField;

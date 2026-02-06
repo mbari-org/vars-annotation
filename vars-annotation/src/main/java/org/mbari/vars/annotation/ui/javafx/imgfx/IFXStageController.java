@@ -11,21 +11,20 @@ import org.mbari.imgfx.roi.Data;
 import org.mbari.imgfx.roi.DataView;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.vars.annosaurus.sdk.r1.models.Image;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.util.URLUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.util.*;
 import java.util.prefs.Preferences;
-import java.util.stream.Collectors;
 
 public class IFXStageController {
 
     private static final String PREF_KEY_WIDTH = "stage-width";
     private static final String PREF_KEY_HEIGHT = "stage-height";
     private static final int MIN_DIMENSION = 400;
-    private static final Logger log = LoggerFactory.getLogger(IFXStageController.class);
+    private static final Loggers log = new Loggers(IFXStageController.class);
 
     private Stage stage;
 
@@ -57,7 +56,7 @@ public class IFXStageController {
         // For Debug
         toolBox.getEventBus()
                 .toObserverable()
-                .subscribe(event -> log.debug("IFX Event: " + event));
+                .subscribe(event -> log.atDebug().log("IFX Event: " + event));
 
         // For Debug
         toolBox.getUIToolBox()
@@ -70,7 +69,7 @@ public class IFXStageController {
                         .getLocalizations()
                         .getLocalizations();
         localizations.addListener((ListChangeListener<? super Localization<? extends DataView<? extends Data,? extends Node>,? extends Node>>) c -> {
-                                    log.debug("Localizations were changed. Size = {}", localizations.size());
+                                    log.debug("Localizations were changed. Size = " + localizations.size());
                                 });
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::save));

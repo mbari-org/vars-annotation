@@ -27,8 +27,7 @@ import org.mbari.vars.annotation.ui.services.CachedReferenceNumberDecorator;
 import org.mbari.vars.annotation.ui.services.ConcurrentAnnotationDecorator;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoIndex;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -53,7 +52,7 @@ public class AnnotationServiceDecorator {
         SEQUENTIAL
     }
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private final UIToolBox toolBox;
     private final int chunkSize;
     private final Duration chunkTimeout;
@@ -85,7 +84,7 @@ public class AnnotationServiceDecorator {
             }
         }
         catch (Exception e) {
-            log.warn("Failed to read 'annotation.service.paging' from config file.", e);
+            log.atWarn().withCause(e).log("Failed to read 'annotation.service.paging' from config file.");
             pagingStyle = PagingStyle.SEQUENTIAL;
         }
     }
@@ -131,7 +130,7 @@ public class AnnotationServiceDecorator {
 
             String msg = String.join(" ",
                     List.of(content1, videoReferenceUuid.toString(), content2));
-            log.error(msg, ex);
+            log.atError().withCause(ex).log(msg);
 
             Exception e = ex instanceof Exception ? (Exception) ex : new RuntimeException(msg, ex);
             eventBus.send(new ShowNonfatalErrorAlert(title, header, msg, e));
@@ -156,7 +155,7 @@ public class AnnotationServiceDecorator {
                 return service.findAnnotations(ac.getVideoReferenceUuid(), page.getLimit(), page.getOffset(), false)
                         .get(chunkTimeout.toMillis(), TimeUnit.MILLISECONDS);
             } catch (Exception e) {
-                log.info("A page request failed.", e);
+                log.atInfo().withCause(e).log("A page request failed.");
                 throw new RuntimeException(e);
             }
         };
@@ -178,7 +177,7 @@ public class AnnotationServiceDecorator {
                             loadedAnnotationCount),
                             future::completeExceptionally,
                             () -> {
-                                log.info("Loaded annotations for " + ac.getVideoReferenceUuid());
+                                log.atInfo().log(() -> "Loaded annotations for " + ac.getVideoReferenceUuid());
                                 future.complete(null);
                             });
             runner.run();
@@ -377,7 +376,7 @@ public class AnnotationServiceDecorator {
                 .map(ac -> "Found concurrent Video Reference " +
                         ac.getVideoReferenceUuid() + " with " + ac.getCount() + " annotations")
                 .collect(Collectors.joining("\n"));
-        log.debug(debugMsg);
+        log.atDebug().log(debugMsg);
 
 
         int totalCount = annotationCounts.stream()

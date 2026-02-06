@@ -1,5 +1,6 @@
 package org.mbari.vars.annotation.ui.mediaplayers.macos.avf;
 
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.annotation.model.Framegrab;
@@ -7,8 +8,7 @@ import org.mbari.vars.annotation.model.Framegrab;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.awt.*;
 import java.io.File;
@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class AVFImageCaptureService implements SelectableImageCaptureService {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
 //    private AVFImageCapture imageCapture;
     public static AVFImageCaptureService imageCaptureService;
     private String currentDevice = "";
@@ -57,7 +57,7 @@ public class AVFImageCaptureService implements SelectableImageCaptureService {
 //                imageCapture.stopSession();
             }
             catch (UnsatisfiedLinkError | Exception e) {
-                log.error("An error occurred while stopping the AVFoundation image capture", e);
+                log.atError().withCause(e).log("An error occurred while stopping the AVFoundation image capture");
             }
         }
         capturing = false;
@@ -92,13 +92,13 @@ public class AVFImageCaptureService implements SelectableImageCaptureService {
                             .get(3000, TimeUnit.MILLISECONDS);
                 }
                 catch (Exception e) {
-                    log.warn("Problem with requesting videoIndex while capturing a framegrab", e);
+                    log.atWarn().withCause(e).log("Problem with requesting videoIndex while capturing a framegrab");
                     framegrab.setVideoIndex(new VideoIndex(Instant.now()));
                 }
             }
 
             // If, for some reason, getting the video index fails. Fall back to a timestamp
-            if (!framegrab.getVideoIndex().isPresent()) {
+            if (framegrab.getVideoIndex().isEmpty()) {
                 log.warn("Failed to get video index. Using current timestamp for video index");
                 framegrab.setVideoIndex(new VideoIndex(Instant.now()));
             }
@@ -118,7 +118,7 @@ public class AVFImageCaptureService implements SelectableImageCaptureService {
             stop();
         }
         catch (UnsatisfiedLinkError | Exception e) {
-            log.error("An error occurred while stopping the AVFoundation image capture", e);
+            log.atError().withCause(e).log("An error occurred while stopping the AVFoundation image capture");
         }
     }
 

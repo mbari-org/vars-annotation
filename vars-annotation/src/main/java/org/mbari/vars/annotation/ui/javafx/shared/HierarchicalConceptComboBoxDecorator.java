@@ -4,12 +4,9 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
-import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.UIToolBox;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,7 +17,7 @@ public class HierarchicalConceptComboBoxDecorator {
 
     private final ComboBox<String> comboBox;
     private final UIToolBox toolBox;
-    private static final Logger log = LoggerFactory.getLogger(HierarchicalConceptComboBoxDecorator.class);
+    private static final Loggers log = new Loggers(HierarchicalConceptComboBoxDecorator.class);
 
     public HierarchicalConceptComboBoxDecorator(ComboBox<String> comboBox, UIToolBox toolBox) {
         this.comboBox = comboBox;
@@ -44,7 +41,7 @@ public class HierarchicalConceptComboBoxDecorator {
                             // Build list of concepts to display
                             ObservableList<String> items = FXCollections.observableArrayList();
                             if (ex != null) {
-                                log.warn("Failed to look up " + concept, ex);
+                                log.atWarn().withCause(ex).log("Failed to look up " + concept);
                                 items.add(concept);
                             } else {
                                 List<String> names = opt.isPresent() ? opt.get().flatten() : List.of(concept);

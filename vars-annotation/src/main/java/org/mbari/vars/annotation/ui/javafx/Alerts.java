@@ -6,10 +6,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.messages.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -31,14 +30,14 @@ import java.io.StringWriter;
 public class Alerts {
 
     private final UIToolBox toolBox;
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
 
     public Alerts(UIToolBox toolBox) {
         this.toolBox = toolBox;
     }
 
     public void showAlert(ShowAlert msg) {
-        log.debug("Showing alert: '" + msg.getHeaderText() + "' -> " + msg.getContentText());
+        log.atDebug().log(() -> "Showing alert: '" + msg.getHeaderText() + "' -> " + msg.getContentText());
         if (msg instanceof ShowFatalErrorAlert) {
             showFatalErrorAlert((ShowFatalErrorAlert) msg);
         }
@@ -55,7 +54,7 @@ public class Alerts {
     }
 
     private void showExceptionAlert(ShowExceptionAlert msg) {
-        log.atWarn().setCause(msg.getException()).log("Showing an exception alert to the user");
+        log.atWarn().withCause(msg.getException()).log("Showing an exception alert to the user");
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             buildExeptionAlert(msg, alert);
@@ -63,7 +62,7 @@ public class Alerts {
     }
 
     private void showFatalErrorAlert(ShowFatalErrorAlert msg) {
-        log.atWarn().setCause(msg.getException()).log("Showing a fatal alert to the user");
+        log.atWarn().withCause(msg.getException()).log("Showing a fatal alert to the user");
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             buildExeptionAlert(msg, alert);

@@ -141,13 +141,14 @@ public class App extends Application {
 
     private static void setupLogging() {
         // COnfigure JDK logging
-        try (InputStream is = App.class.getResourceAsStream("/logging.properties")) {
-            LogManager.getLogManager().readConfiguration(is);
-        }
-        catch (Exception e){
-            System.err.println("Failed to initialize logging: " +
-                    e.getClass() + " -> " + e.getLocalizedMessage());
-        }
+        new Loggers(App.class).info("Starting VARS Annotation");
+//        try (InputStream is = App.class.getResourceAsStream("/logging.properties")) {
+//            LogManager.getLogManager().readConfiguration(is);
+//        }
+//        catch (Exception e){
+//            System.err.println("Failed to initialize logging: " +
+//                    e.getClass() + " -> " + e.getLocalizedMessage());
+//        }
 
         // Create directory to write logs to
         var varsDir = Initializer.getSettingsDirectory();

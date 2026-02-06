@@ -47,8 +47,7 @@ import org.mbari.vars.annotation.ui.javafx.userdialog.CreateUserDialog;
 import org.mbari.vars.annotation.ui.swing.annotable.Colors;
 import org.mbari.vars.annotation.ui.swing.annotable.JXAnnotationTableController;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
@@ -102,7 +101,7 @@ public class AppPaneController {
     private static final String concurrentStatusKey = "concurrent-status-key";
     private static final String jsonStatusKey = "json-association-key";
     private static final String currentGroupKey = "current-group-key";
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
 
 
     public AppPaneController(UIToolBox toolBox) {
@@ -638,7 +637,7 @@ public class AppPaneController {
                 groupCombobox.getSelectionModel().select(defaultGroup);
             }
             catch (Exception e) {
-                log.info("Default group is not defined in configuration files. (app.defaults.group)");
+                log.atInfo().log("Default group is not defined in configuration files. (app.defaults.group)");
             }
 
             // --- Configure activity controls
@@ -669,7 +668,7 @@ public class AppPaneController {
                 activityCombobox.getSelectionModel().select(defaultActivity);
             }
             catch (Exception e) {
-                log.info("Default activity is not defined in configuration files. (app.defaults.activity)");
+                log.atInfo().log("Default activity is not defined in configuration files. (app.defaults.activity)");
             }
 
             // --- Configure concurrent controls

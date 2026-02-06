@@ -15,8 +15,7 @@ import org.mbari.vars.annotation.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.annotation.ui.events.AnnotationsRemovedEvent;
 import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.annotation.ui.messages.SeekMsg;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ public class JXAnnotationTableController {
     private final UIToolBox toolBox;
     private final AnnotationTableModel tableModel;
     private JXTable table;
-    private static final Logger log = LoggerFactory.getLogger(JXAnnotationTableController.class);
+    private static final Loggers log = new Loggers(JXAnnotationTableController.class);
 
     private record ModelAndViewIdx(int model, int view) {}
 

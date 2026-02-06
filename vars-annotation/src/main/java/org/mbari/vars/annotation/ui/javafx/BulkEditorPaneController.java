@@ -46,9 +46,8 @@ import org.mbari.vars.annotation.ui.javafx.shared.DetailsDialog;
 import org.mbari.vars.annotation.ui.javafx.shared.FilteredComboBoxDecorator;
 import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.annotation.ui.messages.ShowExceptionAlert;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -56,7 +55,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BulkEditorPaneController {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
 
     private ObservableList<Annotation> annotations = FXCollections.emptyObservableList();
     private ObservableList<Annotation> selectedAnnotations = FXCollections.emptyObservableList();
@@ -415,7 +414,7 @@ public class BulkEditorPaneController {
         boolean searchDetails = associationCheckBox.isSelected();
         String concept = conceptCombobox.getSelectionModel().getSelectedItem();
         Association association = associationCombobox.getSelectionModel().getSelectedItem();
-        log.info("Selected concept = " + concept + "\nSelected Association = " + association);
+        log.atInfo().log(() -> "Selected concept = " + concept + "\nSelected Association = " + association);
         Predicate<Annotation> nullPredicate = a -> false;
         Predicate<Annotation> conceptPredicate = a -> a.getConcept().equals(concept);
         Predicate<Annotation> associationPredicate = a -> a.getAssociations()
@@ -578,7 +577,7 @@ public class BulkEditorPaneController {
                                                     .getSearchTextField()
                                                     .requestFocus()));
                         } catch (Exception e) {
-                            log.error("WTF?", e);
+                            log.atError().withCause(e).log("WTF?");
                         }
 
 

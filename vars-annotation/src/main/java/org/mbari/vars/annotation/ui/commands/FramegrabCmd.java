@@ -22,8 +22,7 @@ import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.io.File;
 
@@ -40,7 +39,7 @@ public class FramegrabCmd implements Command {
     private volatile Annotation annotationRef;
     private volatile Image pngImageRef;
     private volatile Image jpgImageRef;
-    private static final Logger log = LoggerFactory.getLogger(FramegrabCmd.class);
+    private static final Loggers log = new Loggers(FramegrabCmd.class);
 
     private class CreatedData {
         final Annotation annotation;
@@ -160,7 +159,7 @@ public class FramegrabCmd implements Command {
         else {
 
             ImageData imageData = imageDataOpt.get();
-            log.info("Captured image at {}", imageData.getVideoIndex().getTimestamp().orElse(null));
+            log.atInfo().log(() -> "Captured image at " + imageData.getVideoIndex().getTimestamp().orElse(null));
 
             ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
             // -- 1. Upload image to server and register in annotation service

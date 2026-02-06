@@ -9,14 +9,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.services.raziel.Raziel;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.mediaplayers.SettingsPane;
 import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.annotation.ui.util.FXMLUtils;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -56,7 +55,7 @@ public class RazielSettingsPaneController implements SettingsPane {
     private Label msgLabel;
 
     private String name;
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
 
     @FXML
     void initialize() {
@@ -92,7 +91,7 @@ public class RazielSettingsPaneController implements SettingsPane {
             }
         }
         catch (Exception e) {
-            log.atDebug().setCause(e).log(() -> "Failed to parse connection params from the UI fields");
+            log.atDebug().withCause(e).log(() -> "Failed to parse connection params from the UI fields");
             // Do nothing
         }
         return Optional.empty();
@@ -120,7 +119,7 @@ public class RazielSettingsPaneController implements SettingsPane {
                                 var s = resources.getString("raziel.pane.msg.authfailed");
                                 Platform.runLater(() -> msgLabel.setText(s));
                                 log.atDebug()
-                                        .setCause(ex)
+                                        .withCause(ex)
                                         .log("An exception occurred while running text against Raziel at" + rcp.url());
                             }
                             else {
@@ -171,7 +170,7 @@ public class RazielSettingsPaneController implements SettingsPane {
             } catch (IOException e) {
                 Platform.runLater(() -> msgLabel.setText("Failed to save connection params"));
                 log.atWarn()
-                        .setCause(e)
+                        .withCause(e)
                         .log("Failed to save raziel connection parameters");
             }
         });

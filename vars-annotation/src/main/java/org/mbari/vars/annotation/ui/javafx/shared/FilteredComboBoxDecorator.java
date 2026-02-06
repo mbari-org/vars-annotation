@@ -11,9 +11,9 @@ import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Window;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.etc.jdk.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.util.function.Predicate;
 
@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 public class FilteredComboBoxDecorator<T>  {
 
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private static final String EMPTY = "";
     private StringProperty filter = new SimpleStringProperty(EMPTY);
     private AutoCompleteComparator<T> comparator;
@@ -116,7 +116,7 @@ public class FilteredComboBoxDecorator<T>  {
         KeyCode code = keyEvent.getCode();
         if (!keyEvent.isMetaDown()) {
             String filterValue = filter.get();
-            log.debug("Handling KeyCode = " + code);
+            log.atDebug().log("Handling KeyCode = " + code);
             if (code.isLetterKey() || code.isDigitKey() || code == KeyCode.MINUS) {
                 filterValue += keyEvent.getText();
             } else if ((code == KeyCode.BACK_SPACE) && (filterValue.length() > 0)) {

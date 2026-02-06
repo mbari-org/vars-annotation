@@ -15,8 +15,7 @@ import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
 import org.mbari.vars.annotation.etc.rxjava.RequestPager;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -37,7 +36,7 @@ import java.util.stream.Collectors;
  */
 public class ConcurrentAnnotationDecorator {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private final UIToolBox toolBox;
     private final int pageSize;
     private final Duration pageTimeout;
@@ -54,7 +53,7 @@ public class ConcurrentAnnotationDecorator {
     }
 
     private CompletableFuture<Optional<ConcurrentRequestCount>> countConcurrentAnnotations(Media media) {
-        log.debug("Counting concurrent annotations related to {}", media.getUri());
+        log.atDebug().log(() -> "Counting concurrent annotations related to " + media.getUri());
         if (media.getStartTimestamp() != null && media.getDuration() != null) {
             final UUID uuid = media.getVideoReferenceUuid();
             final Instant start = media.getStartTimestamp();
@@ -82,8 +81,8 @@ public class ConcurrentAnnotationDecorator {
                     });
         }
         else {
-            log.warn("Media '{}' does not have both startTimestamp and Duration " +
-                    "needed to calculate limits for loading concurrent annotations", media.getUri());
+            log.atWarn().log("Media '" + media.getUri() + "' does not have both startTimestamp and Duration " +
+                    "needed to calculate limits for loading concurrent annotations");
             return CompletableFuture.completedFuture(Optional.empty());
         }
     }
@@ -98,11 +97,11 @@ public class ConcurrentAnnotationDecorator {
                     }
                     else {
                         if (opt.isPresent()) {
-                            log.debug("Loading concurrent annotations related to {}", media.getUri());
+                            log.atDebug().log(() -> "Loading concurrent annotations related to " + media.getUri());
                             loadAnnotations(media, opt.get());
                         }
                         else {
-                            log.warn("Did not get a concurrent request count for {}", media.getUri());
+                            log.atWarn().log("Did not get a concurrent request count for " + media.getUri());
                         }
                     }
                     return null;
@@ -126,12 +125,12 @@ public class ConcurrentAnnotationDecorator {
     }
 
     private void doError(Media media, Throwable e) {
-        log.error("An error occurred while loading concurrent media for " + media.getUri(), e);
+        log.atError().withCause(e).log("An error occurred while loading concurrent media for " + media.getUri());
         showFindAnnotationsError(media.getVideoReferenceUuid(), e);
     }
 
     private void doComplete(Media media, AtomicInteger loadedCount) {
-        log.info("Loaded {} concurrent annotations for {}", loadedCount.get(), media.getUri());
+        log.atInfo().log("Loaded " + loadedCount.get() + " concurrent annotations for " + media.getUri());
     }
 
     public RequestPager.Runner<List<Annotation>> buildRequestRunner(ConcurrentRequestCount count) {
@@ -144,8 +143,8 @@ public class ConcurrentAnnotationDecorator {
                             page.getLimit(), page.getOffset())
                         .get(pageTimeout.toMillis(), TimeUnit.MILLISECONDS);
             } catch (Exception e) {
-                log.info("A page request for conccurent annotations from " + page.getOffset() + " to " +
-                        page.getLimit() + page.getOffset() + " failed.", e);
+                log.atInfo().withCause(e).log("A page request for conccurent annotations from " + page.getOffset() + " to " +
+                        page.getLimit() + page.getOffset() + " failed.");
                 throw new RuntimeException(e);
             }
         };
@@ -178,7 +177,7 @@ public class ConcurrentAnnotationDecorator {
 
             String msg = String.join(" ",
                     List.of(content1, videoReferenceUuid.toString(), content2));
-            log.error(msg, ex);
+            log.atError().withCause(ex).log(msg);
 
             Exception e = ex instanceof Exception ? (Exception) ex : new RuntimeException(msg, ex);
             eventBus.send(new ShowNonfatalErrorAlert(title, header, msg, e));

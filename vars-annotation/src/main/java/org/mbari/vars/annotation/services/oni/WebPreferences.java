@@ -2,8 +2,7 @@ package org.mbari.vars.annotation.services.oni;
 
 import org.mbari.vars.oni.sdk.r1.models.PreferenceNode;
 import org.mbari.vars.oni.sdk.r1.PreferencesService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.time.Duration;
 import java.util.List;
@@ -23,7 +22,7 @@ import java.util.stream.Stream;
 public class WebPreferences extends AbstractPreferences {
 
     private final PreferencesService service;
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private final Duration timeout;
 
 
@@ -48,7 +47,7 @@ public class WebPreferences extends AbstractPreferences {
 
     @Override
     protected void putSpi(String key, String value) {
-        log.debug("putSpi({}, {})", key, value);
+        log.atDebug().log(() -> "putSpi(" + key + ", " + value + ")");
         // We have to sync all the async methods!! Use nodeFuture to sync
         CompletableFuture<PreferenceNode> nodeFuture = new CompletableFuture<>();
         service.findByNameAndKey(absolutePath(), key)
@@ -80,26 +79,26 @@ public class WebPreferences extends AbstractPreferences {
             nodeFuture.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
         }
         catch (Exception e) {
-            log.warn("Failed to call putSpi(" + key + ", " + value + ")", e);
+            log.atWarn().withCause(e).log("Failed to call putSpi(" + key + ", " + value + ")");
         }
     }
 
     @Override
     protected String getSpi(String key) {
-        log.debug("getSpi({})", key);
+        log.atDebug().log(() -> "getSpi(" + key + ")");
         try {
             Optional<PreferenceNode> opt = service.findByNameAndKey(absolutePath(), key)
                     .get(timeout.toMillis(), TimeUnit.MILLISECONDS);
             return opt.map(PreferenceNode::getValue).orElse(null);
         } catch (Exception e) {
-            log.warn("Failed to call getSpi(" + key + ")", e);
+            log.atWarn().withCause(e).log("Failed to call getSpi(" + key + ")");
             return null;
         }
     }
 
     @Override
     protected void removeSpi(String key) {
-        log.debug("removeSpi({})", key);
+        log.atDebug().log(() -> "removeSpi(" + key + ")");
         CompletableFuture<Void> doneFuture = new CompletableFuture<>();
         service.findByNameAndKey(absolutePath(), key)
                 .thenAccept(opt -> {
@@ -116,13 +115,13 @@ public class WebPreferences extends AbstractPreferences {
             doneFuture.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
         }
         catch (Exception e) {
-            log.warn("Failed to call removeSpi(" + key + ")", e);
+            log.atWarn().withCause(e).log("Failed to call removeSpi(" + key + ")");
         }
     }
 
     @Override
     protected void removeNodeSpi() throws BackingStoreException {
-        log.debug("removeNodeSpi()");
+        log.atDebug().log("removeNodeSpi()");
         // We need to make this sync. Use doneFuture to sync
         CompletableFuture<Void> doneFuture = new CompletableFuture<>();
         service.findByNameLike(absolutePath())
@@ -139,13 +138,13 @@ public class WebPreferences extends AbstractPreferences {
             doneFuture.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
         }
         catch (Exception e) {
-            log.warn("Failed to call removeNodeSpi()", e);
+            log.atWarn().withCause(e).log("Failed to call removeNodeSpi()");
         }
     }
 
     @Override
     protected String[] keysSpi() throws BackingStoreException {
-        log.debug("keysSpi()");
+        log.atDebug().log("keysSpi()");
         try {
             CompletableFuture<Stream<String>> f = service.findByNameLike(absolutePath())
                     .thenApply(nodes -> nodes.stream().map(PreferenceNode::getKey));
@@ -153,14 +152,14 @@ public class WebPreferences extends AbstractPreferences {
                     .toArray(String[]::new);
         }
         catch (Exception e) {
-            log.warn("Failed to lookup keys for node '" + absolutePath() + "'", e);
+            log.atWarn().withCause(e).log("Failed to lookup keys for node '" + absolutePath() + "'");
             return new String[0];
         }
     }
 
     @Override
     protected String[] childrenNamesSpi() throws BackingStoreException {
-        log.debug("childrenNamesSpi()");
+        log.atDebug().log("childrenNamesSpi()");
         String parentNodeName = absolutePath();
         CompletableFuture<List<PreferenceNode>> f = service.findByNameLike(parentNodeName);
         try {
@@ -185,14 +184,14 @@ public class WebPreferences extends AbstractPreferences {
                     .filter(s -> s != null && !s.isEmpty())
                     .toArray(String[]::new);
         } catch (Exception e) {
-            log.warn("Failed to look up child node names", e);
+            log.atWarn().withCause(e).log("Failed to look up child node names");
             return new String[0];
         }
     }
 
     @Override
     protected AbstractPreferences childSpi(String name) {
-        log.debug("childSpi({})", name);
+        log.atDebug().log(() -> "childSpi(" + name + ")");
         return new WebPreferences(service, timeout.toMillis(), this, name);
     }
 

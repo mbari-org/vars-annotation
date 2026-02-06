@@ -2,6 +2,7 @@ package org.mbari.vars.annotation.ui.mediaplayers.macos.bm;
 
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annotation.model.ExtendedFramegrab;
 import org.mbari.vars.annotation.services.ImageCaptureService;
@@ -9,8 +10,7 @@ import org.mbari.vars.annotation.model.Framegrab;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.messages.ShowExceptionAlert;
 import org.mbari.vcr4j.VideoIndex;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -26,7 +26,7 @@ import java.util.concurrent.*;
 
 public class RXImageCaptureServiceImpl implements ImageCaptureService {
 
-    private static final Logger log = LoggerFactory.getLogger(RXImageCaptureServiceImpl.class);
+    private static final Loggers log = new Loggers(RXImageCaptureServiceImpl.class);
     private final String host;
     private final int port;
     private final String apiKey;
@@ -78,7 +78,7 @@ public class RXImageCaptureServiceImpl implements ImageCaptureService {
             }
         }
         catch (Exception e) {
-            log.atWarn().setCause(e).log("Failed to capture framegrab");
+            log.atWarn().withCause(e).log("Failed to capture framegrab");
         }
         subscription.dispose();
         return framegrab;
@@ -135,7 +135,7 @@ public class RXImageCaptureServiceImpl implements ImageCaptureService {
                             framegrab.setImage(image);
                             framegrab.setVideoIndex(new VideoIndex(now));
                         } catch (Exception e) {
-                            log.warn("Image capture failed. Unable to read image back off disk", e);
+                            log.atWarn().withCause(e).log("Image capture failed. Unable to read image back off disk");
                             sendError("mediaplayer.macos.bm.error.nofg.content", e);
                         }
                     }
@@ -150,7 +150,7 @@ public class RXImageCaptureServiceImpl implements ImageCaptureService {
                 if (inFromSocket != null) inFromSocket.close();
                 if (socket != null) socket.close();
             } catch (IOException e) {
-                log.atError().setCause(e).log("Failed to close socket");
+                log.atError().withCause(e).log("Failed to close socket");
             }
 
         };
@@ -185,7 +185,7 @@ public class RXImageCaptureServiceImpl implements ImageCaptureService {
         }
         catch (IOException e) {
             log.atWarn()
-                    .setCause(e)
+                    .withCause(e)
                     .log(() -> "Unable to send command to remote server: " + cmd);
             sendError("mediaplayer.macos.bm.error.out.content", e);
         }
@@ -200,7 +200,7 @@ public class RXImageCaptureServiceImpl implements ImageCaptureService {
         }
         catch (IOException e) {
             log.atWarn()
-                    .setCause(e)
+                    .withCause(e)
                     .log(() -> "Unable to receive response from remote server");
             sendError("mediaplayer.macos.bm.error.in.content", e);
         }

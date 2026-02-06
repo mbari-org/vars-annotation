@@ -11,10 +11,9 @@ import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.oni.sdk.r1.models.Concept;
 import org.mbari.vars.oni.sdk.r1.models.ConceptMedia;
 import org.mbari.vars.annotation.ui.javafx.shared.ImageStage;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.javafx.shared.FilterableTreeItem;
 import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Brian Schlining
@@ -25,7 +24,7 @@ public class TreeViewController {
     private ContextMenu contextMenu;
     private ImageStage imageStage;
     private TreeView<Concept> treeView;
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private final UIToolBox toolBox;
 
     public TreeViewController(UIToolBox toolBox) {
@@ -103,7 +102,7 @@ public class TreeViewController {
                 .findRoot()
                 .thenAccept(root -> {
                     Platform.runLater(() -> {
-                        log.debug("Using root '" + root.getName() + "' to build tree");
+                        log.atDebug().log(() -> "Using root '" + root.getName() + "' to build tree");
                         TreeItem<Concept> rootItem = buildTreeItem(root, null);
                         treeView.setRoot(rootItem);
                     });

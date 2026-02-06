@@ -7,18 +7,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import org.mbari.imgfx.AutoscalePaneController;
-import org.mbari.imgfx.etc.rx.events.AddLocalizationEvent;
 import org.mbari.imgfx.roi.Data;
 import org.mbari.imgfx.roi.DataView;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.RectangleView;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
-import org.mbari.vars.annotation.ui.javafx.imgfx.AnnotationLifecycleDecorator;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.javafx.imgfx.LookupUtil;
 import org.mbari.vars.annotation.ui.javafx.imgfx.Roi;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.util.Optional;
 
@@ -28,7 +26,7 @@ public class VarsLocalization {
     private final Localization<? extends DataView<? extends Data, ? extends Shape>, ImageView> localization;
     private BooleanProperty dirtyConcept = new SimpleBooleanProperty(false);
     private BooleanProperty dirtyLocalization = new SimpleBooleanProperty(false);
-    private static final Logger log = LoggerFactory.getLogger(VarsLocalization.class);
+    private static final Loggers log = new Loggers(VarsLocalization.class);
 
 
     public VarsLocalization(Annotation annotation,

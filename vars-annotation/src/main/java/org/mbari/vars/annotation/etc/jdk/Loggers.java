@@ -29,6 +29,48 @@ public record Loggers(Logger logger, Level level, Throwable cause) {
         this(clazz.getName());
     }
 
+    public void trace(String msg) {
+        if (logger.isLoggable(Level.TRACE)) {
+            logger.log(Level.TRACE, msg);
+        }
+    }
+
+    public void debug(String msg) {
+        if (logger.isLoggable(Level.DEBUG)) {
+            logger.log(Level.DEBUG, msg);
+        }
+    }
+
+    public void info(String msg) {
+        if (logger.isLoggable(Level.INFO)) {
+            logger.log(Level.INFO, msg);
+        }
+    }
+
+    public void warn(String msg) {
+        if (logger.isLoggable(Level.WARNING)) {
+            logger.log(Level.WARNING, msg);
+        }
+    }
+
+    public void warn(String msg, Throwable t) {
+        if (logger.isLoggable(Level.WARNING)) {
+            logger.log(Level.WARNING, msg, t);
+        }
+    }
+
+    public void error(String msg) {
+        if (logger.isLoggable(Level.ERROR)) {
+            logger.log(Level.ERROR, msg);
+        }
+    }
+
+    public void error(String msg, Throwable t) {
+        if (logger.isLoggable(Level.ERROR)) {
+            logger.log(Level.ERROR, msg, t);
+        }
+    }
+
     public Loggers atTrace() {
         return new Loggers(logger, Level.TRACE, cause);
     }

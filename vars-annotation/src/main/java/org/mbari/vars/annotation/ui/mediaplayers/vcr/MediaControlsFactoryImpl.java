@@ -14,8 +14,7 @@ import org.mbari.vcr4j.VideoState;
 //import org.mbari.vcr4j.rs422.RS422Error;
 //import org.mbari.vcr4j.rs422.RS422State;
 //import org.mbari.vcr4j.rs422.decorators.UserbitsAsTimeDecorator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -27,7 +26,7 @@ import java.util.prefs.Preferences;
  */
 public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private final UIToolBox toolBox = Initializer.getToolBox();
 //    public static Class PREF_NODE_KEY = MediaControlsFactoryImplOriginal.class;
     public static Class PREF_NODE_KEY = MediaControlsFactoryImpl.class;

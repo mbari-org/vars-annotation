@@ -9,8 +9,7 @@ import org.mbari.vars.annosaurus.sdk.r1.models.BoundingBox;
 import org.mbari.vars.annotation.etc.gson.DurationConverter;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vcr4j.remote.control.commands.localization.Localization;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.time.Duration;
 import java.util.*;
@@ -29,7 +28,7 @@ public record LocalizedAnnotation(Annotation annotation, Association association
             .registerTypeAdapter(Duration.class, new DurationConverter())
             .create();
 
-    private static final Logger log = LoggerFactory.getLogger(LocalizedAnnotation.class);
+    private static final Loggers log = new Loggers(LocalizedAnnotation.class);
 
     /**
      * Builds the localization from the annotation and association. Always returns a new instance
@@ -57,7 +56,7 @@ public record LocalizedAnnotation(Annotation annotation, Association association
             }
             catch (Exception e) {
                 log.atWarn()
-                        .setCause(e)
+                        .withCause(e)
                         .log("Failed to build Localization from JSON: " + association.getLinkValue());
             }
         }
@@ -89,7 +88,7 @@ public record LocalizedAnnotation(Annotation annotation, Association association
                 }
                 catch (Exception e) {
                     log.atInfo()
-                            .setCause(e)
+                            .withCause(e)
                             .log(() -> "Unable to look up media with videoReferenceUuid=" + annotation.getVideoReferenceUuid());
                 }
             }

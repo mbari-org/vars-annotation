@@ -6,11 +6,10 @@ import javafx.collections.ObservableList;
 import org.mbari.imgfx.etc.rx.events.RemoveLocalizationEvent;
 import org.mbari.vars.annosaurus.sdk.r1.models.Image;
 import org.mbari.vars.annosaurus.sdk.r1.models.ImageReference;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.etc.rxjava.AsyncUtils;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.List;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
  */
 public class ImageLifecycleDecorator {
 
-    private static final Logger log = LoggerFactory.getLogger(ImageLifecycleDecorator.class);
+    private static final Loggers log = new Loggers(ImageLifecycleDecorator.class);
     private final IFXToolBox toolBox;
 
     /**

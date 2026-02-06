@@ -8,8 +8,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import org.mbari.vars.annotation.services.MachineLearningService;
 import org.mbari.vars.annotation.model.MachineLearningLocalization;
 import org.mbari.vars.annotation.util.ImageUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -24,7 +23,7 @@ public class OkHttpPythiaService implements MachineLearningService {
     private final String endpoint;
     private final OkHttpClient client;
     private final MediaType jpegType = MediaType.parse("image/jpg");
-    private static final Logger log = LoggerFactory.getLogger(OkHttpPythiaService.class);
+    private static final Loggers log = new Loggers(OkHttpPythiaService.class);
     private static final Gson gson = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create();

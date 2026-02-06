@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.services.ml.JdkPythiaService;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.commands.BulkCreateAnnotations;
@@ -13,8 +14,6 @@ import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
 import org.mbari.vars.annotation.ui.services.MLAnalysisService;
 import org.mbari.vars.annotation.ui.services.MLImageInference;
 import org.mbari.vars.annotation.util.Requirements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -25,7 +24,7 @@ import javafx.embed.swing.SwingFXUtils;
 public class MachineLearningStageController {
 
     private final UIToolBox toolBox;
-    private static final Logger log = LoggerFactory.getLogger(MachineLearningStageController.class);
+    private static final Loggers log = new Loggers(MachineLearningStageController.class);
     private MachineLearningStage machineLearningStage;
     private ObjectProperty<MLImageInference> inference = new SimpleObjectProperty<>();
 
@@ -118,7 +117,7 @@ public class MachineLearningStageController {
                 analyze();
             } catch (Exception e) {
                 log.atWarn()
-                        .setCause(e)
+                        .withCause(e)
                         .log("ML analysis failed.");
             }
         });

@@ -5,7 +5,7 @@ import org.mbari.vars.oni.sdk.r1.ConceptService;
 import org.mbari.vars.oni.sdk.r1.models.Concept;
 import org.mbari.vars.oni.sdk.r1.models.ConceptAssociationTemplate;
 import org.mbari.vars.oni.sdk.r1.models.ConceptDetails;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 public class ModifyingConceptService implements ConceptService {
 
     private final ConceptService conceptService;
+    private final Loggers log = new Loggers(getClass());
 
     /** Not all link-templates may need to be displayed in the UI */
     private List<Pattern> templateFilters;
@@ -46,8 +47,7 @@ public class ModifyingConceptService implements ConceptService {
                     .collect(Collectors.toList());
         }
         catch (Exception e){
-            LoggerFactory.getLogger(getClass())
-                    .info("Error reading configuration defined for " + CONFIG_KEY, e);
+            log.atInfo().withCause(e).log("Error reading configuration defined for " + CONFIG_KEY);
             templateFilters = new ArrayList<>();
         }
     }
@@ -61,8 +61,7 @@ public class ModifyingConceptService implements ConceptService {
                     .collect(Collectors.toList());
         }
         catch (Exception e){
-            LoggerFactory.getLogger(getClass())
-                    .info("Error reading configuration defined for " + CONFIG_KEY, e);
+            log.atInfo().withCause(e).log("Error reading configuration defined for " + CONFIG_KEY);
             templateFilters = new ArrayList<>();
         }
     }

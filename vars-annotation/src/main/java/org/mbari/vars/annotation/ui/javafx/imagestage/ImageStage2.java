@@ -14,10 +14,9 @@ import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.RectangleView;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.services.annosaurus.BoundingBoxes;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ImageStage2 extends Stage {
     private ImagePaneController imagePaneController;
     private final List<Localization<RectangleView, ImageView>> localizations = new CopyOnWriteArrayList<>();
-    private static final Logger log = LoggerFactory.getLogger(ImageStage2.class);
+    private static final Loggers log = new Loggers(ImageStage2.class);
 
     ObjectProperty<Color> fill = new SimpleObjectProperty<>(Color.valueOf("#FF980030"));
 

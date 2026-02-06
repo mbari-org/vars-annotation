@@ -16,8 +16,7 @@ import javafx.scene.layout.GridPane;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.util.FXMLUtils;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 
 /**
@@ -26,7 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MediaParamsPaneController {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
 
     @FXML
     private ResourceBundle resources;
@@ -111,7 +110,7 @@ public class MediaParamsPaneController {
 
         }
         catch (Exception e) {
-            log.info("Failed to parse media params", e);
+            log.atInfo().withCause(e).log("Failed to parse media params");
         }
         return params;
     }
@@ -135,7 +134,7 @@ public class MediaParamsPaneController {
             cameraIdComboBox.getSelectionModel().select(cameraid);
         }
         catch (Exception e) {
-            log.info("No default cameraId was found in the configuration file." +
+            log.atInfo().log("No default cameraId was found in the configuration file." +
                     " (app.defaults.cameraid");
         }
     }

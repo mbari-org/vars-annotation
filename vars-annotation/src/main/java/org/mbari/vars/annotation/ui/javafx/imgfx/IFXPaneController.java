@@ -7,9 +7,8 @@ import org.mbari.imgfx.etc.rx.events.RemoveLocalizationEvent;
 import org.mbari.vars.annotation.ui.javafx.imgfx.domain.VarsLocalization;
 import org.mbari.vars.annotation.ui.javafx.imgfx.events.AddLocalizationEventBuilder;
 import org.mbari.vars.annotation.ui.javafx.imgfx.events.DrawVarsLocalizationEvent;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
@@ -21,7 +20,7 @@ public class IFXPaneController {
     private AnnotationLifecycleDecorator annotationLifecycleDecorator;
     private LocalizationLifecycleDecorator localizationLifecycleDecorator;
 
-    private static final Logger log = LoggerFactory.getLogger(IFXPaneController.class);
+    private static final Loggers log = new Loggers(IFXPaneController.class);
 
     public IFXPaneController(IFXToolBox toolBox) {
         this.toolBox = toolBox;
@@ -115,7 +114,7 @@ public class IFXPaneController {
 
         // FIXME is this working??
         var event = AddLocalizationEventBuilder.build(vloc.getLocalization());
-        log.info("New builder event: " + event);
+        log.atInfo().log("New builder event: " + event);
         eventBus.publish(event);
     }
 

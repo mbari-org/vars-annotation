@@ -6,8 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.mbari.vars.annotation.it.services.TestToolbox;
 import org.mbari.vars.annotation.services.oni.WebPreferencesFactory;
 import org.mbari.vars.oni.sdk.r1.PreferencesService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.util.prefs.Preferences;
 
@@ -18,7 +17,7 @@ import java.util.prefs.Preferences;
  */
 public class WebPreferencesTest {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
 
     private PreferencesService service = TestToolbox.getPreferencesService();
 
@@ -27,7 +26,7 @@ public class WebPreferencesTest {
     @Test
     public void testNode() {
         Preferences userRoot = factory.remoteUserRoot("brian");
-        log.debug("userRoot = " + userRoot.absolutePath());
+        log.atDebug().log("userRoot = " + userRoot.absolutePath());
         userRoot.put("trash", "foo");
         String s0 = userRoot.get("trash", "bar");
         assertEquals("foo", s0, "Returned value was not what we expected");

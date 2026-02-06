@@ -1,14 +1,13 @@
 package org.mbari.vars.annotation.ui.mediaplayers.macos.avf;
 
 //import org.mbari.m3.blackmagic.BlackmagicImageCapture;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.annotation.model.Framegrab;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
@@ -22,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class BMImageCaptureService implements SelectableImageCaptureService {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
 //    private BlackmagicImageCapture imageCapture;
     public static BMImageCaptureService imageCaptureService;
     private String currentDevice = "";
@@ -32,13 +31,13 @@ public class BMImageCaptureService implements SelectableImageCaptureService {
     }
 
     public Collection<String> listDevices() {
-        log.warn("BlackMagic is currently disabled. It was causing problems.");
+        log.atWarn().log("BlackMagic is currently disabled. It was causing problems.");
         try {
 //            return Arrays.asList(imageCapture.videoDevicesAsStrings());
             return new ArrayList<>();
         }
         catch (UnsatisfiedLinkError e) {
-            log.warn("Something is wrong with the BlackMagic libraries", e);
+            log.atWarn().withCause(e).log("Something is wrong with the BlackMagic libraries");
             return new ArrayList<>();
         }
     }
@@ -54,7 +53,7 @@ public class BMImageCaptureService implements SelectableImageCaptureService {
             }
         }
         catch (UnsatisfiedLinkError e) {
-            log.warn("Something is wrong with the BlackMagic libraries", e);
+            log.atWarn().withCause(e).log("Something is wrong with the BlackMagic libraries");
         }
         currentDevice = device;
     }
@@ -68,7 +67,7 @@ public class BMImageCaptureService implements SelectableImageCaptureService {
 //            imageOpt = imageCapture.capture(file, Duration.ofSeconds(10));
         }
         catch (UnsatisfiedLinkError e) {
-            log.warn("Something is wrong with the BlackMagic libraries", e);
+            log.atWarn().withCause(e).log("Something is wrong with the BlackMagic libraries");
         }
         if (imageOpt.isPresent()) {
             framegrab.setImage(imageOpt.get());
@@ -83,21 +82,21 @@ public class BMImageCaptureService implements SelectableImageCaptureService {
                             .get(3000, TimeUnit.MILLISECONDS);
                 }
                 catch (Exception e) {
-                    log.warn("Problem with requesting videoIndex while capturing a framegrab", e);
+                    log.atWarn().withCause(e).log("Problem with requesting videoIndex while capturing a framegrab");
                     framegrab.setVideoIndex(new VideoIndex(Instant.now()));
                 }
             }
 
             // If, for some reason, getting the video index fails. Fall back to a timestamp
             if (!framegrab.getVideoIndex().isPresent()) {
-                log.warn("Failed to get video index. Using current timestamp for video index");
+                log.atWarn().log("Failed to get video index. Using current timestamp for video index");
                 framegrab.setVideoIndex(new VideoIndex(Instant.now()));
             }
 
 
         }
         else {
-            log.warn("Failed to capture image from device named '" +
+            log.atWarn().log("Failed to capture image from device named '" +
                     currentDevice + "'");
         }
         //imageCapture.stopSession();

@@ -8,14 +8,13 @@ import org.mbari.vars.annotation.ui.javafx.ImageArchiveServiceDecorator;
 import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.io.IOException;
 
 public class MLAnalysisService {
 
-    private static final Logger log = LoggerFactory.getLogger(MLAnalysisService.class);
+    private static final Loggers log = new Loggers(MLAnalysisService.class);
 
     public static MLImageInference analyzeCurrentElapsedTime(UIToolBox toolBox, MachineLearningService mlService) throws IOException {
         var media = toolBox.getData().getMedia();

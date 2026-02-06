@@ -25,10 +25,9 @@ import org.mbari.vars.annotation.ui.messages.ShowProgress;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.services.MultiAnnotationDecorator;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.javafx.BulkEditorPaneController;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,7 @@ import java.util.List;
  */
 public class AnnotationViewController {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private final UIToolBox toolBox;
     private Stage stage;
     private AnnotationTableController tableController;
@@ -125,7 +124,7 @@ public class AnnotationViewController {
                     .subscribe(s -> Platform.runLater(() -> statusBar.setProgress(s.getProgress())));
             observable.ofType(HideProgress.class)
                     .subscribe(s -> {
-                        log.warn("HideProgress received");
+                        log.atWarn().log("HideProgress received");
                         Platform.runLater(() -> {
                             statusBar.setText(null);
                             statusBar.setProgress(0.0);

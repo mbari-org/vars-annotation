@@ -1,9 +1,8 @@
 package org.mbari.vars.annotation.ui.mediaplayers.macos.avf;
 
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.model.Framegrab;
 import org.mbari.vars.annotation.services.ImageCaptureService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -14,7 +13,7 @@ import java.io.File;
  */
 public class MacImageCaptureServiceRef implements ImageCaptureService {
 
-    private static final Logger log = LoggerFactory.getLogger(MacImageCaptureServiceRef.class);
+    private static final Loggers log = new Loggers(MacImageCaptureServiceRef.class);
 
     private static ImageCaptureService getImageCaptureService() {
 
@@ -33,8 +32,8 @@ public class MacImageCaptureServiceRef implements ImageCaptureService {
             imageCaptureService.setDevice(deviceName);
         }
         catch (Exception e) {
-            log.warn("Failed to set device to " + deviceName + " for the " +
-                    api.getName() + " API", e);
+            log.atWarn().withCause(e).log("Failed to set device to " + deviceName + " for the " +
+                    api.getName() + " API");
         }
         return imageCaptureService;
     }

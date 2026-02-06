@@ -15,10 +15,9 @@ import org.mbari.vars.annotation.ui.events.ForceRedrawEvent;
 import org.mbari.vars.annotation.ui.javafx.timeline.TimelineController;
 import org.mbari.vars.annotation.ui.messages.*;
 import org.mbari.vars.annotation.ui.javafx.Icons;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.oni.sdk.r1.models.User;
 import org.mbari.vars.annotation.util.PreferenceUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -45,7 +44,7 @@ public class ConceptButtonPanesController {
     public static final String PREFKEY_TABNAME = "tabName";
     public static final String TAB_PREFIX = "tab";
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private Loggers log = new Loggers(getClass());
     private BooleanProperty lockProperty = new SimpleBooleanProperty(false);
     private final ConceptButtonPanesWithHighlightController overviewController;
     private final TimelineController timelineController;
@@ -188,7 +187,7 @@ public class ConceptButtonPanesController {
                             childNames = tabsPrefs.childrenNames();
                         }
                         catch (BackingStoreException e) {
-                            log.error("VARS had a problem loading user tabs for user: " + toolBox.getData().getUser());
+                            log.atError().log("VARS had a problem loading user tabs for user: " + toolBox.getData().getUser());
                             childNames = new String[]{};
                         }
 
@@ -261,7 +260,7 @@ public class ConceptButtonPanesController {
                                 cpPrefs.node(TAB_PREFIX + i).removeNode();
                             }
                             catch (BackingStoreException e) {
-                                log.error("Failed to re-order tabs when one was deleted", e);
+                                log.atError().withCause(e).log("Failed to re-order tabs when one was deleted");
                             }
                         });
                 loadTabsFromPreferences();

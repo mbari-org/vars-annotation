@@ -3,8 +3,7 @@ package org.mbari.vars.annotation.ui.mediaplayers.ships;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
 import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 /**
  * @author Brian Schlining
@@ -13,7 +12,7 @@ import org.slf4j.LoggerFactory;
 public class OpenRealTimeService {
 
     private final UIToolBox toolBox;
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private Loggers log = new Loggers(getClass());
 
     public OpenRealTimeService(UIToolBox toolBox) {
         this.toolBox = toolBox;
@@ -24,7 +23,7 @@ public class OpenRealTimeService {
         // Find existing media by URI
         mediaService.findByUri(mediaParams.getUri())
                 .thenAccept(media -> {
-                    log.debug("Media lookup returned: " + media);
+                    log.atDebug().log(() -> "Media lookup returned: " + media);
                     if (media == null) {
                         // Create one
                         mediaService.create(mediaParams.getVideoSequenceName(),
@@ -33,7 +32,7 @@ public class OpenRealTimeService {
                                 mediaParams.getUri(),
                                 mediaParams.getStartTimestamp())
                             .thenAccept(m -> {
-                                log.debug("Created media: " + m);
+                                log.atDebug().log(() -> "Created media: " + m);
 
                                 // TODO send error to event bus is media is null
                                 toolBox.getEventBus()

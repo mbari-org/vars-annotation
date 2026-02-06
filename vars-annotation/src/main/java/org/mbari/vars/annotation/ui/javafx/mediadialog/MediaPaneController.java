@@ -20,14 +20,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 import org.mbari.vars.annotation.ui.util.FXMLUtils;
 import org.mbari.vars.annotation.util.FormatUtils;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ResourceBundle;
 
@@ -37,7 +36,7 @@ import java.util.ResourceBundle;
  */
 public class MediaPaneController {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     @FXML
     private ResourceBundle bundle;
 

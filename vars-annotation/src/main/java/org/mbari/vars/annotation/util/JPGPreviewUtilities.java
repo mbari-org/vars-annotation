@@ -5,8 +5,7 @@ import java.io.File;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.mbari.vars.annotation.etc.vcr4j.SnapTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 /**
  * @author Brian Schlining
@@ -14,7 +13,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JPGPreviewUtilities {
 
-    private static final Logger log = LoggerFactory.getLogger(JPGPreviewUtilities.class);
+    private static final Loggers log = new Loggers(JPGPreviewUtilities.class);
     private static final Config config = ConfigFactory.load();
     private static final String imageCopyrightOwner = config.getString("app.image.copyright.owner");
 

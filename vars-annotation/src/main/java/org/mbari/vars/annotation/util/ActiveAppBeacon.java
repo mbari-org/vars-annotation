@@ -1,8 +1,7 @@
 package org.mbari.vars.annotation.util;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -46,7 +45,7 @@ import java.util.stream.Collectors;
  */
 public class ActiveAppBeacon {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
 
     /**
      * The minimum number of server port number.
@@ -73,7 +72,7 @@ public class ActiveAppBeacon {
                     break;
                 }
                 catch (IOException e) {
-                    log.info("Unable to open port {}", p);
+                    log.atInfo().log("Unable to open port " + p);
                 }
             }
         }
@@ -85,7 +84,7 @@ public class ActiveAppBeacon {
                     .map(Object::toString)
                     .collect(Collectors.joining(", "));
             beaconThread = null;
-            log.warn("Failed to activate a ServerSocket for ActiveAppBeacon on any of the following ports: " + portMsg);
+            log.atWarn().log("Failed to activate a ServerSocket for ActiveAppBeacon on any of the following ports: " + portMsg);
         }
         else {
             final ServerSocket s = serverSocket;
@@ -115,7 +114,7 @@ public class ActiveAppBeacon {
             try {
                 serverSocket.close();
             } catch (IOException e) {
-                log.debug("The beacon's ServerSocket threw an exception while killing the beacon. " +
+                log.atDebug().log("The beacon's ServerSocket threw an exception while killing the beacon. " +
                         "Nothing to see here. Just letting you know");
             }
         }

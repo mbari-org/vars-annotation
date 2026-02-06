@@ -1,11 +1,12 @@
 module org.mbari.vars.annotation {
 
-    requires transitive com.auth0.jwt;
-    requires transitive com.fasterxml.jackson.databind; // required by java-jwt
-    requires transitive com.github.benmanes.caffeine;
-    requires transitive com.google.gson;
-    requires transitive io.reactivex.rxjava3;
+    requires com.auth0.jwt;
+    requires com.fasterxml.jackson.databind; // required by java-jwt
+    requires com.github.benmanes.caffeine;
+    requires com.google.gson;
+    requires io.reactivex.rxjava3;
     requires java.desktop;
+    requires java.logging;
     requires java.net.http;
     requires java.prefs;
     requires java.scripting;
@@ -21,21 +22,21 @@ module org.mbari.vars.annotation {
     requires okhttp3.logging;
     requires okhttp3;
     requires okio;
-    requires transitive org.controlsfx.controls;
+    requires org.controlsfx.controls;
     requires org.kordamp.ikonli.core;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.material2;
     requires org.kordamp.ikonli.swing;
-    requires transitive org.mbari.imgfx;
+    requires org.mbari.imgfx;
     requires org.mbari.vars.annosaurus.sdk;
     requires org.mbari.vars.oni.sdk;
     requires org.mbari.vars.raziel.sdk;
     requires org.mbari.vars.vampiresquid.sdk;
-    requires transitive org.slf4j;
+    requires org.slf4j;
     requires swingx.all;
     requires typesafe.config;
-    requires transitive vcr4j.core;
-    requires transitive vcr4j.remote;
+    requires vcr4j.core;
+    requires vcr4j.remote;
 
     uses org.kordamp.ikonli.IkonHandler;
 

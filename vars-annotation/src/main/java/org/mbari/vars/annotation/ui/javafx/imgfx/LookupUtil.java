@@ -8,16 +8,15 @@ import org.mbari.imgfx.roi.DataView;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.annosaurus.sdk.r1.models.Image;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.javafx.imgfx.domain.VarsLocalization;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class LookupUtil {
 
-    private static final Logger log = LoggerFactory.getLogger(LookupUtil.class);
+    private static final Loggers log = new Loggers(LookupUtil.class);
 
     private record RoiAssociation(Annotation annotation, Association association) {}
 
@@ -46,7 +45,7 @@ public class LookupUtil {
                     .getData()
                     .getAnnotations()
                     .filtered(a -> a.getImagedMomentUuid().equals(imagedMomentUuid)));
-            log.debug("Found {} annotations for {}", annos.size(), image.getUrl());
+            log.debug(String.format("Found %d annotations for %s", annos.size(), image.getUrl()));
             return annos;
         }
     }
@@ -95,7 +94,7 @@ public class LookupUtil {
                 .map(Optional::get)
                 .collect(Collectors.toList());
 
-        log.debug("Found {} localizations in annotations for {}", vlocs.size(), image.getUrl());
+        log.debug(String.format("Found %d localizations in annotations for %s", vlocs.size(), image.getUrl()));
         return vlocs;
     }
 

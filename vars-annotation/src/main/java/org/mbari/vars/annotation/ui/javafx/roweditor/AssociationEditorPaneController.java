@@ -20,6 +20,7 @@ import javafx.scene.text.Text;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.annotation.etc.jdk.ListUtils;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
@@ -29,8 +30,6 @@ import org.mbari.vars.annotation.ui.javafx.shared.FilteredComboBoxDecorator;
 import org.mbari.vars.annotation.ui.javafx.shared.HierarchicalConceptComboBoxDecorator;
 import org.mbari.vars.annotation.ui.util.FXMLUtils;
 import org.mbari.vars.oni.sdk.r1.models.ConceptAssociationTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AssociationEditorPaneController {
 
@@ -82,7 +81,7 @@ public class AssociationEditorPaneController {
     private volatile Annotation annotation;
     private volatile Association selectedAssociation;
     private static final ConceptAssociationTemplate nil = ConceptAssociationTemplate.NIL;
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
 
     // HACK, I pulled these colors out of annotation.css
     private final Color selectedTextColor = Color.web("#F0544C");

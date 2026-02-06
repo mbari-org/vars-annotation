@@ -4,10 +4,9 @@ import javafx.application.Platform;
 import javafx.scene.layout.HBox;
 import org.mbari.vars.annotation.util.Preconditions;
 import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.oni.sdk.r1.models.User;
 import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -24,7 +23,7 @@ public class ConceptButtonPanesWithHighlightController {
     private HBox root;
     private final UIToolBox toolBox;
     private final ResourceBundle i18n;
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
 
     public ConceptButtonPanesWithHighlightController(UIToolBox toolBox) {
         Preconditions.checkNotNull(toolBox, "The UIToolbox arg can not be null");
@@ -67,7 +66,7 @@ public class ConceptButtonPanesWithHighlightController {
                                 });
 
                     } catch (BackingStoreException e) {
-                        log.error("VARS had a problem loading user tabs for user: " + toolBox.getData().getUser());
+                        log.atError().log("VARS had a problem loading user tabs for user: " + toolBox.getData().getUser());
                     }
                 });
             });

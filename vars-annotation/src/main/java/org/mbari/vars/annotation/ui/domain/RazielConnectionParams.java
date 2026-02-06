@@ -1,7 +1,7 @@
 package org.mbari.vars.annotation.ui.domain;
 
 import org.mbari.vars.annotation.etc.jdk.crypto.AES;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.io.IOException;
 import java.net.URI;
@@ -28,8 +28,7 @@ public record RazielConnectionParams(URL url, String username, String password) 
                 return Optional.of(new RazielConnectionParams(url, username, password));
             }
             catch (Exception e) {
-                LoggerFactory
-                        .getLogger(RazielConnectionParams.class)
+                new Loggers(RazielConnectionParams.class)
                         .atWarn()
                         .log(() -> "The file at " + file + " does not contain valid connection info");
                 return Optional.empty();

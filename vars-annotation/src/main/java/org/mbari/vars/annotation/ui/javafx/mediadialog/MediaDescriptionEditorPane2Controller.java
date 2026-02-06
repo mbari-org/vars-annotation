@@ -2,12 +2,12 @@ package org.mbari.vars.annotation.ui.javafx.mediadialog;
 
 import java.net.MalformedURLException;
 
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.etc.jdk.Urls;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -21,7 +21,7 @@ import javafx.scene.layout.VBox;
 
 public class MediaDescriptionEditorPane2Controller {
 
-  private static final Logger log = LoggerFactory.getLogger(MediaDescriptionEditorPane2Controller.class);
+  private static final Loggers log = new Loggers(MediaDescriptionEditorPane2Controller.class);
 
   private final ObjectProperty<Media> media = new SimpleObjectProperty<>();
 
@@ -93,7 +93,7 @@ public class MediaDescriptionEditorPane2Controller {
             && check(videoTextArea.getText(), media.get().getVideoDescription())
             && check(videoSequenceTextArea.getText(), media.get().getVideoSequenceDescription()));
     
-    log.trace("Disable: {}", disable);
+    log.trace("Disable: " + disable);
     saveButton.setDisable(disable);
     if (!disable) {
       JFXUtilities.attractAttention(saveButton);
@@ -115,7 +115,7 @@ public class MediaDescriptionEditorPane2Controller {
   }
 
   public void setMedia(Media m) {
-    log.trace("Setting media: {}", m);
+    log.trace("Setting media: " + m);
     media.set(m);
   }
 

@@ -16,8 +16,7 @@ import javafx.scene.text.Text;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.util.*;
 
@@ -37,7 +36,7 @@ public class AssocButtonPanesController {
     private Button lockButton;
     private AssocSelectionDialogController dialogController;
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
 
     private BooleanProperty lockProperty = new SimpleBooleanProperty(false);
 

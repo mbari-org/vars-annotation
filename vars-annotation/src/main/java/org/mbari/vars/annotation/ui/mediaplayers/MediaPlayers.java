@@ -8,9 +8,8 @@ import org.mbari.vars.annotation.ui.events.MediaControlsChangedEvent;
 import org.mbari.vars.annotation.ui.events.MediaPlayerChangedEvent;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.etc.jdk.Streams;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -22,7 +21,7 @@ import java.util.*;
 public class MediaPlayers {
 
     private final UIToolBox toolBox;
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private final ServiceLoader<MediaControlsFactory> serviceLoader;
     private final Object lock = new byte[]{};
 
@@ -66,9 +65,9 @@ public class MediaPlayers {
 
             try {
                 Streams.toStream(serviceLoader.iterator())
-                        .peek(factory -> log.debug("ServiceLoader found a factory: {}", factory))
+                        .peek(factory -> log.atDebug().log(() -> "ServiceLoader found a factory: " + factory))
                         .filter(factory -> factory.canOpen(media))
-                        .peek(factory -> log.debug("ServiceLoader using a factory: {}", factory))
+                        .peek(factory -> log.atDebug().log(() -> "ServiceLoader using a factory: " + factory))
                         .findFirst()
                         .ifPresent(factory -> {
                             try {
@@ -76,7 +75,7 @@ public class MediaPlayers {
                                 eventBus.send(new MediaControlsChangedEvent(MediaPlayers.this,
                                                 mediaControls));
                             } catch (Exception e) {
-                                log.error("Unable to load services", e);
+                                log.atError().withCause(e).log("Unable to load services");
                                 eventBus.send(new MediaPlayerChangedEvent(null, null));
                             }
                             // #174: Annotations are sometimes sent before the media
@@ -86,7 +85,7 @@ public class MediaPlayers {
                         });
 
             } catch (ServiceConfigurationError e) {
-                log.error("Unable to load services", e);
+                log.atError().withCause(e).log("Unable to load services");
                 eventBus.send(new MediaPlayerChangedEvent(null, null));
             }
         }
@@ -95,7 +94,7 @@ public class MediaPlayers {
 
     private void close() {
         // Close the old MediaPlayer
-        log.debug("Closing MediaPlayer: " + toolBox.getMediaPlayer());
+        log.atDebug().log(() -> "Closing MediaPlayer: " + toolBox.getMediaPlayer());
         Optional.ofNullable(toolBox.getMediaPlayer())
                 .ifPresent(MediaPlayer::close);
     }

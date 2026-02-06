@@ -4,10 +4,10 @@ import javafx.collections.ListChangeListener;
 import org.mbari.imgfx.demos.imageview.editor.Localizations;
 import org.mbari.imgfx.etc.rx.events.RemoveLocalizationEvent;
 
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.javafx.imgfx.domain.VarsLocalization;
 import org.mbari.vars.annotation.ui.javafx.imgfx.events.AddLocalizationEventBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 
 
@@ -16,7 +16,7 @@ public class LocalizationLifecycleDecorator {
     private final IFXToolBox toolBox;
     private final Localizations localizations;
 
-    private static final Logger log = LoggerFactory.getLogger(AnnotationLifecycleDecorator.class);
+    private static final Loggers log = new Loggers(AnnotationLifecycleDecorator.class);
 
 
     public LocalizationLifecycleDecorator(IFXToolBox toolBox,

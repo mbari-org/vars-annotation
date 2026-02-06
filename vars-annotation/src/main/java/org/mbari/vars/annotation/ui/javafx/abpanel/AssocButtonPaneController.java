@@ -11,9 +11,8 @@ import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.events.ForceRedrawEvent;
 import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -40,7 +39,7 @@ public class AssocButtonPaneController {
     private static final String PREF_BUTTON_ASSOCIATION = "association";
     private static final String BAD_KEY = "__unknown__";
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public AssocButtonPaneController(UIToolBox toolBox) {
@@ -130,7 +129,7 @@ public class AssocButtonPaneController {
                                 String name = buttonPreferences.get(PREF_BUTTON_NAME, BAD_KEY);
                                 int order = buttonPreferences.getInt(PREF_BUTTON_ORDER, 0);
                                 String a = buttonPreferences.get(PREF_BUTTON_ASSOCIATION, nil.toString());
-                                log.debug("Loading association button " + a);
+                                log.atDebug().log(() -> "Loading association button " + a);
                                 Association ass = Association.parse(a).orElse(nil);
                                 Button button = buttonFactory.build(name, ass, prefs);
                                 return new ButtonPref(button, order);
@@ -190,7 +189,7 @@ public class AssocButtonPaneController {
                             if (userData instanceof Association a) {
                                 buttonPrefs.put(PREF_BUTTON_ASSOCIATION, AssocToString.asString(a));
                             } else {
-                                log.warn("Unable to store association button data using class: " + userData.getClass());
+                                log.atWarn().log("Unable to store association button data using class: " + userData.getClass());
                             }
                         });
             });

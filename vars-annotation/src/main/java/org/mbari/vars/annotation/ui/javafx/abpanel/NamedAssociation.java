@@ -1,9 +1,8 @@
 package org.mbari.vars.annotation.ui.javafx.abpanel;
 
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.annosaurus.sdk.r1.models.ConceptAssociationTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,7 +13,7 @@ import java.util.stream.Collectors;
  */
 class NamedAssociation extends Association {
     private final String name;
-    private static final Logger log = LoggerFactory.getLogger(NamedAssociation.class);
+    private static final Loggers log = new Loggers(NamedAssociation.class);
 
     public NamedAssociation(String linkName, String toConcept, String linkValue, String name) {
         super(linkName, toConcept, linkValue);
@@ -59,7 +58,7 @@ class NamedAssociation extends Association {
         }
         catch (Exception e) {
             // Do nothing
-            log.warn("Failed to parse an association from " + s, e);
+            log.atWarn().withCause(e).log("Failed to parse an association from " + s);
         }
         return na;
     }

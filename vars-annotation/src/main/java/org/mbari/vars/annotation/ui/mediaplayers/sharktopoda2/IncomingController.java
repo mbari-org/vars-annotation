@@ -1,6 +1,7 @@
 package org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2;
 
 import io.reactivex.rxjava3.disposables.Disposable;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.commands.CreateAnnotationAtIndexWithAssociationCmd;
@@ -11,8 +12,6 @@ import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.remote.control.RemoteControl;
 import org.mbari.vcr4j.remote.control.commands.localization.*;
 import org.mbari.vcr4j.remote.player.RxControlRequestHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,7 +23,7 @@ public class IncomingController {
     private final UIToolBox toolBox;
     private final List<Disposable> disposables = new ArrayList<>();
     private final SharktopodaState sharktopodaState;
-    private static final Logger log = LoggerFactory.getLogger(IncomingController.class);
+    private static final Loggers log = new Loggers(IncomingController.class);
     private final Comparator<LocalizedAnnotation> comparator = Comparator.comparing(a -> a.association().getUuid());
 
     public IncomingController(UIToolBox toolBox,
@@ -65,7 +64,7 @@ public class IncomingController {
     private void handleAdd(List<Localization> added) {
         Media media = toolBox.getData().getMedia();
         if (media == null) {
-            log.info("An attempt was made to add a localization, but no media is currently open");
+            log.atInfo().log("An attempt was made to add a localization, but no media is currently open");
             return;
         }
         added.forEach(loc -> {
@@ -98,7 +97,7 @@ public class IncomingController {
     private void handleRemove(List<UUID> removed) {
         Media media = toolBox.getData().getMedia();
         if (media == null) {
-            log.info("An attempt was made to remove a localization, but no media is currently open");
+            log.atInfo().log("An attempt was made to remove a localization, but no media is currently open");
             return;
         }
         var matches = searchByUuid(removed);
@@ -114,7 +113,7 @@ public class IncomingController {
     private void handleUpdate(List<Localization> updated) {
         Media media = toolBox.getData().getMedia();
         if (media == null) {
-            log.info("An attempt was made to update a localization, but no media is currently open");
+            log.atInfo().log("An attempt was made to update a localization, but no media is currently open");
             return;
         }
         var matches = search(updated);
@@ -131,7 +130,7 @@ public class IncomingController {
     private void handleSelect(List<UUID> selected) {
         Media media = toolBox.getData().getMedia();
         if (media == null) {
-            log.info("An attempt was made to update a localization, but no media is currently open");
+            log.atInfo().log("An attempt was made to update a localization, but no media is currently open");
             return;
         }
         var matches = searchByUuid(selected);

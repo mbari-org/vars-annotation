@@ -1,13 +1,13 @@
 package org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2;
 
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annotation.services.ImageCaptureService;
 import org.mbari.vars.annotation.model.Framegrab;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.remote.control.commands.FrameCaptureCmd;
 import org.mbari.vcr4j.remote.control.commands.FrameCaptureDoneCmd;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.mbari.vcr4j.remote.control.RVideoIO;
 
 import javax.imageio.ImageIO;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ImageCaptureServiceImpl implements ImageCaptureService {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private RVideoIO io;
 
     private final EventBus eventBus = new EventBus();
@@ -27,7 +27,7 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
     public ImageCaptureServiceImpl() {
         eventBus.toObserverable()
                 .subscribe(obj -> log.debug("Received " + obj.toString()),
-                        ex -> log.atWarn().setCause(ex).log("An exception was thrown"),
+                        ex -> log.atWarn().withCause(ex).log("An exception was thrown"),
                         () -> log.info("Closed event bus"));
     }
 
@@ -77,7 +77,7 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
         try {
             image = ImageIO.read(imageLocation);
         } catch (Exception e) {
-            log.warn("Image capture failed. Unable to read image back off disk", e);
+            log.atWarn().withCause(e).log("Image capture failed. Unable to read image back off disk");
         }
         log.atDebug().log("Image capture complete. Read " + imageLocation.length() + " bytes from " + imageLocation.getAbsolutePath());
         return new Framegrab(image, videoIndex);

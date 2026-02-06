@@ -1,6 +1,6 @@
 package org.mbari.vars.annotation.util;
 
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.util.prefs.Preferences;
 
@@ -28,8 +28,8 @@ public class PreferenceUtils {
             }
         }
         catch (Exception e) {
-            LoggerFactory.getLogger(PreferenceUtils.class)
-                    .error("Failed to copy preferences.", e);
+            new Loggers(PreferenceUtils.class).atError()
+                    .withCause(e).log("Failed to copy preferences.");
         }
     }
 }

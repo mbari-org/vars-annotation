@@ -13,11 +13,10 @@ import org.mbari.vars.annotation.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 import org.mbari.vars.annotation.etc.rxjava.AsyncUtils;
 import org.mbari.vars.annotation.model.CreatedImageData;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.time.Timecode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -52,7 +51,7 @@ public class ImageArchiveServiceDecorator {
 
     private final UIToolBox toolBox;
     private final String copyrightOwner;
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private final Duration timeout;
 
     public enum ImageTypes {

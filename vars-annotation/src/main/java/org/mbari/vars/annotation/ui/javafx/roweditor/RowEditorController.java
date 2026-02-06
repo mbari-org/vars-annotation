@@ -16,8 +16,7 @@ import org.mbari.vars.annotation.ui.commands.DeleteAssociationsCmd;
 import org.mbari.vars.annotation.ui.commands.UpdateAssociationCmd;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.util.*;
 
@@ -31,7 +30,6 @@ public class RowEditorController {
     private Pane root;
     private volatile Annotation annotation;
     private final UIToolBox toolBox = Initializer.getToolBox();
-//    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public RowEditorController() {
         rowController = AnnotationEditorPaneController.newInstance();

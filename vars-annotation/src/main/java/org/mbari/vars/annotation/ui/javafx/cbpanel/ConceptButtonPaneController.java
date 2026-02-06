@@ -9,9 +9,8 @@ import javafx.scene.layout.Pane;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.messages.*;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.oni.sdk.r1.ConceptService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -41,7 +40,7 @@ public class ConceptButtonPaneController {
     private static final String PREF_BUTTON_ORDER = "order";
     private static final String BAD_KEY = "__unknown__";
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     /**
@@ -160,7 +159,7 @@ public class ConceptButtonPaneController {
                         panePreferences.node(s).removeNode();
                     }
                     catch (Exception e) {
-                        log.error("Failed to delete concept button named '" + s + "'.", e);
+                        log.atError().withCause(e).log("Failed to delete concept button named '" + s + "'.");
                     }
                 });
             }

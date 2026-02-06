@@ -8,8 +8,7 @@ import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
 import org.mbari.vcr4j.util.Preconditions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
  */
 public class MoveAnnotationsAndImagesCmd implements Command {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private final List<Annotation> originalAnnotations;
     private final List<Image> originalImages;
     private final List<Annotation> changedAnnotations;
@@ -86,7 +85,7 @@ public class MoveAnnotationsAndImagesCmd implements Command {
             updateAnnotations(toolBox, annotations);
             updateImages(toolBox, images);
         } catch (Exception e) {
-            log.error("Failed to execute update", e);
+            log.atError().withCause(e).log("Failed to execute update");
         }
 
         refreshView(toolBox, annotations);
@@ -129,7 +128,7 @@ public class MoveAnnotationsAndImagesCmd implements Command {
                         .get(timeout.toMillis(), TimeUnit.MILLISECONDS);
             }
             catch (Exception e) {
-                log.error("Failed to update " + i.getUrl() + " in remote datastore", e);
+                log.atError().withCause(e).log("Failed to update " + i.getUrl() + " in remote datastore");
             }
         }
     }
@@ -141,7 +140,7 @@ public class MoveAnnotationsAndImagesCmd implements Command {
                     .getDuration("annotation.service.timeout");
         }
         catch (Exception e) {
-            log.warn("'annotation.service.timeout' is not defined in configuration.");
+            log.atWarn().log("'annotation.service.timeout' is not defined in configuration.");
         }
         return timeout;
     }

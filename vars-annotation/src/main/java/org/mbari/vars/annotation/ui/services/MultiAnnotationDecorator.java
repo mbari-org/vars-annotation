@@ -18,8 +18,7 @@ import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
 import org.mbari.vars.annotation.etc.rxjava.RequestPager;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.time.Duration;
 import java.util.List;
@@ -38,7 +37,7 @@ import java.util.stream.Collectors;
  */
 public class MultiAnnotationDecorator {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
     private final UIToolBox toolBox;
     private final int pageSize;
     private final Duration pageTimeout;
@@ -61,7 +60,7 @@ public class MultiAnnotationDecorator {
     }
 
     private CompletableFuture<Optional<MultiRequestCount>> countMultiAnnotations(Media media) {
-        log.debug("Counting concurrent annotations related to {}", media.getUri());
+        log.atDebug().log(() -> "Counting concurrent annotations related to " + media.getUri());
 
         AnnotationService annotationService = toolBox.getServices().annotationService();
         MediaService mediaService = toolBox.getServices()
@@ -93,14 +92,14 @@ public class MultiAnnotationDecorator {
                     }
                     else {
                         if (opt.isPresent()) {
-                            log.debug("Loading concurrent annotations related to {}", media.getUri());
+                            log.atDebug().log(() -> "Loading concurrent annotations related to " + media.getUri());
                             loadAnnotations(media, opt.get()).subscribe(serializedSubject::onNext,
                                     serializedSubject::onError,
                                     serializedSubject::onComplete);
 
                         }
                         else {
-                            log.warn("Did not get a concurrent request count for {}", media.getUri());
+                            log.atWarn().log("Did not get a concurrent request count for " + media.getUri());
                             serializedSubject.onComplete();
                         }
                     }
@@ -134,14 +133,14 @@ public class MultiAnnotationDecorator {
     }
 
     private void doError(Media media, Throwable e, Subject<List<Annotation>> subject) {
-        log.error("An error occurred while loading concurrent media for " + media.getUri(), e);
+        log.atError().withCause(e).log("An error occurred while loading concurrent media for " + media.getUri());
         showFindAnnotationsError(media.getVideoReferenceUuid(), e);
         subject.onError(e);
     }
 
     private void doComplete(Media media, AtomicInteger loadedCount, Subject<List<Annotation>> subject) {
         subject.onComplete();
-        log.info("Loaded {} concurrent annotations for {}", loadedCount.get(), media.getUri());
+        log.atInfo().log("Loaded " + loadedCount.get() + " concurrent annotations for " + media.getUri());
     }
 
     public RequestPager.Runner<List<Annotation>> buildRequestRunner(MultiRequestCount count) {
@@ -154,8 +153,8 @@ public class MultiAnnotationDecorator {
                         page.getLimit(), page.getOffset())
                         .get(pageTimeout.toMillis(), TimeUnit.MILLISECONDS);
             } catch (Exception e) {
-                log.info("A page request for conccurent annotations from " + page.getOffset() + " to " +
-                        page.getLimit() + page.getOffset() + " failed.", e);
+                log.atInfo().withCause(e).log("A page request for conccurent annotations from " + page.getOffset() + " to " +
+                        page.getLimit() + page.getOffset() + " failed.");
                 throw new RuntimeException(e);
             }
         };
@@ -188,7 +187,7 @@ public class MultiAnnotationDecorator {
 
             String msg = String.join(" ",
                     List.of(content1, videoReferenceUuid.toString(), content2));
-            log.error(msg, ex);
+            log.atError().withCause(ex).log(msg);
 
             Exception e = ex instanceof Exception ? (Exception) ex : new RuntimeException(msg, ex);
             eventBus.send(new ShowNonfatalErrorAlert(title, header, msg, e));

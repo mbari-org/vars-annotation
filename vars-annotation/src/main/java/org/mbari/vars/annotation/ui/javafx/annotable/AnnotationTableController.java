@@ -19,9 +19,8 @@ import org.mbari.vars.annotation.ui.messages.SeekMsg;
 import org.mbari.vars.annotation.ui.javafx.shared.AnnotationTableViewFactory;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.ResourceBundle;
@@ -44,7 +43,7 @@ public class AnnotationTableController {
     private final ResourceBundle i18n;
     private final EventBus eventBus;
     private final Data data;
-    private static final Logger log = LoggerFactory.getLogger(AnnotationTableController.class);
+    private static final Loggers log = new Loggers(AnnotationTableController.class);
 
 
     public AnnotationTableController(UIToolBox toolBox) {

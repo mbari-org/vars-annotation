@@ -3,8 +3,7 @@ package org.mbari.vars.annotation.ui.mediaplayers.vcr;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
 import org.mbari.vars.vampiresquid.sdk.r1.MediaService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.time.Instant;
 
@@ -15,7 +14,7 @@ import java.time.Instant;
 public class OpenTapeService {
 
     private final UIToolBox toolBox;
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private Loggers log = new Loggers(getClass());
 
     public OpenTapeService(UIToolBox toolBox) {
         this.toolBox = toolBox;
@@ -37,7 +36,7 @@ public class OpenTapeService {
                                 Instant.now()) // use now as placeholder time.
                                 // THis is changed when media is closed at end of annotation session
                         .thenAccept(m -> {
-                            log.debug("Created media: " + m);
+                            log.atDebug().log(() -> "Created media: " + m);
                             toolBox.getEventBus()
                                     .send(new MediaChangedEvent(null, m));
                         });

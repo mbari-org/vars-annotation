@@ -9,8 +9,7 @@ import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.VideoState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.io.File;
 import java.time.Instant;
@@ -18,7 +17,7 @@ import java.util.Optional;
 
 public class FrameCaptureService {
 
-    private static final Logger log = LoggerFactory.getLogger(FrameCaptureService.class);
+    private static final Loggers log = new Loggers(FrameCaptureService.class);
 
     public static Optional<ImageData> capture(File imageFile,
                                               Media media,
@@ -45,7 +44,7 @@ public class FrameCaptureService {
             return Optional.empty();
 
         } catch (Exception e) {
-            log.atWarn().setCause(e).log("Failed capture image from " + media.getUri());
+            log.atWarn().withCause(e).log("Failed capture image from " + media.getUri());
             return Optional.empty();
         }
     }

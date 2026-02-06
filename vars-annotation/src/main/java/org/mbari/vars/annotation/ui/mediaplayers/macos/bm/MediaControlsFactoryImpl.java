@@ -1,20 +1,20 @@
 package org.mbari.vars.annotation.ui.mediaplayers.macos.bm;
 
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.mediaplayers.MediaControls;
 import org.mbari.vars.annotation.ui.mediaplayers.MediaControlsFactory;
 import org.mbari.vars.annotation.ui.mediaplayers.SettingsPane;
 import org.mbari.vcr4j.VideoError;
 import org.mbari.vcr4j.VideoState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.util.concurrent.CompletableFuture;
 
 public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
     private SettingsPane settingsPane;
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
 
     @Override
     public SettingsPane getSettingsPane() {
@@ -23,7 +23,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                 settingsPane = BMSettingsPaneController.newInstance();
             }
             catch (Exception | UnsatisfiedLinkError e) {
-                log.warn("Unable to create a settings pane for Blackmagic Server image capture", e);
+                log.atWarn().withCause(e).log("Unable to create a settings pane for Blackmagic Server image capture");
             }
         }
         return settingsPane;

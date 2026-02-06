@@ -6,9 +6,9 @@ import javafx.scene.image.ImageView;
 import org.mbari.imgfx.AutoscalePaneController;
 import org.mbari.imgfx.demos.imageview.editor.Localizations;
 
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.javafx.imgfx.events.DrawVarsLocalizationEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 
 public class AnnotationLifecycleDecorator {
@@ -17,7 +17,7 @@ public class AnnotationLifecycleDecorator {
     private final IFXToolBox toolBox;
     private final AutoscalePaneController<ImageView> autoscalePaneController;
     private final Localizations localizations;
-    private static final Logger log = LoggerFactory.getLogger(AnnotationLifecycleDecorator.class);
+    private static final Loggers log = new Loggers(AnnotationLifecycleDecorator.class);
 
 
     public AnnotationLifecycleDecorator(IFXToolBox toolBox,
@@ -34,7 +34,7 @@ public class AnnotationLifecycleDecorator {
         toolBox.getData()
                 .selectedImageProperty()
                 .addListener((obs, oldv, newv) -> {
-                    log.debug("Detected image change to ", newv);
+                    log.atDebug().log(() -> "Detected image change to " + newv);
                     toolBox.getData().getVarsLocalizations().clear();
                     if (newv != null) {
                         var locs = LookupUtil.getVarsLocalizationsForImage(toolBox, newv, autoscalePaneController);

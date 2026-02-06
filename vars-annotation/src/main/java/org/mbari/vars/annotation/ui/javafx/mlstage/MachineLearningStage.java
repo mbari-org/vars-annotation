@@ -15,11 +15,11 @@ import javafx.stage.Stage;
 import org.mbari.imgfx.imageview.ImagePaneController;
 import org.mbari.imgfx.roi.Localization;
 import org.mbari.imgfx.roi.RectangleView;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.javafx.Icons;
 import org.mbari.vars.annotation.ui.javafx.imagestage.ImageStage2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -30,7 +30,7 @@ public class MachineLearningStage extends Stage {
 
     private ImagePaneController imagePaneController;
     private final List<Localization<RectangleView, ImageView>> localizations = new CopyOnWriteArrayList<>();
-    private static final Logger log = LoggerFactory.getLogger(ImageStage2.class);
+    private static final Loggers log = new Loggers(ImageStage2.class);
     private VBox rightPane = new VBox();
     private final UIToolBox toolBox;
     private ObjectProperty<Color> fill = new SimpleObjectProperty<>(Color.valueOf("#FF980030"));

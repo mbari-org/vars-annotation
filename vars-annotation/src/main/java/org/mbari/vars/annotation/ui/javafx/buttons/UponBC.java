@@ -8,10 +8,9 @@ import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.commands.CreateAssociationsCmd;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.javafx.Icons;
 import org.mbari.vars.annotation.ui.javafx.shared.ConceptSelectionDialogController;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class UponBC extends AbstractBC {
     private final String associationKey;
     private final String uponRoot;
     private ConceptSelectionDialogController dialogController;
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Loggers log = new Loggers(getClass());
 
     public UponBC(Button button, UIToolBox toolBox) {
         super(button, toolBox);
@@ -59,7 +58,7 @@ public class UponBC extends AbstractBC {
         dialogController.requestFocus();
         Optional<String> opt = dialog.showAndWait();
         opt.ifPresent(selectedItem -> {
-            log.debug("Select upon substrate of " + selectedItem);
+            log.atDebug().log(() -> "Select upon substrate of " + selectedItem);
             Association association = new Association(associationKey,
                     selectedItem,
                     Association.VALUE_NIL);
