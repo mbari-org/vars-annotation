@@ -3,6 +3,8 @@ package org.mbari.vars.annotation.ui.commands;
 
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annotation.ui.events.AnnotationsRemovedEvent;
+import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
@@ -52,7 +54,8 @@ public class MoveAnnotationsAndImagesCmd implements Command {
                            if (count.count() != imagedMomentUuids.size()) {
                                log.atWarn().log(String.format("Failed to move all annotations. Expected %d but was %d", imagedMomentUuids.size(), count.count()));
                            }
-                           refreshView(toolBox, originalAnnotations);
+                            var event = new AnnotationsRemovedEvent(null, originalAnnotations);
+                            toolBox.getEventBus().send(event);
                         });
 
     }
@@ -68,7 +71,10 @@ public class MoveAnnotationsAndImagesCmd implements Command {
                 log.atError().withCause(e).log("Failed to unapply move and update annotation " + a.getObservationUuid());
             }
         });
-        refreshView(toolBox, originalAnnotations);
+        var currentMedia = toolBox.getData().getMedia();
+        var event = new MediaChangedEvent(this.getClass(), currentMedia);
+        toolBox.getEventBus().send(event);
+
     }
 
     @Override
@@ -77,13 +83,6 @@ public class MoveAnnotationsAndImagesCmd implements Command {
                 originalAnnotations.size() + " images to " + media.getUri();
     }
 
-    private void refreshView(UIToolBox toolBox, List<Annotation> annotations) {
-        AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
-        Set<UUID> observationUuids = annotations.stream()
-                .map(Annotation::getObservationUuid)
-                .collect(Collectors.toSet());
-        asd.refreshAnnotationsView(observationUuids);
-    }
 
     private Duration getTimeout(UIToolBox toolBox) {
         Duration timeout = Duration.ofSeconds(5);

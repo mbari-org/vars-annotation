@@ -1,7 +1,11 @@
 package org.mbari.vars.annotation.ui.mediaplayers.vcr;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import org.mbari.vars.annotation.etc.vcr4j.NoopVideoIO;
 import org.mbari.vars.annotation.etc.vcr4j.NoopVideoState;
@@ -59,8 +63,15 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
 
     private Pane getPane() {
         var pane = new BorderPane();
-        var text = new Text("VCRs are no longer supported for annotation");
+        pane.setPadding(new Insets(10));
+        var text = new Label("VCR Tapes are no longer supported for annotation");
+        text.setPadding(new Insets(10));
+        text.setFont(Font.font(16));
+        text.getStyleClass().add("attention-button");
         pane.setCenter(text);
+//        pane.setPrefSize(440, 80);
+//        pane.setMaxSize(440, 80);
+//        pane.setMinSize(440, 80);
         return pane;
     }
 
