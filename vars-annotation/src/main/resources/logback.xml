@@ -37,8 +37,9 @@
     <logger name="jdk.httpclient" level="INFO" />
     <logger name="org.gradle" level="WARN" />
     <logger name="org.mbari.vars.core.util.ActiveAppPinger" level="WARN" />
-    <logger name="org.mbari.vars.services.util.WebPreferences" level="INFO" />
-    <logger name="org.mbari.vars.ui.mediaplayers.sharktopoda2" level="INFO" />
+    <logger name="org.mbari.vars.annotation.services.util.WebPreferences" level="INFO" />
+    <logger name="org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2" level="INFO" />
+    <logger name="org.mbari.vars.oni.sdk.OniFactory" level="DEBUG" />
     <logger name="org.mbari.vcr4j" level="INFO" />
     <logger name="org.mbari.vcr4j.remote" level="INFO" />
     <logger name="org.mbari.vcr4j.sharktopoda.SharktopodaResponseParser" level="WARN" />

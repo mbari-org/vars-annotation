@@ -32,12 +32,10 @@ public class SearchTreePaneController {
         this.toolBox = toolBox;
         this.uiBundle = uiBundle;
 
+
         // TODO listen to ShowConceptInTreeViewMsg then select/scrollTo that node
     }
 
-    public SearchTreePaneController(UIToolBox toolBox) {
-        this(toolBox, toolBox.getI18nBundle());
-    }
 
     public BorderPane getRoot() {
         if (root == null) {

@@ -111,6 +111,11 @@ public class ModifyingConceptService implements ConceptService {
     }
 
     @Override
+    public CompletableFuture<Optional<Concept>> findPhylogenyDown(String s) {
+        return conceptService.findPhylogenyDown(s);
+    }
+
+    @Override
     public CompletableFuture<Optional<Concept>> findParent(String name) {
         return conceptService.findParent(name);
     }

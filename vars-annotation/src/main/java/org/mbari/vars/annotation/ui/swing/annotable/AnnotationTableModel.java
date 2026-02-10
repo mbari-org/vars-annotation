@@ -50,16 +50,20 @@ public class AnnotationTableModel extends AbstractTableModel {
 
     public void addAnnotations(Collection<Annotation> xs) {
         int i = annotations.size();
-        int j = xs.size() + i - 1;
-        annotations.addAll(xs);
-        fireTableRowsInserted(i, j);
+        if (i > 0) {
+            int j = xs.size() + i - 1;
+            annotations.addAll(xs);
+            fireTableRowsInserted(i, j);
+        }
     }
 
 
     public void clear() {
         int n = annotations.size() - 1;
         annotations.clear();
-        fireTableRowsDeleted(0, n);
+        if (n > -1) {
+            fireTableRowsDeleted(0, n);
+        }
     }
 
     @Override

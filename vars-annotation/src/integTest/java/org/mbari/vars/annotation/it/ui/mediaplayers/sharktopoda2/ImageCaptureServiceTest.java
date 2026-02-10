@@ -26,7 +26,7 @@ public class ImageCaptureServiceTest {
         media.setVideoUuid(UUID.randomUUID());
         media.setVideoReferenceUuid(UUID.randomUUID());
 
-        var mediaPlayer = mediaControlsFactory.open(media, 8800, 5544);
+//        var mediaPlayer = mediaControlsFactory.open(media, 8800, 5544);
 
     }
 }

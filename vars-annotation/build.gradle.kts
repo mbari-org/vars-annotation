@@ -29,7 +29,7 @@ java {
 }
 
 javafx {
-    version = "25.0.1"
+    version = "25.0.2"
     modules("javafx.base", "javafx.controls", "javafx.fxml", "javafx.graphics", "javafx.media", "javafx.swing")
 }
 
@@ -69,7 +69,7 @@ val logbackVersion = "1.5.27"
 val mbariCommonsVersion = "0.0.7"
 val methanolVersion = "1.9.0"
 val okhttpLoggingInterceptorVersion = "3.14.4"
-val oniSdkVersion = "0.0.9"
+val oniSdkVersion = "0.0.12"
 val razielSdkVersion = "0.0.4"
 val slf4jVersion = "2.0.17"
 val swingxVersion = "1.6.5-1"

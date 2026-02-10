@@ -47,7 +47,17 @@ public final class Slf4jLoggerFinder extends LoggerFinder {
 
         @Override
         public void log(Level level, ResourceBundle bundle, String format, Object... params) {
-            logMessage(level, String.format(format, params), null);
+            String msg;
+            if (params == null || params.length == 0) {
+                msg = format;
+            } else {
+                try {
+                    msg = String.format(format, params);
+                } catch (Exception e) {
+                    msg = format;
+                }
+            }
+            logMessage(level, msg, null);
         }
 
         private void logMessage(Level level, String msg, Throwable t) {

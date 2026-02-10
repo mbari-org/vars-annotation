@@ -183,6 +183,7 @@ public class ServiceBuilder {
     }
 
     public synchronized PreferencesService getPreferencesService() {
+
         if (preferencesService.get() == null) {
             loadConfigurations();
             var config = endpoints.stream()

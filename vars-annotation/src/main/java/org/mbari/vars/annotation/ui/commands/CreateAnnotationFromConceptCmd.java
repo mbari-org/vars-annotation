@@ -11,6 +11,7 @@ import org.mbari.vars.annotation.ui.messages.ShowAlert;
 import org.mbari.vars.annotation.ui.messages.ShowExceptionAlert;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annotation.etc.rxjava.AsyncUtils;
+import org.mbari.vars.annotation.ui.messages.ShowInfoAlert;
 import org.mbari.vars.oni.sdk.r1.models.ConceptDetails;
 import org.mbari.vcr4j.VideoIndex;
 
@@ -89,6 +90,16 @@ public class CreateAnnotationFromConceptCmd implements Command {
 
     @Override
     public void apply(UIToolBox toolBox) {
+        var mediaPlayer = toolBox.getMediaPlayer();
+        if (mediaPlayer == null) {
+            var i18n = toolBox.getI18nBundle();
+            var title = i18n.getString("commands.createannotation.title");
+            var header = i18n.getString("commands.createannotation.header");
+            var content = i18n.getString("commands.createannotation.content.nomedia");
+            var msg = new ShowInfoAlert(title, header, content);
+            toolBox.getEventBus().send(msg);
+            return;
+        }
         Observable<VideoIndex> videoIndexObservable = Observable.defer(() ->
                 AsyncUtils.observe(toolBox.getMediaPlayer()
                     .requestVideoIndex()));

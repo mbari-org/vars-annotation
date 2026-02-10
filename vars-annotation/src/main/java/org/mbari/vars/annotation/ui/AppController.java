@@ -16,7 +16,7 @@ import org.mbari.vars.annotation.ui.messages.*;
 import org.mbari.vars.annotation.ui.events.*;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
-import org.mbari.vars.annotation.services.oni.CachedConceptService;
+import org.mbari.vars.oni.sdk.r1.CachedConceptService;
 import org.mbari.vars.annotation.ui.javafx.Alerts;
 import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
 import org.mbari.vars.annotation.ui.services.ConcurrentAnnotationDecorator;

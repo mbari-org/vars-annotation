@@ -67,6 +67,11 @@ public class NoopConceptService implements ConceptService, UserService, Preferen
     }
 
     @Override
+    public CompletableFuture<Optional<Concept>> findPhylogenyDown(String s) {
+        return CompletableFuture.failedFuture(new UnsupportedOperationException("NoopConceptService does not support findPhylogenyDown operation"));
+    }
+
+    @Override
     public CompletableFuture<PreferenceNode> create(PreferenceNode preferenceNode) {
         return CompletableFuture.failedFuture(new UnsupportedOperationException("NoopConceptService does not support create operation"));
     }

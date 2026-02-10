@@ -7,6 +7,8 @@ import javafx.scene.input.*;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.oni.sdk.r1.models.Concept;
 import org.mbari.vars.oni.sdk.r1.models.ConceptDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 class TreeCellFactory {
 
 
+    private static final Logger log = LoggerFactory.getLogger(TreeCellFactory.class);
     private String styleClassPlain = "concepttree-treecell";
     private String styleClassWithMedia = "concepttree-treecell-media";
     private final UIToolBox toolBox;
@@ -91,19 +94,25 @@ class TreeCellFactory {
 
         private void updateCell() {
             Concept item = getItem();
+            log.debug("Updating cell for concept: " + item);
             if (item != null) {
                 String text = asString(item);
                 setText(text);
-                ConceptDetails cd = item.getConceptDetails();
-                if (cd != null) {
-                    if (!cd.getMedia().isEmpty()) {
-                        getStyleClass().removeAll(styleClassPlain);
-                        getStyleClass().addAll(styleClassWithMedia);
-                    } else {
-                        getStyleClass().removeAll(styleClassWithMedia);
-                        getStyleClass().addAll(styleClassPlain);
-                    }
-                }
+                var conceptService = toolBox.getServices().conceptService();
+                conceptService.findDetails(item.getName())
+                        .thenAccept(opt ->
+                                Platform.runLater(() -> {
+                                    opt.ifPresent(cd -> {
+                                        if (!cd.getMedia().isEmpty()) {
+                                            getStyleClass().removeAll(styleClassPlain);
+                                            getStyleClass().addAll(styleClassWithMedia);
+                                        } else {
+                                            getStyleClass().removeAll(styleClassWithMedia);
+                                            getStyleClass().addAll(styleClassPlain);
+                                        }
+                                    });
+                                }));
+
             }
         }
 
