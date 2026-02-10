@@ -65,16 +65,19 @@ public class TreeViewController {
             showImage.setOnAction(event -> {
                 TreeItem<Concept> item = getTreeView().getSelectionModel().getSelectedItem();
                 Concept concept = item.getValue();
-                Gson gson = Gsons.SNAKE_CASE_GSON;
-                log.atWarn().log(() -> "Showing image for concept: " + gson.toJson(concept));
+
+                log.atDebug().log(() -> {
+                    Gson gson = Gsons.SNAKE_CASE_GSON;
+                    return "Showing image for concept: " + gson.toJson(concept);
+                });
                 var conceptService = toolBox.getServices().conceptService();
                 conceptService.findDetails(concept.getName())
                         .thenAccept(opt -> {
                             if (opt.isEmpty()) {
-                                log.atWarn().log(() -> "No details found for concept: " + concept.getName());
+                                log.atInfo().log(() -> "No details found for concept: " + concept.getName());
                                 return;
                             }
-                            opt.ifPresent(cd -> log.atWarn().log(() -> "Found details: " + gson.toJson(cd)));
+//                            opt.ifPresent(cd -> log.atWarn().log(() -> "Found details: " + gson.toJson(cd)));
                             opt.flatMap(cd -> cd.getMedia()
                                     .stream()
                                     .filter(ConceptMedia::isPrimary)
