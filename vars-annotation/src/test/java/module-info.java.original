@@ -1,0 +1,26 @@
+module org.mbari.vars.annotation.test {
+
+    requires transitive org.mbari.vars.annotation;
+    requires org.junit.jupiter.api;
+    requires typesafe.config;
+    requires org.mbari.vars.annosaurus.sdk;
+    requires org.mbari.vars.vampiresquid.sdk;
+    requires org.mbari.vars.oni.sdk;
+
+    // Open all test packages to JUnit for reflective access
+    opens org.mbari.vars.annotation.test to org.junit.platform.commons;
+    opens org.mbari.vars.annotation.test.etc.jdk to org.junit.platform.commons;
+    opens org.mbari.vars.annotation.test.etc.jdk.crypto to org.junit.platform.commons;
+    opens org.mbari.vars.annotation.test.etc.rxjava to org.junit.platform.commons;
+    opens org.mbari.vars.annotation.test.services to org.junit.platform.commons;
+    opens org.mbari.vars.annotation.test.services.annosaurus to org.junit.platform.commons;
+    opens org.mbari.vars.annotation.test.services.ml to org.junit.platform.commons;
+    opens org.mbari.vars.annotation.test.services.model to org.junit.platform.commons;
+    opens org.mbari.vars.annotation.test.services.util to org.junit.platform.commons;
+    opens org.mbari.vars.annotation.test.services.varskbserver.v1 to org.junit.platform.commons;
+    opens org.mbari.vars.annotation.test.ui to org.junit.platform.commons;
+    opens org.mbari.vars.annotation.test.ui.domain to org.junit.platform.commons;
+    opens org.mbari.vars.annotation.test.ui.javafx.imgfx.domain to org.junit.platform.commons;
+    opens org.mbari.vars.annotation.test.ui.mediaplayers.sharktopoda2 to org.junit.platform.commons;
+
+}

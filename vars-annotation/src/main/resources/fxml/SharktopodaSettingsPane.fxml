@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:id="root" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="500.0" styleClass="sharktopoda-pane" vgap="10.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.annotation.ui.mediaplayers.sharktopoda.SharktopodaSettingsPaneController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" />
+    <ColumnConstraints hgrow="SOMETIMES" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <Label text="%mediaplayer.sharktopoda.port" GridPane.hgrow="SOMETIMES" />
+      <TextField fx:id="controlPortTextField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+      <TextField fx:id="framegrabPortTextField" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+      <Label text="%mediaplayer.sharktopoda.framecapture.port" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="1" />
+      <TextField fx:id="timeJumpTextField" promptText="%mediaplayer.sharktopoda.jump.prompt" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <Label text="%mediaplayer.sharktopoda.jump" GridPane.rowIndex="2" />
+      <Label text="%mediaplayer.sharktopoda.version" GridPane.rowIndex="3" />
+      <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+         <children>
+            <RadioButton fx:id="v1RadioButton" mnemonicParsing="false" text="1" />
+            <RadioButton fx:id="v2RadioButton" mnemonicParsing="false" text="2" />
+         </children>
+      </HBox>
+   </children>
+<!--   <padding>-->
+<!--      <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />-->
+<!--   </padding>-->
+</GridPane>

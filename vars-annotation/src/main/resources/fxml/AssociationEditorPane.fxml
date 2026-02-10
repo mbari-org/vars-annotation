@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane id="association-editor-grid" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.annotation.ui.javafx.roweditor.AssociationEditorPaneController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints vgrow="NEVER" />
+    <RowConstraints vgrow="NEVER" />
+    <RowConstraints vgrow="NEVER" />
+    <RowConstraints vgrow="NEVER" />
+    <RowConstraints vgrow="NEVER" />
+  </rowConstraints>
+   <children>
+      <Label fx:id="searchLabel" focusTraversable="false" text="%roweditor.asseditor.search.label" GridPane.hgrow="NEVER" />
+      <Label fx:id="linkNameLabel" focusTraversable="false" text="%roweditor.asseditor.link.label" GridPane.hgrow="NEVER" GridPane.rowIndex="2" />
+      <Label fx:id="toConceptLabel" focusTraversable="false" text="%roweditor.asseditor.to.label" GridPane.hgrow="NEVER" GridPane.rowIndex="3" />
+      <Label fx:id="linkValueLabel" focusTraversable="false" text="%roweditor.asseditor.value.label" GridPane.hgrow="NEVER" GridPane.rowIndex="4" />
+      <HBox GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+         <children>
+            <Button fx:id="addButton" defaultButton="true" onAction="#onAdd" styleClass="ok-button" />
+            <Button fx:id="cancelButton" cancelButton="true" onAction="#onCancel" styleClass="cancel-button" text="Button" />
+         </children>
+      </HBox>
+      <TextField fx:id="searchTextField" GridPane.columnIndex="1" GridPane.columnSpan="５" />
+      <ComboBox fx:id="associationComboBox" GridPane.columnSpan="６" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+      <TextField fx:id="linkNameTextField" GridPane.columnIndex="１" GridPane.columnSpan="５" GridPane.rowIndex="2" />
+      <ComboBox fx:id="toConceptComboBox" GridPane.columnIndex="１" GridPane.columnSpan="５" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+      <TextField fx:id="linkValueTextField" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="4" />
+   </children>
+</GridPane>

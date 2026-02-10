@@ -1,5 +1,0 @@
-dependencies {
-  implementation 'com.typesafe:config'
-  implementation 'io.reactivex.rxjava3:rxjava'
-  implementation 'org.slf4j:slf4j-api'
-}

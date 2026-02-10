@@ -1,0 +1,101 @@
+package org.mbari.vars.annotation.ui.javafx.imgfx;
+
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Shape;
+import org.mbari.imgfx.AutoscalePaneController;
+import org.mbari.imgfx.roi.Data;
+import org.mbari.imgfx.roi.DataView;
+import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annosaurus.sdk.r1.models.Association;
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
+import org.mbari.vars.annotation.ui.javafx.imgfx.domain.VarsLocalization;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class LookupUtil {
+
+    private static final Loggers log = new Loggers(LookupUtil.class);
+
+    private record RoiAssociation(Annotation annotation, Association association) {}
+
+    public static final Map<String, Roi<? extends DataView<? extends Data, ? extends Shape>>> LINK_VALUES_TO_ROI_MAP = Map.of(
+            RoiBoundingBox.LINK_NAME, new RoiBoundingBox(),
+            RoiLine.LINK_NAME, new RoiLine(),
+            RoiMarker.LINK_NAME, new RoiMarker(),
+            RoiPolygon.LINK_NAME, new RoiPolygon()
+    );
+
+    public static final List<String> LINK_NAMES_FOR_LOCALIZATIONS = LINK_VALUES_TO_ROI_MAP.keySet().stream().toList();
+
+    private LookupUtil() {}
+
+    /**
+     * @return A readonly ObservableList of annotations that have the
+     * same imagedMomentUuid as the selected image.
+     */
+    public static List<Annotation> getAnnotationsForImage(IFXToolBox toolBox, Image image) {
+        if (image == null) {
+            return Collections.emptyList();
+        }
+        else {
+            var imagedMomentUuid = image.getImagedMomentUuid();
+            var annos = new ArrayList<>(toolBox.getUIToolBox()
+                    .getData()
+                    .getAnnotations()
+                    .filtered(a -> a.getImagedMomentUuid().equals(imagedMomentUuid)));
+            log.debug(String.format("Found %d annotations for %s", annos.size(), image.getUrl()));
+            return annos;
+        }
+    }
+
+    /**
+     * Find the images for the given annotations. If the annotations do not all
+     * belong to the same imagedMoment, and empty collection is returned
+     * @param annotations The annotations of interest
+     * @return The matching collection of images, all with the same imagedMomentUuid.
+     *  Otherwise, an empty collection
+     */
+    public static List<Image> getImagesForAnnotations(IFXToolBox toolBox, Collection<Annotation> annotations) {
+        // Make sure they all belong to same imagedMoment
+        var uniqueImagedMomentUuids = annotations.stream()
+                .map(Annotation::getImagedMomentUuid)
+                .distinct()
+                .toList();
+        if (uniqueImagedMomentUuids.size() != 1) {
+            return  Collections.emptyList();
+        }
+
+        var imagedMomentUuid = uniqueImagedMomentUuids.get(0);
+        // Find matching image
+        return toolBox.getData()
+                .getImages()
+                .stream()
+                .filter(i -> i.getImagedMomentUuid().equals(imagedMomentUuid))
+                .collect(Collectors.toList());
+
+    }
+
+    public static List<VarsLocalization> getVarsLocalizationsForImage(IFXToolBox toolBox,
+                                                               Image image,
+                                                               AutoscalePaneController<ImageView> autoscalePaneController) {
+        var vlocs = getAnnotationsForImage(toolBox, image)
+                .stream()
+                .flatMap(a -> a.getAssociations()
+                        .stream()
+                        .filter(ass -> LINK_NAMES_FOR_LOCALIZATIONS.contains(ass.getLinkName()))
+                        .map(ass -> new RoiAssociation(a, ass)))
+                .map(roi -> VarsLocalization.from(roi.annotation(),
+                        roi.association(),
+                        autoscalePaneController,
+                        toolBox.editedColorProperty()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+
+        log.debug(String.format("Found %d localizations in annotations for %s", vlocs.size(), image.getUrl()));
+        return vlocs;
+    }
+
+}

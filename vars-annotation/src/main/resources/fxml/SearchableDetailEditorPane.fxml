@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextField?>
+<VBox fx:id="root" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.annotation.ui.javafx.shared.SearchableDetailEditorPaneController">
+   <children>
+      <TextField fx:id="searchTextField" prefColumnCount="50" promptText="%roweditor.asseditor.search.label">
+         <VBox.margin>
+            <Insets bottom="5.0" />
+         </VBox.margin>
+      </TextField>
+      <ComboBox fx:id="associationComboBox">
+         <VBox.margin>
+            <Insets bottom="5.0" />
+         </VBox.margin></ComboBox>
+   </children>
+</VBox>

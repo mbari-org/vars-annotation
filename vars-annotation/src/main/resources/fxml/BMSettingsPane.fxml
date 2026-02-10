@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- <?import com.jfoenix.controls.JFXTextField?> -->
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<?import javafx.scene.control.Button?>
+<GridPane fx:id="root" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="500.0" vgap="10.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.annotation.ui.mediaplayers.macos.bm.BMSettingsPaneController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="ALWAYS" prefWidth="200.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+    </rowConstraints>
+    <padding>
+        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+    </padding>
+    <Label text="%mediaplayer.macos.bm.host" />
+    <Label text="%mediaplayer.macos.bm.port" GridPane.rowIndex="1" />
+    <Label text="%mediaplayer.macos.bm.key" GridPane.rowIndex="2" />
+    <Label text="%mediaplayer.macos.bm.timeout" GridPane.rowIndex="3" />
+    <TextField fx:id="hostTextfield" minWidth="200.0" promptText="The framegrab server host (e.g. localhost)" GridPane.columnIndex="1" />
+    <TextField fx:id="portTextfield" minWidth="200.0" promptText="The framegrab server port" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    <TextField fx:id="keyTextfield" minWidth="200.0" promptText="The framegrab server api key" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+    <TextField fx:id="timeoutTextfield" minWidth="200.0" promptText="TCP timeout in seconds" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+   <Button fx:id="testButton" text="%mediaplayer.macos.bm.test" GridPane.rowIndex="4" />
+   <Label fx:id="testLabel" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+</GridPane>

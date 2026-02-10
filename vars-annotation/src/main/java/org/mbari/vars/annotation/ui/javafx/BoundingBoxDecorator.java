@@ -1,0 +1,75 @@
+package org.mbari.vars.annotation.ui.javafx;
+
+import org.mbari.vars.annosaurus.sdk.r1.models.Image;
+import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
+import org.mbari.vars.annotation.ui.UIToolBox;
+
+import java.time.Duration;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+public class BoundingBoxDecorator {
+    private final UIToolBox toolBox;
+    private final Duration timeout;
+    private static final Loggers log = new Loggers(BoundingBoxDecorator.class);
+    private static final double EPSILON = 0.01;
+
+    public BoundingBoxDecorator(UIToolBox toolBox, Duration timeout) {
+        this.toolBox = toolBox;
+        this.timeout = timeout;
+    }
+
+    public double estimateScale(UUID videoReferenceUuid, UUID imageReferenceUuid, int targetWidth, int targetHeight) {
+        double xScale = 1;
+        double yScale = 1;
+
+        boolean keepGoing = true;
+
+        // If there's an imageReferenceUuid weill use that as the source dimensions for the image that
+        // the bounding box belongs to.
+        if (imageReferenceUuid != null) {
+            final Image image;
+            try {
+                image = toolBox.getServices()
+                        .annotationService()
+                        .findImageByUuid(imageReferenceUuid)
+                        .get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+                if (image != null) {
+                    xScale = targetWidth / (double) image.getWidth();
+                    yScale = targetHeight / (double) image.getHeight();
+                    keepGoing = false;
+                }
+                else {
+                    log.atWarn().log(() -> "Unable to find the bounding box image. Falling back to using it's video size");
+                }
+            } catch (Exception e) {
+                log.atWarn().withCause(e).log("Failed to look up image with UUID = " + imageReferenceUuid
+                    + ". Falling back to using it's video size");
+            }
+        }
+
+        // If we made it into this block, we're using the video size that the bounding box belongs to.
+        if (keepGoing) {
+            final Media media;
+            try {
+                media = toolBox.getServices()
+                        .mediaService()
+                        .findByUuid(videoReferenceUuid)
+                        .get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+                if (media != null) {
+                    xScale = targetWidth / media.getWidth().doubleValue();
+                    yScale = targetHeight / media.getHeight().doubleValue();
+                }
+            } catch (Exception e) {
+                log.atWarn().log(() -> "Unable to find the bounding box image. We're punting and using a scale of 1");
+            }
+        }
+
+        if (Math.abs(xScale - yScale) > EPSILON) {
+            log.atWarn().log(() -> "The image aspect ratio is not 1. This is a problem!");
+        }
+        return xScale;
+
+    }
+}

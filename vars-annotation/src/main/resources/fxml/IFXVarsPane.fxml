@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="root" alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mbari.vars.annotation.ui.javafx.imgfx.IFXVarsPaneController">
+   <children>
+      <ImageView fx:id="imageView" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="NEVER" />
+      <HBox spacing="5.0">
+         <children>
+            <Label text="%ifx.zoom.label" HBox.hgrow="NEVER">
+               <padding>
+                  <Insets left="5.0" />
+               </padding>
+            </Label>
+            <Slider fx:id="magnificationSlider" blockIncrement="0.0" majorTickUnit="2.0" max="9.0" min="1.0" minorTickCount="2" showTickLabels="true" showTickMarks="true" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+      <Separator />
+      <HBox alignment="CENTER" spacing="5.0" VBox.vgrow="NEVER">
+         <children>
+            <Label text="%ifx.image.filter" />
+            <ComboBox fx:id="imageTypeComboBox" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" top="5.0" />
+         </padding>
+      </HBox>
+      <SplitPane dividerPositions="0.46153846153846156" VBox.vgrow="ALWAYS">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0">
+               <children>
+                  <ListView fx:id="imageListView" prefWidth="150.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0">
+               <children>
+                  <ListView fx:id="annoListView" prefWidth="150.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+      <VBox alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
+         <children>
+            <CheckBox fx:id="annoExistingCb" mnemonicParsing="false" text="%ifx.annotate.existing" />
+            <CheckBox fx:id="addCommentCb" mnemonicParsing="false" text="%ifx.add.comment" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <padding>
+            <Insets left="5.0" top="5.0" />
+         </padding>
+      </VBox>
+      <HBox alignment="CENTER" VBox.vgrow="NEVER">
+         <children>
+            <TextField fx:id="mlUrlTextField" />
+            <Button fx:id="mlButton" mnemonicParsing="false" />
+         </children>
+      </HBox>
+   </children>
+</VBox>

@@ -24,7 +24,7 @@ export MAC_CODE_SIGNER="Developer ID Application: blah blah blah (ABC123456)"
 
 cd vars-annotation
 
-# The build will correctly sign everything if your MAC_CODE_SIGNER is correct
+# The [BaseHttpClient.java](org.mbari.vars.services/src/main/java/org/mbari/vars/services/impl/BaseHttpClient.java)build will correctly sign everything if your MAC_CODE_SIGNER is correct
 ./gradlew clean jpackage --info
 
 cd  org.mbari.vars.ui/build/jpackage

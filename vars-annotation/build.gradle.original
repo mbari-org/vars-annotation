@@ -1,0 +1,340 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin'
+    id 'org.beryx.jlink'
+    id 'nebula.facet'
+}
+
+facets {
+    integTest {
+        parentSourceSet = 'test'
+        testTaskName = 'integrationTest'
+        includeInCheckLifecycle = false
+    }
+}
+
+dependencies {
+
+    implementation 'com.auth0:java-jwt'
+    implementation 'com.fasterxml.jackson.core:jackson-databind' // used java-jwt
+    implementation 'com.github.mizosoft.methanol:methanol'
+    implementation 'com.google.code.gson:gson'
+    implementation 'com.squareup.okhttp3:logging-interceptor'
+    implementation 'com.squareup.retrofit2:converter-gson'
+    implementation 'com.squareup.retrofit2:retrofit'
+    implementation 'com.typesafe:config'
+    implementation 'jakarta.activation:jakarta.activation-api'
+    implementation 'javax.inject:javax.inject'
+    implementation 'com.typesafe:config'
+    implementation 'javax.inject:javax.inject'
+    implementation 'org.kordamp.ikonli:ikonli-javafx'
+    implementation 'org.kordamp.ikonli:ikonli-swing'
+    implementation 'org.kordamp.ikonli:ikonli-material-pack'
+    implementation 'org.zeromq:jeromq'
+    implementation 'org.mbari.imgfx:imgfx'
+    implementation 'org.mbari.vcr4j:vcr4j-core'
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'com.typesafe:config'
+    implementation 'io.reactivex.rxjava3:rxjava'
+    implementation 'org.slf4j:slf4j-api'
+
+    implementation('org.mbari.vars:oni-java-sdk') {
+        exclude group: 'javax.xml.stream', module: 'stax-api'
+    }
+    implementation 'org.mbari.vcr4j:vcr4j-core'
+    implementation 'org.mbari.vcr4j:vcr4j-remote'
+
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'org.swinglabs.swingx:swingx-all'
+
+    implementation('org.mbari.vars:annosaurus-java-sdk') {
+        exclude group: 'javax.xml.stream', module: 'stax-api'
+    }
+    implementation('org.mbari.vars:oni-java-sdk') {
+        exclude group: 'javax.xml.stream', module: 'stax-api'
+    }
+    implementation('org.mbari.vars:vampire-squid-java-sdk') {
+        exclude group: 'javax.xml.stream', module: 'stax-api'
+    }
+
+
+    implementation('org.controlsfx:controlsfx') {
+        exclude group: 'org.openjfx', module: 'javafx-base'
+        exclude group: 'org.openjfx', module: 'javafx-controls'
+        exclude group: 'org.openjfx', module: 'javafx-graphics'
+        because("If not excluded we end up with both mac and linux javafx jars which cause jlink to fail")
+    }
+
+    implementation('com.github.ben-manes.caffeine:caffeine') {
+        exclude group: 'org.checkerframework', module: 'checker-qual'
+    }
+
+    runtimeOnly('ch.qos.logback:logback-classic') {
+        exclude group: 'javax.activation'
+    }
+    runtimeOnly 'javax.servlet:javax.servlet-api'
+    runtimeOnly 'org.fusesource.jansi:jansi'
+    runtimeOnly 'org.slf4j:slf4j-jdk-platform-logging'
+    runtimeOnly 'org.slf4j:jul-to-slf4j'
+    runtimeOnly 'ch.qos.logback:logback-classic:1.5.26'
+
+}
+
+javafx {
+    version = javafxVersion
+    modules = [
+            'javafx.base',
+            'javafx.controls',
+            'javafx.fxml',
+            'javafx.graphics',
+            'javafx.media',
+            'javafx.swing'
+    ]
+}
+
+
+/* *****************************************************************************
+  These runtime args are shared by several tasks. We add many env params that
+  configure values defined in reference.conf. Note that the conf params will
+  only be added to the launchers IF they are defined in the system env at
+  build time
+ */
+
+def runtimeJvmArgs = [
+        '-Djdk.httpclient.HttpClient.log=requests,headers,content',
+        '-XX:+TieredCompilation',
+        '-XX:TieredStopAtLevel=1',
+        '-Xms1g',
+//        '--add-exports', 'javafx.base/com.sun.javafx.binding=com.jfoenix',
+//        '--add-exports', 'javafx.base/com.sun.javafx.event=com.jfoenix',
+//        '--add-exports', 'javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix',
+//        '--add-exports', 'javafx.controls/com.sun.javafx.scene.control=com.jfoenix',
+//        '--add-exports', 'javafx.graphics/com.sun.javafx.stage=com.jfoenix',
+        '--add-opens', 'java.base/java.lang.invoke=retrofit2',
+        '--add-opens', 'java.base/java.lang.invoke=vars.annotation.merged.module',
+//        '--add-opens', 'java.base/java.lang.reflect=com.jfoenix',
+        '--add-opens', 'org.mbari.vars.services/org.mbari.vars.services.model=com.google.gson',
+        '--add-reads', 'vars.annotation.merged.module=org.slf4j',
+        '--add-reads', 'vars.annotation.merged.module=com.google.gson',
+]
+
+// If any of these exist as environment variables add them as -Dkey=value to jvmArgs
+def confEnvParams = [
+        "ACCOUNTS_SERVICE_URL",
+        "ACCOUNTS_SERVICE_TIMEOUT",
+        "ACCOUNTS_SERVICE_CLIENT_SECRET",
+        "ANNOTATION_SERVICE_URL",
+        "ANNOTATION_SERVICE_TIMEOUT",
+        "ANNOTATION_SERVICE_CLIENT_SECRET",
+        "ANNOTATION_SERVICE_PAGING",
+        "ANNOTATION_SERVICE_PAGE_COUNT",
+        "ANNOTATION_SERVICE_V2_URL",
+        "APP_IMAGE_COPYRIGHT_OWNER",
+        "CONCEPT_SERVICE_URL",
+        "CONCEPT_SERVICE_TIMEOUT",
+        "CONCEPT_SERVICE_TEMPLATE_FILTERS",
+        "MEDIA_SERVICE_URL",
+        "MEDIA_SERVICE_TIMEOUT",
+        "MEDIA_SERVICE_CLIENT_SECRET",
+        "PANOPTES_SERVICE_URL",
+        "PANOPTES_SERVICE_TIMEOUT",
+        "PANOPTES_SERVICE_CLIENT_SECRET",
+        "PREFERENCES_SERVICE_URL",
+        "PREFERENCES_SERVICE_TIMEOUT",
+        "PREFERENCES_SERVICE_CLIENT_SECRET",
+        "SHARKTOPODA_DEFAULTS_CONTROL_PORT",
+        "SHARKTOPODA_DEFAULTS_FRAMEGRAB_PORT"
+]
+confEnvParams.each { k ->
+    def v = System.getenv(k)
+    if (v) {
+        runtimeJvmArgs.add("-D${k}=${v}")
+    }
+}
+
+tasks.withType(JavaExec) {
+    if (System.getProperty('DEBUG', 'false') == 'true') {
+        def debugJvmArgs = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005']
+        debugJvmArgs.addAll(runtimeJvmArgs)
+        jvmArgs(debugJvmArgs)
+    }
+}
+
+/* *****************************************************************************
+ Use the jlink plugin to build a dist with a JVM
+ */
+application {
+    mainModule = "org.mbari.vars.ui"
+//    mainClassName = "org.mbari.vars.ui.App"
+    mainClassName = project.hasProperty("mainClass") ? project.getProperty("mainClass") : "org.mbari.vars.ui.App"
+    applicationDefaultJvmArgs = runtimeJvmArgs
+}
+
+task execute(type:JavaExec) {
+//    mainClass = project.hasProperty("mainClass") ? getProperty("mainClass") : "org.mbari.vars.ui.App"
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+
+jlink {
+    imageZip = file("$buildDir/image-zip/vars-annotation.zip")
+    options = [
+            '--bind-services',
+//            '--strip-debug',
+            '--compress', '2',
+            '--no-header-files',
+            '--no-man-pages'
+    ]
+
+    if(System.getenv("CI")) {
+        ["win", "linux", "mac"].each { name ->
+            targetPlatform(name) {
+                jdkHome = System.getenv("JDK_HOME_${name.toUpperCase()}")
+                addExtraModulePath(System.getenv("OPENJFX_MODS_${name.toUpperCase()}"))
+            }
+        }
+    }
+
+    launcher {
+        name = 'VARS Annotation'
+        jvmArgs = runtimeJvmArgs
+    }
+
+    mergedModule {
+        additive = true
+        uses "org.jdesktop.swingx.plaf.LookAndFeelAddons"
+    }
+
+    jpackage {
+        // jpackageHome = System.getenv("JPACKAGE_HOME")
+        // jpackageHome = "C:\\Program Files\\AdoptOpenJDK\\jdk-14.0.0.36-hotspot"
+
+        def customInstallerOptions = [
+                "--app-version", project.version,
+                "--copyright", "Monterey Bay Aquarium Research Institute 2020",
+                "--name", "VARS Annotation",
+                "--vendor", "org.mbari"
+        ]
+
+        if  (org.gradle.internal.os.OperatingSystem.current().isLinux()) {
+            installerType = "deb"
+        }
+        else if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+            installerType = "msi"
+            customInstallerOptions.addAll([
+                "--win-upgrade-uuid", "1afa1e7b-8c54-4007-9ccb-537b61826967",
+                "--win-menu-group", "VARS",
+                "--win-menu"
+            ])
+        }
+        else {
+            installerType = "dmg"
+            customInstallerOptions.addAll([
+                "--mac-package-name", "VARS Annotation",
+                "--mac-package-identifier", project.name
+            ])
+            imageOptions = ["--icon", "src/jpackage/macos/VARS Annotation.icns"]
+//            def signer = System.getenv("MAC_CODE_SIGNER")
+//            if (signer) {
+//                customInstallerOptions.addAll([
+//                         "--mac-sign",
+//                         "--mac-package-signing-prefix", "org.mbari.vars.ui",
+//                         "--mac-signing-key-user-name", "Monterey Bay Aquarium Research Institute (9TN7A342V4)",
+//                         "--mac-entitlements", "${projectDir}/src/jpackage/macos/java.entitlements"
+//                     ])
+//            }
+                // def prefix = System.getenv("MAC_PACKAGE_SIGNING_PREFIX")
+                // def user=System.getenv("MAC_SIGNING_KEY_USER_NAME")
+                // if (prefix && user) {
+                //     customInstallerOptions.addAll([
+                //         "--mac-sign",
+                //         "--mac-package-signing-prefix", prefix,
+                //         "--mac-signing-key-user-name", user
+                //     ])
+                // }
+
+        }
+        installerOptions = customInstallerOptions
+
+    }
+
+}
+
+tasks.jpackageImage.doLast {
+    if (org.gradle.internal.os.OperatingSystem.current().isMacOsX()) {
+        // copy {
+        //     println("MACOSX: Adding VARS Annotation.icns")
+        //     from "src/jpackage/macos"
+        //     include "VARS Annotation.icns"
+        //     into "build/jpackage/VARS Annotation.app/Contents/Resources"
+        // }
+        exec {
+            println("MACOSX: Modifying Info.plist - Adding Camera Entitlement")
+            workingDir "build/jpackage/VARS Annotation.app/Contents"
+
+            executable 'plutil'
+    
+            args '-insert', 'NSCameraUsageDescription', '-string',  
+              'VARS Annotation uses camera access for framecapture from hardware', 
+              'Info.plist'
+        }
+
+//        exec {
+//            println("MACOSX: Modifying Info.plist - Adding Microphone Entitlement")
+//            workingDir "build/jpackage/VARS Annotation.app/Contents"
+//
+//            executable 'plutil'
+//
+//            args '-insert', 'NSMicrophoneUsageDescription', '-string',
+//                    'VARS Annotation uses microphone access to avoid crashes with Apple GateKeeper',
+//                    'Info.plist'
+//        }
+
+        
+        def signer = System.getenv("MAC_CODE_SIGNER")
+        if (signer) {
+
+            def dirsToBeSigned= [
+                    file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/runtime/Contents/Home/bin"),
+                    file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/runtime/Contents/Home/lib"),
+                    file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/runtime/Contents/Home/lib/server"),
+                    file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/runtime/Contents/MacOS")
+            ]
+
+            dirsToBeSigned.forEach { dir ->
+                println("Signing $dir")
+                FileCollection files = layout.files(dir.listFiles())
+                files
+                        .findAll {it.isFile() }
+                        .forEach {file ->
+                    exec {
+                        println("MACOSX: Signing ${file}")
+                        workingDir "build/jpackage"
+
+                        executable "codesign"
+
+                        args "--entitlements", "${projectDir}/src/jpackage/macos/java.entitlements",
+                                "--options", "runtime", "--timestamp", "-vvv", "-f", "--sign", signer,
+                                file.absolutePath
+                    }
+                }
+            }
+
+            exec {
+               println("MACOSX: Signing application")
+               workingDir "build/jpackage"
+
+               executable "codesign"
+
+               args "--entitlements", "${projectDir}/src/jpackage/macos/java.entitlements",
+                 "--options", "runtime", "--timestamp", "-vvv", "-f", "--sign", signer,
+                 "VARS Annotation.app"
+            }
+
+        }
+    }
+}
+
+tasks.withType(Test) {
+    systemProperty("jdk.httpclient.HttpClient.log", "requests,headers,content")
+}
