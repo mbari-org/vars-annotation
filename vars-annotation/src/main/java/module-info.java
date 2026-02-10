@@ -49,7 +49,8 @@ module org.mbari.vars.annotation {
             with
                     org.mbari.vars.annotation.ui.mediaplayers.macos.bm.MediaControlsFactoryImpl,
                     org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2.MediaControlsFactoryImpl,
-                    org.mbari.vars.annotation.ui.mediaplayers.ships.MediaControlsFactoryImpl;
+                    org.mbari.vars.annotation.ui.mediaplayers.ships.MediaControlsFactoryImpl,
+                    org.mbari.vars.annotation.ui.mediaplayers.vcr.MediaControlsFactoryImpl;
 
     provides java.lang.System.LoggerFinder
             with org.mbari.vars.annotation.etc.slf4j.Slf4jLoggerFinder;
@@ -93,5 +94,6 @@ module org.mbari.vars.annotation {
     exports org.mbari.vars.annotation.util;
     exports org.mbari.vars.annotation.services.ml;
     exports org.mbari.vars.annotation.services.raziel;
+    opens org.mbari.vars.annotation.etc.vcr4j to javafx.fxml;
 
 }

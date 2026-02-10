@@ -1,7 +1,6 @@
 package org.mbari.vars.annotation.ui.commands;
 
-import org.mbari.vars.annosaurus.sdk.r1.models.Image;
-import org.mbari.vars.annosaurus.sdk.r1.models.ImagedMoment;
+
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
@@ -11,13 +10,10 @@ import org.mbari.vcr4j.util.Preconditions;
 import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 /**
@@ -28,9 +24,7 @@ public class MoveAnnotationsAndImagesCmd implements Command {
 
     private final Loggers log = new Loggers(getClass());
     private final List<Annotation> originalAnnotations;
-    private final List<Image> originalImages;
-    private final List<Annotation> changedAnnotations;
-    private final List<Image> changedImages;
+    private List<Annotation> changedAnnotations;
     private final Media media;
 
     public MoveAnnotationsAndImagesCmd(List<Annotation> annotations, Media media) {
@@ -42,95 +36,53 @@ public class MoveAnnotationsAndImagesCmd implements Command {
         originalAnnotations = annotations.stream()
                 .filter(i -> !i.getVideoReferenceUuid().equals(media.getVideoReferenceUuid()))
                 .collect(Collectors.toList());
-        originalImages = originalAnnotations.stream()
-                .flatMap(a -> a.getImages()
-                        .stream()
-                        .map(i -> new Image(a, i)))
-                .collect(Collectors.toList());
-
-        // -- Aggregate modified data
-        Instant now = Instant.now();
-        changedAnnotations = originalAnnotations.stream()
-                .map(Annotation::new)
-                .map(a -> update(a, media))
-                .peek(a -> a.setObservationTimestamp(now))
-                .collect(Collectors.toList());
-        changedImages = originalImages.stream()
-                .map(Image::new)
-                .map(i -> update(i, media))
-                .collect(Collectors.toList());
 
     }
 
     @Override
     public void apply(UIToolBox toolBox) {
-        doUpdate(toolBox, changedAnnotations, changedImages);
+        var imagedMomentUuids = originalAnnotations.stream()
+                .map(Annotation::getImagedMomentUuid)
+                .toList();
+
+        var annotationService = toolBox.getServices().annotationService();
+        annotationService.bulkMove(media.getVideoReferenceUuid(), imagedMomentUuids, media.getStartTimestamp())
+                        .thenAccept(count -> {
+                           log.atInfo().log("Moved " + count + " annotations");
+                           if (count.count() != imagedMomentUuids.size()) {
+                               log.atWarn().log(String.format("Failed to move all annotations. Expected %d but was %d", imagedMomentUuids.size(), count.count()));
+                           }
+                           refreshView(toolBox, originalAnnotations);
+                        });
+
     }
 
     @Override
     public void unapply(UIToolBox toolBox) {
-        doUpdate(toolBox, originalAnnotations, originalImages);
+        final AnnotationService annotationService = toolBox.getServices().annotationService();
+        final Duration timeout = getTimeout(toolBox);
+        originalAnnotations.forEach(a -> {
+            try {
+                annotationService.updateAnnotation(a).get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                log.atError().withCause(e).log("Failed to unapply move and update annotation " + a.getObservationUuid());
+            }
+        });
+        refreshView(toolBox, originalAnnotations);
     }
 
     @Override
     public String getDescription() {
         return "Move " + originalAnnotations.size() + " annotations and " +
-                originalImages.size() + " images to " + media.getUri();
-    }
-
-    private void doUpdate(UIToolBox toolBox,
-                          List<Annotation> annotations,
-                          List<Image> images) {
-        try {
-            updateAnnotations(toolBox, annotations);
-            updateImages(toolBox, images);
-        } catch (Exception e) {
-            log.atError().withCause(e).log("Failed to execute update");
-        }
-
-        refreshView(toolBox, annotations);
+                originalAnnotations.size() + " images to " + media.getUri();
     }
 
     private void refreshView(UIToolBox toolBox, List<Annotation> annotations) {
-//        Set<VideoIndex> indices = annotations.stream()
-//                .map(ImagedMoment::toVideoIndex)
-//                .collect(Collectors.toSet());
         AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
-//        asd.refreshAnnotationsViewByIndices(indices);
-
         Set<UUID> observationUuids = annotations.stream()
                 .map(Annotation::getObservationUuid)
                 .collect(Collectors.toSet());
         asd.refreshAnnotationsView(observationUuids);
-    }
-
-    private void updateAnnotations(UIToolBox toolBox, List<Annotation> annotations)
-            throws InterruptedException, ExecutionException, TimeoutException {
-        Duration timeout = getTimeout(toolBox).multipliedBy(annotations.size());
-        // We can update all annotations in one PUT request
-        toolBox.getServices()
-                .annotationService()
-                .updateAnnotations(annotations)
-                .get(timeout.toMillis(), TimeUnit.MILLISECONDS);
-    }
-
-    private void updateImages(UIToolBox toolBox, List<Image> images) {
-
-        Duration timeout = getTimeout(toolBox);
-
-        AnnotationService annotationService = toolBox.getServices()
-                .annotationService();
-
-        // Unfortunatly, only 1 image can be updated per put request.
-        for (Image i : images) {
-            try {
-                annotationService.updateImage(i)
-                        .get(timeout.toMillis(), TimeUnit.MILLISECONDS);
-            }
-            catch (Exception e) {
-                log.atError().withCause(e).log("Failed to update " + i.getUrl() + " in remote datastore");
-            }
-        }
     }
 
     private Duration getTimeout(UIToolBox toolBox) {
@@ -145,20 +97,4 @@ public class MoveAnnotationsAndImagesCmd implements Command {
         return timeout;
     }
 
-
-
-    private static <T extends ImagedMoment> T update(T a, Media media) {
-        a.setVideoReferenceUuid(media.getVideoReferenceUuid());
-        // Adjust recordedTimestamp if elapsedTime and media.startTimestamp are present
-        if (a.getElapsedTime() != null) {
-            if (media.getStartTimestamp() != null) {
-                Instant recordedTimestamp = media.getStartTimestamp().plus(a.getElapsedTime());
-                a.setRecordedTimestamp(recordedTimestamp);
-            }
-            else {
-                a.setRecordedTimestamp(null);
-            }
-        }
-        return a;
-    }
 }

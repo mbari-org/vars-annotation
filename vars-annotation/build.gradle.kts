@@ -57,7 +57,7 @@ configurations.all {
 }
 
 // Define versions in variables to avoid hardcoding them in multiple places and to make it easier to update them.
-val annosaurusSdkVersion = "0.0.14"
+val annosaurusSdkVersion = "0.0.17"
 val caffeineVersion = "3.1.8"
 val configVersion = "1.4.5"
 val controlsFxVersion = "11.2.3"
@@ -237,7 +237,9 @@ application {
     // Define the main class for the application.
     // Note: Don't set mainModule - Kiota has split packages that break JPMS at runtime
     // The jpackage/jlink build uses mergedModule which handles this properly
-    mainClass.set("org.mbari.vars.annotation.App")
+    // AppLauncher avoids the "JavaFX runtime components are missing" error when
+    // running on the classpath (i.e. modularity.inferModulePath = false)
+    mainClass.set("org.mbari.vars.annotation.AppLauncher")
     if(platform.equals("mac")) {
         applicationDefaultJvmArgs = listOf("-Dsun.java2d.metal=true") + devJvmArgs
     } else {
@@ -253,9 +255,8 @@ tasks.named<JavaExec>("run") {
 tasks.register<JavaExec>("runDebug") {
     description = "Run the application with debug enabled on port 5005"
     group = "application"
-    dependsOn(tasks.jar)
-    mainClass.set("org.mbari.vars.annotation.App")
-    classpath = files(tasks.jar) + sourceSets["main"].runtimeClasspath
+    mainClass.set("org.mbari.vars.annotation.AppLauncher")
+    classpath = sourceSets["main"].runtimeClasspath
     // Disable module path - Kiota has split packages that break JPMS
     modularity.inferModulePath.set(false)
     jvmArgs = devJvmArgs + listOf(

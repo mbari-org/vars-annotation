@@ -9,6 +9,12 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class NoopAnnotationService implements AnnotationService {
+
+    @Override
+    public CompletableFuture<Count> bulkMove(UUID uuid, List<UUID> list, Instant instant) {
+        return CompletableFuture.completedFuture(new Count(0L));
+    }
+
     @Override
     public CompletableFuture<AnnotationCount> countAnnotations(UUID videoReferenceUuid) {
         return CompletableFuture.completedFuture(new AnnotationCount(videoReferenceUuid, 0));
