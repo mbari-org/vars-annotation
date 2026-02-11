@@ -2,7 +2,9 @@
 
 ![MBARI logo](docs/assets/images/mbari-logo.png)
 
-[![Build Status](https://travis-ci.org/mbari-media-management/vars-annotation.svg?branch=master)](https://travis-ci.org/mbari-media-management/vars-annotation)  [![DOI](https://zenodo.org/badge/90881605.svg)](https://zenodo.org/badge/latestdoi/90881605)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/mbari-org/vars-annotation)
+[![Build Status](https://travis-ci.org/mbari-media-management/vars-annotation.svg?branch=master)](https://travis-ci.org/mbari-media-management/vars-annotation)  
+[![DOI](https://zenodo.org/badge/90881605.svg)](https://zenodo.org/badge/latestdoi/90881605)
 
 MBARI's Video Annotation and Reference System's user interface for creating and editing video annotations. For more information, visit <https://docs.mbari.org/vars-annotation/>
 
