@@ -57,7 +57,7 @@ configurations.all {
 }
 
 // Define versions in variables to avoid hardcoding them in multiple places and to make it easier to update them.
-val annosaurusSdkVersion = "0.0.17"
+val annosaurusSdkVersion = "0.0.18"
 val caffeineVersion = "3.1.8"
 val configVersion = "1.4.5"
 val controlsFxVersion = "11.2.3"
