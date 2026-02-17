@@ -20,7 +20,7 @@ plugins {
     id("org.gradlex.extra-java-module-info") version "1.14"
 }
 
-version = "2.3.3"
+version = "2.3.4"
 
 java {
     toolchain {

@@ -33,9 +33,11 @@ public class HierarchicalConceptComboBoxDecorator {
 //        log.debug("Setting concept to " + concept);
         Platform.runLater(() -> {
             if (concept != null) {
+
+
                 toolBox.getServices()
                         .conceptService()
-                        .findConcept(concept)
+                        .findPhylogenyDown(concept)
                         .handle((opt, ex) -> {
 
                             // Build list of concepts to display
