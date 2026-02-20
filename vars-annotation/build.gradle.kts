@@ -20,7 +20,7 @@ plugins {
     id("org.gradlex.extra-java-module-info") version "1.14"
 }
 
-version = "2.3.1"
+version = "2.3.4"
 
 java {
     toolchain {
@@ -57,7 +57,7 @@ configurations.all {
 }
 
 // Define versions in variables to avoid hardcoding them in multiple places and to make it easier to update them.
-val annosaurusSdkVersion = "0.0.17"
+val annosaurusSdkVersion = "0.0.18"
 val caffeineVersion = "3.1.8"
 val configVersion = "1.4.5"
 val controlsFxVersion = "11.2.3"
@@ -65,7 +65,7 @@ val gsonVerion = "2.13.2"
 val ikonliVersion = "12.3.1"
 val imgfxVersion = "0.0.17"
 val jeromqVersion = "0.6.0"
-val logbackVersion = "1.5.27"
+val logbackVersion = "1.5.29"
 val mbariCommonsVersion = "0.0.7"
 val methanolVersion = "1.9.0"
 val okhttpLoggingInterceptorVersion = "3.14.4"
@@ -73,7 +73,7 @@ val oniSdkVersion = "0.0.12"
 val razielSdkVersion = "0.0.4"
 val slf4jVersion = "2.0.17"
 val swingxVersion = "1.6.5-1"
-val vampireSquidSdkVersion = "0.0.14"
+val vampireSquidSdkVersion = "0.0.15"
 val vcr4jVersion = "5.3.1"
 
 

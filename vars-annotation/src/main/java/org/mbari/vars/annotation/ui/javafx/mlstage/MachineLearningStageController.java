@@ -125,10 +125,10 @@ public class MachineLearningStageController {
 
     public void analyze() throws IOException {
         var mlRemoteUrlOpt = MLSettingsPaneController.getRemoteUrl();
-        Requirements.validate(mlRemoteUrlOpt.isPresent(), "The URL for the machine learning web service was not set");
-//        var mlService = new OkHttpMegalodonService(mlRemoteUrlOpt.get());
-        var mlService = new JdkPythiaService(mlRemoteUrlOpt.get());
         try {
+            Requirements.validate(mlRemoteUrlOpt.isPresent(), "The URL for the machine learning web service was not set");
+//        var mlService = new OkHttpMegalodonService(mlRemoteUrlOpt.get());
+            var mlService = new JdkPythiaService(mlRemoteUrlOpt.get());
             log.atDebug().log("[START] ML analysis");
             var mlImageInference = MLAnalysisService.analyzeCurrentElapsedTime(toolBox, mlService);
             log.atDebug().log("[END] ML analysis");

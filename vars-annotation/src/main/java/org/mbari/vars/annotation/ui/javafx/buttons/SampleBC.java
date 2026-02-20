@@ -149,7 +149,7 @@ public class SampleBC extends AbstractBC {
             try {
                 var opt = toolBox.getServices()
                         .conceptService()
-                        .findConcept(defaultSampleConcept)
+                        .findPhylogenyDown(defaultSampleConcept)
                         .get(timeout.toMillis(), TimeUnit.MILLISECONDS);
                 if (opt.isPresent()) {
                     var samplers = opt.get().flatten();
