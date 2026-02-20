@@ -4,15 +4,15 @@
 
 ### Service Configuration
 
-VARS requires that you have setup a microservice stack needed to power VARS. Once that's done you can do the following:
+VARS requires that you have setup a microservice stack needed to power VARS. The [vars-quickstart-public](https://github.com/mbari-org/vars-quickstart-public) project provides a Docker-based setup for all required services. Once that's done you can do the following:
 
-1. Download VARS from [GitHub](https://github.com/mbari-media-management/vars-annotation/releases)
+1. Download VARS from [GitHub](https://github.com/mbari-org/vars-annotation/releases)
 2. If you're running on macOS, and you get a message that VARS is damaged and can't be opened, you can ignore that message. That's Apple's super aggressive security. To fix that:
     1. Open a terminal (The Terminal.app is located in /Applications/Utilities).
     2. cd to where VARS is downloaded. e.g. `cd /Applications`
     3. Run `sudo xattr -d -r com.apple.quarantine "VARS Annotation.app"`
     4. Relaunch VARS Annotation
-3. Point VARS at your [configuration server](https://github.com/mbari-media-management/raziel).
+3. Point VARS at your [configuration server](https://github.com/mbari-org/raziel).
 
 #### First, click on the settings button
 

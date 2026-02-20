@@ -8,7 +8,7 @@ Sharktopoda is one of serveral video players that can interact with VARS. It is 
 
 ## Installation
 
-Download the latest release of [Sharktopda](https://github.com/mbari-media-management/Sharktopoda).
+Download the latest release of [Sharktopoda](https://github.com/mbari-org/Sharktopoda).
 
 ## Configuration
 

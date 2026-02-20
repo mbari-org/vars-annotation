@@ -9,7 +9,7 @@ Cthulhu is one of serveral video players that can interact with VARS, but it is 
 ## Installation
 
 1. Install [VLC](https://www.videolan.org/vlc)
-2. Install [Cthulhu](https://github.com/mbari-media-management/cthulhu/releases)
+2. Install [Cthulhu](https://github.com/mbari-org/cthulhu/releases)
 
 ## Configuration
 
@@ -20,7 +20,7 @@ To configure Cthulhu, do the following:
 1. Launch Cthulhu
 2. Open its settings (i.e. click on the gear icon).
 3. In the setting window, click on `Network`
-4. Under the `Remote Contol` section, set the `Contorl Port` value. This should match whatever you use to configure VARS to talk to [Sharktopoda](https://github.com/mbari-media-management/Sharktopoda). The customary value at MBARI's video lab is `8800`
+4. Under the `Remote Contol` section, set the `Contorl Port` value. This should match whatever you use to configure VARS to talk to [Sharktopoda](https://github.com/mbari-org/Sharktopoda). The customary value at MBARI's video lab is `8800`
 5. Under the `Localization` section note the incoming ports and topics. There's no need to change them, but you'll need those values to configure VARS.
 
 ![Cthulhu Settings](../images/cthulhu-settings.png)
