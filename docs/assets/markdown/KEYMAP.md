@@ -4,12 +4,12 @@
 
 ## Current Keymap
 
-At MBARI, many of the video control keys are mapped onto a [Shuttle Pro](https://www.contourdesign.com/product/shuttle/) profile. Allowing users simple controls to the video players.
+At MBARI, many video control keys are mapped to a [Shuttle Pro](https://www.contourdesign.com/product/shuttle/) profile, giving users ergonomic control over video playback.
 
 ### Video Actions using Home Row
 
 ```
-Frameadvance                    [cmd]+I
+Frame advance                   [cmd]+I
 Shuttle Reverse (0.06)          [cmd]+G
 Shuttle Reverse (0.03)          [cmd]+J
 Toggle Play/Stop                [cmd]+K
@@ -23,11 +23,12 @@ Seek +1 second                  [cmd]+.
 ### Actions using Arrows
 
 ```
-Frameadvance                    [cmd]+up
+Frame advance                   [cmd]+up
 Seek -1 second                  [cmd]+left
 Toggle Play/Stop                [cmd]+down
 Shuttle Forward (0.03)          [cmd]+right
 ```
+
 ### Other
 
 ```
@@ -41,7 +42,7 @@ Frame capture                   [cmd]+F
 Delete annotations              [cmd]+[delete]
 Undo                            [cmd]+Z
 Redo                            [cmd]+[shift]+Z
-Seek to seleced annotation      [cmd]+[shift]+S
+Seek to selected annotation     [cmd]+[shift]+S
 ```
 
-__Note that on Windows/Linux substitude the [ctrl] key for the [cmd] key used above.__
+__On Windows and Linux, substitute [ctrl] for [cmd] in the shortcuts above.__

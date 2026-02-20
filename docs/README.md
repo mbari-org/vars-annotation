@@ -1,21 +1,65 @@
 # About vars-annotation
 
-![MBARI logo](resources/images/mbari-logo.png)
+![MBARI logo](assets/images/mbari-logo.png)
 
 ## Overview
 
 [![DOI](https://zenodo.org/badge/90881605.svg)](https://zenodo.org/badge/latestdoi/90881605)
 
-MBARI's Video Annotation and Reference System's user interface for creating and editing video annotations. This version is a complete rewrite of the older [VARS](https://hohonuuli.github.io/vars/) system. It is targeted at more modern video workflows and is part of [MBARI's Media Management](https://mbari-media-management.github.io/) software stack. This is NOT a standalone application. There are a number of external services that need to be deployed in order for this application to function.
+VARS Annotation is [MBARI](https://www.mbari.org)'s desktop application for creating and editing video annotations from ROV and AUV deployments. It is part of MBARI's [VARS](https://github.com/mbari-org) (Video Annotation and Reference System) software stack.
 
-This system is the main annotation application used at [MBARI](https://www.mbari.org).
-
-![VARS Annotation](resources/images/vars-annotation.png)
+**VARS Annotation is not a standalone application.** It requires a set of backend microservices to function.
 
 ## Video Playback
 
-VARS can be used to annotate video:
+VARS can annotate video in several modes:
 
-- in real-time
-- from video tape, if your deck supports RS422
-- from video files via external video players such as [Sharktopoda](https://github.com/mbari-org/Sharktopoda), [jsharktopoda](https://github.com/mbari-org/jsharktopoda), or [Cthulhu](https://github.com/mbari-org/cthulhu).
+- **Real-time** — annotate live video as it is being captured
+- **Video tape** — annotate from tape decks that support RS-422
+- **Video files** — annotate pre-recorded files via [Sharktopoda](https://github.com/mbari-org/Sharktopoda), an external macOS video player that supports both playback and direct bounding-box drawing on video for spatial annotations
+
+## Getting Started
+
+VARS requires a running backend stack of microservices. The easiest way to get everything up and running is [vars-quickstart-public](https://github.com/mbari-org/vars-quickstart-public) — a Docker-based orchestrator that brings up all required services together.
+
+### Prerequisites
+
+- [Docker Engine 20.10+](https://docs.docker.com/get-docker/) with Docker Compose V2
+- Bash 4.0+
+- 8 GB RAM minimum (16 GB recommended)
+
+### Launch the backend services
+
+```bash
+git clone https://github.com/mbari-org/vars-quickstart-public.git
+cd vars-quickstart-public
+./varsq configure etc/env/localhost.env   # select your target environment
+./varsq mkcert                            # generate SSL certificates
+./varsq start                             # start all services
+./varsq status                            # verify everything is running
+```
+
+The stack brings up the following services:
+
+| Service | Port | Purpose |
+|---------|------|---------|
+| annosaurus | 8082 | Annotation storage and retrieval |
+| vampire-squid | 8084 | Video asset and sequence management |
+| oni | 8083 | Knowledge base and taxonomy |
+| panoptes | 8085 | Framegrab and image management |
+| raziel | 8400 | API gateway and authentication |
+| charybdis | 8086 | Cross-service query aggregation |
+| beholder | 8088 | Image capture cache |
+| skimmer | 8089 | Image processing pipeline |
+| nginx | 80 / 443 | Reverse proxy with SSL termination |
+
+### Install and connect VARS Annotation
+
+Once the backend is running:
+
+1. [Download VARS Annotation](https://github.com/mbari-org/vars-annotation/releases)
+2. Launch it and open **Settings** (gear icon in the toolbar)
+3. Enter the URL of your Raziel configuration server and your credentials
+4. Click **Test** to verify the connection, then **OK**
+
+See the [setup guide](setup.md) for detailed configuration instructions, including video player setup.
