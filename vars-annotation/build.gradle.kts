@@ -363,6 +363,7 @@ tasks.jpackageImage.get().doLast {
         val signer = System.getenv("MAC_CODE_SIGNER")
         if (signer != null) {
             val dirsToBeSigned = arrayListOf(
+                file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/MacOS"),
                 file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/runtime/Contents/Home/bin"),
                 file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/runtime/Contents/Home/lib"),
                 file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/runtime/Contents/Home/lib/server"),
@@ -401,6 +402,7 @@ tasks.jpackageImage.get().doLast {
                 "codesign",
                 "--entitlements", entitlements,
                 "--options", "runtime",
+                "--deep",
                 "--timestamp",
                 "-vvv",
                 "-f",
