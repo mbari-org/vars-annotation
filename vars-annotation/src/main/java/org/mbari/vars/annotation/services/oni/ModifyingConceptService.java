@@ -36,7 +36,6 @@ public class ModifyingConceptService implements ConceptService {
      *
      * @param conceptService
      * @param config
-     * @deprecated
      */
     public ModifyingConceptService(ConceptService conceptService, Config config) {
         this.conceptService = conceptService;

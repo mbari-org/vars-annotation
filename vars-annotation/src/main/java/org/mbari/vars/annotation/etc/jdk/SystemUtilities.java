@@ -81,8 +81,8 @@ public class SystemUtilities {
         try {
             // Use reflection to invoke Apple's proprietary methods
             Class<?> clazz = Class.forName("com.apple.eawt.Application");
-            Method method = clazz.getMethod("getApplication", null);
-            Object application = method.invoke(null, null);
+            Method method = clazz.getMethod("getApplication", (Class<?>[]) null);
+            Object application = method.invoke(null, (Object[]) null);
             Method method2 = application.getClass().getMethod("setDockIconImage", Image.class);
             URL dockImageURL = "".getClass().getResource(dockImagePath);
             Image dockImage = new ImageIcon(dockImageURL).getImage();
