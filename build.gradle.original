@@ -10,7 +10,7 @@ plugins {
 
 subprojects {
 
-    version = "2.2.6"
+    version = "2.3.7"
 
     apply plugin: 'com.adarshr.test-logger'
     apply plugin: 'com.github.ben-manes.versions'
@@ -20,8 +20,8 @@ subprojects {
     apply plugin: 'org.javamodularity.moduleplugin'
     apply plugin: 'org.kordamp.gradle.jdeps'
 
-    sourceCompatibility = 24
-    targetCompatibility = 24
+    sourceCompatibility = 25
+    targetCompatibility = 25
 
     repositories {
 //        jcenter()
@@ -53,7 +53,7 @@ subprojects {
     }
 
     ext {
-        javafxVersion = "24.0.1"
+        javafxVersion = "25.0.2"
     }
 
 
@@ -91,10 +91,6 @@ subprojects {
             implementation 'org.mbari.vars:vampire-squid-java-sdk:0.0.5'
             implementation 'org.mbari.vcr4j:vcr4j-core:5.3.1'
             implementation 'org.mbari.vcr4j:vcr4j-remote:5.3.1'
-//            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda-client:5.3.0'
-//            implementation 'org.mbari.vcr4j:vcr4j-sharktopoda:5.3.0'
-            // implementation 'org.mbari:mbarix4j:2.0.7'
-            // implementation 'org.mbari.commons:jcommons:0.0.7'
             implementation 'org.slf4j:slf4j-api:2.0.12'
             implementation 'org.slf4j:slf4j-jdk14:2.0.12'
             implementation 'org.slf4j:slf4j-jdk-platform-logging:2.0.12'
