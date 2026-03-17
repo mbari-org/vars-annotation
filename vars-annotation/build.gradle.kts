@@ -232,6 +232,12 @@ val runtimeJvmArgs = arrayListOf(
     "--add-reads", "vars.annotation.merged.module=java.desktop"
 )
 
+// This fixes SSL issues when using self-signed certs on macOS, but it also causes issues with some 
+// otehr set ups, like MBARI's
+// if (platform == "mac") {
+//     runtimeJvmArgs.add("-Djavax.net.ssl.trustStoreType=KeychainStore")
+// }
+
 
 application {
     // Define the main class for the application.
