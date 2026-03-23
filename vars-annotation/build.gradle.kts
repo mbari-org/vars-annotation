@@ -20,7 +20,7 @@ plugins {
     id("org.gradlex.extra-java-module-info") version "1.14"
 }
 
-version = "2.3.8"
+version = "2.3.9"
 
 java {
     toolchain {
@@ -29,7 +29,7 @@ java {
 }
 
 javafx {
-    version = "25.0.2"
+    version = "26"
     modules("javafx.base", "javafx.controls", "javafx.fxml", "javafx.graphics", "javafx.media", "javafx.swing")
 }
 
