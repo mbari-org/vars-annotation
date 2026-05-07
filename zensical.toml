@@ -21,7 +21,6 @@ features = [
     "navigation.sections",
     "navigation.top",
     "navigation.tracking",
-    "toc.integrate",
     "content.code.copy",
     "search.highlight",
 ]
