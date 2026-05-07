@@ -24,7 +24,7 @@ features = [
     "content.code.copy",
     "search.highlight",
 ]
-icon.repo = "lucide/github"
+icon.repo = "fontawesome/brands/github"
 
 [[project.theme.palette]]
 media = "(prefers-color-scheme)"
