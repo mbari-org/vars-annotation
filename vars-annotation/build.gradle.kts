@@ -14,7 +14,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
     id("org.openjfx.javafxplugin") version "0.1.0"
-    id("com.github.ben-manes.versions") version "0.53.0"
+    id("com.github.ben-manes.versions") version "0.54.0"
     id("com.adarshr.test-logger") version "4.0.0"
     id("org.beryx.jlink") version "3.2.1"
     id("org.gradlex.extra-java-module-info") version "1.14"
@@ -58,14 +58,14 @@ configurations.all {
 
 // Define versions in variables to avoid hardcoding them in multiple places and to make it easier to update them.
 val annosaurusSdkVersion = "0.0.18"
-val caffeineVersion = "3.2.3"
-val configVersion = "1.4.6"
+val caffeineVersion = "3.2.4"
+val configVersion = "1.4.9"
 val controlsFxVersion = "11.2.3"
-val gsonVerion = "2.13.2"
+val gsonVerion = "2.14.0"
 val ikonliVersion = "12.3.1"
 val imgfxVersion = "0.0.17"
 val jeromqVersion = "0.6.0"
-val logbackVersion = "1.5.32"
+val logbackVersion = "1.5.34"
 val mbariCommonsVersion = "0.0.7"
 val methanolVersion = "1.9.0"
 val okhttpLoggingInterceptorVersion = "3.14.4"
