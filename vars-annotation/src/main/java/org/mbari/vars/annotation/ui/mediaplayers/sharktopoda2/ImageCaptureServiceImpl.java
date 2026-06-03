@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.time.Duration;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class ImageCaptureServiceImpl implements ImageCaptureService {
@@ -52,16 +53,24 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
     @Override
     public Framegrab capture(File file) {
         if (io != null) {
-
-            var observable = eventBus.toObserverable()
+            // Subscribe BEFORE sending the command. FrameCaptureDoneCmd arrives via
+            // PlayerIO's background thread and is published to a PublishSubject. If
+            // io.send() were called first it would block for up to 1 second waiting
+            // for Sharktopoda's ACK, during which the done event could be emitted with
+            // no subscriber — permanently lost.
+            var future = new CompletableFuture<Framegrab>();
+            eventBus.toObserverable()
                     .ofType(FrameCaptureDoneCmd.class)
-//                    .observeOn(Schedulers.io())
-                    .map(this::captureDone);
-            // log.atWarn().log("Sending frame capture command to Sharktopoda. Saving image to {}", file.getAbsolutePath());
+                    .map(this::captureDone)
+                    .timeout(10, TimeUnit.SECONDS)
+                    .subscribe(future::complete, future::completeExceptionally);
             io.send(new FrameCaptureCmd(io.getUuid(), UUID.randomUUID(), file.getAbsolutePath()));
-            // log.atWarn().log("Waiting for frame capture done command from Sharktopoda");
-            return observable.timeout(10, TimeUnit.SECONDS).blockingFirst();
-//            return observable.blockingFirst();
+            try {
+                return future.get(11, TimeUnit.SECONDS);
+            }
+            catch (Exception e) {
+                throw new RuntimeException("Frame capture timed out or failed", e);
+            }
         }
         else {
             throw new IllegalStateException("The video io object is null. Unable to send a command to Sharktopoda");
