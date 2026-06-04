@@ -41,6 +41,7 @@ public class AssocButtonPaneController {
 
     private final Loggers log = new Loggers(getClass());
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private boolean loading = false;
 
     public AssocButtonPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
@@ -117,35 +118,52 @@ public class AssocButtonPaneController {
         return match.isPresent();
     }
 
+
     private void loadButtonsFromPreferences() {
         Association nil = Association.NIL;
         Optional<Preferences> opt = assocButtonPrefs.findPreferences();
         opt.ifPresent(prefs -> {
             executorService.submit(() -> {
                 try {
-                    List<Button> buttons = Arrays.stream(prefs.childrenNames())
-                            .map(nodeName -> {
-                                Preferences buttonPreferences = prefs.node(nodeName);
-                                String name = buttonPreferences.get(PREF_BUTTON_NAME, BAD_KEY);
-                                int order = buttonPreferences.getInt(PREF_BUTTON_ORDER, 0);
-                                String a = buttonPreferences.get(PREF_BUTTON_ASSOCIATION, nil.toString());
-                                log.atDebug().log(() -> "Loading association button " + a);
-                                Association ass = Association.parse(a).orElse(nil);
-                                Button button = buttonFactory.build(name, ass, prefs);
-                                return new ButtonPref(button, order);
-                            })
-                            .filter(buttonPref -> !buttonPref.getButton().getText().equals(BAD_KEY))
-                            .sorted(Comparator.comparingInt(ButtonPref::getOrder))
-                            .map(ButtonPref::getButton)
-                            .collect(Collectors.toList());
-                    Platform.runLater(() -> {
-                        ObservableList<Node> children = getPane().getChildren();
-                        List<Node> oldButtons = getPane().getChildren()
-                                .stream()
-                                .filter(AssocButtonFactory::isAssocButton)
+
+                    List<Button> buttons;
+                    try {
+                        buttons = Arrays.stream(prefs.childrenNames())
+                                .map(nodeName -> {
+                                    Preferences buttonPreferences = prefs.node(nodeName);
+                                    String name = buttonPreferences.get(PREF_BUTTON_NAME, BAD_KEY);
+                                    int order = buttonPreferences.getInt(PREF_BUTTON_ORDER, 0);
+                                    String a = buttonPreferences.get(PREF_BUTTON_ASSOCIATION, nil.toString());
+                                    log.atDebug().log(() -> "Loading association button " + a);
+                                    Association ass = Association.parse(a).orElse(nil);
+                                    Button button = buttonFactory.build(name, ass, prefs);
+                                    return new ButtonPref(button, order);
+                                })
+                                .filter(buttonPref -> !buttonPref.getButton().getText().equals(BAD_KEY))
+                                .sorted(Comparator.comparingInt(ButtonPref::getOrder))
+                                .map(ButtonPref::getButton)
                                 .toList();
-                        children.removeAll(oldButtons);
-                        children.addAll(buttons);
+                    }
+                    catch (Exception e) {
+                        log.atWarn().withCause(e).log("Failed to load association buttons");
+                        buttons = Collections.emptyList();
+                    }
+
+                    final var finalButtons = buttons;
+
+                    Platform.runLater(() -> {
+                        loading = true;
+                        try {
+                            ObservableList<Node> children = getPane().getChildren();
+                            List<Node> oldButtons = getPane().getChildren()
+                                    .stream()
+                                    .filter(AssocButtonFactory::isAssocButton)
+                                    .toList();
+                            children.removeAll(oldButtons);
+                            children.addAll(finalButtons);
+                        } finally {
+                            loading = false;
+                        }
                         toolBox.getEventBus().send(new ForceRedrawEvent());
                     });
                 } catch (Exception e) {
@@ -162,16 +180,18 @@ public class AssocButtonPaneController {
     }
 
     private void saveButtonsToPreferences() {
+        if (loading) return;
 
         Optional<Preferences> opt = assocButtonPrefs.findPreferences();
         opt.ifPresent(prefs -> {
-            executorService.submit(() -> {
-                List<Button> buttons = getPane().getChildren()
-                        .stream()
-                        .filter(n -> n.getUserData() instanceof Association)
-                        .map(n -> (Button) n)
-                        .collect(Collectors.toList());
 
+            List<Button> buttons = getPane().getChildren()
+                    .stream()
+                    .filter(n -> n.getUserData() instanceof Association)
+                    .map(n -> (Button) n)
+                    .collect(Collectors.toList());
+
+            executorService.submit(() -> {
                 // Store existing buttons
                 IntStream.range(0, buttons.size())
                         .forEach(i -> {
