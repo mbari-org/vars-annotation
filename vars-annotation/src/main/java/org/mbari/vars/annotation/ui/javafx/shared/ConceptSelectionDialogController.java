@@ -74,7 +74,7 @@ public class ConceptSelectionDialogController {
         if (concept != null) {
             toolBox.getServices()
                     .conceptService()
-                    .findConcept(concept)
+                    .findPhylogenyDown(concept)
                     .thenAccept(opt -> {
                         Platform.runLater(() -> {
                             ComboBox<String> cb = getComboBox();

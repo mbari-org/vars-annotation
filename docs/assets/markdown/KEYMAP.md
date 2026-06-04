@@ -8,7 +8,7 @@ At MBARI, many video control keys are mapped to a [Shuttle Pro](https://www.cont
 
 ### Video Actions using Home Row
 
-```
+```text
 Frame advance                   [cmd]+I
 Shuttle Reverse (0.06)          [cmd]+G
 Shuttle Reverse (0.03)          [cmd]+J
@@ -22,7 +22,7 @@ Seek +1 second                  [cmd]+.
 
 ### Actions using Arrows
 
-```
+```text
 Frame advance                   [cmd]+up
 Seek -1 second                  [cmd]+left
 Toggle Play/Stop                [cmd]+down
@@ -31,7 +31,7 @@ Shuttle Forward (0.03)          [cmd]+right
 
 ### Other
 
-```
+```text
 Toggle Play/Stop                [ctrl]+[space]
 Scroll up one row               [cmd]+[shift]+up
 Scroll down one row             [cmd]+[shift]+down
@@ -45,4 +45,4 @@ Redo                            [cmd]+[shift]+Z
 Seek to selected annotation     [cmd]+[shift]+S
 ```
 
-__On Windows and Linux, substitute [ctrl] for [cmd] in the shortcuts above.__
+__On Windows and Linux, substitute `ctrl` for `cmd` in the shortcuts above.__

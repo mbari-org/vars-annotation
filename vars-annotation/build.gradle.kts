@@ -14,13 +14,13 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
     id("org.openjfx.javafxplugin") version "0.1.0"
-    id("com.github.ben-manes.versions") version "0.53.0"
+    id("com.github.ben-manes.versions") version "0.54.0"
     id("com.adarshr.test-logger") version "4.0.0"
     id("org.beryx.jlink") version "3.2.1"
     id("org.gradlex.extra-java-module-info") version "1.14"
 }
 
-version = "2.3.4"
+version = "2.3.10"
 
 java {
     toolchain {
@@ -29,7 +29,7 @@ java {
 }
 
 javafx {
-    version = "25.0.2"
+    version = "26"
     modules("javafx.base", "javafx.controls", "javafx.fxml", "javafx.graphics", "javafx.media", "javafx.swing")
 }
 
@@ -58,19 +58,19 @@ configurations.all {
 
 // Define versions in variables to avoid hardcoding them in multiple places and to make it easier to update them.
 val annosaurusSdkVersion = "0.0.18"
-val caffeineVersion = "3.1.8"
-val configVersion = "1.4.5"
+val caffeineVersion = "3.2.4"
+val configVersion = "1.4.9"
 val controlsFxVersion = "11.2.3"
-val gsonVerion = "2.13.2"
+val gsonVerion = "2.14.0"
 val ikonliVersion = "12.3.1"
 val imgfxVersion = "0.0.17"
 val jeromqVersion = "0.6.0"
-val logbackVersion = "1.5.29"
+val logbackVersion = "1.5.34"
 val mbariCommonsVersion = "0.0.7"
 val methanolVersion = "1.9.0"
 val okhttpLoggingInterceptorVersion = "3.14.4"
 val oniSdkVersion = "0.0.12"
-val razielSdkVersion = "0.0.4"
+val razielSdkVersion = "0.0.7"
 val slf4jVersion = "2.0.17"
 val swingxVersion = "1.6.5-1"
 val vampireSquidSdkVersion = "0.0.15"
@@ -232,6 +232,12 @@ val runtimeJvmArgs = arrayListOf(
     "--add-reads", "vars.annotation.merged.module=java.desktop"
 )
 
+// This fixes SSL issues when using self-signed certs on macOS, but it also causes issues with some 
+// otehr set ups, like MBARI's
+// if (platform == "mac") {
+//     runtimeJvmArgs.add("-Djavax.net.ssl.trustStoreType=KeychainStore")
+// }
+
 
 application {
     // Define the main class for the application.
@@ -363,6 +369,7 @@ tasks.jpackageImage.get().doLast {
         val signer = System.getenv("MAC_CODE_SIGNER")
         if (signer != null) {
             val dirsToBeSigned = arrayListOf(
+                file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/MacOS"),
                 file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/runtime/Contents/Home/bin"),
                 file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/runtime/Contents/Home/lib"),
                 file("${projectDir}/build/jpackage/VARS Annotation.app/Contents/runtime/Contents/Home/lib/server"),
@@ -401,6 +408,7 @@ tasks.jpackageImage.get().doLast {
                 "codesign",
                 "--entitlements", entitlements,
                 "--options", "runtime",
+                "--deep",
                 "--timestamp",
                 "-vvv",
                 "-f",

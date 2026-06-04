@@ -31,6 +31,10 @@ cd vars-annotation
 
 cd  org.mbari.vars.ui/build/jpackage
 
+# macOS (15.x+) creates AppleDouble ._* sidecar files inside the bundle which break
+# the code signature. Clean them up before packaging.
+dot_clean "VARS Annotation.app"
+
 # App must be packaged/zipped to be notarized
 ditto -c -k --keepParent "VARS Annotation.app" "VARS Annotation.zip"
 
@@ -43,12 +47,12 @@ xcrun notarytool submit "VARS Annotation.zip" \
 # We staple to the original app, NOT the zip
 xcrun stapler staple "VARS Annotation.app"
 
+# Clean up any ._* sidecar files created by stapler before rezipping
+dot_clean "VARS Annotation.app"
+
 # Remove the old zip file
 rm "VARS Annotation.zip"
 
 # Rezip the app and use that zip to distribute it.
 ditto -c -k --keepParent "VARS Annotation.app" "VARS Annotation.zip"
 ```
-
-
-
