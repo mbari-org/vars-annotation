@@ -17,6 +17,7 @@ import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -192,6 +193,20 @@ public class AssocButtonPaneController {
                     .collect(Collectors.toList());
 
             executorService.submit(() -> {
+                // Remove prefs nodes for buttons that no longer exist
+                Set<String> currentNames = buttons.stream()
+                        .map(Button::getText)
+                        .collect(Collectors.toSet());
+                try {
+                    for (String nodeName : prefs.childrenNames()) {
+                        if (!currentNames.contains(nodeName)) {
+                            prefs.node(nodeName).removeNode();
+                        }
+                    }
+                } catch (BackingStoreException e) {
+                    log.atWarn().withCause(e).log("Failed to remove stale association button prefs");
+                }
+
                 // Store existing buttons
                 IntStream.range(0, buttons.size())
                         .forEach(i -> {
