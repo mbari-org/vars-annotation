@@ -49,6 +49,7 @@ public class CommentBC extends AbstractBC {
             dialog.setContentText(i18n.getString("buttons.comment.dialog.content"));
             dialog.setGraphic(icon);
             dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+            dialog.setResizable(true);
         }
         return dialog;
     }
