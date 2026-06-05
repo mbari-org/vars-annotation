@@ -7,21 +7,24 @@ import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
 import org.jdesktop.swingx.decorator.HighlighterFactory;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
+import org.mbari.vars.annotation.ui.events.*;
+import org.mbari.vars.oni.sdk.r1.models.User;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.Data;
 import org.mbari.vars.annotation.ui.UIToolBox;
-import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
-import org.mbari.vars.annotation.ui.events.AnnotationsChangedEvent;
-import org.mbari.vars.annotation.ui.events.AnnotationsRemovedEvent;
-import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.annotation.ui.messages.SeekMsg;
 import org.mbari.vars.annotation.etc.jdk.Loggers;
+
+import org.jdesktop.swingx.table.DefaultTableColumnModelExt;
+import org.jdesktop.swingx.table.TableColumnExt;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.prefs.Preferences;
 
 public class JXAnnotationTableController {
 
@@ -29,6 +32,8 @@ public class JXAnnotationTableController {
     private final AnnotationTableModel tableModel;
     private JXTable table;
     private static final Loggers log = new Loggers(JXAnnotationTableController.class);
+    private AtomicReference<User> currentUser = new AtomicReference<>(null);
+    public static final String PREF_CP_NODE = "org.mbari.vars.annotation.ui.swing.annotable.JXAnnotationTableController";
 
     private record ModelAndViewIdx(int model, int view) {}
 
@@ -72,6 +77,14 @@ public class JXAnnotationTableController {
                 });
 
         toolBox.getData()
+                        .userProperty()
+                                .addListener((obs, oldv, newv) -> {
+                                    savePreferences(oldv);
+                                    loadPreferences(newv);
+                                    currentUser.set(newv);
+                                });
+
+        toolBox.getData()
                 .showJsonAssociationsProperty()
                 .addListener((obs, oldv, newv) -> tableModel.fireTableDataChanged());
 
@@ -96,6 +109,13 @@ public class JXAnnotationTableController {
                         });
                     }
                 });
+
+        // Load column visibility and width
+        loadPreferences(currentUser.get());
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            savePreferences(currentUser.get());
+        }));
 
     }
 
@@ -182,8 +202,47 @@ public class JXAnnotationTableController {
 
             // TODO add context menu with seek
             init();
+
         }
         return table;
+    }
+
+    private void loadPreferences(User user) {
+        if (user != null) {
+            Preferences userPreferences = toolBox.getServices()
+                    .preferencesFactory()
+                    .remoteUserRoot(user.getUsername());
+            Preferences prefs = userPreferences.node(JXAnnotationTableController.class.getName());
+            Preferences columnPrefs = prefs.node("table-columns");
+            var columnModel = (DefaultTableColumnModelExt) table.getColumnModel();
+            columnModel.getColumns(true).forEach(tc -> {
+                if (tc instanceof TableColumnExt colExt) {
+                    String id = colExt.getIdentifier().toString();
+                    Preferences p = columnPrefs.node(id);
+                    colExt.setVisible(p.getBoolean("visible", true));
+                    colExt.setPreferredWidth(p.getInt("width", colExt.getPreferredWidth()));
+                }
+            });
+        }
+    }
+
+    private void savePreferences(User user) {
+        if (user != null) {
+            Preferences userPreferences = toolBox.getServices()
+                    .preferencesFactory()
+                    .remoteUserRoot(user.getUsername());
+            Preferences prefs = userPreferences.node(JXAnnotationTableController.class.getName());
+            Preferences columnPrefs = prefs.node("table-columns");
+            var columnModel = (DefaultTableColumnModelExt) table.getColumnModel();
+            columnModel.getColumns(true).forEach(tc -> {
+                if (tc instanceof TableColumnExt colExt) {
+                    String id = colExt.getIdentifier().toString();
+                    Preferences p = columnPrefs.node(id);
+                    p.putBoolean("visible", colExt.isVisible());
+                    p.putInt("width", colExt.getWidth());
+                }
+            });
+        }
     }
 
     private Collection<Annotation> filterAnnotations(Collection<Annotation> annotations) {
