@@ -103,6 +103,10 @@ public class AppPaneController {
     private static final String currentGroupKey = "current-group-key";
     private final Loggers log = new Loggers(getClass());
 
+    private ConceptButtonPanesController conceptButtonPanesController;
+    private double savedBottomDividerPos = 0.7;
+    private ToggleButton minimizeCBPanesButton;
+
 
     public AppPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
@@ -151,7 +155,14 @@ public class AppPaneController {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             saveDividerPositions(masterPaneKey, getMasterPane());
-            saveDividerPositions(bottomPaneKey, getBottomPane());
+            // When the CB panes are collapsed we save the pre-collapse position so
+            // the panels come back at the right size on next launch.
+            if (minimizeCBPanesButton != null && minimizeCBPanesButton.isSelected()) {
+                Preferences p0 = Preferences.userNodeForPackage(AppPaneController.class);
+                p0.node(bottomPaneKey).putDouble("0", savedBottomDividerPos);
+            } else {
+                saveDividerPositions(bottomPaneKey, getBottomPane());
+            }
             saveDividerPositions(topPaneKey, getTopPane());
             saveBooleanPreference(concurrentStatusKey, getShowConcurrentCheckBox().isSelected());
             saveBooleanPreference(jsonStatusKey, getShowJsonAssociationsCheckBox().isSelected());
@@ -254,11 +265,21 @@ public class AppPaneController {
 
     public SplitPane getBottomPane() {
         if (bottomPane == null) {
-            ConceptButtonPanesController panesController = new ConceptButtonPanesController(toolBox);
-            bottomPane = new SplitPane(controlsPaneController.getRoot(),
-                    panesController.getRoot());
+            conceptButtonPanesController = new ConceptButtonPanesController(toolBox);
+            var cbRoot = conceptButtonPanesController.getRoot();
+            // Allow the SplitPane to fully collapse the CB panes node regardless of
+            // the button VBox's computed minimum height.
+            cbRoot.setMinHeight(0);
+            bottomPane = new SplitPane(controlsPaneController.getRoot(), cbRoot);
             bottomPane.setOrientation(Orientation.VERTICAL);
             loadDividerPositions(bottomPaneKey, bottomPane);
+            // Capture the loaded divider position for use if the panel is later collapsed.
+            bottomPane.getDividers().get(0).positionProperty()
+                    .addListener((obs, oldv, newv) -> {
+                        if (minimizeCBPanesButton == null || !minimizeCBPanesButton.isSelected()) {
+                            savedBottomDividerPos = newv.doubleValue();
+                        }
+                    });
         }
         return bottomPane;
     }
@@ -595,6 +616,29 @@ public class AppPaneController {
                 });
     }
 
+    private ToggleButton getMinimizeCBPanesButton() {
+        if (minimizeCBPanesButton == null) {
+            ResourceBundle bundle = toolBox.getI18nBundle();
+            Text collapseIcon = Icons.EXPAND_LESS.standardSize();
+            Text expandIcon = Icons.EXPAND_MORE.standardSize();
+            minimizeCBPanesButton = new ToggleButton(null, collapseIcon);
+            minimizeCBPanesButton.setTooltip(new Tooltip(bundle.getString("apppane.statusbar.button.cbpanel.hide")));
+            minimizeCBPanesButton.selectedProperty().addListener((obs, oldv, newv) -> {
+                if (newv) {
+                    Platform.runLater(() -> getBottomPane().setDividerPosition(0, 1.0));
+                    minimizeCBPanesButton.setGraphic(expandIcon);
+                    minimizeCBPanesButton.setTooltip(new Tooltip(bundle.getString("apppane.statusbar.button.cbpanel.show")));
+                } else {
+                    double pos = savedBottomDividerPos;
+                    Platform.runLater(() -> getBottomPane().setDividerPosition(0, pos));
+                    minimizeCBPanesButton.setGraphic(collapseIcon);
+                    minimizeCBPanesButton.setTooltip(new Tooltip(bundle.getString("apppane.statusbar.button.cbpanel.hide")));
+                }
+            });
+        }
+        return minimizeCBPanesButton;
+    }
+
     public StatusBar getUtilityPane() {
         if (utilityPane == null) {
             utilityPane = new StatusBar();
@@ -699,6 +743,8 @@ public class AppPaneController {
                             checkBox1,
                             spacer3,
                             checkBox2);
+
+            utilityPane.getRightItems().add(getMinimizeCBPanesButton());
 
             reload();
         }
