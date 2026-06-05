@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
@@ -18,12 +19,10 @@ import org.mbari.vars.annotation.ui.messages.ShowExceptionAlert;
 import org.mbari.vars.annotation.ui.messages.ShowWarningAlert;
 import org.mbari.vars.annotation.ui.util.JFXUtilities;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Button Controller for adding a sample to an annotation. A sample has
@@ -37,6 +36,8 @@ public class SampleBC extends AbstractBC {
     private GridPane dialogPane;
     private ComboBox<String> comboBox;
     private TextField textField;
+    private ProgressIndicator loadingIndicator;
+    private boolean samplersLoaded = false;
     private final Loggers log = new Loggers(getClass());
     // HACK To track selected sampler after combox is hidden: misbehaving Filter
     private volatile String lastSelectedSampler;
@@ -56,19 +57,22 @@ public class SampleBC extends AbstractBC {
     @Override
     protected void apply() {
         JFXUtilities.runOnFXThread(() -> {
-            var dialog = getDialog();
-            comboBox.requestFocus();
-            Optional<Pair<String, String>> v = dialog.showAndWait();
-            v.ifPresent(pair -> {
-                createAssociation(pair.getKey(), pair.getValue());
-            });
-            textField.setText(null);
-            String concept = lastSelectedSampler == null ?
-                    toolBox.getAppConfig().getAppAnnotationSampleDefaultConcept() :
-                    lastSelectedSampler;
-            comboBox.getSelectionModel().select(concept);
+            var d = getDialog();
+            if (comboBox != null) {
+                comboBox.requestFocus();
+            }
+            Optional<Pair<String, String>> v = d.showAndWait();
+            v.ifPresent(pair -> createAssociation(pair.getKey(), pair.getValue()));
+            if (textField != null) {
+                textField.setText(null);
+            }
+            if (comboBox != null) {
+                String concept = lastSelectedSampler == null ?
+                        toolBox.getAppConfig().getAppAnnotationSampleDefaultConcept() :
+                        lastSelectedSampler;
+                comboBox.getSelectionModel().select(concept);
+            }
         });
-
     }
 
 
@@ -81,16 +85,21 @@ public class SampleBC extends AbstractBC {
             dialog.setHeaderText(i18n.getString("buttons.sample.dialog.header"));
             dialog.setContentText(i18n.getString("buttons.sample.dialog.content"));
             dialog.setGraphic(icon);
+            dialog.setResizable(true);
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
             dialog.getDialogPane().setContent(getDialogPane());
             dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
             dialog.setResultConverter(dialogButton -> {
                 if (dialogButton == ButtonType.OK) {
-                    return new Pair<>(lastSelectedSampler,
-                            textField.getText());
+                    return new Pair<>(lastSelectedSampler, textField.getText());
                 }
                 return null;
             });
+            // Keep OK disabled until the sampler list has finished loading.
+            var okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            if (okButton != null) {
+                okButton.setDisable(!samplersLoaded);
+            }
         }
         return dialog;
     }
@@ -113,8 +122,12 @@ public class SampleBC extends AbstractBC {
         if (dialogPane == null) {
             dialogPane = new GridPane();
             dialogPane.setPadding(new Insets(20, 10, 10, 10));
+            dialogPane.setHgap(8);
+            dialogPane.setVgap(8);
+
             comboBox = new ComboBox<>();
             comboBox.setEditable(false);
+            comboBox.setVisible(false);
             comboBox.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs) -> {
@@ -125,73 +138,68 @@ public class SampleBC extends AbstractBC {
                             lastSelectedSampler = item;
                         }
                     });
+
+            loadingIndicator = new ProgressIndicator();
+            loadingIndicator.setMaxSize(24, 24);
+
             textField = new TextField();
             String by = toolBox.getI18nBundle().getString("buttons.sample.dialog.label.by");
             String id = toolBox.getI18nBundle().getString("buttons.sample.dialog.label.id");
             textField.setPromptText(id);
+
+            // Stack the spinner and combobox in the same cell; spinner shown until data arrives.
+            var samplerContainer = new StackPane(loadingIndicator, comboBox);
             dialogPane.add(new Label(by), 0, 0);
-            dialogPane.add(comboBox, 1, 0);
+            dialogPane.add(samplerContainer, 1, 0);
             dialogPane.add(new Label(id), 0, 1);
             dialogPane.add(textField, 1, 1);
 
-            String defaultSampleConcept = toolBox.getAppConfig()
-                    .getAppAnnotationSampleDefaultConcept();
+            loadSamplers();
+        }
+        return dialogPane;
+    }
 
-            ResourceBundle i18n = toolBox.getI18nBundle();
-            String title = i18n.getString("buttons.sample.dialog.title");
-            String header = i18n.getString("buttons.sample.dialog.header");
-            String content = i18n.getString("buttons.sample.warning.content");
+    private void loadSamplers() {
+        String defaultSampleConcept = toolBox.getAppConfig().getAppAnnotationSampleDefaultConcept();
+        ResourceBundle i18n = toolBox.getI18nBundle();
+        String title = i18n.getString("buttons.sample.dialog.title");
+        String header = i18n.getString("buttons.sample.dialog.header");
+        String content = i18n.getString("buttons.sample.warning.content");
 
-            // TODO listen for cache reset to clear and repopulate dialog
-            Duration timeout = toolBox.getAppConfig().getRoot().conceptService().timeout();
-
-            // M3-10: Async _might_ be the cause of this. Trying sync instead
-            try {
-                var opt = toolBox.getServices()
-                        .conceptService()
-                        .findPhylogenyDown(defaultSampleConcept)
-                        .get(timeout.toMillis(), TimeUnit.MILLISECONDS);
-                if (opt.isPresent()) {
-                    var samplers = opt.get().flatten();
-                    JFXUtilities.runOnFXThread(() -> {
+        toolBox.getServices()
+                .conceptService()
+                .findPhylogenyDown(defaultSampleConcept)
+                .thenAccept(opt -> JFXUtilities.runOnFXThread(() -> {
+                    if (opt.isPresent()) {
+                        var samplers = opt.get().flatten();
                         new FilteredComboBoxDecorator<>(comboBox, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
                         comboBox.setItems(FXCollections.observableArrayList(samplers));
                         comboBox.getSelectionModel().select(defaultSampleConcept);
-                    });
-                }
-                else {
-                    toolBox.getEventBus()
-                            .send(new ShowWarningAlert(title, header, content));
-                }
-            }
-            catch (Exception e) {
-                toolBox.getEventBus()
-                        .send(new ShowExceptionAlert(title, header, content, e));
-            }
-//            toolBox.getServices()
-//                    .conceptService()
-//                    .findConcept(defaultSampleConcept)
-//                    .handle((opt, ex) -> {
-//                        if (ex instanceof Exception) {
-//                            toolBox.getEventBus()
-//                                    .send(new ShowExceptionAlert(title, header, content, (Exception) ex));
-//                        }
-//                        else if (opt.isEmpty()) {
-//                            toolBox.getEventBus()
-//                                    .send(new ShowWarningAlert(title, header, content));
-//                        }
-//                        else {
-//                            List<String> samplers = opt.get().flatten();
-//                            JFXUtilities.runOnFXThread(() -> {
-//                                new FilteredComboBoxDecorator<>(comboBox, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
-//                                comboBox.setItems(FXCollections.observableArrayList(samplers));
-//                                comboBox.getSelectionModel().select(defaultSampleConcept);
-//                            });
-//                        }
-//                        return null;
-//                    });
 
-        }
-        return dialogPane;
+                        loadingIndicator.setVisible(false);
+                        comboBox.setVisible(true);
+                        samplersLoaded = true;
+
+                        if (dialog != null) {
+                            var okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                            if (okButton != null) {
+                                okButton.setDisable(false);
+                            }
+                            // Resize to fit the now-populated combobox if dialog is showing.
+                            var scene = dialog.getDialogPane().getScene();
+                            if (scene != null && scene.getWindow() != null && scene.getWindow().isShowing()) {
+                                scene.getWindow().sizeToScene();
+                            }
+                        }
+                    } else {
+                        toolBox.getEventBus().send(new ShowWarningAlert(title, header, content));
+                    }
+                }))
+                .exceptionally(ex -> {
+                    JFXUtilities.runOnFXThread(() ->
+                            toolBox.getEventBus().send(new ShowExceptionAlert(title, header, content,
+                                    ex instanceof Exception e ? e : new RuntimeException(ex))));
+                    return null;
+                });
     }
 }
