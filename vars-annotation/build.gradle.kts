@@ -14,22 +14,22 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
     id("org.openjfx.javafxplugin") version "0.1.0"
-    id("com.github.ben-manes.versions") version "0.54.0"
+    id("com.github.ben-manes.versions") version "0.64.0"
     id("com.adarshr.test-logger") version "4.0.0"
-    id("org.beryx.jlink") version "4.0.2"
+    id("org.beryx.jlink") version "4.1.1"
     id("org.gradlex.extra-java-module-info") version "1.14.2"
 }
 
-version = "2.4.1"
+version = "2.4.2"
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(25))
+        languageVersion.set(JavaLanguageVersion.of(27))
     }
 }
 
 javafx {
-    version = "26"
+    version = "27"
     modules("javafx.base", "javafx.controls", "javafx.fxml", "javafx.graphics", "javafx.media", "javafx.swing")
 }
 
@@ -57,24 +57,24 @@ configurations.all {
 }
 
 // Define versions in variables to avoid hardcoding them in multiple places and to make it easier to update them.
-val annosaurusSdkVersion = "0.0.18"
-val caffeineVersion = "3.2.4"
+val annosaurusSdkVersion = "0.1.0"
+val caffeineVersion = "3.3.0"
 val configVersion = "1.4.9"
-val controlsFxVersion = "11.2.3"
-val gsonVerion = "2.14.0"
-val ikonliVersion = "12.3.1"
+val controlsFxVersion = "11.2.5"
+val gsonVersion = "2.14.0"
+val ikonliVersion = "12.4.0"
 val imgfxVersion = "0.0.17"
 val jeromqVersion = "0.6.0"
-val logbackVersion = "1.5.37"
+val logbackVersion = "1.6.4"
 val mbariCommonsVersion = "0.0.8"
 val methanolVersion = "1.9.0"
 val okhttpLoggingInterceptorVersion = "3.14.4"
 val oniSdkVersion = "0.0.12"
 val razielSdkVersion = "0.0.7"
-val slf4jVersion = "2.0.17"
+val slf4jVersion = "2.0.20"
 val swingxVersion = "1.6.5-1"
 val vampireSquidSdkVersion = "0.0.15"
-val vcr4jVersion = "5.3.6"
+val vcr4jVersion = "5.3.7"
 
 
 
@@ -88,7 +88,7 @@ dependencies {
     implementation("org.slf4j:slf4j-api:${slf4jVersion}")
     implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
     implementation("com.github.mizosoft.methanol:methanol:$methanolVersion")
-    implementation("com.google.code.gson:gson:$gsonVerion")
+    implementation("com.google.code.gson:gson:$gsonVersion")
     implementation("com.squareup.okhttp3:logging-interceptor:$okhttpLoggingInterceptorVersion")
     implementation("com.typesafe:config:$configVersion")
     implementation("org.controlsfx:controlsfx:$controlsFxVersion")
@@ -122,7 +122,7 @@ dependencies {
 
     // Gradle adds junit-platform-launcher to the test runtime but doesn't
     // resolve its version from the test suite's useJUnitJupiter() declaration
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.1.3")
 
 //    implementation("ch.qos.logback:logback-classic:$logbackVersion") {
 //        exclude(group = "javax.activation")
