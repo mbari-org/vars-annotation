@@ -1,10 +1,14 @@
 package org.mbari.vars.annotation.ui.javafx.shared;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.Event;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.skin.ComboBoxListViewSkin;
@@ -28,6 +32,7 @@ public class FilteredComboBoxDecorator<T>  {
     private static final String EMPTY = "";
     private StringProperty filter = new SimpleStringProperty(EMPTY);
     private AutoCompleteComparator<T> comparator;
+    private final ObservableList<T> backingItems = FXCollections.observableArrayList();
     private volatile FilteredList<T> filteredItems;
     private final ComboBox<T> comboBox;
 
@@ -36,7 +41,12 @@ public class FilteredComboBoxDecorator<T>  {
         this.comboBox = comboBox;
         this.comparator = comparator;
 
-        filteredItems = new FilteredList<>(comboBox.getItems());
+        // The combobox always shows this one FilteredList. If someone later calls
+        // comboBox.setItems(...) we copy the new items into `backingItems` rather than
+        // wrapping the new list in a new FilteredList. (Swapping the wrapper from inside the
+        // items listener leaves the combobox showing the unfiltered list.)
+        backingItems.setAll(comboBox.getItems());
+        filteredItems = new FilteredList<>(backingItems);
         comboBox.setItems(filteredItems);
 
         Tooltip tooltip = new Tooltip();
@@ -46,15 +56,14 @@ public class FilteredComboBoxDecorator<T>  {
         comboBox.setOnKeyPressed(this::handleOnKeyPressed);
         comboBox.setOnHidden(this::handleOnHiding);
 
-        comboBox.itemsProperty().addListener((obs, oldV, newV) -> {
-            if (newV != filteredItems) {
-//                log.info("New list of size " + newV.size());
-                if (!(newV instanceof FilteredList)) {
-                    filteredItems = new FilteredList<>(newV);
-                }
-                else {
-                    filteredItems = (FilteredList<T>) newV;
-                }
+        // Use an InvalidationListener, NOT a ChangeListener. A ChangeListener is only notified when
+        // !oldValue.equals(newValue), and ObservableList.equals compares contents. So setting a new
+        // list with the same contents as the current one (e.g. on a refresh) would go unnoticed and
+        // the combobox would be left showing the unfiltered list.
+        comboBox.itemsProperty().addListener(obs -> {
+            var newItems = comboBox.getItems(); // also revalidates the property so we get the next event
+            if (newItems != filteredItems) {
+                backingItems.setAll(newItems);
                 comboBox.setItems(filteredItems);
             }
         });
@@ -70,8 +79,60 @@ public class FilteredComboBoxDecorator<T>  {
         });
         comboBox.setSkin(skin);
 
+        installValueBasedButtonCell();
     }
 
+    /**
+     * The combobox's default button cell (the one that shows the selected item) renders whatever row
+     * it was last told to point at. Un-filtering the list moves the selected item to a different row,
+     * and if the value itself doesn't change the skin never re-points the cell, so it keeps showing
+     * the item that now sits at the old row (e.g. row 0) while the value is right. So we use a button
+     * cell that displays the combobox's value instead of an item looked up by index.
+     */
+    private void installValueBasedButtonCell() {
+        if (comboBox.getButtonCell() != null) {
+            return; // The owner has their own cell. Leave it alone.
+        }
+        var cell = new ListCell<T>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+                showValue(this);
+            }
+        };
+        comboBox.valueProperty().addListener(obs -> showValue(cell));
+        comboBox.setButtonCell(cell);
+        showValue(cell);
+    }
+
+    private void showValue(ListCell<T> cell) {
+        T value = comboBox.getValue();
+        if (value == null) {
+            cell.setText(comboBox.getPromptText());
+        }
+        else {
+            var converter = comboBox.getConverter();
+            cell.setText(converter == null ? String.valueOf(value) : converter.toString(value));
+        }
+    }
+
+
+    /**
+     * Logs (at DEBUG) the state of the combobox's selection. Used to diagnose cases where the displayed
+     * item doesn't match the value; look for "FilteredComboBoxDecorator" in the log.
+     */
+    private void logState(String where) {
+        log.atDebug().log(() -> {
+            var sm = comboBox.getSelectionModel();
+            var items = comboBox.getItems();
+            int idx = sm.getSelectedIndex();
+            var atIdx = idx > -1 && idx < items.size() ? String.valueOf(items.get(idx)) : "<n/a>";
+            return "FilteredComboBoxDecorator[" + where + "] filter='" + filter.get() + "' value=" + comboBox.getValue()
+                    + " selectedItem=" + sm.getSelectedItem() + " selectedIndex=" + idx
+                    + " itemAtSelectedIndex=" + atIdx + " indexOfValue=" + items.indexOf(comboBox.getValue())
+                    + " items=" + items.size() + " showing=" + comboBox.isShowing();
+        });
+    }
 
     private void handleFilterChanged(String newValue) {
         if (filteredItems != null) {
@@ -103,13 +164,28 @@ public class FilteredComboBoxDecorator<T>  {
     }
 
     private void handleOnHiding(Event e) {
+        // Don't un-filter the list synchronously. When the popup hides because the user clicked an
+        // item, the click may not be fully processed yet. If the list changes underneath it, the
+        // clicked row (say, row 0 of the filtered list) is resolved against the un-filtered list and
+        // the wrong item (row 0 of the full list) ends up selected. So let the click finish first.
+        comboBox.getTooltip().hide();
+        logState("hidden");
+        Platform.runLater(this::resetFilter);
+    }
+
+    private void resetFilter() {
         T value = comboBox.getValue();
+        logState("resetFilter:start");
         filter.setValue(EMPTY);
+        logState("resetFilter:filterCleared");
         if (value != null) {
             comboBox.getSelectionModel().select(value);
         }
         comboBox.getTooltip().hide();
         restoreOriginalItems();
+        logState("resetFilter:end");
+        // The display can lag behind the selection, so log again after the UI has caught up
+        Platform.runLater(() -> logState("resetFilter:afterPulse"));
     }
 
     private void handleOnKeyPressed(KeyEvent keyEvent) {
