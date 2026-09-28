@@ -27,7 +27,6 @@ module org.mbari.vars.annotation {
     requires org.kordamp.ikonli.core;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.material2;
-    requires org.kordamp.ikonli.swing;
     requires org.mbari.imgfx;
     requires org.mbari.vars.annosaurus.sdk;
     requires org.mbari.vars.oni.sdk;

@@ -96,7 +96,6 @@ dependencies {
     // IMPORTANT - ikonli version needs to be the same as the one used in imgfx or the icons won't render.
     implementation("org.kordamp.ikonli:ikonli-core:$ikonliVersion")
     implementation("org.kordamp.ikonli:ikonli-javafx:$ikonliVersion")
-    implementation("org.kordamp.ikonli:ikonli-swing:$ikonliVersion")
     implementation("org.kordamp.ikonli:ikonli-material2-pack:$ikonliVersion")
     implementation("org.mbari.commons:jcommons:$mbariCommonsVersion")
     implementation("org.mbari.imgfx:imgfx:$imgfxVersion")

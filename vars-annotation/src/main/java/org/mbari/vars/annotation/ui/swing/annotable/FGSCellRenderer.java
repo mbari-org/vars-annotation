@@ -1,6 +1,5 @@
 package org.mbari.vars.annotation.ui.swing.annotable;
 
-import org.kordamp.ikonli.swing.FontIcon;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annotation.ui.javafx.Icons;
 import org.mbari.vars.annotation.ui.javafx.annotable.FGSValue;
