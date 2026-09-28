@@ -26,10 +26,12 @@ public class AnnotationTableModel extends AbstractTableModel {
 
     public void updateAnnotation(Annotation a) {
         int i = annotations.indexOf(a);
+        // Not every updated annotation is in this table. Firing an event with an invalid
+        // row index corrupts the state of the table's RowSorter, which breaks sorting.
         if (i > -1) {
             annotations.set(i, a);
+            fireTableRowsUpdated(i, i);
         }
-        fireTableRowsUpdated(i, i);
     }
 
     public void removeAnnotation(Annotation a) {
@@ -44,8 +46,8 @@ public class AnnotationTableModel extends AbstractTableModel {
     public void removeAnnotationAt(int idx) {
         if (idx > -1 && idx < annotations.size()) {
             annotations.remove(idx);
+            fireTableRowsDeleted(idx, idx);
         }
-        fireTableRowsDeleted(idx, idx);
     }
 
     public void addAnnotations(Collection<Annotation> xs) {

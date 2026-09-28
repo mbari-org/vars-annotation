@@ -4,15 +4,20 @@ import org.mbari.vars.annosaurus.sdk.r1.models.ObservationsUpdate;
 import org.mbari.vars.oni.sdk.r1.ConceptService;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.javafx.AnnotationServiceDecorator;
+import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
 
 public abstract class UpdateObservationsCmd implements Command {
+
+    private static final Loggers log = new Loggers(UpdateObservationsCmd.class);
 
     protected List<Annotation> originalAnnotations;
     protected ObservationsUpdate observationsUpdate;
@@ -33,21 +38,32 @@ public abstract class UpdateObservationsCmd implements Command {
     public void apply(UIToolBox toolBox) {
 
         Runnable runnable = () -> {
-            if(observationsUpdate.concept() != null) {
-                ConceptService conceptService = toolBox.getServices().conceptService();
-                var conceptOpt = conceptService.findConcept(observationsUpdate.concept()).join();
-                if (conceptOpt.isEmpty()) {
-                    throw new RuntimeException("Concept " + observationsUpdate.concept() + " does not exist");
+            try {
+                if (observationsUpdate.concept() != null) {
+                    ConceptService conceptService = toolBox.getServices().conceptService();
+                    var conceptOpt = conceptService.findConcept(observationsUpdate.concept()).join();
+                    if (conceptOpt.isEmpty()) {
+                        throw new RuntimeException("Concept " + observationsUpdate.concept() + " does not exist");
+                    }
+                    else {
+                        observationsUpdate = observationsUpdate.withConcept(conceptOpt.get().getName());
+                    }
                 }
-                else {
-                    observationsUpdate = observationsUpdate.withConcept(conceptOpt.get().getName());
-                }
+                var annotationService = toolBox.getServices().annotationService();
+                var count = annotationService.updateObservations(observationsUpdate).join();
+                log.atDebug().log(() -> "Updated " + count + " of " +
+                        observationsUpdate.observationUuids().size() + " observations");
+                AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
+                Set<UUID> uuids = new HashSet<>(observationsUpdate.observationUuids());
+                asd.refreshAnnotationsView(uuids);
             }
-            var annotationService = toolBox.getServices().annotationService();
-            annotationService.updateObservations(observationsUpdate).join();
-            AnnotationServiceDecorator asd = new AnnotationServiceDecorator(toolBox);
-            Set<UUID> uuids = new HashSet<>(observationsUpdate.observationUuids());
-            asd.refreshAnnotationsView(uuids);
+            catch (Exception e) {
+                // This runs on its own thread, so nobody else will see the exception
+                var cause = e instanceof CompletionException && e.getCause() instanceof Exception ce ? ce : e;
+                log.atWarn().withCause(cause).log("Failed to update observations");
+                toolBox.getEventBus()
+                        .send(ShowNonfatalErrorAlert.from("commandmanager.error", cause, toolBox.getI18nBundle()));
+            }
         };
         Thread.ofVirtual().start(runnable);
 

@@ -424,8 +424,18 @@ public class AnnotationServiceDecorator {
 
         final EventBus eventBus = toolBox.getEventBus();
         final AnnotationService annotationService = toolBox.getServices().annotationService();
-        AsyncUtils.collectAll(observationUuids, annotationService::findByUuid)
-                .thenAccept(annotations -> eventBus.send(new AnnotationsChangedEvent(annotations)));
+        // A single failed lookup must not prevent the others from being refreshed
+        AsyncUtils.collectAll(observationUuids, uuid -> annotationService.findByUuid(uuid)
+                        .exceptionally(ex -> {
+                            log.atWarn().withCause(ex).log("Failed to look up observation " + uuid);
+                            return null;
+                        }))
+                .thenAccept(annotations -> {
+                    var found = annotations.stream().filter(Objects::nonNull).toList();
+                    if (!found.isEmpty()) {
+                        eventBus.send(new AnnotationsChangedEvent(found));
+                    }
+                });
 
     }
 

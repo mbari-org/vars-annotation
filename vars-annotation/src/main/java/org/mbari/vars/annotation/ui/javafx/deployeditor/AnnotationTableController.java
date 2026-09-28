@@ -189,10 +189,13 @@ public class AnnotationTableController {
                         Collection<Annotation> annotations = e.get();
                         ObservableList<Annotation> items = getTableView().getItems();
                         List<Annotation> intersection = ListUtils.intersection(annotations, items);
-                        for (Annotation a : intersection) {
-                            int idx = items.indexOf(a);
-                            items.remove(idx);
-                            items.add(idx, a);
+                        // Annotation.equals only compares observationUuid, so indexOf finds the stale row
+                        // that we then replace in place.
+                        for (Annotation a : annotations) {
+                            int idx = a == null ? -1 : items.indexOf(a);
+                            if (idx >= 0) {
+                                items.set(idx, a);
+                            }
                         }
                         tableView.refresh();
                         tableView.sort();
