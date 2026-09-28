@@ -8,6 +8,7 @@ import org.mbari.vars.annotation.ui.messages.ShowExceptionAlert;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.OpenDoneEvent;
 import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda.SettingsPaneImpl;
 import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda.SharktopodaSettingsPaneController;
 import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda.SharktoptodaControlPane;
@@ -19,6 +20,7 @@ import org.mbari.vcr4j.remote.control.RVideoIO;
 import org.mbari.vcr4j.remote.control.RemoteControl;
 import org.mbari.vcr4j.remote.control.commands.CloseCmd;
 import org.mbari.vcr4j.remote.control.commands.OpenCmd;
+import org.mbari.vcr4j.remote.control.commands.OpenDoneCmd;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -82,6 +84,7 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                         .withStatus(true)
                         .withMonitoring(true)
                         .whenFrameCaptureIsDone(imageCaptureService.getEventBus()::send)
+                        .whenOpenIsDone(request -> handleOpenDone(media, request))
                         .build()
                         .get();
                 var io = remoteControl.getVideoIO();
@@ -120,6 +123,31 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                 return new MediaPlayer<>(media, new NoopImageCaptureService(), io, () -> {});
             }
         });
+    }
+
+    /**
+     * UDP remote protocol immediately acks an 'open ...' command. The receiver subsequently sends
+     * an 'open done' message reporting success or failure. On success the receiver is ready for
+     * video UUID specific commands, so localization sending is enabled; a failure is surfaced to
+     * the user. Commands sent before 'open done' would be rejected by the receiver, so they are
+     * not sent; the full localization set is sent once the receiver reports ready.
+     */
+    private void handleOpenDone(Media media, OpenDoneCmd.Request request) {
+        if (!request.getUuid().equals(media.getVideoReferenceUuid())) {
+            return;
+        }
+        if (request.isOk()) {
+            toolBox.getEventBus().send(new OpenDoneEvent(request.getUuid()));
+            return;
+        }
+        var cause = request.getCause() == null ? "unknown error" : request.getCause();
+        log.atWarn().log("Failed to open " + media.getUri() + " in Sharktopoda: " + cause);
+        var i18n = toolBox.getI18nBundle();
+        var title = i18n.getString("mediaplayer.sharktopoda2.error.title");
+        var header = i18n.getString("mediaplayer.sharktopoda2.error.header");
+        var content = i18n.getString("mediaplayer.sharktopoda2.error.content");
+        toolBox.getEventBus().send(new ShowExceptionAlert(title, header, content,
+                new RuntimeException(cause)));
     }
 
     /**

@@ -13,14 +13,16 @@ import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annotation.ui.Data;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
-import org.mbari.vars.annotation.ui.events.ForceReloadLocalizationsEvent;
+import org.mbari.vars.annotation.ui.events.OpenDoneEvent;
 import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2.IncomingController;
 import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2.OutgoingController;
 import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2.SharktopodaState;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.remote.control.RemoteControl;
+import org.mbari.vcr4j.remote.control.commands.localization.AddLocalizationsCmd;
 import org.mbari.vcr4j.remote.control.commands.localization.SelectLocalizationsCmd;
 
 import java.net.DatagramSocket;
@@ -151,12 +153,21 @@ public class AnnotationAccessThreadingTest {
     }
 
     @Test
-    public void forceReloadReadsAnnotationsOnTheFxThread() {
-        // MediaPlayers sends this from the toolbox executor — the test thread stands in for it
-        toolBox.getEventBus().send(new ForceReloadLocalizationsEvent());
+    public void localizationsAreSentOnlyAfterOpenDone() {
+        var adds = new CopyOnWriteArrayList<AddLocalizationsCmd>();
+        var disposable = remoteControl.getVideoIO()
+                .getCommandSubject()
+                .ofType(AddLocalizationsCmd.class)
+                .subscribe(adds::add);
+        try {
+            toolBox.getEventBus().send(new AnnotationsAddedEvent(List.of(annotation)));
+            assertTrue(adds.isEmpty(), "Localizations were sent before 'open done'");
 
-        assertFalse(readsOnFxThread.isEmpty(), "Expected the reload to read the annotations");
-        assertTrue(readsOnFxThread.stream().allMatch(Boolean::booleanValue),
-                "The annotation list was read off the FX thread: " + readsOnFxThread);
+            toolBox.getEventBus().send(new OpenDoneEvent(media.getVideoReferenceUuid()));
+            assertEquals(1, adds.size(), "The full localization set was not sent on 'open done'");
+        }
+        finally {
+            disposable.dispose();
+        }
     }
 }

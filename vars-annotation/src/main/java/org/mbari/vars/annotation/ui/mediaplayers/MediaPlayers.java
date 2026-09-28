@@ -3,7 +3,6 @@ package org.mbari.vars.annotation.ui.mediaplayers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annotation.ui.UIToolBox;
-import org.mbari.vars.annotation.ui.events.ForceReloadLocalizationsEvent;
 import org.mbari.vars.annotation.ui.events.MediaChangedEvent;
 import org.mbari.vars.annotation.ui.events.MediaControlsChangedEvent;
 import org.mbari.vars.annotation.ui.events.MediaPlayerChangedEvent;
@@ -89,10 +88,6 @@ public class MediaPlayers {
                                 log.atError().withCause(e).log("Unable to load services");
                                 eventBus.send(new MediaPlayerChangedEvent(null, null));
                             }
-                            // #174: Annotations are sometimes sent before the media
-                            // is ready. So this triggers a clear and reload in the
-                            // OutgoingController
-                            eventBus.send(new ForceReloadLocalizationsEvent());
                         });
 
             } catch (ServiceConfigurationError e) {

@@ -20,8 +20,9 @@ public class OutgoingController {
     private final RVideoIO io;
     private final List<Disposable> disposables = new ArrayList<>();
     private final SharktopodaState sharktopodaState;
+    private volatile boolean openDone = false;
     private enum Action {
-        Add, Clear, Remove, Select, Update
+        Add, Remove, Select, Update
     }
 
     public OutgoingController(UIToolBox toolBox,
@@ -60,21 +61,21 @@ public class OutgoingController {
                 .filter(evt -> evt.getEventSource() != Constants.LOCALIZATION_EVENT_SOURCE)
                 .subscribe(evt -> handle(evt.get(), Action.Select)));
 
-        // #174: Force reload localizations in the video player
         disposables.add(observable
-                .ofType(ForceReloadLocalizationsEvent.class)
-                .subscribe(evt -> forceReload()));
+                .ofType(OpenDoneEvent.class)
+                .filter(evt -> evt.getUuid().equals(io.getUuid()))
+                .subscribe(evt -> videoOpened()));
     }
 
-    /**
-     * Clear and re-send the localizations to the video player
-     */
-    private void forceReload() {
-        io.send(new ClearLocalizationsCmd(new ClearLocalizationsCmd.Request(io.getUuid())));
+    private void videoOpened() {
+        openDone = true;
         handle(AnnotationSnapshots.snapshot(toolBox), Action.Add);
     }
 
     private void handle(Collection<Annotation> annotations, Action action) {
+        if (!openDone) {
+            return;
+        }
 //        var media = toolBox.getData().getMedia();
         List<Localization> localizations = LocalizedAnnotation.from(annotations)
                 .stream()
