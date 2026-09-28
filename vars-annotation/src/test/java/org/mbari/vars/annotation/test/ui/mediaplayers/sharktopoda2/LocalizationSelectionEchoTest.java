@@ -9,6 +9,7 @@ import org.mbari.vars.annosaurus.sdk.r1.models.BoundingBox;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
+import org.mbari.vars.annotation.ui.events.OpenDoneEvent;
 import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2.IncomingController;
 import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2.OutgoingController;
 import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2.SharktopodaState;
@@ -91,6 +92,9 @@ public class LocalizationSelectionEchoTest {
         var sharktopodaState = new SharktopodaState();
         outgoingController = new OutgoingController(toolBox, remoteControl.getVideoIO(), sharktopodaState);
         incomingController = new IncomingController(toolBox, remoteControl, sharktopodaState);
+
+        // OutgoingController ignores everything until the player reports 'open done'
+        toolBox.getEventBus().send(new OpenDoneEvent(media.getVideoReferenceUuid()));
 
         selectsSentToSharktopoda.clear();
         remoteControl.getVideoIO()
