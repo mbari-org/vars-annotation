@@ -105,7 +105,6 @@ public class JdkPythiaService implements MachineLearningService {
     private List<MachineLearningLocalization> sendRequest(HttpRequest request) throws IOException, InterruptedException {
         var response = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
         log.atDebug().log(response);
-        var prediction = gson.fromJson(response, MachineLearningResponse1.class);
-        return prediction.toMLStandard();
+        return MachineLearningResponseParser.parse(response);
     }
 }

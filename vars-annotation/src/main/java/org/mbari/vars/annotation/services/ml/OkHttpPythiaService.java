@@ -73,8 +73,7 @@ public class OkHttpPythiaService implements MachineLearningService {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
             var body = response.body().string();
             log.atDebug().log("Response from ml service: " + body);
-            var prediction = gson.fromJson(body, MachineLearningResponse1.class);
-            return prediction.toMLStandard();
+            return MachineLearningResponseParser.parse(body);
         }
         catch (Exception e) {
             throw new RuntimeException(e);

@@ -16,7 +16,6 @@ import org.mbari.vars.annotation.ui.javafx.shared.FilteredComboBoxDecorator;
 public class LocalizationEditorController {
 
     private HBox root;
-    private CheckBox checkBox;
     private ComboBox<String> conceptComboBox;
     private final UIToolBox toolBox;
     private final Localization<RectangleView, ImageView> localization;
@@ -39,7 +38,7 @@ public class LocalizationEditorController {
             }
         });
 
-        checkBox = new CheckBox();
+        CheckBox checkBox = new CheckBox();
 //        Color c = (Color) localization.getDataView().getView().getFill();
 //        Color nonOpaque = Color.color(c.getRed(), c.getGreen(), c.getBlue());
 //        checkBox.setCheckedColor(nonOpaque);
