@@ -21,6 +21,16 @@ public class NoopAuthService implements ConfigurationService {
     }
 
     @Override
+    public CompletableFuture<String> encode(String user, String password, String url) {
+        return CompletableFuture.failedFuture(new RuntimeException("NoopAuthService does not support authentication"));
+    }
+
+    @Override
+    public CompletableFuture<BearerAuth> login(String loginFile) {
+        return CompletableFuture.failedFuture(new RuntimeException("NoopAuthService does not support authentication"));
+    }
+
+    @Override
     public CompletableFuture<List<EndpointConfig>> endpoints(String jwt) {
         return CompletableFuture.failedFuture(new RuntimeException("NoopAuthService does not support authentication"));
     }
