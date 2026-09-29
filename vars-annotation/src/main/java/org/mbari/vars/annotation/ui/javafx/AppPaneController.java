@@ -6,6 +6,7 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
+import org.mbari.vars.annotation.ui.swing.SwingNodeCursorBridge;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -249,6 +250,8 @@ public class AppPaneController {
                 table.setFillsViewportHeight(true);
                 swingNode.setContent(scrollPane);
                 scrollPane.revalidate();
+                // SwingNode doesn't forward the header's column-resize cursor to JavaFX, so do it ourselves
+                SwingNodeCursorBridge.install(table.getTableHeader(), swingNode);
             });
 
 
