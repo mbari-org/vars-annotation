@@ -14,7 +14,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
     id("org.openjfx.javafxplugin") version "0.1.0"
-    id("com.github.ben-manes.versions") version "0.64.0"
+    id("io.github.ben-manes.versions") version "0.64.0"
     id("com.adarshr.test-logger") version "4.0.0"
     id("org.beryx.jlink") version "4.1.1"
     id("org.gradlex.extra-java-module-info") version "1.14.2"
@@ -307,7 +307,12 @@ jlink {
     // Use the configured Java toolchain
     javaHome.set(project.javaToolchains.launcherFor(java.toolchain).get().metadata.installationPath.asFile)
 
-    options.set(listOf("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages", "--ignore-signing-information"))
+    options.set(listOf(
+        "--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages", "--ignore-signing-information",
+        // Ikonli 12.4.0+ jars (core, javafx, the icon packs) each ship an OSGI-INF/ folder of OSGi metadata.
+        // jlink fails with "Multiple modules contain non-empty package: OSGI-INF" when several
+        // modules have it, and an app that isn't running in an OSGi container never reads it.
+        "--exclude-resources", "glob:/*/OSGI-INF/**"))
 
     launcher {
         name = "VARS Annotation"
