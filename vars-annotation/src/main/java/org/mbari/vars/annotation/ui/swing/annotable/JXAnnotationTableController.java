@@ -131,6 +131,9 @@ public class JXAnnotationTableController {
             tableHeader.setTable(table);
             tableHeader.setBackground(Colors.DEFAULT.getColor());
             tableHeader.setForeground(Colors.DEFAULT_TEXT.getColor());
+            // The platform's sort indicator is a tiny black triangle. Draw ours in the attention color.
+            tableHeader.setDefaultRenderer(new SortArrowHeaderRenderer(tableHeader.getDefaultRenderer(),
+                    Colors.ATTENTION.getColor()));
 
             table.setTableHeader(tableHeader);
             table.setBackground(Colors.DEFAULT.getColor());
