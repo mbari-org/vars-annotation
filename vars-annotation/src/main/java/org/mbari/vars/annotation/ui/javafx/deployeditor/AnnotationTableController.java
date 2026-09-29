@@ -52,20 +52,8 @@ public class AnnotationTableController {
         this.i18n = toolBox.getI18nBundle();
         this.eventBus = eventBus;
 
-        Observable<Object> observable = eventBus.toObserverable();
-
-        // Forward this tables annotation mutating events to main event bus
-        EventBus mainEventBus = toolBox.getEventBus();
-        List<Class<? extends Command>> commandsToForward = List.of(ChangeGroupCmd.class,
-                ChangeActivityCmd.class,
-                //MoveAnnotationsCmd.class,
-                MoveAnnotationsAndImagesCmd.class,
-                ChangeConceptCmd.class,
-                DeleteAssociationsCmd.class);
-        for (Class<? extends Command> clazz : commandsToForward) {
-            observable.ofType(clazz)
-                    .subscribe(mainEventBus::send);
-        }
+        // Forward this table's annotation mutating commands to the main event bus
+        forwardCommands(eventBus, toolBox.getEventBus());
 
         // Load the column visibility and width
         loadPreferences();
@@ -74,6 +62,20 @@ public class AnnotationTableController {
         getTableView().getItems()
                 .addListener((InvalidationListener) obs -> updateVideoReferenceUris());
 
+    }
+
+    /**
+     * The bulk editor sends its commands on this view's own event bus. The CommandManager only listens
+     * to the main event bus, so every command has to be passed on or it silently does nothing. We forward
+     * all commands rather than a list of known ones, so a new bulk editor action can't be forgotten.
+     *
+     * @param local The bus that the bulk editor sends commands on
+     * @param main The application's main event bus
+     */
+    public static void forwardCommands(EventBus local, EventBus main) {
+        local.toObserverable()
+                .ofType(Command.class)
+                .subscribe(main::send);
     }
 
     private void select(Collection<Annotation> annos) {

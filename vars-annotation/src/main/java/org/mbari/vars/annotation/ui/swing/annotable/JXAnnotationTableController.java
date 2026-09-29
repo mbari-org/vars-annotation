@@ -289,12 +289,17 @@ public class JXAnnotationTableController {
     private void remove(Collection<Annotation> annotations) {
         if (!annotations.isEmpty() && tableModel.getRowCount() > 0) {
             SwingUtilities.invokeLater(() -> {
-                var indices = annotations.stream().map(a -> {
-                            var model = tableModel.getAnnotationRow(a);
-                            var view = table.convertRowIndexToView(model);
-                            return new ModelAndViewIdx(model, view);
-                        })
+                // Not every removed annotation is in this table (it only shows the open video, but e.g. the
+                // bulk editor deletes across a whole deployment). Asking for the view index of a row that
+                // isn't here throws, which would stop us from removing the ones that are.
+                var indices = annotations.stream()
+                        .map(tableModel::getAnnotationRow)
+                        .filter(model -> model > -1)
+                        .map(model -> new ModelAndViewIdx(model, table.convertRowIndexToView(model)))
                         .toList();
+                if (indices.isEmpty()) {
+                    return;
+                }
                 var opt = indices.stream()
                         .min(Comparator.comparingInt(ModelAndViewIdx::view));
                 var scrollToIndex = Math.max(opt.map(mv -> mv.view() - 1).orElse(0), 0);
