@@ -71,7 +71,7 @@ val mbariCommonsVersion = "0.0.8"
 val methanolVersion = "1.9.0"
 val okhttpLoggingInterceptorVersion = "3.14.4"
 val oniSdkVersion = "0.0.12"
-val razielSdkVersion = "0.0.7"
+val razielSdkVersion = "0.0.8"
 val slf4jVersion = "2.0.20"
 val swingxVersion = "1.6.5-1"
 val vampireSquidSdkVersion = "0.0.15"
@@ -121,7 +121,8 @@ dependencies {
     }
 
     // Gradle adds junit-platform-launcher to the test runtime but doesn't
-    // resolve its version from the test suite's useJUnitJupiter() declaration
+    // resolve its version from the test suite's useJUnitJupiter() declaration.
+    // Keep this the same as the useJUnitJupiter() versions below, or discovery fails with NoSuchMethodError.
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.1.3")
 
 //    implementation("ch.qos.logback:logback-classic:$logbackVersion") {
@@ -140,13 +141,13 @@ testing {
         // Configure the built-in test suite
         val test by getting(JvmTestSuite::class) {
             // Use JUnit Jupiter test framework
-            useJUnitJupiter("5.10.2")
+            useJUnitJupiter("6.1.3")
         }
 
         // Integration test suite (replaces nebula.integtest plugin)
         register<JvmTestSuite>("integrationTest") {
             // Tests use JUnit Jupiter test framework
-            useJUnitJupiter("5.10.2")
+            useJUnitJupiter("6.1.3")
             sources {
                 java {
                     srcDirs("src/integTest/java")

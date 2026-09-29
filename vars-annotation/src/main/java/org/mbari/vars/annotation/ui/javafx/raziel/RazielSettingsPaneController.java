@@ -125,11 +125,11 @@ public class RazielSettingsPaneController implements SettingsPane {
                             else {
                                 var sortedStatuses = statuses.stream()
                                         .sorted(Comparator.comparing(es -> es.endpointConfig().name()))
-                                        .collect(Collectors.toList());
+                                        .toList();
                                 var panes = EndpointStatusPaneController.from(sortedStatuses)
                                         .stream()
                                         .map(EndpointStatusPaneController::getRoot)
-                                        .collect(Collectors.toList());
+                                        .toList();
                                 Platform.runLater(() -> {
                                     msgLabel.setText(null);
                                     endpointStatusPane.getChildren().addAll(panes);
@@ -144,11 +144,11 @@ public class RazielSettingsPaneController implements SettingsPane {
 
     @Override
     public void load() {
-        Raziel.ConnectionParams.load()
-                .ifPresent(rcp -> {
-                    urlTextfield.setText(rcp.url().toExternalForm());
-                    usernameTextfield.setText(rcp.username());
-                    passwordTextfield.setText(rcp.password());
+        // The saved file is encoded by Raziel and can't be decoded here, so we can only show the url.
+        // The user re-enters their credentials if they want to change them.
+        Raziel.LoginFile.load()
+                .ifPresent(loginFile -> {
+                    urlTextfield.setText(loginFile.url().toExternalForm());
                     checkEnable();
                 });
     }
@@ -156,23 +156,37 @@ public class RazielSettingsPaneController implements SettingsPane {
     @Override
     public void save() {
         parseRazielConnectionParams().ifPresent(rcp -> {
-            var path = Raziel.ConnectionParams.path();
-            var aes = Initializer.getToolBox().getAes();
-            try {
-                rcp.write(path, aes);
-                var toolbox = Initializer.getToolBox();
-                var services = Initializer.loadServices();
+            // Raziel checks the credentials and builds the login file. Only if that works do we
+            // replace raziel.txt, so bad credentials never clobber a working file.
+            Raziel.encode(rcp)
+                    .whenComplete((loginFile, ex) -> {
+                        if (ex != null) {
+                            Platform.runLater(() -> msgLabel.setText(resources.getString("raziel.pane.msg.authfailed")));
+                            log.atWarn()
+                                    .withCause(ex)
+                                    .log("Failed to get a login file from Raziel at " + rcp.url());
+                            return;
+                        }
+                        try {
+                            loginFile.write(Raziel.LoginFile.path());
+                        }
+                        catch (IOException e) {
+                            Platform.runLater(() -> msgLabel.setText("Failed to save connection params"));
+                            log.atWarn()
+                                    .withCause(e)
+                                    .log("Failed to save the Raziel login file");
+                            return;
+                        }
+                        Platform.runLater(() -> {
+                            var toolbox = Initializer.getToolBox();
+                            var services = Initializer.loadServices();
 
-                // --- Update services and trigger reload of service dependant data.
-                log.debug("Updating services using configuration from " + rcp.url());
-                toolbox.setServices(services);
-                Initializer.getToolBox().getEventBus().send(new ReloadServicesMsg());
-            } catch (IOException e) {
-                Platform.runLater(() -> msgLabel.setText("Failed to save connection params"));
-                log.atWarn()
-                        .withCause(e)
-                        .log("Failed to save raziel connection parameters");
-            }
+                            // --- Update services and trigger reload of service dependant data.
+                            log.debug("Updating services using configuration from " + rcp.url());
+                            toolbox.setServices(services);
+                            toolbox.getEventBus().send(new ReloadServicesMsg());
+                        });
+                    });
         });
         endpointStatusPane.getChildren().clear();
 

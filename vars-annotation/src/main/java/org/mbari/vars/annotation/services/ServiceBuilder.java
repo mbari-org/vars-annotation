@@ -53,13 +53,14 @@ public class ServiceBuilder {
         if (load && endpoints.isEmpty()) {
             try {
 
-                var razielConnectionParams = Raziel.ConnectionParams.load();
-                razielConnectionParams.ifPresent((params) -> {
-                    log.atInfo().log("Connecting to Raziel at " + params.url());
-                    var urlString = ServiceBuilder.adaptUrl(params.url().toString());
+                // raziel.txt is the text from Raziel's /config/auth/encode. We swap it for an access token.
+                var loginFile = Raziel.LoginFile.load();
+                loginFile.ifPresent(file -> {
+                    log.atInfo().log("Connecting to Raziel at " + file.url());
+                    var urlString = ServiceBuilder.adaptUrl(file.url().toString());
                     var uri = URI.create(urlString);
                     var client = new RazielKiotaClient(uri);
-                    var bearerAuth = client.authenticate(params.username(), params.password()).join();
+                    var bearerAuth = client.login(file.content()).join();
                     var services = client.endpoints(bearerAuth.accessToken()).join();
                     endpoints.addAll(services);
                 });
