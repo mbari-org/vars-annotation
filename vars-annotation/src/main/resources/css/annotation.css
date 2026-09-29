@@ -180,7 +180,7 @@
 .mediaplayer-ship-label {
   -fx-font-size: 26;
   -fx-text-fill: -selected-color;
-  -fx-font-family: monospace;
+  -fx-font-family: Monospaced;
   -fx-font-weight: bolder;
 }
 .menu-button:hover {
@@ -202,7 +202,7 @@
   -fx-text-fill: white;
 }
 .monospace {
-  -fx-font-family: 'DejaVu Sans Mono', monospace;
+  -fx-font-family: Monospaced; /* JavaFX CSS uses only the first family, so no fallback list */
 }
 .pane, .hbox, .vbox, .content, .text-area {
   -fx-background-color: -default-color;
@@ -286,7 +286,7 @@
   -fx-table-cell-border-color: -default-text;
 }
 .table-view .table-cell {
-  -fx-font-family: 'DejaVu Sans Mono', monospace;
+  -fx-font-family: Monospaced;
   -fx-text-fill: -default-table-text;
   -fx-font-size: 15px;
 }
