@@ -489,19 +489,6 @@ public class AppPaneController {
             localButton.setOnAction(e ->
                 decorator.apply(AppPaneController.this.getRoot().getScene().getWindow()));
 
-            // Tape is no longer used at MBARI. Remove this on 2022-01-21
-//            Text tapeIcon = Icons.LIVE_TV.standardSize();
-//            Button tapeButton = new JFXButton(null, tapeIcon);
-//            tapeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.tape")));
-//            tapeButton.setOnAction(e -> {
-//                tapeDialog.refresh();
-//                Optional<org.mbari.vars.ui.mediaplayers.vcr.MediaParams> opt = tapeDialog.showAndWait();
-//                opt.ifPresent(mediaParams -> {
-//                    OpenTapeService ots = new OpenTapeService(toolBox);
-//                    ots.open(mediaParams);
-//                });
-//            });
-
             Text realtimeIcon = Icons.DIRECTIONS_BOAT.standardSize();
             Button realtimeButton = new Button(null, realtimeIcon);
             realtimeButton.setTooltip(new Tooltip(i18n.getString("apppane.button.open.realtime")));
@@ -572,15 +559,6 @@ public class AppPaneController {
                 setUser(usersComboBox.getSelectionModel().getSelectedItem());
             });
 
-
-            // When a username is selected send a change event
-//            usersComboBox.getSelectionModel()
-//                    .selectedItemProperty()
-//                    .addListener((obs, oldv, newv) -> {
-//                if (newv != null && !usersComboBox.isShowing()) {
-//                    setUser(newv);
-//                }
-//            });
 
             loadUsers();
 
@@ -663,14 +641,7 @@ public class AppPaneController {
             Label groupLabel = new Label(toolBox.getI18nBundle()
                     .getString("apppane.statusbar.label.group"));
             groupLabel.getStyleClass().add("utility-label");
-//            ComboBox<String> groupCombobox = new JFXComboBox<>();
             groupCombobox.setEditable(true);
-//            toolBox.getServices()
-//                    .annotationService()
-//                    .findGroups()
-//                    .thenAccept(groups ->
-//                        Platform.runLater(() ->
-//                            groupCombobox.getItems().addAll(groups)));
             groupCombobox.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldv, newv) -> toolBox.getData().setGroup(newv));
@@ -691,17 +662,7 @@ public class AppPaneController {
             Label activityLabel = new Label(toolBox.getI18nBundle()
                     .getString("apppane.statusbar.label.activity"));
             activityLabel.getStyleClass().add("utility-label");
-//            ComboBox<String> activityCombobox = new JFXComboBox<>();
             activityCombobox.setEditable(true);
-
-//            toolBox.getServices()
-//                    .annotationService()
-//                    .findActivities()
-//                    .thenAccept(activities -> {
-//                        Platform.runLater(() -> {
-//                            activityCombobox.getItems().addAll(activities);
-//                        });
-//                    });
             activityCombobox.getSelectionModel()
                     .selectedItemProperty()
                     .addListener((obs, oldv, newv) -> toolBox.getData().setActivity(newv));
@@ -719,8 +680,6 @@ public class AppPaneController {
             }
 
             // --- Configure concurrent controls
-
-
             CheckBox checkBox = getShowConcurrentCheckBox();
             CheckBox checkBox1 = getShowJsonAssociationsCheckBox();
             CheckBox checkBox2 = getShowCurrentGroupOnlyCheckBox();
@@ -734,6 +693,35 @@ public class AppPaneController {
             Pane spacer3 = new Pane();
             spacer3.setPrefSize(20, 5);
 
+            // -- Add count of selected anntations to the utility pane
+            Label selectedCountLabel = new Label();
+            selectedCountLabel.getStyleClass().add("utility-label");
+            toolBox.getEventBus()
+                    .toObserverable()
+                    .ofType(AnnotationsSelectedEvent.class)
+                    .subscribe(evt -> {
+                        Collection<Annotation> annotations = evt.get();
+                        Platform.runLater(() -> {
+                            // Set label text
+                            if (annotations == null || annotations.isEmpty()) {
+                                selectedCountLabel.setText(toolBox.getI18nBundle().getString("apppane.statusbar.label.selected.none"));
+                            }
+                            else {
+                                selectedCountLabel.setText(annotations.size() + " " + toolBox.getI18nBundle().getString("apppane.statusbar.label.selected"));
+                            }
+
+                            // Set label style
+                            if (annotations == null || annotations.size() < 2) {
+                                selectedCountLabel.getStyleClass().remove("utility-label-attention");
+                            }
+                            else {
+                                if (!selectedCountLabel.getStyleClass().contains("utility-label-attention")) {
+                                    selectedCountLabel.getStyleClass().add("utility-label-attention");
+                                }
+                            }
+                        });
+                    });
+
             utilityPane.getLeftItems()
                     .addAll(groupLabel,
                             groupCombobox,
@@ -745,7 +733,8 @@ public class AppPaneController {
                             spacer2,
                             checkBox1,
                             spacer3,
-                            checkBox2);
+                            checkBox2,
+                            selectedCountLabel);
 
             utilityPane.getRightItems().add(getMinimizeCBPanesButton());
 

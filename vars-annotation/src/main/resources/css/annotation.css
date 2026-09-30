@@ -349,6 +349,9 @@
 .utility-label {
   -fx-padding: 5 10 5 5;
 }
+.utility-label-attention {
+  -fx-text-fill: -attention-color;
+}
 .gridpane-pref {
   -fx-hgap: 10;
   -fx-vgap: 20;
