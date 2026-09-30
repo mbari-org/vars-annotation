@@ -38,7 +38,7 @@ public class CopyAnnotationBC extends AbstractBC {
                 .subscribe(e -> {
                     User user = toolBox.getData().getUser();
                     MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
-                    boolean enabled = (user != null) && (mediaPlayer != null) && e.get().size() > 0;
+                    boolean enabled = (user != null) && (mediaPlayer != null) && !e.get().isEmpty();
                     button.setDisable(!enabled);
                 });
 

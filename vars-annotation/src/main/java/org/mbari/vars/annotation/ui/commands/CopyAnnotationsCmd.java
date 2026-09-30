@@ -1,5 +1,6 @@
 package org.mbari.vars.annotation.ui.commands;
 
+import org.mbari.vars.annosaurus.sdk.r1.models.BoundingBox;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.annotation.ui.events.AnnotationsRemovedEvent;
@@ -49,9 +50,17 @@ public class CopyAnnotationsCmd implements Command {
         // the insert will fail due to duplicate uuid/url.
         copy.setImages(Collections.emptyList());
 
+        // Remove bounding box associations when copying to a new index.
+        // The bounding box associations are tied to the video index and will not be valid for a new index.
+        // See https://github.com/mbari-org/vars-feedback/issues/129
+        var associations = new ArrayList<>(copy.getAssociations());
+        associations.removeIf(a -> a.getLinkName().equals(BoundingBox.LINK_NAME));
+
         // if we don't null the associations uuid, it will fail to insert due to
         // a duplicate primary key clash.
-        copy.getAssociations().forEach(Association::resetUuid);
+        associations.forEach(Association::resetUuid);
+
+        copy.setAssociations(associations);
 
         Duration elapsedTime = videoIndex.getElapsedTime().orElse(null);
         copy.setElapsedTime(elapsedTime);
