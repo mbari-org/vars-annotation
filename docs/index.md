@@ -16,13 +16,13 @@ VARS Annotation is [MBARI](https://www.mbari.org)'s desktop application for crea
 
 VARS can annotate video in several modes:
 
-- **Real-time** — annotate live video as it is being captured
-- **Video tape** — annotate from tape decks that support RS-422
-- **Video files** — annotate pre-recorded files via [Sharktopoda](https://github.com/mbari-org/Sharktopoda), an external macOS video player that supports both playback and direct bounding-box drawing on video for spatial annotations
+- **Real-time**: annotate live video as it is captured.
+- **Video tape**: annotate from tape decks that support RS-422.
+- **Video files**: annotate pre-recorded files using [Sharktopoda](https://github.com/mbari-org/Sharktopoda), an external macOS video player. Sharktopoda supports playback and lets you draw bounding boxes directly on video for spatial annotations.
 
 ## Getting Started
 
-VARS requires a running backend stack of microservices. The easiest way to get everything up and running is [vars-quickstart-public](https://github.com/mbari-org/vars-quickstart-public) — a Docker-based orchestrator that brings up all required services together.
+VARS requires a running backend stack of microservices. The easiest way to start them is [vars-quickstart-public](https://github.com/mbari-org/vars-quickstart-public), a Docker-based orchestrator that brings up all required services together.
 
 ### Prerequisites
 
@@ -41,7 +41,7 @@ cd vars-quickstart-public
 ./varsq status                            # verify everything is running
 ```
 
-The stack brings up the following services:
+The stack starts the following services:
 
 | Service | Port | Purpose |
 |---------|------|---------|
@@ -49,7 +49,7 @@ The stack brings up the following services:
 | vampire-squid | 8084 | Video asset and sequence management |
 | oni | 8083 | Knowledge base and taxonomy |
 | panoptes | 8085 | Framegrab and image management |
-| raziel | 8400 | API gateway and authentication |
+| raziel | 8400 | Configuration server and authentication |
 | charybdis | 8086 | Cross-service query aggregation |
 | beholder | 8088 | Image capture cache |
 | skimmer | 8089 | Image processing pipeline |
@@ -59,9 +59,9 @@ The stack brings up the following services:
 
 Once the backend is running:
 
-1. [Download VARS Annotation](https://github.com/mbari-org/vars-annotation/releases)
-2. Launch it and open **Settings** (gear icon in the toolbar)
-3. Enter the URL of your Raziel configuration server and your credentials
-4. Click **Test** to verify the connection, then **OK**
+1. [Download VARS Annotation](https://github.com/mbari-org/vars-annotation/releases).
+2. Launch it and open **Settings** (the gear icon in the toolbar).
+3. Enter the URL of your Raziel configuration server and your credentials.
+4. Click **Test** to verify the connection, then click **OK**.
 
 See the [setup guide](setup.md) for detailed configuration instructions, including video player setup.
