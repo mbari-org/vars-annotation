@@ -19,7 +19,9 @@ import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.oni.sdk.r1.models.User;
 import org.mbari.vars.annotation.util.PreferenceUtils;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.prefs.BackingStoreException;
@@ -45,6 +47,7 @@ public class ConceptButtonPanesController {
     public static final String TAB_PREFIX = "tab";
 
     private Loggers log = new Loggers(getClass());
+    private final AtomicInteger loadGeneration = new AtomicInteger();
     private BooleanProperty lockProperty = new SimpleBooleanProperty(false);
     private final ConceptButtonPanesWithHighlightController overviewController;
     private final TimelineController timelineController;
@@ -173,6 +176,9 @@ public class ConceptButtonPanesController {
     }
 
     private void loadTabsFromPreferences() {
+        // Only the most recently requested load may add tabs. Otherwise overlapping loads
+        // (user change + services reload) show duplicate tabs, or tabs of several users.
+        final int generation = loadGeneration.incrementAndGet();
         Platform.runLater(() -> getTabPane().getTabs().clear());
         Optional<Preferences> tabsPrefsOpt = getTabsPreferences();
         lockProperty.set(true);
@@ -180,38 +186,44 @@ public class ConceptButtonPanesController {
             Preferences tabsPrefs = tabsPrefsOpt.get();
 
             toolBox.getExecutorService().submit(() -> {
-                    Platform.runLater(() -> {
+                // Reading prefs is a remote call. Do it here, not on the FX thread.
+                List<LoadedTab> loadedTabs;
+                try {
+                    loadedTabs = Arrays.stream(tabsPrefs.childrenNames())
+                            .map(tabName -> {
+                                Preferences tabPrefs = tabsPrefs.node(tabName);
+                                return new LoadedTab(tabPrefs, tabPrefs.get(PREFKEY_TABNAME, "dummy"));
+                            })
+                            .toList();
+                }
+                catch (BackingStoreException e) {
+                    log.atError().log("VARS had a problem loading user tabs for user: " + toolBox.getData().getUser());
+                    loadedTabs = List.of();
+                }
 
-                        String[] childNames;
-                        try {
-                            childNames = tabsPrefs.childrenNames();
-                        }
-                        catch (BackingStoreException e) {
-                            log.atError().log("VARS had a problem loading user tabs for user: " + toolBox.getData().getUser());
-                            childNames = new String[]{};
-                        }
-
-                        Arrays.stream(childNames)
-                                .forEach(tabName -> {
-                                    Preferences tabPrefs = tabsPrefs.node(tabName);
-                                    String name = tabPrefs.get(PREFKEY_TABNAME, "dummy");
-
-                                    ConceptButtonPaneController controller = new ConceptButtonPaneController(
-                                            toolBox, tabsPrefs.node(tabName));
-                                    controller.setLocked(lockProperty.get());
-                                    Tab tab = new Tab(name, controller.getPane());
-                                    tab.setClosable(false);
-                                    tab.setOnClosed(e -> removeTab(tab));
-                                    getTabPane().getTabs().add(tab);
-
-                                });
-                        toolBox.getEventBus().send(new ForceRedrawEvent());
+                final var finalTabs = loadedTabs;
+                Platform.runLater(() -> {
+                    if (generation != loadGeneration.get()) {
+                        return;
+                    }
+                    getTabPane().getTabs().clear();
+                    finalTabs.forEach(loaded -> {
+                        ConceptButtonPaneController controller = new ConceptButtonPaneController(
+                                toolBox, loaded.prefs());
+                        controller.setLocked(lockProperty.get());
+                        Tab tab = new Tab(loaded.name(), controller.getPane());
+                        tab.setClosable(false);
+                        tab.setOnClosed(e -> removeTab(tab));
+                        getTabPane().getTabs().add(tab);
                     });
-
+                    toolBox.getEventBus().send(new ForceRedrawEvent());
+                });
             });
 
         }
     }
+
+    private record LoadedTab(Preferences prefs, String name) {}
 
     private Optional<Preferences> getTabsPreferences() {
         Preferences cpPrefs = null;

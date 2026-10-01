@@ -8,7 +8,9 @@ import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.oni.sdk.r1.models.User;
 import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.prefs.BackingStoreException;
@@ -23,6 +25,7 @@ public class ConceptButtonPanesWithHighlightController {
     private HBox root;
     private final UIToolBox toolBox;
     private final ResourceBundle i18n;
+    private final AtomicInteger loadGeneration = new AtomicInteger();
     private final Loggers log = new Loggers(getClass());
 
     public ConceptButtonPanesWithHighlightController(UIToolBox toolBox) {
@@ -49,29 +52,46 @@ public class ConceptButtonPanesWithHighlightController {
     private void loadTabsFromPreferences() {
 
         if (getRoot().isVisible()) {
+            final int generation = loadGeneration.incrementAndGet();
             Platform.runLater(() -> getRoot().getChildren().clear());
             Optional<Preferences> tabsPrefsOpt = getTabsPreferences();
             tabsPrefsOpt.ifPresent(tabsPrefs -> {
-                Platform.runLater(() -> {
+                // Reading prefs is a remote call. Do it off the FX thread.
+                toolBox.getExecutorService().submit(() -> {
+                    List<LoadedTab> loadedTabs;
                     try {
-                        Arrays.stream(tabsPrefs.childrenNames())
-                                .forEach(tabName -> {
+                        loadedTabs = Arrays.stream(tabsPrefs.childrenNames())
+                                .map(tabName -> {
                                     Preferences tabPrefs = tabsPrefs.node(tabName);
-                                    String name = tabPrefs.get(ConceptButtonPanesController.PREFKEY_TABNAME, "dummy");
-                                    ConceptButtonPaneWithHighlightController controller = new ConceptButtonPaneWithHighlightController(name,
-                                            toolBox,
-                                            tabsPrefs.node(tabName));
-                                    controller.setLocked(true);
-                                    getRoot().getChildren().add(controller.getPane());
-                                });
-
+                                    return new LoadedTab(tabPrefs,
+                                            tabPrefs.get(ConceptButtonPanesController.PREFKEY_TABNAME, "dummy"));
+                                })
+                                .toList();
                     } catch (BackingStoreException e) {
                         log.atError().log("VARS had a problem loading user tabs for user: " + toolBox.getData().getUser());
+                        loadedTabs = List.of();
                     }
+
+                    final var finalTabs = loadedTabs;
+                    Platform.runLater(() -> {
+                        // A newer load replaces this one; don't add this user's tabs as well
+                        if (generation != loadGeneration.get()) {
+                            return;
+                        }
+                        getRoot().getChildren().clear();
+                        finalTabs.forEach(loaded -> {
+                            ConceptButtonPaneWithHighlightController controller =
+                                    new ConceptButtonPaneWithHighlightController(loaded.name(), toolBox, loaded.prefs());
+                            controller.setLocked(true);
+                            getRoot().getChildren().add(controller.getPane());
+                        });
+                    });
                 });
             });
         }
     }
+
+    private record LoadedTab(Preferences prefs, String name) {}
 
     private Optional<Preferences> getTabsPreferences() {
         Preferences cpPrefs = null;

@@ -24,8 +24,16 @@ public class AssocButtonPrefs {
     }
 
     public Optional<Preferences> findPreferences() {
+        return findPreferences(toolBox.getData().getUser());
+    }
+
+    /**
+     * @param user The user whose preferences are wanted. Callers that need the prefs to
+     *             match some other state (e.g. the buttons shown) should pass the user
+     *             explicitly rather than rely on whoever is current at call time.
+     */
+    public Optional<Preferences> findPreferences(User user) {
         Preferences prefs = null;
-        User user = toolBox.getData().getUser();
         if (user != null) {
             Preferences userPreferences = toolBox.getServices()
                     .preferencesFactory()

@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.oni.sdk.r1.models.User;
 import org.mbari.vars.annotation.ui.events.ForceRedrawEvent;
 import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
 import org.mbari.vars.annotation.ui.messages.ShowNonfatalErrorAlert;
@@ -17,6 +18,7 @@ import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
@@ -42,7 +44,16 @@ public class AssocButtonPaneController {
 
     private final Loggers log = new Loggers(getClass());
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private boolean loading = false;
+    /**
+     * True from the moment a load is requested until its results are on the pane. While true
+     * the pane holds (or is about to be replaced by) buttons that may belong to a different
+     * user than the current one, so it must not be saved.
+     */
+    private volatile boolean loading = false;
+    /** Username that the buttons currently on the pane were loaded for. */
+    private volatile String ownerUsername = null;
+    /** Only the most recently requested load is applied to the pane. */
+    private final AtomicInteger loadGeneration = new AtomicInteger();
 
     public AssocButtonPaneController(UIToolBox toolBox) {
         this.toolBox = toolBox;
@@ -122,8 +133,12 @@ public class AssocButtonPaneController {
 
     private void loadButtonsFromPreferences() {
         Association nil = Association.NIL;
-        Optional<Preferences> opt = assocButtonPrefs.findPreferences();
+        final User user = toolBox.getData().getUser();
+        Optional<Preferences> opt = assocButtonPrefs.findPreferences(user);
         opt.ifPresent(prefs -> {
+            final int generation = loadGeneration.incrementAndGet();
+            final String username = user.getUsername();
+            loading = true;
             executorService.submit(() -> {
                 try {
 
@@ -153,7 +168,11 @@ public class AssocButtonPaneController {
                     final var finalButtons = buttons;
 
                     Platform.runLater(() -> {
-                        loading = true;
+                        // A newer load was requested (e.g. the user changed again). It will
+                        // replace the pane, so don't show this one's buttons even briefly.
+                        if (generation != loadGeneration.get()) {
+                            return;
+                        }
                         try {
                             ObservableList<Node> children = getPane().getChildren();
                             List<Node> oldButtons = getPane().getChildren()
@@ -162,12 +181,17 @@ public class AssocButtonPaneController {
                                     .toList();
                             children.removeAll(oldButtons);
                             children.addAll(finalButtons);
+                            ownerUsername = username;
                         } finally {
                             loading = false;
                         }
                         toolBox.getEventBus().send(new ForceRedrawEvent());
                     });
                 } catch (Exception e) {
+                    // Nothing was loaded; don't leave saving disabled forever
+                    if (generation == loadGeneration.get()) {
+                        loading = false;
+                    }
                     ResourceBundle i18n = toolBox.getI18nBundle();
                     toolBox.getEventBus()
                             .send(new ShowNonfatalErrorAlert(
@@ -183,7 +207,11 @@ public class AssocButtonPaneController {
     private void saveButtonsToPreferences() {
         if (loading) return;
 
-        Optional<Preferences> opt = assocButtonPrefs.findPreferences();
+        // The prefs must belong to the user that the buttons on the pane were loaded for.
+        final User user = toolBox.getData().getUser();
+        if (user == null || !user.getUsername().equals(ownerUsername)) return;
+
+        Optional<Preferences> opt = assocButtonPrefs.findPreferences(user);
         opt.ifPresent(prefs -> {
 
             List<Button> buttons = getPane().getChildren()
