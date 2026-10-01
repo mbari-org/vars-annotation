@@ -34,7 +34,7 @@ public class ImageCaptureServiceImpl implements ImageCaptureService {
                         () -> log.info("Closed event bus"));
     }
 
-    public void setIo(RVideoIO io) {
+    void setIo(RVideoIO io) {
         this.io = io;
     }
 

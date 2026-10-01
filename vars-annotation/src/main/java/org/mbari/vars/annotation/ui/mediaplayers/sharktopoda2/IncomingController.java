@@ -27,9 +27,11 @@ public class IncomingController {
     private static final Loggers log = new Loggers(IncomingController.class);
     private final Comparator<LocalizedAnnotation> comparator = Comparator.comparing(a -> a.association().getUuid());
 
-    public IncomingController(UIToolBox toolBox,
-                              RemoteControl remoteControl,
-                              SharktopodaState sharktopodaState) {
+    // Keep the constructor package-private so this controller does not expose a
+    // type from the vcr4j.remote module through its public API.
+    IncomingController(UIToolBox toolBox,
+                      RemoteControl remoteControl,
+                      SharktopodaState sharktopodaState) {
         this.remoteControl = remoteControl;
         this.requestHandler = remoteControl.getRequestHandler();
         this.toolBox = toolBox;

@@ -1,10 +1,9 @@
-package org.mbari.vars.annotation.test.ui.mediaplayers.sharktopoda2;
+package org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mbari.vars.annotation.model.Framegrab;
-import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2.ImageCaptureServiceImpl;
 import org.mbari.vcr4j.remote.control.RVideoIO;
 import org.mbari.vcr4j.remote.control.commands.FrameCaptureCmd;
 import org.mbari.vcr4j.remote.control.commands.FrameCaptureDoneCmd;

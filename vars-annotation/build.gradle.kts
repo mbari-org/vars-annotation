@@ -75,7 +75,7 @@ val razielSdkVersion = "0.0.8"
 val slf4jVersion = "2.0.20"
 val swingxVersion = "1.6.5-1"
 val vampireSquidSdkVersion = "0.0.15"
-val vcr4jVersion = "5.3.7"
+val vcr4jVersion = "5.4.1"
 
 
 

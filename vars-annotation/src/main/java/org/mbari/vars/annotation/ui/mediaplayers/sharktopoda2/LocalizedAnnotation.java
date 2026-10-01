@@ -45,11 +45,21 @@ public record LocalizedAnnotation(Annotation annotation, Association association
      *   if the annotation does not have an elapsedTime.
      */
     public Optional<Localization> toLocalization(UIToolBox toolBox) {
-        if (association.getLinkName().equalsIgnoreCase(BoundingBox.LINK_NAME) &&
+        if (annotation == null || association == null) {
+            return Optional.empty();
+        }
+
+        if (association.getLinkName() != null &&
+                association.getMimeType() != null &&
+                association.getLinkName().equalsIgnoreCase(BoundingBox.LINK_NAME) &&
                 association.getMimeType().equalsIgnoreCase("application/json") &&
                 checkIfValidForCurrentMedia(toolBox)) {
             try {
                 BoundingBox box = gson.fromJson(association.getLinkValue(), BoundingBox.class);
+                if (box == null || annotation.getElapsedTime() == null) {
+                    return Optional.empty();
+                }
+
                 var duration = annotation.getDuration() == null ? null : annotation.getDuration().toMillis();
                 var localization = new Localization(association.getUuid(),
                         annotation.getConcept(),
@@ -73,26 +83,30 @@ public record LocalizedAnnotation(Annotation annotation, Association association
     }
 
     private boolean checkIfValidForCurrentMedia(UIToolBox toolBox) {
-        var currentMedia = toolBox.getData().getMedia();
-        if (annotation.getElapsedTime() == null) {
+        if (annotation == null || annotation.getElapsedTime() == null || toolBox == null || toolBox.getData() == null) {
             return false;
         }
-        else if (currentMedia != null) {
-            if (annotation.getVideoReferenceUuid().equals(currentMedia.getVideoReferenceUuid())) {
-                return true;
-            }
-            else {
-                return lookupMedia(toolBox, annotation.getVideoReferenceUuid())
-                        .map(annotationMedia ->
-                                annotationMedia.getStartTimestamp().equals(currentMedia.getStartTimestamp()) &&
-                                annotationMedia.getWidth() != null &&
-                                annotationMedia.getWidth().equals(currentMedia.getWidth()) &&
-                                annotationMedia.getHeight() != null &&
-                                annotationMedia.getHeight().equals(currentMedia.getHeight()))
-                        .orElse(false);
-            }
+
+        var currentMedia = toolBox.getData().getMedia();
+        if (currentMedia == null) {
+            return false;
         }
-        return false;
+
+        var annotationVideoReferenceUuid = annotation.getVideoReferenceUuid();
+        if (Objects.equals(annotationVideoReferenceUuid, currentMedia.getVideoReferenceUuid())) {
+            return true;
+        }
+
+        if (annotationVideoReferenceUuid == null) {
+            return false;
+        }
+
+        return lookupMedia(toolBox, annotationVideoReferenceUuid)
+                .map(annotationMedia ->
+                        Objects.equals(annotationMedia.getStartTimestamp(), currentMedia.getStartTimestamp()) &&
+                        Objects.equals(annotationMedia.getWidth(), currentMedia.getWidth()) &&
+                        Objects.equals(annotationMedia.getHeight(), currentMedia.getHeight()))
+                .orElse(false);
     }
 
     /**
