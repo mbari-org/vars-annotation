@@ -12,7 +12,7 @@ import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.util.*;
 
-public class OutgoingController {
+class OutgoingController {
 
     private static final Loggers log = new Loggers(OutgoingController.class);
 
@@ -25,9 +25,9 @@ public class OutgoingController {
         Add, Remove, Select, Update
     }
 
-    public OutgoingController(UIToolBox toolBox,
-                              RVideoIO io,
-                              SharktopodaState sharktopodaState) {
+    OutgoingController(UIToolBox toolBox,
+                      RVideoIO io,
+                      SharktopodaState sharktopodaState) {
         this.toolBox = toolBox;
         this.io = io;
         this.sharktopodaState = sharktopodaState;

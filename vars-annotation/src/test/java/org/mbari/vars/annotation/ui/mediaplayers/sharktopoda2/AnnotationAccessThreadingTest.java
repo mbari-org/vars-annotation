@@ -1,4 +1,4 @@
-package org.mbari.vars.annotation.test.ui.mediaplayers.sharktopoda2;
+package org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -16,9 +16,6 @@ import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.events.AnnotationsAddedEvent;
 import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.annotation.ui.events.OpenDoneEvent;
-import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2.IncomingController;
-import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2.OutgoingController;
-import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2.SharktopodaState;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.remote.control.RemoteControl;
