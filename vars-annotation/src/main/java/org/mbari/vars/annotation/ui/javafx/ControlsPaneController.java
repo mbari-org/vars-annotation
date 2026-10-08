@@ -101,6 +101,9 @@ public class ControlsPaneController {
             Button framegrabBtn = new Button();
             new FramecaptureBC(framegrabBtn, toolBox);
 
+            Button copyFramegrabBtn = new Button();
+            new CopyAnnotationWithFramecaptureBC(copyFramegrabBtn, toolBox);
+
             Button detachBtn = new Button();
             new DetachFramegrabsBC(detachBtn, toolBox);
 
@@ -139,7 +142,7 @@ public class ControlsPaneController {
 //            Button ninesBtn = new JFXButton();
 //            new TempPopulationNinesBC(ninesBtn, toolBox);
 
-            buttonPane.getChildren().addAll(newBtn, dupBtn, copyBtn, framegrabBtn,
+            buttonPane.getChildren().addAll(newBtn, dupBtn, copyBtn, framegrabBtn, copyFramegrabBtn,
                     detachBtn, mlBtn, sampleBtn, newRefBtn, oldRefBtn, uponBtn, pqBtn,
                     commentBtn, durationBtn, deleteDurationBtn, deleteBtn);
 

@@ -198,7 +198,7 @@ public class FramegrabCmd implements Command {
                             showWarningAlert(toolBox, msg, throwable);
                         }
                         else if (pngImageRef != null && annotationRef == null) {
-                            String msg = i18n.getString("commands.framecapture.faile.noannotation");
+                            String msg = i18n.getString("commands.framecapture.fail.noannotation");
                             showWarningAlert(toolBox, msg, throwable);
                             deleteImage = true;
                         }
