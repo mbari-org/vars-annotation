@@ -238,14 +238,12 @@ public class AppPaneController {
                 final var table = annotationTableController.getTable();
                 var scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-                scrollPane.getVerticalScrollBar().setBackground(Colors.DEFAULT.getColor());
-                scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
-                    @Override
-                    protected void configureScrollBarColors() {
-                        this.thumbColor = Colors.DEFAULT_TEXT.getColor();
-                    }
-                });
-                scrollPane.getHorizontalScrollBar().setBackground(Colors.DEFAULT.getColor());
+                styleScrollBar(scrollPane.getVerticalScrollBar());
+                styleScrollBar(scrollPane.getHorizontalScrollBar());
+                // Fills the gap where the two scroll bars meet
+                var corner = new JPanel();
+                corner.setBackground(Colors.DEFAULT.getColor());
+                scrollPane.setCorner(ScrollPaneConstants.LOWER_RIGHT_CORNER, corner);
                 scrollPane.setViewportView(table);
                 table.setFillsViewportHeight(true);
                 swingNode.setContent(scrollPane);
@@ -264,6 +262,16 @@ public class AppPaneController {
             loadDividerPositions(topPaneKey, topPane);
         }
         return topPane;
+    }
+
+    private static void styleScrollBar(JScrollBar scrollBar) {
+        scrollBar.setBackground(Colors.DEFAULT.getColor());
+        scrollBar.setUI(new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = Colors.DEFAULT_TEXT.getColor();
+            }
+        });
     }
 
     public SplitPane getBottomPane() {

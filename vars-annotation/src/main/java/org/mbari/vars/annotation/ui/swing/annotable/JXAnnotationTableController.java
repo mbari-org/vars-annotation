@@ -153,6 +153,9 @@ public class JXAnnotationTableController {
             table.setSortable(true);
             table.setAutoscrolls(true);
             table.setColumnControlVisible(true);
+            // Without this, columns are squeezed to fit the viewport. In a narrow table they all end up at their
+            // minimum width and none of them can be resized. This lets the table scroll horizontally instead.
+            table.setHorizontalScrollEnabled(true);
             table.setShowGrid(false, true);
             table.setGridColor(Colors.DEFAULT_TEXT.getColor());
             table.setForeground(Colors.DEFAULT_TABLE_TEXT.getColor());
