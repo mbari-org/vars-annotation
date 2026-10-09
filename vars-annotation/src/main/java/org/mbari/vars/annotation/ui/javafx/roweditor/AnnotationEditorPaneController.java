@@ -28,6 +28,7 @@ import org.mbari.vars.annotation.ui.javafx.Icons;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.annotation.ui.javafx.shared.FilteredComboBoxDecorator;
+import org.mbari.vars.annotation.ui.messages.SeekMsg;
 
 public class AnnotationEditorPaneController {
 
@@ -183,6 +184,12 @@ public class AnnotationEditorPaneController {
             }
         });
         loadComboBoxData();
+
+        // Seeking (e.g. from the table's context menu) leaves focus on whatever started the seek.
+        // Take it back so the user can keep editing the concept.
+        eventBus.toObserverable()
+                .ofType(SeekMsg.class)
+                .subscribe(msg -> Platform.runLater(this::requestFocus));
 
         // If the cache is cleared reload combobox data
         // TODO there's a bug in FilteredComboBoxDecorator that causes filtering to fail after refresh
