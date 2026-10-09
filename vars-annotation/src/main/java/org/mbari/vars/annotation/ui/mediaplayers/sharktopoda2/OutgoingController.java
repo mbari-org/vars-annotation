@@ -108,7 +108,7 @@ class OutgoingController {
                     io.send(new RemoveLocalizationsCmd(io.getUuid(), uuids));
                 }
                 case Select -> {
-                    if (sharktopodaState.isDifferentThanSelected(uuids)) {
+                    if (sharktopodaState.shouldSendSelection(uuids)) {
                         sharktopodaState.setSelectedLocalizations(uuids);
                         io.send(new SelectLocalizationsCmd(io.getUuid(), uuids));
                     }

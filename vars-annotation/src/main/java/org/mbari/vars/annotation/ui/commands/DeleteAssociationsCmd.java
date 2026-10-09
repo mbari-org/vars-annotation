@@ -19,17 +19,35 @@ public class DeleteAssociationsCmd implements Command {
 
     /** key = an association attached to that obervaton, value = observationUuid, */
     private Map<Association, UUID> associationMap;
+    /** Source of the change event for the first apply only. Undo and redo happen in VARS, so they use none. */
+    private final Object eventSource;
+    private volatile boolean applied = false;
 
     public DeleteAssociationsCmd(Map<Association, UUID> associations) {
+        this(associations, null);
+    }
+
+    /**
+     * @param eventSource The source of the AnnotationsChangedEvent sent after the first apply. Lets
+     *                    listeners tell where the change came from (e.g. Sharktopoda).
+     */
+    public DeleteAssociationsCmd(Map<Association, UUID> associations, Object eventSource) {
         Preconditions.checkArgument(associations != null,
                 "Can not delete a null assotation map");
         Preconditions.checkArgument(!associations.isEmpty(),
                 "Can not delete an empty association map");
         this.associationMap = Collections.unmodifiableMap(new HashMap<>(associations));
+        this.eventSource = eventSource;
+    }
+
+    public Object getEventSource() {
+        return eventSource;
     }
 
     @Override
     public void apply(UIToolBox toolBox) {
+        Object source = applied ? null : eventSource;
+        applied = true;
         AnnotationService service = toolBox.getServices().annotationService();
         Collection<UUID> uuids = associationMap.keySet()
                 .stream()
@@ -39,7 +57,7 @@ public class DeleteAssociationsCmd implements Command {
                 .thenAccept(v -> {
                     Set<UUID> observationUuids = new HashSet<>(associationMap.values());
                     AnnotationServiceDecorator decorator = new AnnotationServiceDecorator(toolBox);
-                    decorator.refreshAnnotationsView(observationUuids);
+                    decorator.refreshAnnotationsView(observationUuids, source);
                 });
     }
 

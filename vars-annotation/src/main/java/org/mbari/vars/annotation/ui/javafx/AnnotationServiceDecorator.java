@@ -421,6 +421,15 @@ public class AnnotationServiceDecorator {
      * @param observationUuids
      */
     public void refreshAnnotationsView(Set<UUID> observationUuids) {
+        refreshAnnotationsView(observationUuids, null);
+    }
+
+    /**
+     * @param observationUuids The annotations to refresh
+     * @param eventSource The source of the resulting AnnotationsChangedEvent. Lets listeners tell
+     *                    where a change came from (e.g. so it's not echoed back to Sharktopoda).
+     */
+    public void refreshAnnotationsView(Set<UUID> observationUuids, Object eventSource) {
 
         final EventBus eventBus = toolBox.getEventBus();
         final AnnotationService annotationService = toolBox.getServices().annotationService();
@@ -433,16 +442,20 @@ public class AnnotationServiceDecorator {
                 .thenAccept(annotations -> {
                     var found = annotations.stream().filter(Objects::nonNull).toList();
                     if (!found.isEmpty()) {
-                        eventBus.send(new AnnotationsChangedEvent(found));
+                        eventBus.send(new AnnotationsChangedEvent(eventSource, found));
                     }
                 });
 
     }
 
     public void refreshAnnotationsView(UUID observationUuid) {
+        refreshAnnotationsView(observationUuid, null);
+    }
+
+    public void refreshAnnotationsView(UUID observationUuid, Object eventSource) {
         Set<UUID> uuids = new HashSet<>();
         uuids.add(observationUuid);
-        refreshAnnotationsView(uuids);
+        refreshAnnotationsView(uuids, eventSource);
     }
 
     public void refreshAnnotationsViewByIndices(Set<VideoIndex> videoIndices) {

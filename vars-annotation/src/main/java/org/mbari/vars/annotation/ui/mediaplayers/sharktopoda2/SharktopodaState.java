@@ -18,19 +18,18 @@ public class SharktopodaState {
             lock.unlock();
     }
 
-    public boolean isDifferentThanSelected(Collection<UUID> localizations) {
-//        var selected = new HashSet<>(selectedLocalizations);
-//        var copy = new HashSet<>(localizations);
-//        return !selected.equals(copy);
-        var isDiff = true;
-        if (!localizations.isEmpty() && !selectedLocalizations.isEmpty()) {
-            var copy = new HashSet<>(localizations);
-            var copySelected = new HashSet<>(selectedLocalizations);
-            if (copy.size() == copySelected.size()) {
-                copy.removeAll(copySelected);
-                isDiff = !copy.isEmpty();
-            }
-        }
-        return isDiff;
+    /**
+     * Should a selection made in VARS be sent to Sharktopoda? Not if everything selected in
+     * Sharktopoda is already part of it. e.g. the user selected one box of an annotation in Sharktopoda,
+     * and VARS then (re)selects that annotation, which expands to all of its boxes. Sending that would
+     * pull the selection away from the box the user is working on.
+     *
+     * @param localizations The localization UUIDs that VARS has selected
+     * @return true if the selection should be sent to Sharktopoda
+     */
+    public boolean shouldSendSelection(Collection<UUID> localizations) {
+        var selected = new HashSet<>(selectedLocalizations);
+        boolean alreadyCovered = !selected.isEmpty() && localizations.containsAll(selected);
+        return !alreadyCovered;
     }
 }
