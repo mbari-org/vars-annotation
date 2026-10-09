@@ -8,12 +8,19 @@ import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.annosaurus.sdk.r1.models.BoundingBox;
 import org.mbari.vars.annotation.ui.Initializer;
 import org.mbari.vars.annotation.ui.UIToolBox;
+import org.mbari.vars.annotation.ui.commands.UpdateAssociationCmd;
+import org.mbari.vars.annotation.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.annotation.ui.events.OpenDoneEvent;
+import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda.Constants;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.remote.control.RemoteControl;
+import org.mbari.vcr4j.remote.control.commands.localization.AddLocalizationsCmd;
+import org.mbari.vcr4j.remote.control.commands.localization.Localization;
+import org.mbari.vcr4j.remote.control.commands.localization.RemoveLocalizationsCmd;
 import org.mbari.vcr4j.remote.control.commands.localization.SelectLocalizationsCmd;
+import org.mbari.vcr4j.remote.control.commands.localization.UpdateLocalizationsCmd;
 
 import java.net.DatagramSocket;
 import java.net.URI;
@@ -43,6 +50,8 @@ public class LocalizationSelectionEchoTest {
     private Association box1;
     private Association box2;
     private final CopyOnWriteArrayList<SelectLocalizationsCmd> selectsSentToSharktopoda = new CopyOnWriteArrayList<>();
+    /** Add, update and remove localization commands */
+    private final CopyOnWriteArrayList<Object> localizationCmdsSentToSharktopoda = new CopyOnWriteArrayList<>();
 
     private static Association boundingBoxAssociation() {
         return new Association(BoundingBox.LINK_NAME,
@@ -98,6 +107,12 @@ public class LocalizationSelectionEchoTest {
                 .getCommandSubject()
                 .ofType(SelectLocalizationsCmd.class)
                 .subscribe(selectsSentToSharktopoda::add);
+
+        localizationCmdsSentToSharktopoda.clear();
+        var commandSubject = remoteControl.getVideoIO().getCommandSubject();
+        commandSubject.ofType(AddLocalizationsCmd.class).subscribe(localizationCmdsSentToSharktopoda::add);
+        commandSubject.ofType(UpdateLocalizationsCmd.class).subscribe(localizationCmdsSentToSharktopoda::add);
+        commandSubject.ofType(RemoveLocalizationsCmd.class).subscribe(localizationCmdsSentToSharktopoda::add);
     }
 
     @AfterEach
@@ -119,6 +134,81 @@ public class LocalizationSelectionEchoTest {
 
         assertEquals(List.of(), selectsSentToSharktopoda,
                 "A selection initiated by Sharktopoda was echoed back to it");
+    }
+
+    /**
+     * The user selected one box in Sharktopoda. VARS then re-selects the whole annotation (e.g. the table
+     * does after an annotation changes), which expands to all of its boxes. That must not pull the
+     * selection away from the box the user is working on.
+     */
+    @Test
+    public void varsReselectingTheAnnotationDoesNotWidenSharktopodaSelection() {
+        remoteControl.getRequestHandler()
+                .handleSelectLocalizationsRequest(new SelectLocalizationsCmd.Request(
+                        media.getVideoReferenceUuid(), List.of(box1.getUuid())));
+
+        toolBox.getEventBus().send(new AnnotationsSelectedEvent(new Object(), List.of(annotation)));
+
+        assertEquals(List.of(), selectsSentToSharktopoda,
+                "VARS widened the selection made in Sharktopoda");
+    }
+
+    @Test
+    public void selectingAnotherAnnotationInVarsIsSentToSharktopoda() {
+        var box3 = boundingBoxAssociation();
+        var other = new Annotation("Aegina", "brian",
+                new VideoIndex(Duration.ofSeconds(2)),
+                media.getVideoReferenceUuid());
+        other.setObservationUuid(UUID.randomUUID());
+        other.setAssociations(List.of(box3));
+        toolBox.getData().getAnnotations().add(other);
+
+        remoteControl.getRequestHandler()
+                .handleSelectLocalizationsRequest(new SelectLocalizationsCmd.Request(
+                        media.getVideoReferenceUuid(), List.of(box1.getUuid())));
+
+        toolBox.getEventBus().send(new AnnotationsSelectedEvent(new Object(), List.of(other)));
+
+        assertEquals(1, selectsSentToSharktopoda.size(),
+                "A different selection made in VARS was not sent to Sharktopoda");
+        assertEquals(List.of(box3.getUuid()), selectsSentToSharktopoda.get(0).getValue().getLocalizations());
+    }
+
+    /**
+     * Moving/resizing a box in Sharktopoda updates the association in VARS. The resulting change must
+     * not be sent back to Sharktopoda, which would interrupt the user while they're still editing the box.
+     */
+    @Test
+    public void updateFromSharktopodaIsTaggedSoItIsNotEchoed() {
+        var commands = new CopyOnWriteArrayList<UpdateAssociationCmd>();
+        var disposable = toolBox.getEventBus()
+                .toObserverable()
+                .ofType(UpdateAssociationCmd.class)
+                .subscribe(commands::add);
+        var moved = new Localization(box1.getUuid(), annotation.getConcept(), 1000L, null, 11, 21, 30, 40, null);
+        remoteControl.getRequestHandler()
+                .handleUpdateLocalizationsRequest(new UpdateLocalizationsCmd.Request(
+                        media.getVideoReferenceUuid(), List.of(moved)));
+        disposable.dispose();
+
+        assertEquals(1, commands.size());
+        assertSame(Constants.LOCALIZATION_EVENT_SOURCE, commands.get(0).getEventSource());
+    }
+
+    @Test
+    public void changeFromSharktopodaIsNotSentBack() {
+        toolBox.getEventBus().send(new AnnotationsChangedEvent(Constants.LOCALIZATION_EVENT_SOURCE, List.of(annotation)));
+
+        assertEquals(List.of(), localizationCmdsSentToSharktopoda,
+                "A change initiated by Sharktopoda was echoed back to it");
+    }
+
+    @Test
+    public void changeMadeInVarsIsSentToSharktopoda() {
+        toolBox.getEventBus().send(new AnnotationsChangedEvent(List.of(annotation)));
+
+        assertEquals(1, localizationCmdsSentToSharktopoda.size());
+        assertInstanceOf(UpdateLocalizationsCmd.class, localizationCmdsSentToSharktopoda.get(0));
     }
 
     @Test

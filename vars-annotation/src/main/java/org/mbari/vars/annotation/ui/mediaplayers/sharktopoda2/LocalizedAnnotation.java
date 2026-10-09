@@ -1,11 +1,9 @@
 package org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.mbari.vars.annotation.ui.mediaplayers.AnnotationPlacement;
 import org.mbari.vars.annotation.util.Tuple2;
-import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.annosaurus.sdk.r1.models.BoundingBox;
@@ -16,7 +14,6 @@ import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Builds a localization from an annotation and a "bounding box" associations. The resulting localizations
@@ -33,37 +30,36 @@ public record LocalizedAnnotation(Annotation annotation, Association association
 
     private static final Loggers log = new Loggers(LocalizedAnnotation.class);
 
-    private static final Cache<UUID, Optional<Media>> mediaCache = Caffeine.newBuilder()
-            .maximumSize(500)
-            .expireAfterWrite(Duration.ofMinutes(2))
-            .build();
-
     /**
      * Builds the localization from the annotation and association. Always returns a new instance
      * @return An optional localization. Will be none if the association is not a bounding box,
      *   or does not have a json mimetype or if there's an error parsing the json to a bounding box or
-     *   if the annotation does not have an elapsedTime.
+     *   if the annotation can't be placed in the current media (see {@link AnnotationPlacement}).
      */
     public Optional<Localization> toLocalization(UIToolBox toolBox) {
         if (annotation == null || association == null) {
             return Optional.empty();
         }
 
+        Optional<Duration> elapsedTime = Optional.empty();
         if (association.getLinkName() != null &&
                 association.getMimeType() != null &&
                 association.getLinkName().equalsIgnoreCase(BoundingBox.LINK_NAME) &&
-                association.getMimeType().equalsIgnoreCase("application/json") &&
-                checkIfValidForCurrentMedia(toolBox)) {
+                association.getMimeType().equalsIgnoreCase("application/json")) {
+            elapsedTime = AnnotationPlacement.elapsedTimeInCurrentMedia(toolBox, annotation);
+        }
+
+        if (elapsedTime.isPresent()) {
             try {
                 BoundingBox box = gson.fromJson(association.getLinkValue(), BoundingBox.class);
-                if (box == null || annotation.getElapsedTime() == null) {
+                if (box == null) {
                     return Optional.empty();
                 }
 
                 var duration = annotation.getDuration() == null ? null : annotation.getDuration().toMillis();
                 var localization = new Localization(association.getUuid(),
                         annotation.getConcept(),
-                        annotation.getElapsedTime().toMillis(),
+                        elapsedTime.get().toMillis(),
                         duration,
                         box.getX(),
                         box.getY(),
@@ -80,56 +76,6 @@ public record LocalizedAnnotation(Annotation annotation, Association association
         }
         log.atWarn().log("Annotation (observationUuid=" + annotation.getObservationUuid() + ") contains a localization that is not valid for the current media");
         return Optional.empty();
-    }
-
-    private boolean checkIfValidForCurrentMedia(UIToolBox toolBox) {
-        if (annotation == null || annotation.getElapsedTime() == null || toolBox == null || toolBox.getData() == null) {
-            return false;
-        }
-
-        var currentMedia = toolBox.getData().getMedia();
-        if (currentMedia == null) {
-            return false;
-        }
-
-        var annotationVideoReferenceUuid = annotation.getVideoReferenceUuid();
-        if (Objects.equals(annotationVideoReferenceUuid, currentMedia.getVideoReferenceUuid())) {
-            return true;
-        }
-
-        if (annotationVideoReferenceUuid == null) {
-            return false;
-        }
-
-        return lookupMedia(toolBox, annotationVideoReferenceUuid)
-                .map(annotationMedia ->
-                        Objects.equals(annotationMedia.getStartTimestamp(), currentMedia.getStartTimestamp()) &&
-                        Objects.equals(annotationMedia.getWidth(), currentMedia.getWidth()) &&
-                        Objects.equals(annotationMedia.getHeight(), currentMedia.getHeight()))
-                .orElse(false);
-    }
-
-    /**
-     * Media lookups happen once per localization, in loops, on latency-sensitive threads
-     * (the event bus, often the FX thread, during full localization reloads). Cache them
-     * per videoReferenceUuid — including failures: when the media service is unreachable,
-     * retrying for every localization would stall the caller up to 10 seconds each time.
-     */
-    private static Optional<Media> lookupMedia(UIToolBox toolBox, UUID videoReferenceUuid) {
-        return mediaCache.get(videoReferenceUuid, uuid -> {
-            try {
-                return Optional.ofNullable(toolBox.getServices()
-                        .mediaService()
-                        .findByUuid(uuid)
-                        .get(10, TimeUnit.SECONDS));
-            }
-            catch (Exception e) {
-                log.atInfo()
-                        .withCause(e)
-                        .log(() -> "Unable to look up media with videoReferenceUuid=" + uuid);
-                return Optional.empty();
-            }
-        });
     }
 
     /**

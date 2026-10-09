@@ -108,7 +108,8 @@ public class IncomingController {
                 .map(LocalizationPair::localizedAnnotation)
                 .collect(Collectors.toMap(LocalizedAnnotation::association, a -> a.annotation().getObservationUuid()));
         if (!map.isEmpty()) {
-            var cmd = new DeleteAssociationsCmd(map);
+            // Tagged so OutgoingController doesn't echo the change back to Sharktopoda
+            var cmd = new DeleteAssociationsCmd(map, Constants.LOCALIZATION_EVENT_SOURCE);
             toolBox.getEventBus().send(cmd);
         }
     }
@@ -123,9 +124,12 @@ public class IncomingController {
         for (var m : matches) {
             var existing = m.localizedAnnotation();
             var provided = LocalizedAnnotation.from(m.localization());
+            // Tagged so OutgoingController doesn't echo the change back to Sharktopoda. Echoing
+            // it interrupts the user while they're still moving/resizing the box.
             var cmd = new UpdateAssociationCmd(existing.annotation().getObservationUuid(),
                     existing.association(),
-                    provided.association());
+                    provided.association(),
+                    Constants.LOCALIZATION_EVENT_SOURCE);
             toolBox.getEventBus().send(cmd);
         }
     }
