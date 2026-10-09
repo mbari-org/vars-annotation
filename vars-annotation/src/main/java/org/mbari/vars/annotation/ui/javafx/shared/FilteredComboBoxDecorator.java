@@ -41,6 +41,21 @@ public class FilteredComboBoxDecorator<T>  {
         this.comboBox = comboBox;
         this.comparator = comparator;
 
+        // HACK workaround for bug that consumes spaces in combobox
+        // this may be different in JDK 9+
+        // https://stackoverflow.com/questions/50013972/how-to-prevent-closing-of-autocompletecombobox-popupmenu-on-space-key-press-in-j
+        //
+        // Install the skin BEFORE swapping in filteredItems. If the combobox is already showing it has a
+        // default skin, and ComboBoxListViewSkin.dispose() doesn't remove its listener from the items list.
+        // If that list were filteredItems, the next change to it would NPE in the disposed skin.
+        ComboBoxListViewSkin<T> skin = new ComboBoxListViewSkin<>(comboBox);
+        skin.getPopupContent().addEventFilter(KeyEvent.ANY, e -> {
+            if (e.getCode() == KeyCode.SPACE) {
+                e.consume();
+            }
+        });
+        comboBox.setSkin(skin);
+
         // The combobox always shows this one FilteredList. If someone later calls
         // comboBox.setItems(...) we copy the new items into `backingItems` rather than
         // wrapping the new list in a new FilteredList. (Swapping the wrapper from inside the
@@ -67,17 +82,6 @@ public class FilteredComboBoxDecorator<T>  {
                 comboBox.setItems(filteredItems);
             }
         });
-
-        // HACK workaround for bug that consumes spaces in combobox
-        // this may be different in JDK 9+
-        // https://stackoverflow.com/questions/50013972/how-to-prevent-closing-of-autocompletecombobox-popupmenu-on-space-key-press-in-j
-        ComboBoxListViewSkin<T> skin = new ComboBoxListViewSkin<>(comboBox);
-        skin.getPopupContent().addEventFilter(KeyEvent.ANY, e -> {
-            if (e.getCode() == KeyCode.SPACE) {
-                e.consume();
-            }
-        });
-        comboBox.setSkin(skin);
 
         installValueBasedButtonCell();
     }

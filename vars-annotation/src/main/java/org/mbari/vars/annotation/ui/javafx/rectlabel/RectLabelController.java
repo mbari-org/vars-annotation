@@ -549,7 +549,6 @@ public class RectLabelController {
         else {
             // Show Dialog to add annotations
             Dialog<String> dialog = dialogController.getDialog();
-            dialogController.requestFocus();
             Optional<String> opt = dialog.showAndWait();
             // Create annotation with the association
             opt.ifPresent(concept -> {

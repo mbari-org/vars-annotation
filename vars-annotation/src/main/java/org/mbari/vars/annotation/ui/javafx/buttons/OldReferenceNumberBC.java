@@ -12,6 +12,7 @@ import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annosaurus.sdk.r1.models.Association;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vars.annotation.ui.services.CachedReferenceNumberDecorator;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 
 import java.util.*;
 import java.util.function.Function;
@@ -106,6 +107,8 @@ public class OldReferenceNumberBC extends AbstractBC {
             dialog.setContentText(i18n.getString("buttons.oldnumber.dialog.content"));
             dialog.setGraphic(icon);
             dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+            // ChoiceDialog doesn't expose its ComboBox, so look it up
+            JFXUtilities.focusOnShown(dialog, () -> dialog.getDialogPane().lookup(".combo-box"));
         }
         return dialog;
     }

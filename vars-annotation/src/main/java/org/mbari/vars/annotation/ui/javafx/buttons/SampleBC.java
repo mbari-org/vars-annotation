@@ -58,9 +58,6 @@ public class SampleBC extends AbstractBC {
     protected void apply() {
         JFXUtilities.runOnFXThread(() -> {
             var d = getDialog();
-            if (comboBox != null) {
-                comboBox.requestFocus();
-            }
             Optional<Pair<String, String>> v = d.showAndWait();
             v.ifPresent(pair -> createAssociation(pair.getKey(), pair.getValue()));
             if (textField != null) {
@@ -89,6 +86,7 @@ public class SampleBC extends AbstractBC {
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
             dialog.getDialogPane().setContent(getDialogPane());
             dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+            JFXUtilities.focusOnShown(dialog, () -> comboBox);
             dialog.setResultConverter(dialogButton -> {
                 if (dialogButton == ButtonType.OK) {
                     return new Pair<>(lastSelectedSampler, textField.getText());
