@@ -186,7 +186,7 @@ public class CopyAnnotationsWithFramegrabCmd implements Command {
                     else {
                         boolean deleteImage = copiedAnnotations.isEmpty();
                         if (deleteImage) {
-                            String msg = withCause(i18n.getString("commands.framecapture.fail.noannotation"), throwable);
+                            String msg = FrameCaptureService.withCause(i18n.getString("commands.framecapture.fail.noannotation"), throwable);
                             showWarningAlert(toolBox, msg, throwable);
                         }
                         decorator.refreshRelatedAnnotations(pngImageRef.getImageReferenceUuid(), deleteImage);
