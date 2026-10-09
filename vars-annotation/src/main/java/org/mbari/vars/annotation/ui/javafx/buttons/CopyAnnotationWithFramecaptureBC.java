@@ -33,7 +33,7 @@ public class CopyAnnotationWithFramecaptureBC extends AbstractBC {
 
     protected void init() {
         String tooltip = toolBox.getI18nBundle().getString("buttons.copyframegrab");
-        Text icon = Icons.PICTURE_IN_PICTURE.standardSize();
+        Text icon = Icons.ADD_PHOTO_ALTERNATE.standardSize();
         initializeButton(tooltip, icon);
 
         Observable<Object> observable = toolBox.getEventBus().toObserverable();
