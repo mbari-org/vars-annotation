@@ -91,4 +91,8 @@ public class FrameCaptureService {
         return msg;
     }
 
+    public static String withCause(String msg, Throwable throwable) {
+        return throwable == null ? msg : msg + ": " + FrameCaptureService.describe(throwable);
+    }
+
 }

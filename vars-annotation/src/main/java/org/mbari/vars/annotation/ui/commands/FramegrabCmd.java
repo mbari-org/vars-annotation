@@ -192,21 +192,17 @@ public class FramegrabCmd implements Command {
                     boolean deleteImage = false;
                     ResourceBundle i18n = toolBox.getI18nBundle();
                     if (pngImageRef == null) {
-                        String msg = withCause(i18n.getString("commands.framecapture.fail.noimage"), throwable);
+                        String msg = FrameCaptureService.withCause(i18n.getString("commands.framecapture.fail.noimage"), throwable);
                         showWarningAlert(toolBox, msg, throwable);
                         return;
                     }
                     else if (annotationRef == null) {
-                        String msg = withCause(i18n.getString("commands.framecapture.fail.noannotation"), throwable);
+                        String msg = FrameCaptureService.withCause(i18n.getString("commands.framecapture.fail.noannotation"), throwable);
                         showWarningAlert(toolBox, msg, throwable);
                         deleteImage = true;
                     }
                     decorator.refreshRelatedAnnotations(pngImageRef.getImageReferenceUuid(), deleteImage);
                 });
-    }
-
-    private static String withCause(String msg, Throwable throwable) {
-        return throwable == null ? msg : msg + ": " + FrameCaptureService.describe(throwable);
     }
 
     private void showWarningAlert(UIToolBox toolBox, String content) {

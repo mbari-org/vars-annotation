@@ -180,7 +180,7 @@ public class CopyAnnotationsWithFramegrabCmd implements Command {
                 .whenComplete((opt, throwable) -> {
                     ResourceBundle i18n = toolBox.getI18nBundle();
                     if (pngImageRef == null) {
-                        String msg = withCause(i18n.getString("commands.framecapture.fail.noimage"), throwable);
+                        String msg = FrameCaptureService.withCause(i18n.getString("commands.framecapture.fail.noimage"), throwable);
                         showWarningAlert(toolBox, msg, throwable);
                     }
                     else {
@@ -217,9 +217,6 @@ public class CopyAnnotationsWithFramegrabCmd implements Command {
                 .createAnnotations(copies);
     }
 
-    private static String withCause(String msg, Throwable throwable) {
-        return throwable == null ? msg : msg + ": " + FrameCaptureService.describe(throwable);
-    }
 
     private void showWarningAlert(UIToolBox toolBox, String content) {
         showWarningAlert(toolBox, content, null);
