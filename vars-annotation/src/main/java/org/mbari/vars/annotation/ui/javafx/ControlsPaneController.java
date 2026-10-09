@@ -136,6 +136,9 @@ public class ControlsPaneController {
             Button mlBtn = new Button();
             new MachineLearningBC(mlBtn, toolBox);
 
+            Button localizationBtn = new Button();
+            new AddLocalizationBC(localizationBtn, toolBox);
+
 //            Button denseBtn = new JFXButton();
 //            new TempDenseBC(denseBtn, toolBox);
 //
@@ -143,7 +146,7 @@ public class ControlsPaneController {
 //            new TempPopulationNinesBC(ninesBtn, toolBox);
 
             buttonPane.getChildren().addAll(newBtn, dupBtn, copyBtn, framegrabBtn, copyFramegrabBtn,
-                    detachBtn, mlBtn, sampleBtn, newRefBtn, oldRefBtn, uponBtn, pqBtn,
+                    detachBtn, mlBtn, localizationBtn, sampleBtn, newRefBtn, oldRefBtn, uponBtn, pqBtn,
                     commentBtn, durationBtn, deleteDurationBtn, deleteBtn);
 
         }

@@ -30,6 +30,7 @@ public enum Icons {
     CLOUD_DONE(Material2AL.CLOUD_DONE),
     CLOUD_UPLOAD(Material2AL.CLOUD_UPLOAD),
     CREATE(Material2AL.CREATE),
+    CROP_FREE(Material2AL.CROP_FREE),
     DELETE(Material2AL.DELETE),
     DIRECTIONS_BOAT(Material2AL.DIRECTIONS_BOAT),
     EDIT(Material2AL.EDIT),
