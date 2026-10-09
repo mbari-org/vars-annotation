@@ -16,6 +16,7 @@ import org.mbari.vars.annotation.ui.mediaplayers.MediaPlayer;
 import org.mbari.vars.annotation.ui.messages.ShowAlert;
 import org.mbari.vars.annotation.ui.messages.ShowExceptionAlert;
 import org.mbari.vars.annotation.ui.messages.ShowWarningAlert;
+import org.mbari.vars.annotation.ui.services.FrameCaptureException;
 import org.mbari.vars.annotation.ui.services.FrameCaptureService;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoError;
@@ -139,17 +140,15 @@ public class CopyAnnotationsWithFramegrabCmd implements Command {
 
         // -- Capture image
         File imageFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".png");
-        Optional<ImageData> imageDataOpt = FrameCaptureService.capture(imageFile, media, mediaPlayer);
-
-        if (imageDataOpt.isEmpty()) {
-            ResourceBundle i18n = toolBox.getI18nBundle();
-            String content = i18n.getString("commands.framecapture.nomedia.content") +
-                    imageFile.getAbsolutePath();
-            showWarningAlert(toolBox, content);
+        ImageData imageData;
+        try {
+            imageData = FrameCaptureService.capture(imageFile, media, mediaPlayer);
+        }
+        catch (FrameCaptureException e) {
+            showWarningAlert(toolBox, e.getMessage(), e);
             return;
         }
 
-        ImageData imageData = imageDataOpt.get();
         log.atInfo().log(() -> "Captured image at " + imageData.getVideoIndex().getTimestamp().orElse(null));
 
         ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
@@ -157,7 +156,7 @@ public class CopyAnnotationsWithFramegrabCmd implements Command {
         decorator.createImageFromExistingImageData(media, imageData, ImageArchiveServiceDecorator.ImageTypes.PNG)
                 .thenCompose(pngOpt -> {
                     if (pngOpt.isEmpty()) {
-                        throw new RuntimeException("Failed to capture framegrab");
+                        throw new RuntimeException("The image archive did not return the saved image");
                     }
                     CreatedImageData createdImageData = pngOpt.get();
                     pngImageRef = createdImageData.getImage();
@@ -181,13 +180,13 @@ public class CopyAnnotationsWithFramegrabCmd implements Command {
                 .whenComplete((opt, throwable) -> {
                     ResourceBundle i18n = toolBox.getI18nBundle();
                     if (pngImageRef == null) {
-                        String msg = i18n.getString("commands.framecapture.fail.noimage");
+                        String msg = withCause(i18n.getString("commands.framecapture.fail.noimage"), throwable);
                         showWarningAlert(toolBox, msg, throwable);
                     }
                     else {
                         boolean deleteImage = copiedAnnotations.isEmpty();
                         if (deleteImage) {
-                            String msg = i18n.getString("commands.framecapture.fail.noannotation");
+                            String msg = withCause(i18n.getString("commands.framecapture.fail.noannotation"), throwable);
                             showWarningAlert(toolBox, msg, throwable);
                         }
                         decorator.refreshRelatedAnnotations(pngImageRef.getImageReferenceUuid(), deleteImage);
@@ -216,6 +215,10 @@ public class CopyAnnotationsWithFramegrabCmd implements Command {
         return toolBox.getServices()
                 .annotationService()
                 .createAnnotations(copies);
+    }
+
+    private static String withCause(String msg, Throwable throwable) {
+        return throwable == null ? msg : msg + ": " + FrameCaptureService.describe(throwable);
     }
 
     private void showWarningAlert(UIToolBox toolBox, String content) {

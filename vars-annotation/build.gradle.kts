@@ -75,7 +75,7 @@ val razielSdkVersion = "0.0.8"
 val slf4jVersion = "2.0.20"
 val swingxVersion = "1.6.5-1"
 val vampireSquidSdkVersion = "0.0.15"
-val vcr4jVersion = "5.4.1"
+val vcr4jVersion = "5.4.2"
 
 
 
@@ -165,7 +165,7 @@ testing {
                 implementation("org.mbari.vars:annosaurus-java-sdk:$annosaurusSdkVersion")
                 implementation("org.mbari.vars:oni-java-sdk:$oniSdkVersion")
                 implementation("org.mbari.vars:raziel-java-sdk:$razielSdkVersion")
-                implementation("org.junit.platform:junit-platform-launcher:1.10.2")
+                implementation("org.junit.platform:junit-platform-launcher:6.1.3")
                 implementation("org.mbari.vcr4j:vcr4j-core:$vcr4jVersion")
                 implementation("org.mbari.vcr4j:vcr4j-remote:$vcr4jVersion")
             }

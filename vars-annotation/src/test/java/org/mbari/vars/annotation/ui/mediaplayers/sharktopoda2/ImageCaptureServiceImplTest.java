@@ -13,7 +13,9 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.UUID;
@@ -28,18 +30,49 @@ public class ImageCaptureServiceImplTest {
 
     private RVideoIO io;
     private UUID videoUuid;
+    private DatagramSocket player;
 
     @AfterEach
     public void cleanup() {
         if (io != null) {
             io.close();
         }
+        if (player != null) {
+            player.close();
+        }
     }
 
     /**
-     * Wires up a service backed by a real RVideoIO (pointed at an unused port), starts a
-     * capture on a background thread, and waits until the capture has subscribed and sent
-     * its FrameCaptureCmd.
+     * Stands in for Sharktopoda's immediate answer to 'frame capture'. Without it RVideoIO
+     * reports a connection error after ~1 second and capture() (correctly) fails fast,
+     * before the test delivers its FrameCaptureDoneCmd.
+     */
+    private int startAckingPlayer() throws Exception {
+        player = new DatagramSocket(0);
+        var socket = player;
+        var thread = new Thread(() -> {
+            var buffer = new byte[4096];
+            var ack = "{\"response\":\"frame capture\",\"status\":\"ok\"}".getBytes(StandardCharsets.UTF_8);
+            while (!socket.isClosed()) {
+                try {
+                    var packet = new DatagramPacket(buffer, buffer.length);
+                    socket.receive(packet);
+                    socket.send(new DatagramPacket(ack, ack.length, packet.getAddress(), packet.getPort()));
+                }
+                catch (Exception e) {
+                    // socket closed
+                }
+            }
+        }, "acking-player");
+        thread.setDaemon(true);
+        thread.start();
+        return socket.getLocalPort();
+    }
+
+    /**
+     * Wires up a service backed by a real RVideoIO (pointed at a stub player that acknowledges
+     * commands), starts a capture on a background thread, and waits until the capture has
+     * subscribed and sent its FrameCaptureCmd.
      */
     private record RunningCapture(ImageCaptureServiceImpl service,
                                   CompletableFuture<Framegrab> result,
@@ -47,10 +80,7 @@ public class ImageCaptureServiceImplTest {
     }
 
     private RunningCapture startCapture(File file) throws Exception {
-        int port;
-        try (var s = new DatagramSocket(0)) {
-            port = s.getLocalPort();
-        }
+        int port = startAckingPlayer();
         videoUuid = UUID.randomUUID();
         io = new RVideoIO(videoUuid, "localhost", port);
 
@@ -100,9 +130,19 @@ public class ImageCaptureServiceImplTest {
 
         // Unblock the decode: give the FIFO a writer and immediately close it (EOF).
         // The decode yields a null image, which is fine — capture() must still complete.
-        try (var out = new FileOutputStream(fifo.toFile())) {
-            // no bytes; the reader sees EOF
-        }
+        // Opening a FIFO for writing blocks until there is a reader, so bound it: if capture()
+        // already failed, nothing will ever read and the test must fail rather than hang.
+        var writer = CompletableFuture.runAsync(() -> {
+            try (var out = new FileOutputStream(fifo.toFile())) {
+                // no bytes; the reader sees EOF
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+        assertDoesNotThrow(() -> writer.get(10, TimeUnit.SECONDS),
+                "Nothing opened the image for reading; did capture() fail early? "
+                        + (capture.result().isCompletedExceptionally() ? capture.result().exceptionNow() : ""));
         assertDoesNotThrow(() -> capture.result().get(15, TimeUnit.SECONDS),
                 "capture() never completed after the image became readable");
     }

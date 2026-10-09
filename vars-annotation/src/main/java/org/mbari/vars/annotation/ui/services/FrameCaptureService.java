@@ -13,40 +13,82 @@ import org.mbari.vars.annotation.etc.jdk.Loggers;
 
 import java.io.File;
 import java.time.Instant;
-import java.util.Optional;
 
 public class FrameCaptureService {
 
     private static final Loggers log = new Loggers(FrameCaptureService.class);
 
-    public static Optional<ImageData> capture(File imageFile,
-                                              Media media,
-                                              MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer) {
-        try {
-            ImageCaptureService service = mediaPlayer.getImageCaptureService();
-            Framegrab framegrab = service.capture(imageFile);
+    /**
+     * Capture the current frame from the media player.
+     *
+     * @return The captured image data. Never null.
+     * @throws FrameCaptureException if the frame could not be captured. The message describes why.
+     */
+    public static ImageData capture(File imageFile,
+                                    Media media,
+                                    MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer) {
+        ImageCaptureService service = mediaPlayer.getImageCaptureService();
+        if (service == null) {
+            throw new FrameCaptureException("The current media player does not support frame capture");
+        }
 
-            // If there's an elapsed time, make sure the recordedTimestamp is
-            // set and correct
+        Framegrab framegrab;
+        try {
+            framegrab = service.capture(imageFile);
+        }
+        catch (Exception e) {
+            log.atWarn().withCause(e).log("Failed to capture image from " + media.getUri());
+            throw new FrameCaptureException(describe(e), e);
+        }
+
+        if (framegrab == null || framegrab.getImage().isEmpty()) {
+            throw new FrameCaptureException("The media player did not return an image. Unable to read " +
+                    imageFile.getAbsolutePath());
+        }
+        if (framegrab.getVideoIndex().isEmpty()) {
+            throw new FrameCaptureException("The media player did not return the video time of the captured frame");
+        }
+
+        // If there's an elapsed time, make sure the recordedTimestamp is
+        // set and correct. Not all media have a start timestamp.
+        if (media.getStartTimestamp() != null) {
             framegrab.getVideoIndex()
                     .flatMap(VideoIndex::getElapsedTime)
                     .ifPresent(elapsedTime -> {
                         Instant recordedDate = media.getStartTimestamp().plus(elapsedTime);
                         framegrab.setVideoIndex(new VideoIndex(elapsedTime, recordedDate));
                     });
-            if (framegrab.isComplete()) {
-                var bufferedImage = Images.toBufferedImage(framegrab.getImage().get());
-                var imageData = new ImageData(media.getVideoReferenceUuid(),
-                        framegrab.getVideoIndex().get(),
-                        bufferedImage);
-                return Optional.of(imageData);
-            }
-            return Optional.empty();
-
-        } catch (Exception e) {
-            log.atWarn().withCause(e).log("Failed capture image from " + media.getUri());
-            return Optional.empty();
         }
+
+        try {
+            var bufferedImage = Images.toBufferedImage(framegrab.getImage().get());
+            return new ImageData(media.getVideoReferenceUuid(),
+                    framegrab.getVideoIndex().get(),
+                    bufferedImage);
+        }
+        catch (Exception e) {
+            throw new FrameCaptureException("The captured image could not be processed: " + describe(e), e);
+        }
+    }
+
+    /**
+     * Builds a user-readable message from the exception chain. Wrapper exceptions (e.g.
+     * ExecutionException) often have unhelpful messages, so the chain is walked to include
+     * the root cause.
+     */
+    public static String describe(Throwable e) {
+        Throwable root = e;
+        while (root.getCause() != null && root.getCause() != root) {
+            root = root.getCause();
+        }
+        String msg = e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage();
+        if (root != e) {
+            String rootMsg = root.getMessage() == null ? root.getClass().getSimpleName() : root.getMessage();
+            if (!msg.contains(rootMsg)) {
+                msg = msg + " (" + rootMsg + ")";
+            }
+        }
+        return msg;
     }
 
 }
