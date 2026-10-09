@@ -506,7 +506,6 @@ public class BulkEditorPaneController {
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(content);
-        Platform.runLater(() -> conceptDialogController.getComboBox().requestFocus());
         Optional<String> opt = dialog.showAndWait();
         opt.ifPresent(c -> eventBus.send(new ChangeConceptCmd(annosCopy, c)));
     }

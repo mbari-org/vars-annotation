@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.messages.ReloadServicesMsg;
+import org.mbari.vars.annotation.ui.util.JFXUtilities;
 import org.mbari.vars.oni.sdk.r1.models.Concept;
 
 /**
@@ -29,10 +30,6 @@ public class ConceptSelectionDialogController {
         Observable<Object> observable = toolBox.getEventBus().toObserverable();
         observable.ofType(ReloadServicesMsg.class)
                 .subscribe(m -> refresh());
-    }
-
-    public void requestFocus() {
-        Platform.runLater(() -> getComboBox().requestFocus());
     }
 
     public String getConcept() {
@@ -77,6 +74,7 @@ public class ConceptSelectionDialogController {
             pane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
             pane.setContent(getComboBoxContainer());
             pane.getStylesheets().addAll(toolBox.getStylesheets());
+            JFXUtilities.focusOnShown(dialog, this::getComboBox);
             dialog.setResultConverter(btn -> {
                 if (btn == ButtonType.OK) {
                     return getComboBox().getValue();

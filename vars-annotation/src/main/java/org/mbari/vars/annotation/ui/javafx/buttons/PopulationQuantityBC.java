@@ -30,7 +30,6 @@ public class PopulationQuantityBC extends AbstractBC {
     protected void apply() {
         List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
         TextInputDialog dialog = getDialog();
-        JFXUtilities.runOnFXThread(() -> dialog.getEditor().requestFocus());
         Optional<String> s = dialog.showAndWait();
         s.ifPresent(population -> {
             Association a = new Association(popQuantLinkName, Association.VALUE_SELF, population);
@@ -58,6 +57,8 @@ public class PopulationQuantityBC extends AbstractBC {
             dialog.setContentText(i18n.getString("buttons.population.dialog.content"));
             dialog.setGraphic(icon);
             dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
+            JFXUtilities.focusOnShown(dialog, dialog::getEditor);
+            dialog.setResizable(true);
             TextField textField = dialog.getEditor();
             // Only allow digits only
             textField.textProperty().addListener((obs, oldv, newv) -> {

@@ -3,8 +3,10 @@ package org.mbari.vars.annotation.ui.util;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.stage.Stage;
 
+import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 
 /**
@@ -27,6 +29,22 @@ public class JFXUtilities {
 //        else {
 //            Platform.runLater(r);
 //        }
+    }
+
+    /**
+     * Focus a node every time the dialog is shown. The request has to wait until the dialog is
+     * visible; otherwise a reused dialog's scene restores its previous focus owner (e.g. the OK button).
+     *
+     * @param dialog The dialog
+     * @param target Supplies the node to focus. Called each time the dialog is shown and may return null.
+     */
+    public static void focusOnShown(Dialog<?> dialog, Supplier<? extends Node> target) {
+        dialog.setOnShown(e -> Platform.runLater(() -> {
+            Node node = target.get();
+            if (node != null) {
+                node.requestFocus();
+            }
+        }));
     }
 
     public static void attractAttention(Button button) {

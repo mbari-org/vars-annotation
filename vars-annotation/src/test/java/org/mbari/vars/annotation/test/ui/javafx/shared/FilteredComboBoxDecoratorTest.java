@@ -71,6 +71,40 @@ public class FilteredComboBoxDecoratorTest {
         });
     }
 
+    /**
+     * Regression: decorating a combobox that is already showing (like SampleBC does when the samplers
+     * finish loading after the dialog opens) replaces its default skin. The disposed skin left a listener
+     * on the items list, so the next setItems NPE'd in ComboBoxListViewSkin. JavaFX hands exceptions
+     * thrown by list listeners to the uncaught exception handler, so we have to capture them there.
+     */
+    @Test
+    public void setItemsAfterDecoratingAShowingComboBox() throws Exception {
+        var errors = new java.util.ArrayList<Throwable>();
+        var size = fx(() -> {
+            var thread = Thread.currentThread();
+            var originalHandler = thread.getUncaughtExceptionHandler();
+            thread.setUncaughtExceptionHandler((t, e) -> errors.add(e));
+            try {
+                var cb = new ComboBox<String>();
+                var stage = new Stage();
+                stage.setScene(new Scene(cb));
+                stage.show();
+                var defaultSkin = cb.getSkin(); // hold it so GC can't hide the bug
+                new FilteredComboBoxDecorator<>(cb, FilteredComboBoxDecorator.STARTSWITH_IGNORE_SPACES);
+                cb.setItems(FXCollections.observableArrayList(ITEMS));
+                type(cb, "a", KeyCode.A);
+                var n = cb.getItems().size();
+                stage.close();
+                return defaultSkin == null ? -1 : n;
+            }
+            finally {
+                thread.setUncaughtExceptionHandler(originalHandler);
+            }
+        });
+        assertEquals(List.of(), errors);
+        assertEquals(2, size);
+    }
+
     @Test
     public void filtersWithInitialItems() throws Exception {
         assertEquals(2, filteredSizeAfterTypingA(false));

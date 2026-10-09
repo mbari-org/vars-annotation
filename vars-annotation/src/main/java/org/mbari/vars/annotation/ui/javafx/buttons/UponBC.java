@@ -55,7 +55,6 @@ public class UponBC extends AbstractBC {
 
     protected void apply() {
         Dialog<String> dialog = dialogController.getDialog();
-        dialogController.requestFocus();
         Optional<String> opt = dialog.showAndWait();
         opt.ifPresent(selectedItem -> {
             log.atDebug().log(() -> "Select upon substrate of " + selectedItem);

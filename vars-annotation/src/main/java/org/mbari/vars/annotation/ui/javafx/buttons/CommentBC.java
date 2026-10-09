@@ -50,6 +50,7 @@ public class CommentBC extends AbstractBC {
             dialog.setGraphic(icon);
             dialog.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
             dialog.setResizable(true);
+            JFXUtilities.focusOnShown(dialog, dialog::getEditor);
         }
         return dialog;
     }
@@ -58,7 +59,6 @@ public class CommentBC extends AbstractBC {
         List<Annotation> annotations = new ArrayList<>(toolBox.getData().getSelectedAnnotations());
         JFXUtilities.runOnFXThread(() -> {
             TextInputDialog dialog = getDialog();
-            dialog.getEditor().requestFocus();
             Optional<String> s = dialog.showAndWait();
             s.ifPresent(comment -> {
                 Association a = new Association(commentLinkName, Association.VALUE_SELF, comment);
