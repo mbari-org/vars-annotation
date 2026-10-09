@@ -34,7 +34,7 @@ public class CopyAnnotationsCmd implements Command {
                 .collect(Collectors.toList());
     }
 
-    private Annotation makeCopy(Annotation annotation,
+    static Annotation makeCopy(Annotation annotation,
                                 UUID videoReferenceUuid,
                                 VideoIndex videoIndex,
                                 String observer,

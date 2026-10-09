@@ -31,15 +31,9 @@ public class MLAnalysisService {
     private static MLImageInference capturePng(Media media,
                                                MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer) {
         var pngFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".png");
-        var opt = FrameCaptureService.capture(pngFile, media, mediaPlayer);
-        if (opt.isPresent()) {
-            var imageData = opt.get();
-            return new MLImageInference(imageData);
-        }
-        else {
-            throw new RuntimeException("Failed to capture image from " + media.getUri() +
-                    "and save it to " + pngFile);
-        }
+        // Throws FrameCaptureException describing the failure
+        var imageData = FrameCaptureService.capture(pngFile, media, mediaPlayer);
+        return new MLImageInference(imageData);
     }
 
 }

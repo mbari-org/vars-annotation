@@ -13,6 +13,7 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
       <Label text="%mediaplayer.sharktopoda.port" GridPane.hgrow="SOMETIMES" />
@@ -21,8 +22,10 @@
       <Label text="%mediaplayer.sharktopoda.framecapture.port" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="1" />
       <TextField fx:id="timeJumpTextField" promptText="%mediaplayer.sharktopoda.jump.prompt" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <Label text="%mediaplayer.sharktopoda.jump" GridPane.rowIndex="2" />
-      <Label text="%mediaplayer.sharktopoda.version" GridPane.rowIndex="3" />
-      <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+      <TextField fx:id="timeoutTextField" promptText="%mediaplayer.sharktopoda.timeout.prompt" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <Label text="%mediaplayer.sharktopoda.timeout" GridPane.rowIndex="3" />
+      <Label text="%mediaplayer.sharktopoda.version" GridPane.rowIndex="4" />
+      <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
          <children>
             <RadioButton fx:id="v1RadioButton" mnemonicParsing="false" text="1" />
             <RadioButton fx:id="v2RadioButton" mnemonicParsing="false" text="2" />

@@ -1,6 +1,7 @@
 package org.mbari.vars.annotation.ui.mediaplayers.sharktopoda;
 
 
+import java.time.Duration;
 import java.util.ResourceBundle;
 import java.util.function.UnaryOperator;
 import java.util.prefs.Preferences;
@@ -35,6 +36,9 @@ public class SharktopodaSettingsPaneController implements IPrefs {
     private TextField timeJumpTextField;
 
     @FXML
+    private TextField timeoutTextField;
+
+    @FXML
     private RadioButton v1RadioButton;
 
     @FXML
@@ -52,6 +56,8 @@ public class SharktopodaSettingsPaneController implements IPrefs {
     public static final String TIME_JUMP = "sharktopoda-time-jump";
     public static final String SHARKTOPODA_VERSION = "sharktopoda-version";
     public static final Integer DEFAULT_TIME_JUMP = 1000;
+    public static final String FRAMECAPTURE_TIMEOUT = "sharktopoda-framecapture-timeout";
+    public static final Integer DEFAULT_FRAMECAPTURE_TIMEOUT_SECONDS = 10;
 
     @FXML
     void initialize() {
@@ -70,6 +76,17 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         controlPortTextField.setTextFormatter(textFormatter1);
         framegrabPortTextField.setTextFormatter(textFormatter2);
         timeJumpTextField.setTextFormatter(textFormatter3);
+
+        // Timeout in seconds. Validate the full resulting text so pasted values are checked too.
+        // Must be a positive integer (an empty field is allowed while editing).
+        UnaryOperator<TextFormatter.Change> timeoutFilter = change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("[1-9][0-9]{0,3}") || newText.isEmpty()) {
+                return change;
+            }
+            return null;
+        };
+        timeoutTextField.setTextFormatter(new TextFormatter<>(timeoutFilter));
 
         final ToggleGroup group = new ToggleGroup();
         v1RadioButton.setToggleGroup(group);
@@ -110,6 +127,20 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         }
     }
 
+    /**
+     * @return The time to wait for Sharktopoda to complete a framecapture
+     */
+    public static Duration getFramecaptureTimeout() {
+        Preferences prefs = Preferences.userNodeForPackage(SharktopodaSettingsPaneController.class);
+        try {
+            int seconds = prefs.getInt(FRAMECAPTURE_TIMEOUT, DEFAULT_FRAMECAPTURE_TIMEOUT_SECONDS);
+            return Duration.ofSeconds(seconds > 0 ? seconds : DEFAULT_FRAMECAPTURE_TIMEOUT_SECONDS);
+        }
+        catch (Exception e) {
+            return Duration.ofSeconds(DEFAULT_FRAMECAPTURE_TIMEOUT_SECONDS);
+        }
+    }
+
     public static Integer getSharktopodaVersion() {
         Preferences prefs = Preferences.userNodeForPackage(SharktopodaSettingsPaneController.class);
         try {
@@ -143,6 +174,7 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         controlPortTextField.setText(sharkPort + "");
         framegrabPortTextField.setText(fgPort + "");
         timeJumpTextField.setText(timeJump + "");
+        timeoutTextField.setText(getFramecaptureTimeout().toSeconds() + "");
 
         int sharkVersion = prefs.getInt(SHARKTOPODA_VERSION, 1);
         if (sharkVersion == 2) {
@@ -160,6 +192,7 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         int sharkPort = appConfig.getSharktopodaDefaultsControlPort();
         int fgPort = appConfig.getSharktopodaDefaultsFramegrabPort();
         int timeJump = toolBox.getData().getTimeJump();
+        int timeout = (int) getFramecaptureTimeout().toSeconds();
         ResourceBundle i18n = toolBox.getI18nBundle();
 
         try {
@@ -174,12 +207,29 @@ public class SharktopodaSettingsPaneController implements IPrefs {
                             i18n.getString("mediaplayer.sharktopoda.error.content"),
                             e));
         }
+
+        // Parsed separately so a bad timeout gets its own message and doesn't block the other values
+        try {
+            timeout = Integer.parseInt(timeoutTextField.getText());
+        }
+        catch (Exception e) {
+            toolBox.getEventBus()
+                    .send(new ShowNonfatalErrorAlert(i18n.getString("mediaplayer.sharktopoda.error.title"),
+                            i18n.getString("mediaplayer.sharktopoda.error.header"),
+                            i18n.getString("mediaplayer.sharktopoda.timeout.error.content"),
+                            e));
+        }
         prefs.putInt(CONTROL_PORT_KEY, sharkPort);
         prefs.putInt(FRAMEGRAB_PORT_KEY, fgPort);
 
         // Time jump is saved to prefs but also set in Data so it can be used immediatly
         prefs.putInt(TIME_JUMP, timeJump);
         toolBox.getData().setTimeJump(timeJump);
+
+        // Read on each framecapture so changes take effect immediately
+        if (timeout > 0) {
+            prefs.putInt(FRAMECAPTURE_TIMEOUT, timeout);
+        }
 
         var version = v2RadioButton.isSelected() ? 2 : 1;
         prefs.putInt(SHARKTOPODA_VERSION, version);

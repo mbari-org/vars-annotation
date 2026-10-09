@@ -16,6 +16,7 @@ import org.mbari.vars.annotation.ui.messages.ShowWarningAlert;
 import org.mbari.vars.annosaurus.sdk.r1.AnnotationService;
 import org.mbari.vars.oni.sdk.r1.ConceptService;
 import org.mbari.vars.annotation.ui.javafx.ImageArchiveServiceDecorator;
+import org.mbari.vars.annotation.ui.services.FrameCaptureException;
 import org.mbari.vars.annotation.ui.services.FrameCaptureService;
 import org.mbari.vars.annotation.model.ImageData;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
@@ -147,66 +148,61 @@ public class FramegrabCmd implements Command {
         //log.atWarn().log("Capturing framegrab for " + media.getVideoName() + " at " + media.getUri());
         // -- Capture image
         File imageFile = ImageArchiveServiceDecorator.buildLocalImageFile(media, ".png");
-        Optional<ImageData> imageDataOpt = FrameCaptureService.capture(imageFile, media, mediaPlayer);
-
-        if (imageDataOpt.isEmpty()) {
-            //log.warn("No framegrab was captured for {} at {}", media.getVideoName(), media.getUri());
-            ResourceBundle i18n = toolBox.getI18nBundle();
-            String content = i18n.getString("commands.framecapture.nomedia.content") +
-                    imageFile.getAbsolutePath();
-            showWarningAlert(toolBox,  content);
+        ImageData imageData;
+        try {
+            imageData = FrameCaptureService.capture(imageFile, media, mediaPlayer);
         }
-        else {
-
-            ImageData imageData = imageDataOpt.get();
-            log.atInfo().log(() -> "Captured image at " + imageData.getVideoIndex().getTimestamp().orElse(null));
-
-            ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
-            // -- 1. Upload image to server and register in annotation service
-            decorator.createImageFromExistingImageData(media, imageData, ImageArchiveServiceDecorator.ImageTypes.PNG)
-                    .thenCompose(pngOpt -> {
-                        if (pngOpt.isPresent()) {
-                            CreatedImageData createdImageData = pngOpt.get();
-                            pngImageRef = createdImageData.getImage();
-                            // -- 2. Create an annotation at the same index as the image
-                            return createAnnotationInDatastore(toolBox, pngImageRef.getVideoIndex()).thenCompose(annotation -> {
-                                annotationRef = annotation;
-                                EventBus eventBus = toolBox.getEventBus();
-                                eventBus.send(new AnnotationsAddedEvent(annotationRef));
-                                eventBus.send(new AnnotationsSelectedEvent(annotationRef));
-                                // -- 3. Create a jpeg
-                                return decorator.createJpegWithOverlay(media,
-                                        imageData,
-                                        createdImageData.getImageUploadResults())
-                                        .thenApply(jpgOpt -> {
-                                            jpgOpt.ifPresent(cid -> jpgImageRef = cid.getImage());
-                                            return jpgOpt;
-                                        });
-
-                            });
-                        }
-                        else {
-                            throw new RuntimeException("Failed to capture framgrab");
-                        }
-                    })
-                    .whenComplete((opt, throwable) -> {
-                        // refresh whether is succeeds or fails
-                        boolean deleteImage = false;
-                        ResourceBundle i18n = toolBox.getI18nBundle();
-                        if (pngImageRef == null) {
-                            String msg = i18n.getString("commands.framecapture.fail.noimage");
-                            showWarningAlert(toolBox, msg, throwable);
-                        }
-                        else if (pngImageRef != null && annotationRef == null) {
-                            String msg = i18n.getString("commands.framecapture.faile.noannotation");
-                            showWarningAlert(toolBox, msg, throwable);
-                            deleteImage = true;
-                        }
-                        decorator.refreshRelatedAnnotations(pngImageRef.getImageReferenceUuid(), deleteImage);
-                    });
-
-
+        catch (FrameCaptureException e) {
+            showWarningAlert(toolBox, e.getMessage(), e);
+            return;
         }
+
+        log.atInfo().log(() -> "Captured image at " + imageData.getVideoIndex().getTimestamp().orElse(null));
+
+        ImageArchiveServiceDecorator decorator = new ImageArchiveServiceDecorator(toolBox);
+        // -- 1. Upload image to server and register in annotation service
+        decorator.createImageFromExistingImageData(media, imageData, ImageArchiveServiceDecorator.ImageTypes.PNG)
+                .thenCompose(pngOpt -> {
+                    if (pngOpt.isPresent()) {
+                        CreatedImageData createdImageData = pngOpt.get();
+                        pngImageRef = createdImageData.getImage();
+                        // -- 2. Create an annotation at the same index as the image
+                        return createAnnotationInDatastore(toolBox, pngImageRef.getVideoIndex()).thenCompose(annotation -> {
+                            annotationRef = annotation;
+                            EventBus eventBus = toolBox.getEventBus();
+                            eventBus.send(new AnnotationsAddedEvent(annotationRef));
+                            eventBus.send(new AnnotationsSelectedEvent(annotationRef));
+                            // -- 3. Create a jpeg
+                            return decorator.createJpegWithOverlay(media,
+                                    imageData,
+                                    createdImageData.getImageUploadResults())
+                                    .thenApply(jpgOpt -> {
+                                        jpgOpt.ifPresent(cid -> jpgImageRef = cid.getImage());
+                                        return jpgOpt;
+                                    });
+
+                        });
+                    }
+                    else {
+                        throw new RuntimeException("The image archive did not return the saved image");
+                    }
+                })
+                .whenComplete((opt, throwable) -> {
+                    // refresh whether is succeeds or fails
+                    boolean deleteImage = false;
+                    ResourceBundle i18n = toolBox.getI18nBundle();
+                    if (pngImageRef == null) {
+                        String msg = FrameCaptureService.withCause(i18n.getString("commands.framecapture.fail.noimage"), throwable);
+                        showWarningAlert(toolBox, msg, throwable);
+                        return;
+                    }
+                    else if (annotationRef == null) {
+                        String msg = FrameCaptureService.withCause(i18n.getString("commands.framecapture.fail.noannotation"), throwable);
+                        showWarningAlert(toolBox, msg, throwable);
+                        deleteImage = true;
+                    }
+                    decorator.refreshRelatedAnnotations(pngImageRef.getImageReferenceUuid(), deleteImage);
+                });
     }
 
     private void showWarningAlert(UIToolBox toolBox, String content) {

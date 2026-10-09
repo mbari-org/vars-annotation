@@ -30,7 +30,7 @@ public class DetachFramegrabsBC extends AbstractBC {
     protected void init() {
         String tooltip = toolBox.getI18nBundle().getString("buttons.detachimage");
 //        Text icon = iconFactory.createIcon(MaterialIcon.CLEAR, "30px");
-        Text icon = Icons.CLEAR.standardSize();
+        Text icon = Icons.IMAGE_NOT_SUPPORTED.standardSize();
         initializeButton(tooltip, icon);
 
         Observable<Object> observable = toolBox.getEventBus().toObserverable();

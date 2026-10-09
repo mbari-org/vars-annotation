@@ -204,6 +204,50 @@ public class ImageCaptureServiceTest {
     }
 
     // -------------------------------------------------------------------------
+    // Fail fast: Sharktopoda rejects the command, or doesn't answer at all
+    // -------------------------------------------------------------------------
+
+    /**
+     * Sharktopoda validates 'frame capture' synchronously and answers {@code failed} with a
+     * cause (e.g. the image file already exists). No 'frame capture done' follows, so
+     * {@code capture()} must fail right away with that cause instead of waiting for the timeout.
+     */
+    @Test
+    @DisplayName("Rejected frame capture fails fast with Sharktopoda's cause")
+    void testRejectedCaptureFailsFast() {
+        mockSharktopoda.setRejectCause("Image exists at location");
+        var outputFile = tempDir.resolve("capture-rejected.png").toFile();
+
+        long start = System.nanoTime();
+        var e = assertThrows(RuntimeException.class, () -> imageCaptureService.capture(outputFile));
+        long tookMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
+
+        log.info("Rejected capture threw after " + tookMillis + " ms: " + e.getMessage());
+        assertTrue(e.getMessage().contains("Image exists at location"), e.getMessage());
+        assertTrue(tookMillis < 1000, "Should not wait for the capture timeout. Took " + tookMillis + " ms");
+    }
+
+    /**
+     * If Sharktopoda doesn't answer the command at all (not running, wrong port), RVideoIO
+     * reports a connection error after ~1 second. {@code capture()} should fail then, not
+     * after the full capture timeout.
+     */
+    @Test
+    @DisplayName("Unacknowledged frame capture fails after RVideoIO's ack timeout")
+    void testUnacknowledgedCaptureFailsFast() {
+        mockSharktopoda.setIgnoreFrameCapture(true);
+        var outputFile = tempDir.resolve("capture-ignored.png").toFile();
+
+        long start = System.nanoTime();
+        var e = assertThrows(RuntimeException.class, () -> imageCaptureService.capture(outputFile));
+        long tookMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
+
+        log.info("Unacknowledged capture threw after " + tookMillis + " ms: " + e.getMessage());
+        assertTrue(e.getMessage().contains("did not acknowledge"), e.getMessage());
+        assertTrue(tookMillis < 3000, "Should fail after the ~1 s ack timeout. Took " + tookMillis + " ms");
+    }
+
+    // -------------------------------------------------------------------------
     // Timing characterisation sweep (diagnostic / slow)
     // -------------------------------------------------------------------------
 
@@ -295,6 +339,12 @@ public class ImageCaptureServiceTest {
          */
         private volatile boolean raceMode = false;
 
+        /** When set, 'frame capture' is answered with {@code failed} and this cause; no done follows. */
+        private volatile String rejectCause = null;
+
+        /** When true, 'frame capture' gets no answer at all (simulates Sharktopoda not listening). */
+        private volatile boolean ignoreFrameCapture = false;
+
         /** Filled in when the first {@code connect} command is received. */
         private volatile int callbackPort = -1;
         private volatile InetAddress callbackAddress;
@@ -309,6 +359,14 @@ public class ImageCaptureServiceTest {
 
         void setRaceMode(boolean enabled) {
             this.raceMode = enabled;
+        }
+
+        void setRejectCause(String cause) {
+            this.rejectCause = cause;
+        }
+
+        void setIgnoreFrameCapture(boolean ignore) {
+            this.ignoreFrameCapture = ignore;
         }
 
         void start() throws SocketException {
@@ -369,6 +427,18 @@ public class ImageCaptureServiceTest {
 
         private void handleFrameCapture(CommandEnvelope env, InetAddress sender, int senderPort)
                 throws IOException {
+            if (ignoreFrameCapture) {
+                log.info("MockSharktopoda: ignoring FrameCapture (no ACK)");
+                return;
+            }
+            if (rejectCause != null) {
+                String reply = "{\"response\":\"frame capture\",\"status\":\"failed\",\"cause\":\""
+                        + rejectCause + "\"}";
+                byte[] bytes = reply.getBytes(StandardCharsets.UTF_8);
+                socket.send(new DatagramPacket(bytes, bytes.length, sender, senderPort));
+                log.info("MockSharktopoda: >>> " + reply);
+                return;
+            }
             if (raceMode) {
                 handleFrameCaptureRaceMode(env, sender, senderPort);
             } else {
