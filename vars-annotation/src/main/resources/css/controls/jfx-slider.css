@@ -57,6 +57,10 @@
     -fx-background-insets: 0;
 }
 
+.jfx-slider.no-animated-thumb .animated-thumb {
+    -fx-opacity: 0;
+}
+
 .jfx-slider:min .thumb,
 .jfx-slider:min:focused .thumb {
     -fx-background-color: -jfx-default-track;
