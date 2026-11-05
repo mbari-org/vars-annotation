@@ -6,6 +6,7 @@ import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.annotation.ui.UIToolBox;
 import org.mbari.vars.annotation.ui.events.*;
 import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda.Constants;
+import org.mbari.vars.annotation.ui.messages.SeekedToAnnotationMsg;
 import org.mbari.vcr4j.remote.control.RVideoIO;
 import org.mbari.vcr4j.remote.control.commands.localization.*;
 import org.mbari.vars.annotation.etc.jdk.Loggers;
@@ -62,6 +63,10 @@ class OutgoingController {
                 .ofType(AnnotationsSelectedEvent.class)
                 .filter(evt -> evt.getEventSource() != Constants.LOCALIZATION_EVENT_SOURCE)
                 .subscribe(evt -> handle(evt.get(), Action.Select)));
+
+        disposables.add(observable
+                .ofType(SeekedToAnnotationMsg.class)
+                .subscribe(msg -> reselectAfterSeek(msg.annotation())));
 
         disposables.add(observable
                 .ofType(OpenDoneEvent.class)
@@ -121,6 +126,44 @@ class OutgoingController {
             sharktopodaState.setSelectedLocalizations(nothing);
             io.send(new SelectLocalizationsCmd(io.getUuid(), nothing));
         }
+    }
+
+    /**
+     * Sharktopoda clears its localization selection whenever it seeks. After a seek to an annotation
+     * that is selected in VARS, select its localizations again so they're highlighted at the new frame.
+     * This is sent after the seek command, and Sharktopoda processes commands in order, so it lands
+     * after the seek's clear. Sharktopoda doesn't report selections the client makes, so this can't
+     * echo back. (The empty selection Sharktopoda reports for the seek itself is ignored by
+     * IncomingController.)
+     */
+    private void reselectAfterSeek(Annotation annotation) {
+        if (!openDone || annotation == null) {
+            return;
+        }
+        var media = toolBox.getData().getMedia();
+        if (media == null || !Objects.equals(media.getVideoReferenceUuid(), annotation.getVideoReferenceUuid())) {
+            // Seeked to an annotation from a concurrent video. Sharktopoda doesn't have its localizations
+            return;
+        }
+        var observationUuid = annotation.getObservationUuid();
+        boolean selectedInVars = observationUuid != null && AnnotationSnapshots.selected(toolBox)
+                .stream()
+                .anyMatch(a -> observationUuid.equals(a.getObservationUuid()));
+        if (!selectedInVars) {
+            // Highlighting it would make Sharktopoda's selection disagree with VARS'
+            return;
+        }
+        var uuids = LocalizedAnnotation.from(List.of(annotation))
+                .stream()
+                .flatMap(la -> la.toLocalization(toolBox).stream())
+                .map(Localization::getUuid)
+                .toList();
+        if (uuids.isEmpty()) {
+            return;
+        }
+        log.atDebug().log(() -> "Outgoing to Sharktopoda: Re-select %d localizations after seek".formatted(uuids.size()));
+        sharktopodaState.setSelectedLocalizations(uuids);
+        io.send(new SelectLocalizationsCmd(io.getUuid(), uuids));
     }
 
     /**

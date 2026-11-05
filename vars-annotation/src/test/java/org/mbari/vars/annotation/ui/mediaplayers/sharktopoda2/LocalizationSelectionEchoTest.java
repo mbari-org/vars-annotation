@@ -1,6 +1,8 @@
 package org.mbari.vars.annotation.ui.mediaplayers.sharktopoda2;
 
+import javafx.application.Platform;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
@@ -13,6 +15,8 @@ import org.mbari.vars.annotation.ui.events.AnnotationsChangedEvent;
 import org.mbari.vars.annotation.ui.events.AnnotationsSelectedEvent;
 import org.mbari.vars.annotation.ui.events.OpenDoneEvent;
 import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda.Constants;
+import org.mbari.vars.annotation.ui.messages.SeekMsg;
+import org.mbari.vars.annotation.ui.messages.SeekedToAnnotationMsg;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 import org.mbari.vcr4j.VideoIndex;
 import org.mbari.vcr4j.remote.control.RemoteControl;
@@ -30,6 +34,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,6 +56,9 @@ public class LocalizationSelectionEchoTest {
     private Annotation annotation;
     private Association box1;
     private Association box2;
+    private SharktopodaState sharktopodaState;
+    /** Fake nanoTime clock for SharktopodaState so the seek grace period can be tested */
+    private final AtomicLong clock = new AtomicLong(1_000_000_000L);
     private final CopyOnWriteArrayList<SelectLocalizationsCmd> selectsSentToSharktopoda = new CopyOnWriteArrayList<>();
     /** Add, update and remove localization commands */
     private final CopyOnWriteArrayList<Object> localizationCmdsSentToSharktopoda = new CopyOnWriteArrayList<>();
@@ -60,6 +70,21 @@ public class LocalizationSelectionEchoTest {
                         {"x": 10, "y": 20, "width": 30, "height": 40}""",
                 "application/json",
                 UUID.randomUUID());
+    }
+
+    /**
+     * IncomingController reads the annotations on the FX thread (see AnnotationSnapshots). Without a
+     * running toolkit Platform.runLater throws, which kills the Rx subscription and every message
+     * from Sharktopoda is silently dropped.
+     */
+    @BeforeAll
+    public static void initJavaFx() {
+        try {
+            Platform.startup(() -> {});
+        }
+        catch (IllegalStateException e) {
+            // Toolkit already running
+        }
     }
 
     @BeforeEach
@@ -95,7 +120,7 @@ public class LocalizationSelectionEchoTest {
                 .build()
                 .get();
 
-        var sharktopodaState = new SharktopodaState();
+        sharktopodaState = new SharktopodaState(clock::get);
         outgoingController = new OutgoingController(toolBox, remoteControl.getVideoIO(), sharktopodaState);
         incomingController = new IncomingController(toolBox, remoteControl, sharktopodaState);
 
@@ -121,6 +146,7 @@ public class LocalizationSelectionEchoTest {
         outgoingController.close();
         remoteControl.close();
         toolBox.getData().getAnnotations().clear();
+        selectInVars(List.of());
         toolBox.getData().setMedia(null);
     }
 
@@ -219,5 +245,171 @@ public class LocalizationSelectionEchoTest {
                 "A selection made in VARS was not sent to Sharktopoda");
         var selectedUuids = new HashSet<>(selectsSentToSharktopoda.get(0).getValue().getLocalizations());
         assertEquals(Set.of(box1.getUuid(), box2.getUuid()), selectedUuids);
+    }
+
+    // -- Seeking: Sharktopoda reports an empty selection after every seek -----------------
+
+    private void sharktopodaSelects(List<UUID> localizationUuids) {
+        remoteControl.getRequestHandler()
+                .handleSelectLocalizationsRequest(new SelectLocalizationsCmd.Request(
+                        media.getVideoReferenceUuid(), localizationUuids));
+    }
+
+    /** @return selections that IncomingController forwarded from Sharktopoda into VARS */
+    private CopyOnWriteArrayList<AnnotationsSelectedEvent> captureSelectionsFromSharktopoda() {
+        var events = new CopyOnWriteArrayList<AnnotationsSelectedEvent>();
+        toolBox.getEventBus()
+                .toObserverable()
+                .ofType(AnnotationsSelectedEvent.class)
+                .filter(evt -> evt.getEventSource() == Constants.LOCALIZATION_EVENT_SOURCE)
+                .subscribe(events::add);
+        return events;
+    }
+
+    /**
+     * mbari-org/vars-feedback#347: seeking to an annotation with a localization deselected it in VARS
+     * because Sharktopoda reports an empty selection after it seeks.
+     */
+    @Test
+    public void emptySelectionAfterSeekDoesNotDeselectInVars() {
+        var forwarded = captureSelectionsFromSharktopoda();
+
+        sharktopodaState.seekRequested();
+        clock.addAndGet(Duration.ofMillis(50).toNanos());
+        sharktopodaSelects(List.of());
+
+        assertEquals(List.of(), forwarded,
+                "The empty selection Sharktopoda sends after a seek cleared the selection in VARS");
+    }
+
+    @Test
+    public void emptySelectionWithoutSeekDeselectsInVars() {
+        var forwarded = captureSelectionsFromSharktopoda();
+
+        sharktopodaSelects(List.of());
+
+        assertEquals(1, forwarded.size(), "Deselecting in Sharktopoda did not deselect in VARS");
+        assertTrue(forwarded.get(0).get().isEmpty());
+    }
+
+    @Test
+    public void emptySelectionAfterSeekGracePeriodDeselectsInVars() {
+        var forwarded = captureSelectionsFromSharktopoda();
+
+        sharktopodaState.seekRequested();
+        clock.addAndGet(SharktopodaState.SEEK_GRACE_PERIOD.plusMillis(1).toNanos());
+        sharktopodaSelects(List.of());
+
+        assertEquals(1, forwarded.size(), "Deselecting in Sharktopoda long after a seek did not deselect in VARS");
+    }
+
+    /**
+     * After the ignored empty selection, Sharktopoda has nothing selected. Selecting the annotation in
+     * VARS again must be sent, not suppressed as "already selected in Sharktopoda".
+     */
+    @Test
+    public void reselectingInVarsAfterSeekIsSentToSharktopoda() {
+        toolBox.getEventBus().send(new AnnotationsSelectedEvent(new Object(), List.of(annotation)));
+        assertEquals(1, selectsSentToSharktopoda.size());
+
+        sharktopodaState.seekRequested();
+        sharktopodaSelects(List.of());
+        toolBox.getEventBus().send(new AnnotationsSelectedEvent(new Object(), List.of(annotation)));
+
+        assertEquals(2, selectsSentToSharktopoda.size(),
+                "Re-selecting in VARS after a seek was not sent to Sharktopoda");
+    }
+
+    /** A real selection made in Sharktopoda right after a seek must still reach VARS */
+    @Test
+    public void nonEmptySelectionAfterSeekIsForwardedToVars() {
+        var forwarded = captureSelectionsFromSharktopoda();
+
+        sharktopodaState.seekRequested();
+        sharktopodaSelects(List.of(box1.getUuid()));
+
+        assertEquals(1, forwarded.size());
+        assertEquals(List.of(annotation), List.copyOf(forwarded.get(0).get()));
+    }
+
+    // -- Seek to annotation: re-select its localizations, which Sharktopoda's seek clears --------
+
+    /** Data's selection is updated on the FX thread; wait until it has been applied */
+    private void selectInVars(List<Annotation> annotations) {
+        toolBox.getData().setSelectedAnnotations(annotations);
+        var latch = new CountDownLatch(1);
+        Platform.runLater(latch::countDown);
+        try {
+            assertTrue(latch.await(5, TimeUnit.SECONDS), "FX thread did not apply the selection");
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            fail(e);
+        }
+    }
+
+    @Test
+    public void seekToSelectedAnnotationReselectsItsLocalizations() {
+        selectInVars(List.of(annotation));
+
+        toolBox.getEventBus().send(new SeekedToAnnotationMsg(annotation));
+
+        assertEquals(1, selectsSentToSharktopoda.size(),
+                "The localizations of the annotation seeked to were not re-selected in Sharktopoda");
+        var selectedUuids = new HashSet<>(selectsSentToSharktopoda.get(0).getValue().getLocalizations());
+        assertEquals(Set.of(box1.getUuid(), box2.getUuid()), selectedUuids);
+    }
+
+    /** Highlighting an annotation that isn't selected in VARS would make the two apps disagree */
+    @Test
+    public void seekToUnselectedAnnotationDoesNotSelectInSharktopoda() {
+        selectInVars(List.of());
+
+        toolBox.getEventBus().send(new SeekedToAnnotationMsg(annotation));
+
+        assertEquals(List.of(), selectsSentToSharktopoda);
+    }
+
+    @Test
+    public void seekToAnnotationWithoutLocalizationsDoesNotSelectInSharktopoda() {
+        var plain = new Annotation("Aegina", "brian",
+                new VideoIndex(Duration.ofSeconds(2)),
+                media.getVideoReferenceUuid());
+        plain.setObservationUuid(UUID.randomUUID());
+        toolBox.getData().getAnnotations().add(plain);
+        selectInVars(List.of(plain));
+
+        toolBox.getEventBus().send(new SeekedToAnnotationMsg(plain));
+
+        assertEquals(List.of(), selectsSentToSharktopoda);
+    }
+
+    /** Annotations from concurrent videos can be seeked to, but Sharktopoda doesn't have their boxes */
+    @Test
+    public void seekToAnnotationOnAnotherVideoDoesNotSelectInSharktopoda() {
+        var concurrent = new Annotation("Nanomia bijuga", "brian",
+                new VideoIndex(Duration.ofSeconds(1)),
+                UUID.randomUUID());
+        concurrent.setObservationUuid(UUID.randomUUID());
+        concurrent.setAssociations(List.of(boundingBoxAssociation()));
+        selectInVars(List.of(concurrent));
+
+        toolBox.getEventBus().send(new SeekedToAnnotationMsg(concurrent));
+
+        assertEquals(List.of(), selectsSentToSharktopoda);
+    }
+
+    @Test
+    public void seekMsgToAnnotationCarriesTheAnnotation() {
+        var seeks = new CopyOnWriteArrayList<SeekMsg<?>>();
+        var disposable = toolBox.getEventBus()
+                .toObserverable()
+                .ofType(SeekMsg.class)
+                .subscribe(seeks::add);
+        SeekMsg.seek(media, annotation, toolBox.getEventBus());
+        disposable.dispose();
+
+        assertEquals(1, seeks.size());
+        assertSame(annotation, seeks.get(0).getAnnotation().orElse(null));
     }
 }

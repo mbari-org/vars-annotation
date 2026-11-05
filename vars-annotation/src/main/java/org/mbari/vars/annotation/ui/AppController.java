@@ -204,11 +204,14 @@ public class AppController {
     private void seek(SeekMsg<?> msg) {
         Object idx = msg.getIndex();
         MediaPlayer<? extends VideoState, ? extends VideoError> mediaPlayer = toolBox.getMediaPlayer();
+        boolean seeked = false;
         if (idx instanceof Timecode) {
             mediaPlayer.seek((Timecode) idx);
+            seeked = true;
         }
         else if (idx instanceof Duration) {
             mediaPlayer.seek((Duration) idx);
+            seeked = true;
         }
         else if (idx instanceof Instant) {
             Media media = toolBox.getData().getMedia();
@@ -218,8 +221,15 @@ public class AppController {
                     Instant time = (Instant) idx;
                     Duration elapsedTime = Duration.between(startTime, time);
                     mediaPlayer.seek(elapsedTime);
+                    seeked = true;
                 }
             }
+        }
+        // Published after the seek so follow-ups (e.g. Sharktopoda re-selecting the annotation's
+        // localizations, which its seek clears) reach the player after the seek command.
+        if (seeked) {
+            msg.getAnnotation()
+                    .ifPresent(annotation -> toolBox.getEventBus().send(new SeekedToAnnotationMsg(annotation)));
         }
     }
 
