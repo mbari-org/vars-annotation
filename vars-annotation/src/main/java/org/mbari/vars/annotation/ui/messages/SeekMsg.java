@@ -4,6 +4,8 @@ import org.mbari.vars.annotation.etc.rxjava.EventBus;
 import org.mbari.vars.annosaurus.sdk.r1.models.Annotation;
 import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 
+import java.util.Optional;
+
 /**
  * @author Brian Schlining
  * @since 2017-06-02T11:49:00
@@ -11,13 +13,31 @@ import org.mbari.vars.vampiresquid.sdk.r1.models.Media;
 public class SeekMsg<T> {
 
     private final T index;
+    private final Annotation annotation;
 
     public SeekMsg(T index) {
+        this(index, null);
+    }
+
+    /**
+     * @param index The index to seek to
+     * @param annotation The annotation being seeked to, or null if the seek isn't to an annotation
+     */
+    public SeekMsg(T index, Annotation annotation) {
         this.index = index;
+        this.annotation = annotation;
     }
 
     public T getIndex() {
         return index;
+    }
+
+    /**
+     * @return The annotation being seeked to. Empty when the seek isn't to an annotation
+     *  (e.g. seeking to a video index)
+     */
+    public Optional<Annotation> getAnnotation() {
+        return Optional.ofNullable(annotation);
     }
 
     /**
@@ -37,9 +57,9 @@ public class SeekMsg<T> {
 //                    eventBus.send(new SeekMsg<>(annotation.getTimecode()));
 //                } else
                 if (annotation.getElapsedTime() != null) {
-                    eventBus.send(new SeekMsg<>(annotation.getElapsedTime()));
+                    eventBus.send(new SeekMsg<>(annotation.getElapsedTime(), annotation));
                 } else if (annotation.getRecordedTimestamp() != null) {
-                    eventBus.send(new SeekMsg<>(annotation.getRecordedTimestamp()));
+                    eventBus.send(new SeekMsg<>(annotation.getRecordedTimestamp(), annotation));
                 }
             }
             else {
@@ -47,10 +67,10 @@ public class SeekMsg<T> {
                 // Otherwise fall back to elasped time (although this could jump
                 // to wrong point if video files have different start times)
                 if (annotation.getRecordedTimestamp() != null) {
-                    eventBus.send(new SeekMsg<>(annotation.getRecordedTimestamp()));
+                    eventBus.send(new SeekMsg<>(annotation.getRecordedTimestamp(), annotation));
                 }
                 else if (annotation.getElapsedTime() != null) {
-                    eventBus.send(new SeekMsg<>(annotation.getElapsedTime()));
+                    eventBus.send(new SeekMsg<>(annotation.getElapsedTime(), annotation));
                 }
             }
         }

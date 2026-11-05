@@ -14,13 +14,13 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
     id("org.openjfx.javafxplugin") version "0.1.0"
-    id("io.github.ben-manes.versions") version "0.64.0"
+    id("io.github.ben-manes.versions") version "0.67.0"
     id("com.adarshr.test-logger") version "4.0.0"
-    id("org.beryx.jlink") version "4.1.1"
+    id("org.beryx.jlink") version "4.2.0"
     id("org.gradlex.extra-java-module-info") version "1.14.2"
 }
 
-version = "2.6.0"
+version = "2.6.1"
 
 java {
     toolchain {
@@ -29,7 +29,7 @@ java {
 }
 
 javafx {
-    version = "27"
+    version = "27.0.1"
     modules("javafx.base", "javafx.controls", "javafx.fxml", "javafx.graphics", "javafx.media", "javafx.swing")
 }
 
@@ -58,18 +58,18 @@ configurations.all {
 
 // Define versions in variables to avoid hardcoding them in multiple places and to make it easier to update them.
 val annosaurusSdkVersion = "0.1.0"
-val caffeineVersion = "3.3.0"
+val caffeineVersion = "3.3.1"
 val configVersion = "1.4.9"
-val controlsFxVersion = "11.2.5"
-val gsonVersion = "2.14.0"
+val controlsFxVersion = "11.2.6"
+val gsonVersion = "2.15.0"
 // Do NOT upgrade ikonli version without also upgrading imgfx version, otherwise icons won't render in the app.
 val ikonliVersion = "12.4.0"
-val imgfxVersion = "0.0.19"
+val imgfxVersion = "0.0.20"
 val jeromqVersion = "0.6.0"
-val logbackVersion = "1.6.4"
+val logbackVersion = "1.6.6"
 val mbariCommonsVersion = "0.0.8"
 val methanolVersion = "1.9.0"
-val okhttpLoggingInterceptorVersion = "3.14.4"
+val okhttpLoggingInterceptorVersion = "3.14.9"
 val oniSdkVersion = "0.0.12"
 val razielSdkVersion = "0.0.8"
 val slf4jVersion = "2.0.20"

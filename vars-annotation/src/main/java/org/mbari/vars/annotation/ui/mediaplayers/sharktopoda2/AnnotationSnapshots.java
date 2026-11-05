@@ -6,6 +6,7 @@ import org.mbari.vars.annotation.etc.jdk.Loggers;
 import org.mbari.vars.annotation.ui.UIToolBox;
 
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -27,13 +28,24 @@ class AnnotationSnapshots {
 
     static List<Annotation> snapshot(UIToolBox toolBox) {
         var data = toolBox.getData();
+        return copyOnFxThread(data::getAnnotations);
+    }
+
+    /** @return A copy of the annotations currently selected in VARS (also FX-thread owned) */
+    static List<Annotation> selected(UIToolBox toolBox) {
+        var data = toolBox.getData();
+        return copyOnFxThread(data::getSelectedAnnotations);
+    }
+
+    /** @param list Fetches the list. Only invoked on the FX thread, so Data is never touched off it */
+    private static List<Annotation> copyOnFxThread(Supplier<List<Annotation>> list) {
         if (Platform.isFxApplicationThread()) {
-            return List.copyOf(data.getAnnotations());
+            return List.copyOf(list.get());
         }
         var future = new CompletableFuture<List<Annotation>>();
         Platform.runLater(() -> {
             try {
-                future.complete(List.copyOf(data.getAnnotations()));
+                future.complete(List.copyOf(list.get()));
             }
             catch (Throwable t) {
                 future.completeExceptionally(t);

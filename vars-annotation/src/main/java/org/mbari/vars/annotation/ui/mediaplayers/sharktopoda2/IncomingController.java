@@ -140,6 +140,15 @@ public class IncomingController {
             log.atInfo().log("An attempt was made to update a localization, but no media is currently open");
             return;
         }
+        // Sharktopoda clears its localization selection whenever it seeks and reports that as an
+        // empty selection. When VARS requested the seek (e.g. 'seek to annotation') that is not the
+        // user deselecting, so keep VARS' selection. Sharktopoda really has nothing selected now,
+        // though, so record that; a later selection made in VARS will then be sent to it.
+        if (selected.isEmpty() && sharktopodaState.isWithinSeekGracePeriod()) {
+            log.atDebug().log("Ignoring empty selection from Sharktopoda; it follows a seek requested by VARS");
+            sharktopodaState.setSelectedLocalizations(List.of());
+            return;
+        }
         var matches = searchByUuid(selected);
         var matchingLocalizationUuids = matches.stream()
                 .map(lp -> lp.localization().getUuid())

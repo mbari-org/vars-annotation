@@ -21,7 +21,10 @@ import org.mbari.vcr4j.remote.control.RemoteControl;
 import org.mbari.vcr4j.remote.control.commands.CloseCmd;
 import org.mbari.vcr4j.remote.control.commands.OpenCmd;
 import org.mbari.vcr4j.remote.control.commands.OpenDoneCmd;
+import org.mbari.vcr4j.time.Timecode;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -98,14 +101,35 @@ public class MediaControlsFactoryImpl implements MediaControlsFactory {
                 final var rc = remoteControl;
                 final var out = outgoingController;
                 final var in = incomingController;
-                return new MediaPlayer<>(media, imageCaptureService, io,
+                // Every seek (seek-to-annotation, the scrubber, ...) goes through these methods.
+                // Mark it before the command is sent so IncomingController can tell the empty
+                // selection Sharktopoda reports after seeking apart from a user deselect.
+                return new MediaPlayer<RState, RError>(media, imageCaptureService, io,
                         () -> {
                             sendClose(io, media.getVideoReferenceUuid());
                             rc.close();
                             in.close();
                             out.close();
                             sharktopodaState.setSelectedLocalizations(null);
-                        });
+                        }) {
+                    @Override
+                    public void seek(Duration elapsedTime) {
+                        sharktopodaState.seekRequested();
+                        super.seek(elapsedTime);
+                    }
+
+                    @Override
+                    public void seek(Instant timestamp) {
+                        sharktopodaState.seekRequested();
+                        super.seek(timestamp);
+                    }
+
+                    @Override
+                    public void seek(Timecode timecode) {
+                        sharktopodaState.seekRequested();
+                        super.seek(timecode);
+                    }
+                };
             }
             catch (Exception e) {
                 // Release the local UDP port and event bus subscriptions. A leaked
