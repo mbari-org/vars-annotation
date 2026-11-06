@@ -137,6 +137,7 @@ public class MachineLearningStageController {
                 var msg = ShowNonfatalErrorAlert.from("ml.controller.analyze.error", e, i18n);
                 toolBox.getEventBus().send(msg);
             }
+        }
     }
 
     private void display(long requestId, MLImageInference mlImageInference, Image fxImage) {
