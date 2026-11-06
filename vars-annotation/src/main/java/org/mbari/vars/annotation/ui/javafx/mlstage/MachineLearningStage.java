@@ -179,7 +179,7 @@ public class MachineLearningStage extends Stage {
         localizations.clear();
         editors.clear();
         localizations.addAll(locs);
-        localizations.sort(Comparator.comparing(Localization::getLabel));
+        localizations.sort(Comparator.comparing(Localization::getLabel, Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
         localizations.forEach(loc -> {
             var editor = new LocalizationEditorController(toolBox, loc);
             editors.add(editor);
