@@ -378,12 +378,20 @@ jlink {
     }
 
     jpackage {
-        val customInstallerOptions = arrayListOf(
-            "--app-version", packageVersion,
+        // The plugin passes --app-version to both the image and installer steps, defaulting
+        // to project.version (e.g. "2.6.1-12-gb2ba2d39"), which jpackage rejects. Use the
+        // numeric x.y.z instead. Don't also add --app-version to installerOptions.
+        appVersion = packageVersion
+
+        // Like --app-version, options in installerOptions never reach the image step, which
+        // writes the app's own metadata (e.g. Info.plist on macOS). So pass these to both.
+        val appMetadataOptions = listOf(
             "--copyright", "Monterey Bay Aquarium Research Institute $copyrightYear",
-            "--name", "VARS Annotation",
             "--vendor", "org.mbari"
         )
+
+        val customInstallerOptions = arrayListOf("--name", "VARS Annotation")
+        customInstallerOptions.addAll(appMetadataOptions)
 
         if (platform == "mac") {
             installerType = "dmg"
@@ -391,7 +399,7 @@ jlink {
                 "--mac-package-name", "VARS Annotation",
                 "--mac-package-identifier", project.name.toString()
             ))
-            imageOptions = listOf("--icon", "src/jpackage/macos/VARS Annotation.icns")
+            imageOptions = appMetadataOptions + listOf("--icon", "src/jpackage/macos/VARS Annotation.icns")
         }
         else if (platform == "linux") {
             installerType = "deb"
@@ -399,7 +407,7 @@ jlink {
                 "--linux-shortcut", "true",
                 "--linux-menu-group", "VARS"
             ))
-            imageOptions = listOf("--icon", "src/jpackage/linux/icon_256x256.png")
+            imageOptions = appMetadataOptions + listOf("--icon", "src/jpackage/linux/icon_256x256.png")
         }
         else if (platform == "win") {
             installerType = "msi"
@@ -408,7 +416,7 @@ jlink {
                 "--win-menu-group", "VARS",
                 "--win-menu"
             ))
-            imageOptions = listOf("--icon", "src/jpackage/win/icon_256x256.ico")
+            imageOptions = appMetadataOptions + listOf("--icon", "src/jpackage/win/icon_256x256.ico")
         }
         installerOptions = customInstallerOptions
     }
