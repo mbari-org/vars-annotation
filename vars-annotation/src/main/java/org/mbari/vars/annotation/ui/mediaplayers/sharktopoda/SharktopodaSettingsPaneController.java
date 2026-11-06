@@ -7,10 +7,8 @@ import java.util.function.UnaryOperator;
 import java.util.prefs.Preferences;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
 import org.mbari.vars.annotation.AppConfig;
@@ -39,22 +37,19 @@ public class SharktopodaSettingsPaneController implements IPrefs {
     private TextField timeoutTextField;
 
     @FXML
-    private RadioButton v1RadioButton;
-
-    @FXML
-    private RadioButton v2RadioButton;
-
-
-    char a = 'b';
-
-    @FXML
     private GridPane root;
 
     private Preferences prefs = Preferences.userNodeForPackage(getClass());
     public static final String CONTROL_PORT_KEY = "sharktopoda-control-port";
     public static final String FRAMEGRAB_PORT_KEY = "sharktopoda-framegrab-port";
     public static final String TIME_JUMP = "sharktopoda-time-jump";
-    public static final String SHARKTOPODA_VERSION = "sharktopoda-version";
+    /**
+     * The Sharktopoda version is no longer user-selectable. This was the preference key it used
+     * to be stored under; it's removed on save so a stale value can't be picked up later.
+     */
+    private static final String LEGACY_SHARKTOPODA_VERSION = "sharktopoda-version";
+    /** Only Sharktopoda 2 is supported. Version 1 has been retired. */
+    public static final int SHARKTOPODA_VERSION = 2;
     public static final Integer DEFAULT_TIME_JUMP = 1000;
     public static final String FRAMECAPTURE_TIMEOUT = "sharktopoda-framecapture-timeout";
     public static final Integer DEFAULT_FRAMECAPTURE_TIMEOUT_SECONDS = 10;
@@ -87,12 +82,6 @@ public class SharktopodaSettingsPaneController implements IPrefs {
             return null;
         };
         timeoutTextField.setTextFormatter(new TextFormatter<>(timeoutFilter));
-
-        final ToggleGroup group = new ToggleGroup();
-        v1RadioButton.setToggleGroup(group);
-        v2RadioButton.setToggleGroup(group);
-
-        v1RadioButton.setDisable(true);
 
         load();
     }
@@ -141,14 +130,13 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         }
     }
 
+    /**
+     * @return Always {@link #SHARKTOPODA_VERSION} (2). Version 1 is no longer supported, so this is
+     *      no longer a user setting. Previously this defaulted to 1 when nothing was saved, which
+     *      kept Sharktopoda 2 from opening videos until the user changed the setting.
+     */
     public static Integer getSharktopodaVersion() {
-        Preferences prefs = Preferences.userNodeForPackage(SharktopodaSettingsPaneController.class);
-        try {
-            return prefs.getInt(SHARKTOPODA_VERSION, 1);
-        }
-        catch (Exception e) {
-            return 1;
-        }
+        return SHARKTOPODA_VERSION;
     }
 
     public static SharktopodaSettingsPaneController newInstance() {
@@ -175,13 +163,6 @@ public class SharktopodaSettingsPaneController implements IPrefs {
         framegrabPortTextField.setText(fgPort + "");
         timeJumpTextField.setText(timeJump + "");
         timeoutTextField.setText(getFramecaptureTimeout().toSeconds() + "");
-
-        int sharkVersion = prefs.getInt(SHARKTOPODA_VERSION, 1);
-        if (sharkVersion == 2) {
-            v2RadioButton.setSelected(true);
-        } else {
-            v1RadioButton.setSelected(true);
-        }
     }
 
     @Override
@@ -231,8 +212,7 @@ public class SharktopodaSettingsPaneController implements IPrefs {
             prefs.putInt(FRAMECAPTURE_TIMEOUT, timeout);
         }
 
-        var version = v2RadioButton.isSelected() ? 2 : 1;
-        prefs.putInt(SHARKTOPODA_VERSION, version);
+        prefs.remove(LEGACY_SHARKTOPODA_VERSION);
 
 
         // Raziel sends a ReloadServicesMsg which close the open media

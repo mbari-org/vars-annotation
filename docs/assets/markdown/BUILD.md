@@ -72,6 +72,22 @@ export MAC_CODE_SIGNER="Developer ID Application: Your Name (1AB2C345V6)"
 3. Run `./gradlew clean jpackage`
 4. The built package will be found in `vars-annotation/build/jpackage`. The app is packaged for whatever OS you run the build on, and includes its own bundled JVM so it can be distributed without requiring users to install Java.
 
+## Versioning and releases
+
+The version comes from the most recent git tag; there is no version number to edit in the build files. To make a release:
+
+```bash
+git tag 2.7.0
+git push origin 2.7.0
+./gradlew clean jpackage
+```
+
+- **Tagged builds** show the tag, for example `2.7.0`, on the splash screen and in the log.
+- **Builds after a tag** show the number of commits since the tag and the commit, for example `2.7.0-3-g1a2b3c4d`. Uncommitted changes add `-dirty`.
+- **The installer version** (`jpackage --app-version`) is always the numeric `x.y.z` part, because macOS and Windows installers only accept numbers.
+- **The copyright year** on the installer and splash screen is the year of the commit being built.
+- **Building without git history**, for example from a source download or a shallow clone without tags, falls back to `0.0.0-SNAPSHOT`. Pass the version explicitly instead: `./gradlew clean jpackage -PappVersion=2.7.0`.
+
 ## Useful commands
 
 Show application dependencies:

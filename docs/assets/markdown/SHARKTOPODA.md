@@ -29,8 +29,7 @@ Launch Sharktopoda, go to **Sharktopoda > Settings**, and select **Network**. Se
 2. Open **Settings** (gear icon on the toolbar)
 3. Select the **Sharktopoda** tab
 4. Set the **Sharktopoda port** to match the value you set in Sharktopoda (e.g. `8800`)
-5. Set **Version** to **2**. Version 1 is the legacy Sharktopoda and does not support localizations
-6. The **Framecapture port** and other settings can be left at their default values
+5. The **Framecapture port** and other settings can be left at their default values
 
 ![VARS Settings](../images/SharktopodaDialogPort.png)
 

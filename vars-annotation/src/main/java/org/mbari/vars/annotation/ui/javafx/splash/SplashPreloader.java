@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.mbari.vars.annotation.AppVersion;
 
 /**
  * Splash screen shown while the application starts up.
@@ -50,13 +51,25 @@ public class SplashPreloader extends Preloader {
         var titleLabel = new Label("VARS Annotation");
         titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: " + TEXT + ";");
 
+        var versionLabel = new Label("Version " + AppVersion.version());
+        versionLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: " + TEXT + ";");
+
+        // Title and version read as one block, so keep them tight together
+        var titleBox = new VBox(2, titleLabel, versionLabel);
+        titleBox.setAlignment(Pos.CENTER);
+
         var progressBar = new ProgressBar(ProgressBar.INDETERMINATE_PROGRESS);
         progressBar.setPrefWidth(260);
 
         statusLabel = new Label(" ");
         statusLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: " + TEXT + ";");
 
-        var root = new VBox(16, imageView, titleLabel, progressBar, statusLabel);
+        var root = new VBox(16, imageView, titleBox, progressBar, statusLabel);
+        AppVersion.copyrightYear().ifPresent(year -> {
+            var copyrightLabel = new Label("© " + year + " Monterey Bay Aquarium Research Institute");
+            copyrightLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: " + TEXT + "; -fx-opacity: 0.7;");
+            root.getChildren().add(copyrightLabel);
+        });
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(30, 40, 30, 40));
         root.setStyle("-fx-background-color: " + BACKGROUND + ";");

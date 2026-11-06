@@ -9,6 +9,7 @@
 
 import java.nio.file.FileSystems
 import java.nio.file.Files
+import java.time.Year
 
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
@@ -20,7 +21,29 @@ plugins {
     id("org.gradlex.extra-java-module-info") version "1.14.2"
 }
 
-version = "2.6.1"
+// --- Version comes from the most recent git tag (e.g. "2.6.1"). To release: tag, push, build.
+//     Between tags this is e.g. "2.6.1-11-g64533ef8"; uncommitted changes add "-dirty".
+//     Override with -PappVersion=x.y.z when building without git (e.g. from a source download).
+fun gitOutput(vararg args: String): String = runCatching {
+    providers.exec {
+        commandLine("git", *args)
+        isIgnoreExitValue = true
+    }.standardOutput.asText.get().trim()
+}.getOrDefault("")
+
+version = (findProperty("appVersion") as String?)
+    ?: gitOutput("describe", "--tags", "--dirty", "--match", "[0-9]*").ifBlank { "0.0.0-SNAPSHOT" }
+
+// Shown to users (splash, logs). Can include the commit count, hash, and -dirty.
+val displayVersion = project.version.toString()
+
+// jpackage only accepts numbers: macOS allows 1-3 integers (first > 0) and Windows MSI
+// allows major/minor <= 255 and build <= 65535. So the installer gets just "x.y.z".
+val packageVersion = Regex("""^(\d+)\.(\d+)\.(\d+)""").find(displayVersion)?.value ?: "0.0.1"
+
+// Year of the commit being built (not today's date) so rebuilding an old tag reproduces it
+val copyrightYear = gitOutput("log", "-1", "--format=%cd", "--date=format:%Y")
+    .ifBlank { Year.now().toString() }
 
 java {
     toolchain {
@@ -128,6 +151,27 @@ dependencies {
 //    implementation("ch.qos.logback:logback-classic:$logbackVersion") {
 //        exclude(group = "javax.activation")
 //    }
+}
+
+// --- Make the version available at runtime (splash screen, logs) as a resource. A resource
+//     works everywhere the app runs: `run`, tests, and the jlink merged module. A jar manifest
+//     doesn't (`run` uses build/classes, and jlink drops manifests).
+val generateVersionInfo = tasks.register("generateVersionInfo") {
+    val outDir = layout.buildDirectory.dir("generated/version")
+    val versionValue = displayVersion
+    val yearValue = copyrightYear
+    // Declared inputs make this re-run when the tag (or commit year) changes
+    inputs.property("version", versionValue)
+    inputs.property("copyrightYear", yearValue)
+    outputs.dir(outDir)
+    doLast {
+        val file = outDir.get().file("org/mbari/vars/annotation/version.properties").asFile
+        file.parentFile.mkdirs()
+        file.writeText("version=$versionValue\ncopyright.year=$yearValue\n")
+    }
+}
+sourceSets.main {
+    resources.srcDir(generateVersionInfo)
 }
 
 //tasks.withType<JavaExec>().configureEach {
@@ -335,8 +379,8 @@ jlink {
 
     jpackage {
         val customInstallerOptions = arrayListOf(
-            "--app-version", project.version.toString(),
-            "--copyright", "Monterey Bay Aquarium Research Institute 2023",
+            "--app-version", packageVersion,
+            "--copyright", "Monterey Bay Aquarium Research Institute $copyrightYear",
             "--name", "VARS Annotation",
             "--vendor", "org.mbari"
         )

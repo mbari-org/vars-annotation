@@ -35,6 +35,8 @@ public class PreferencesPaneController implements IPrefs {
 //            addTab(LocalizationSettingsPaneController.newInstance(toolBox));
             addTab(MLSettingsPaneController.newInstance());
             loadMediaControlsSettingsPanes();
+            // Last, where users conventionally look for "About"
+            addTab(new AboutPaneController(toolBox));
         }
         return root;
     }
