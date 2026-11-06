@@ -536,7 +536,23 @@ public class AppPaneController {
         if (usersComboBox == null) {
 
             usersComboBox = new ComboBox<>();
+            usersComboBox.setPromptText(toolBox.getI18nBundle().getString("apppane.toolbar.users.prompt"));
             new FilteredComboBoxDecorator<>(usersComboBox, FilteredComboBoxDecorator.CONTAINS_CHARS_IN_ORDER);
+
+            // Draw attention to the combobox until a user is set; annotations need an observer.
+            // The user is set from service callbacks (off the FX thread), so hop onto it.
+            Runnable updateAttention = () -> {
+                if (toolBox.getData().getUser() == null) {
+                    JFXUtilities.attractAttention(usersComboBox);
+                }
+                else {
+                    JFXUtilities.removeAttention(usersComboBox);
+                }
+            };
+            toolBox.getData()
+                    .userProperty()
+                    .addListener((obs, oldv, newv) -> Platform.runLater(updateAttention));
+            updateAttention.run();
             Comparator<String> sorter = Comparator.comparing(String::toString, String.CASE_INSENSITIVE_ORDER);
 
             // Listen to UserAddedEvent and add it to the combobox

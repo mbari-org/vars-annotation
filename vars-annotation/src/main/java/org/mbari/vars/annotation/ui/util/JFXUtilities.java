@@ -2,7 +2,8 @@ package org.mbari.vars.annotation.ui.util;
 
 import javafx.application.Platform;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
+import javafx.scene.control.Control;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.Dialog;
 import javafx.stage.Stage;
 
@@ -47,19 +48,66 @@ public class JFXUtilities {
         }));
     }
 
-    public static void attractAttention(Button button) {
-        button.getStyleClass().add(CSS_ATTENTION_BUTTON);
-        Node graphic = button.getGraphic();
+    /**
+     * Highlights a control (e.g. a Button or ComboBox) to indicate an action the user should
+     * take. The highlight slowly pulses while the control is visible, enabled, and not under
+     * the mouse. Safe to call repeatedly. Must be called on the JavaFX application thread.
+     *
+     * @param button The control
+     */
+    public static void attractAttention(Control button) {
+        attractAttention(button, true);
+    }
+
+    /**
+     * Highlights a control. Safe to call repeatedly. Must be called on the JavaFX application thread.
+     *
+     * @param button The control
+     * @param animate true to slowly pulse the highlight (for an action the user should take),
+     *                false for a static highlight (e.g. to mark the last button pressed)
+     */
+    public static void attractAttention(Control button, boolean animate) {
+        // Only add the classes once. Adding duplicates meant removeAttention (which removed
+        // a single copy) could leave a button highlighted.
+        addStyleClassOnce(button, CSS_ATTENTION_BUTTON);
+        Node graphic = graphicOf(button);
         if (graphic != null) {
-            graphic.getStyleClass().add(CSS_ATTENTION_ICON);
+            addStyleClassOnce(graphic, CSS_ATTENTION_ICON);
+        }
+
+        var properties = button.getProperties();
+        if (animate && !properties.containsKey(AttentionPulse.PROPERTY_KEY)) {
+            var pulse = new AttentionPulse(button);
+            properties.put(AttentionPulse.PROPERTY_KEY, pulse);
+            pulse.start();
+        }
+        else if (!animate) {
+            stopPulse(button);
         }
     }
 
-    public static void removeAttention(Button button) {
-        button.getStyleClass().remove(CSS_ATTENTION_BUTTON);
-        Node graphic = button.getGraphic();
+    public static void removeAttention(Control button) {
+        stopPulse(button);
+        button.getStyleClass().removeAll(CSS_ATTENTION_BUTTON);
+        Node graphic = graphicOf(button);
         if (graphic != null) {
-            graphic.getStyleClass().remove(CSS_ATTENTION_ICON);
+            graphic.getStyleClass().removeAll(CSS_ATTENTION_ICON);
+        }
+    }
+
+    private static Node graphicOf(Control control) {
+        return control instanceof Labeled labeled ? labeled.getGraphic() : null;
+    }
+
+    private static void stopPulse(Control button) {
+        if (button.getProperties().remove(AttentionPulse.PROPERTY_KEY) instanceof AttentionPulse pulse) {
+            pulse.stop();
+        }
+    }
+
+    private static void addStyleClassOnce(Node node, String styleClass) {
+        if (!node.getStyleClass().contains(styleClass)) {
+            node.getStyleClass().add(styleClass);
         }
     }
 

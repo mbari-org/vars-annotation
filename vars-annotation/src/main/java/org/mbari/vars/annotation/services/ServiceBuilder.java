@@ -23,7 +23,9 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ServiceBuilder {
@@ -45,28 +47,85 @@ public class ServiceBuilder {
     private final String NAME_ONI = "oni";
     private final String NAME_PANOPTES = "panoptes";
 
+    /** Used when no timeout is given. The OS connect timeout alone can be over a minute. */
+    public static final Duration DEFAULT_RAZIEL_TIMEOUT = Duration.ofSeconds(10);
+
+    private final Duration razielTimeout;
+
+    /** Raziel is only contacted once per builder, even if it fails. See loadConfigurations. */
+    private boolean configurationAttempted = false;
+    private ServiceConfigurationException configurationError;
+
     public ServiceBuilder(boolean load) {
+        this(load, DEFAULT_RAZIEL_TIMEOUT);
+    }
+
+    /**
+     * @param load true to load the service endpoints from the configuration server (Raziel),
+     *             false to read them from reference.conf
+     * @param razielTimeout How long to wait for each request to the configuration server
+     */
+    public ServiceBuilder(boolean load, Duration razielTimeout) {
         this.load = load;
+        this.razielTimeout = razielTimeout;
+    }
+
+    /**
+     * @return Why the service endpoints could not be loaded from the configuration server.
+     *      Empty if they were loaded (or have not been requested yet).
+     */
+    public synchronized Optional<ServiceConfigurationException> getConfigurationError() {
+        return Optional.ofNullable(configurationError);
     }
 
     private synchronized void loadConfigurations() {
-        if (load && endpoints.isEmpty()) {
-            try {
+        if (load) {
+            // Only try once. Every get*Service method calls this, so retrying on failure meant
+            // one full connection timeout per service before the app could start.
+            if (configurationAttempted) {
+                return;
+            }
+            configurationAttempted = true;
 
-                // raziel.txt is the text from Raziel's /config/auth/encode. We swap it for an access token.
-                var loginFile = Raziel.LoginFile.load();
-                loginFile.ifPresent(file -> {
-                    log.atInfo().log("Connecting to Raziel at " + file.url());
-                    var urlString = ServiceBuilder.adaptUrl(file.url().toString());
-                    var uri = URI.create(urlString);
-                    var client = new RazielKiotaClient(uri);
-                    var bearerAuth = client.login(file.content()).join();
-                    var services = client.endpoints(bearerAuth.accessToken()).join();
-                    endpoints.addAll(services);
-                });
+            // raziel.txt is the text from Raziel's /config/auth/encode. We swap it for an access token.
+            var loginFile = Raziel.LoginFile.load();
+            if (loginFile.isEmpty()) {
+                log.atWarn().log("No Raziel login file was found. The configuration server has not been set up.");
+                configurationError = new ServiceConfigurationException(
+                        ServiceConfigurationException.Reason.NOT_CONFIGURED,
+                        null,
+                        "No configuration server has been set up",
+                        null);
+                return;
+            }
+
+            var file = loginFile.get();
+            try {
+                log.atInfo().log("Connecting to Raziel at " + file.url());
+                var urlString = ServiceBuilder.adaptUrl(file.url().toString());
+                var uri = URI.create(urlString);
+                var client = new RazielKiotaClient(uri);
+                var timeoutMillis = razielTimeout.toMillis();
+                var bearerAuth = client.login(file.content())
+                        .orTimeout(timeoutMillis, TimeUnit.MILLISECONDS)
+                        .join();
+                var services = client.endpoints(bearerAuth.accessToken())
+                        .orTimeout(timeoutMillis, TimeUnit.MILLISECONDS)
+                        .join();
+                endpoints.addAll(services);
+                if (services.isEmpty()) {
+                    log.atWarn().log("Raziel at " + file.url() + " did not return any service endpoints");
+                    configurationError = new ServiceConfigurationException(
+                            ServiceConfigurationException.Reason.NO_SERVICES,
+                            file.url(),
+                            "The configuration server did not return any services",
+                            null);
+                }
             }
             catch (Exception e) {
-                log.atError().withCause(e).log("Failed to load Raziel connection parameters");
+                configurationError = ServiceConfigurationException.from(file.url(), e);
+                log.atError().withCause(e).log("Failed to load Raziel connection parameters (" +
+                        configurationError.getReason() + ")");
             }
         }
         else if (endpoints.isEmpty()){

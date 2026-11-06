@@ -45,6 +45,7 @@ Other defaults come from [reference.conf](https://github.com/mbari-org/vars-anno
     | `MEDIA_SERVICE_TIMEOUT` | `10 seconds` | Vampire Squid request timeout |
     | `PANOPTES_SERVICE_TIMEOUT` | `60 seconds` | Panoptes request timeout |
     | `PREFERENCES_SERVICE_TIMEOUT` | `5 seconds` | User preferences request timeout |
+    | `RAZIEL_TIMEOUT` | `10 seconds` | How long to wait for the configuration server at startup before telling the user it can't be reached |
     | `APP_DEFAULTS_GROUP` | `ROV` | Initial group for new annotations |
     | `APP_DEFAULTS_ACTIVITY` | `descend` | Initial activity for new annotations |
     | `APP_DEFAULTS_CAMERAID` | _(empty)_ | Default camera ID |
