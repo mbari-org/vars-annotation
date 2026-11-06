@@ -15,11 +15,12 @@ import org.mbari.vars.annotation.ui.services.MLAnalysisService;
 import org.mbari.vars.annotation.ui.services.MLImageInference;
 import org.mbari.vars.annotation.util.Requirements;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 
 public class MachineLearningStageController {
 
@@ -29,7 +30,13 @@ public class MachineLearningStageController {
     private ObjectProperty<MLImageInference> inference = new SimpleObjectProperty<>();
 
 
-    // TODO use Executor instead fo single thread
+    /**
+     * Incremented for each analysis request and whenever the stage is closed. A result
+     * whose generation is no longer current is discarded, so a slow ML response can't
+     * re-open the window after the user has cancelled, or overwrite a newer request.
+     */
+    private final AtomicLong generation = new AtomicLong();
+
     public MachineLearningStageController(UIToolBox toolBox) {
         this.toolBox = toolBox;
         init();
@@ -51,33 +58,17 @@ public class MachineLearningStageController {
         machineLearningStage.getSaveAllButton()
                 .setOnAction(event -> saveAll());
 
-        inference.addListener((obs, oldv, newv) -> {
-            if (newv != null) {
-                var fxImage = SwingFXUtils.toFXImage(newv.imageData().getBufferedImage(), null);
-                Platform.runLater(() -> {
-                    machineLearningStage.setImage(fxImage);
-                    // Don't add localizaitons unti the image has been set! Otherwise they will be cropped out of existence!
-                    var locView = newv.localizations()
-                            .stream()
-                            .map(v -> MLUtil.toLocalization(v, machineLearningStage.getImagePaneController()))
-                            .flatMap(Optional::stream)
-                            .toList();
-                    log.atDebug().log("Created " + locView.size() + " Localization UI objects");
-                    machineLearningStage.setLocalizations(locView);
-                    machineLearningStage.show();
-
-                });
-            } else {
-                machineLearningStage.setLocalizations(Collections.emptyList());
-                machineLearningStage.setImage(null);
-            }
+        // Covers the Cancel button and closing the window from its title bar
+        machineLearningStage.setOnHidden(evt -> {
+            generation.incrementAndGet();
+            inference.set(null);
+            machineLearningStage.setLocalizations(Collections.emptyList());
+            machineLearningStage.setImage(null);
         });
-
     }
 
     private void done() {
         machineLearningStage.hide();
-        inference.set(null);
     }
 
     private void saveAnnotations() {
@@ -112,34 +103,77 @@ public class MachineLearningStageController {
 
 
     public void analyzeAsync() {
-        Thread.ofVirtual().start(() -> {
-            try {
-                analyze();
-            } catch (Exception e) {
-                log.atWarn()
-                        .withCause(e)
-                        .log("ML analysis failed.");
-            }
+        runOnFxThread(() -> {
+            // Show the window right away so the user gets feedback while the
+            // frame capture and the remote ML request are running
+            var requestId = generation.incrementAndGet();
+            inference.set(null);
+            machineLearningStage.showLoading();
+            Thread.ofVirtual().start(() -> analyze(requestId));
         });
     }
 
-    public void analyze() throws IOException {
-        var mlRemoteUrlOpt = MLSettingsPaneController.getRemoteUrl();
+    private void analyze(long requestId) {
         try {
+            var mlRemoteUrlOpt = MLSettingsPaneController.getRemoteUrl();
             Requirements.validate(mlRemoteUrlOpt.isPresent(), "The URL for the machine learning web service was not set");
-//        var mlService = new OkHttpMegalodonService(mlRemoteUrlOpt.get());
             var mlService = new JdkPythiaService(mlRemoteUrlOpt.get());
             log.atDebug().log("[START] ML analysis");
             var mlImageInference = MLAnalysisService.analyzeCurrentElapsedTime(toolBox, mlService);
             log.atDebug().log("[END] ML analysis");
-            Platform.runLater(() -> inference.set(mlImageInference));
+            // Convert off the FX thread; large frames are expensive to copy
+            var fxImage = SwingFXUtils.toFXImage(mlImageInference.imageData().getBufferedImage(), null);
+            Platform.runLater(() -> display(requestId, mlImageInference, fxImage));
         }
         catch (Exception e) {
-            var i18n = toolBox.getI18nBundle();
-            var msg = ShowNonfatalErrorAlert.from("ml.controller.analyze.error", e, i18n);
-            toolBox.getEventBus().send(msg);
+            log.atWarn().withCause(e).log("ML analysis failed.");
+            Platform.runLater(() -> {
+                if (generation.get() == requestId) {
+                    machineLearningStage.hide();
+                }
+            });
+            if (generation.get() == requestId) {
+                var i18n = toolBox.getI18nBundle();
+                var msg = ShowNonfatalErrorAlert.from("ml.controller.analyze.error", e, i18n);
+                toolBox.getEventBus().send(msg);
+            }
         }
     }
 
+    private void display(long requestId, MLImageInference mlImageInference, Image fxImage) {
+        if (generation.get() != requestId) {
+            log.atDebug().log("Discarding stale ML result");
+            return;
+        }
+        try {
+            inference.set(mlImageInference);
+            machineLearningStage.setImage(fxImage);
+            // Don't add localizations until the image has been set! Otherwise they will be cropped out of existence!
+            var locView = mlImageInference.localizations()
+                    .stream()
+                    .map(v -> MLUtil.toLocalization(v, machineLearningStage.getImagePaneController()))
+                    .flatMap(Optional::stream)
+                    .toList();
+            log.atDebug().log("Created " + locView.size() + " Localization UI objects");
+            machineLearningStage.setLocalizations(locView);
+            machineLearningStage.showResults();
+        }
+        catch (Exception e) {
+            // Never leave the window open in a half-rendered state
+            log.atWarn().withCause(e).log("Failed to display ML results.");
+            machineLearningStage.hide();
+            var i18n = toolBox.getI18nBundle();
+            toolBox.getEventBus().send(ShowNonfatalErrorAlert.from("ml.controller.analyze.error", e, i18n));
+        }
+    }
+
+    private static void runOnFxThread(Runnable runnable) {
+        if (Platform.isFxApplicationThread()) {
+            runnable.run();
+        }
+        else {
+            Platform.runLater(runnable);
+        }
+    }
 
 }
