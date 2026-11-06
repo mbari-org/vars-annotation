@@ -45,7 +45,7 @@ public class MLUtil {
     /**
      * Some concepts hash to dark colors that are unreadable as text on a dark background.
      * This blends the color toward white (keeping its hue) until it reaches the WCAG AA
-     * contrast ratio for text (4.5:1) against the background.
+     * contrast ratio for text (4.5:1) against the background, or until a maximum number of blend steps is reached.
      */
     public static Color readableOn(Color color, Color background) {
         var readable = color;
