@@ -31,7 +31,8 @@ public class ConceptButtonPaneWithHighlightController extends ConceptButtonPaneC
 
         lastButtonPressed = (Button) event.getSource();
         if (lastButtonPressed != null) {
-            JFXUtilities.attractAttention(lastButtonPressed);
+            // Static highlight: this marks the last concept used, it isn't asking for an action
+            JFXUtilities.attractAttention(lastButtonPressed, false);
         }
     };
 

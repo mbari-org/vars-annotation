@@ -12,11 +12,14 @@ import org.mbari.vars.vampiresquid.sdk.r1.NoopMediaService;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 public class VarsServiceFactory implements ServiceFactory {
 
     private static final String CONFIG_KEY = "concept.service.template.filters";
+    private static final String RAZIEL_TIMEOUT_KEY = "raziel.timeout";
     private final Config config;
+    private ServiceBuilder serviceBuilder;
 
     /**
      * This is the root config note. Typically loaded via Initializer.getConfig(). Should contain the configuration key
@@ -33,7 +36,10 @@ public class VarsServiceFactory implements ServiceFactory {
 
         var defaultTimeout = Duration.ofSeconds(20);
         // Fetch info from Raziel and build services
-        var serviceBuilder = new ServiceBuilder(true);
+        var razielTimeout = config.hasPath(RAZIEL_TIMEOUT_KEY)
+                ? config.getDuration(RAZIEL_TIMEOUT_KEY)
+                : ServiceBuilder.DEFAULT_RAZIEL_TIMEOUT;
+        serviceBuilder = new ServiceBuilder(true, razielTimeout);
         var annosaurusClient = serviceBuilder.getAnnotationService();
         var oniClient = serviceBuilder.getConceptService();
         // Cache media lookups. AppController clears this cache on ReloadServicesMsg.
@@ -57,6 +63,15 @@ public class VarsServiceFactory implements ServiceFactory {
                 cachedPreferencesService,
                 preferencesFactory);
 
+    }
+
+    /**
+     * @return Why the most recent call to {@link #newServices()} could not get the service
+     *      endpoints from the configuration server. When present, the services returned
+     *      by newServices() are no-op fallbacks.
+     */
+    public Optional<ServiceConfigurationException> getConfigurationError() {
+        return serviceBuilder == null ? Optional.empty() : serviceBuilder.getConfigurationError();
     }
 
     public static Services noop() {

@@ -4,6 +4,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.mbari.vars.annotation.etc.jdk.crypto.AES;
 import org.mbari.vars.annotation.etc.rxjava.EventBus;
+import org.mbari.vars.annotation.services.ServiceConfigurationException;
 import org.mbari.vars.annotation.services.Services;
 import org.mbari.vars.annotation.services.VarsServiceFactory;
 import org.mbari.vars.annotation.ui.mediaplayers.sharktopoda.SharktopodaSettingsPaneController;
@@ -34,6 +35,8 @@ public class Initializer {
     private static UIToolBox toolBox;
 
     private static Config config;
+    /** Set by loadServices(). Volatile because Settings reloads services from another thread. */
+    private static volatile ServiceConfigurationException serviceConfigurationError;
 
 
     /**
@@ -60,7 +63,17 @@ public class Initializer {
 
     public static Services loadServices() {
         var serviceFactory = new VarsServiceFactory(getConfig());
-        return serviceFactory.newServices();
+        var services = serviceFactory.newServices();
+        serviceConfigurationError = serviceFactory.getConfigurationError().orElse(null);
+        return services;
+    }
+
+    /**
+     * @return Why the most recent {@link #loadServices()} could not get the service endpoints
+     *      from the configuration server. When present, VARS is running with no-op services.
+     */
+    public static Optional<ServiceConfigurationException> getServiceConfigurationError() {
+        return Optional.ofNullable(serviceConfigurationError);
     }
 
 

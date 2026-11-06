@@ -68,6 +68,7 @@ module org.mbari.vars.annotation {
     opens org.mbari.vars.annotation.ui.javafx.rectlabel to javafx.fxml;
     opens org.mbari.vars.annotation.ui.javafx.roweditor to javafx.fxml;
     opens org.mbari.vars.annotation.ui.javafx.shared to javafx.fxml;
+    opens org.mbari.vars.annotation.ui.javafx.splash to javafx.graphics;
     opens org.mbari.vars.annotation.ui.javafx.userdialog to javafx.fxml;
     opens org.mbari.vars.annotation.ui.mediaplayers.macos.bm to javafx.fxml;
     opens org.mbari.vars.annotation.ui.mediaplayers.sharktopoda to javafx.fxml;

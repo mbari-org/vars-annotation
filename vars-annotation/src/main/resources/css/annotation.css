@@ -403,6 +403,21 @@
 .attention-icon {
   -fx-fill: -default-color;
 }
+/* A ComboBox paints its display cell over its own background, which would hide the
+   attention color. '>' limits these to the combo's own cell and arrow, not the popup list. */
+.combo-box.attention-button {
+  -fx-background-radius: 20;
+}
+.combo-box.attention-button > .list-cell {
+  -fx-background-color: transparent;
+  -fx-text-fill: -default-color;
+}
+.combo-box.attention-button > .arrow-button {
+  -fx-background-color: transparent;
+}
+.combo-box.attention-button > .arrow-button > .arrow {
+  -fx-background-color: -default-color;
+}
 
 .ok-button:hover {
   /*-fx-text-fill: -accept-color;*/
