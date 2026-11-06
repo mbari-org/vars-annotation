@@ -233,7 +233,8 @@ public class App extends Application {
             System.out.println("Global log level set to: " + rootLogger.getLevel());
         }
 
-        new Loggers(App.class).info("Starting VARS Annotation");
+        // Include the version so logs sent in by users identify the exact build
+        new Loggers(App.class).info("Starting VARS Annotation " + AppVersion.version());
 
         // Create directory to write logs to
         var varsDir = Initializer.getSettingsDirectory();

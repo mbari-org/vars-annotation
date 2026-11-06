@@ -36,7 +36,7 @@ VARS communicates with external video players using [UDP](https://en.wikipedia.o
 
 ### VARS port setting
 
-In VARS, open **Settings** and select the **Sharktopoda** tab. Set the **Sharktopoda port** and set **Version** to **2**.
+In VARS, open **Settings** and select the **Sharktopoda** tab. Set the **Sharktopoda port**.
 
 ![Sharktopoda port setting in VARS](assets/images/SharktopodaDialogPort.png)
 
