@@ -36,19 +36,21 @@ VARS communicates with external video players using [UDP](https://en.wikipedia.o
 
 ### VARS port setting
 
+In VARS, open **Settings** and select the **Sharktopoda** tab. Set the **Sharktopoda port** and set **Version** to **2**.
+
 ![Sharktopoda port setting in VARS](assets/images/SharktopodaDialogPort.png)
 
 ### Sharktopoda port setting
 
-In Sharktopoda, open __Sharktopoda > Preferences__:
+In Sharktopoda, open **Sharktopoda > Settings**, select **Network**, and set **Server Port** to the same value:
 
-![Sharktopoda 2 Network Preferences](assets/images/Sharktopoda2NetworkPrefs.png)
+![Sharktopoda 2 Network Settings](assets/images/Sharktopoda2NetworkPrefs.png)
 
 ### Sharktopoda annotation settings
 
 If you are working with localizations (bounding boxes drawn directly on video), check these settings in Sharktopoda:
 
-![Sharktopoda 2 Annotation Preferences](assets/images/Sharktopoda2AnnotationPrefs.png)
+![Sharktopoda 2 Annotation Settings](assets/images/Sharktopoda2AnnotationPrefs.png)
 
 ## Machine Learning Configuration
 
@@ -68,8 +70,8 @@ The ML window displays the captured frame along with the proposed annotations:
 
 ![Machine Learning Window](assets/images/MLDisplay.png)
 
-Use the checkbox next to a proposed annotation to deselect it, and use the combo box to edit its concept name. When you're ready, click one of the three buttons at the bottom:
+Use the checkbox next to a proposed annotation to deselect it, and use the combo box to edit its concept name. When you're ready, click one of the three icon buttons at the bottom right, from left to right:
 
-1. **Cancel**: close the window without saving anything.
-2. **Save annotations**: save the accepted annotations to the database.
-3. **Save annotations and image**: save the annotations and create a framegrab from the ML window.
+1. **Cancel** (circle with an ✕): close the window without saving anything.
+2. **Save annotations** (disk icon): save the accepted annotations to the database.
+3. **Save annotations and image** (upload icon): save the annotations and create a framegrab from the ML window.

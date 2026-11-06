@@ -10,13 +10,13 @@ The status bar contains controls that affect how annotations are created and dis
 
 A _group_ is a field on every annotation. This control lists all groups in use across the loaded annotations. To create a new group, type its name into this control and then create an annotation.
 
-When you create an annotation, it is assigned the group shown in this control. You can change an annotation's group later using the _Bulk Editor_ panel.
+When you create an annotation, it is assigned the group shown in this control. You can change an annotation's group later using the **Bulk Editor** panel.
 
 ## Activity
 
 ![activity](assets/images/statusbar/activity.png)
 
-An _activity_ is a field on every annotation. This control works the same way as the group control. You can change an annotation's activity in the _Bulk Editor_ panel.
+An _activity_ is a field on every annotation. This control works the same way as the group control. You can change an annotation's activity in the **Bulk Editor** panel.
 
 ## Show concurrent annotations
 
@@ -46,4 +46,4 @@ Machine learning annotations are stored in their own _group_ to keep them separa
 
 ## Selected annotation count
 
-This label shows how many annotations are selected in the annotation table. It reads "No annotations selected" when nothing is selected. When one or more annotations are selected, it shows the count in orange.
+This label shows how many annotations are selected in the annotation table. It reads "No annotations selected" when nothing is selected and "_N_ annotation(s) selected" otherwise. When two or more annotations are selected, the count is shown in orange.

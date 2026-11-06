@@ -13,50 +13,61 @@ This project can be built on macOS, Linux, and Windows. We primarily develop on 
 
 ## Prerequisites
 
-### Install the following:
+### Install the following
 
-- [Java 25](https://adoptium.net/) — Used to compile and package VARS Annotation. Java 25 includes the `jpackage` tool needed to create an installable app. The built app bundles its own JVM, so users do not need Java installed to run it.
+- [Java 27](https://adoptium.net/): used to compile and package VARS Annotation. Java 27 includes the `jpackage` tool needed to create an installable app. The built app bundles its own JVM, so users do not need Java installed to run it.
 
 ### Customization for your Infrastructure
 
-VARS is configured at runtime via the configuration server ([raziel](https://github.com/mbari-org/raziel)). At build time, you can bake in default values for service endpoints by defining environment variables _before_ you run the build. Refer to [reference.conf](https://github.com/mbari-org/vars-annotation/blob/main/vars-annotation/src/main/resources/reference.conf) for the full list of available settings.
+Service endpoints (Annosaurus, Vampire Squid, ONI, Panoptes) and their credentials are **not** set at build time. VARS fetches them at runtime from the configuration server ([raziel](https://github.com/mbari-org/raziel)) that users enter in the **Settings** dialog.
 
-If any of these variables are not explicitly defined, they will default to values appropriate for working with the development setup provided by [vars-quickstart-public](https://github.com/mbari-org/vars-quickstart-public).
+Other defaults come from [reference.conf](https://github.com/mbari-org/vars-annotation/blob/main/vars-annotation/src/main/resources/reference.conf), which is the definitive list of available settings. These values are resolved each time the app **starts**, not when it is built. You can override them in either of two ways:
 
-For Linux/macOS, we recommend putting these in a file like `env-config.sh`. Here's an example — substitute in the actual URLs and secrets for your configuration:
+1. **A user config file.** Create `~/.vars/vars-annotation.conf` (HOCON format). Any keys in it take precedence over `reference.conf`. For example:
 
-__env-config.sh__
+    ```hocon
+    annotation.service.timeout = "240 seconds"
+    app.defaults.group = "ROV"
+    app.image.copyright.owner = "The Name of Your Organization Here"
+    sharktopoda.defaults.control.port = 8800
+    ```
 
-```shell
-export ANNOTATION_SERVICE_URL=http://annosaurus.org/anno/v1
-export ANNOTATION_SERVICE_TIMEOUT="240seconds"
-export ANNOTATION_SERVICE_CLIENT_SECRET="myAnnosaurusSecret"
-export ANNOTATION_SERVICE_PAGING=parallel
-export ANNOTATION_SERVICE_PAGE_COUNT=2
-export ANNOTATION_SERVICE_V2_URL=http://annosaurus.org/anno/v2
-export APP_IMAGE_COPYRIGHT_OWNER="The Name of Your Organization Here"
-export CONCEPT_SERVICE_URL=http://oni.org/kb/v1
-export CONCEPT_SERVICE_TIMEOUT="5seconds"
-export MEDIA_SERVICE_URL=http://vampire-squid.org/vam/v1
-export MEDIA_SERVICE_TIMEOUT="5seconds"
-export MEDIA_SERVICE_CLIENT_SECRET="myVampireSquidSecret"
-export PANOPTES_SERVICE_URL=http://panoptes.org/panoptes/v1
-export PANOPTES_SERVICE_TIMEOUT="60seconds"
-export PANOPTES_SERVICE_CLIENT_SECRET="myPanoptesSecret"
-export SHARKTOPODA_DEFAULTS_CONTROL_PORT=8800
-export SHARKTOPODA_DEFAULTS_FRAMEGRAB_PORT=5000
+2. **Environment variables** set in the environment that launches VARS. Commonly used ones:
 
-# Optional. If these are provided and you are building on a Mac, these values
-# will be used to code sign your app. These values are from your Apple Developer
-# signing certificate.
-export MAC_PACKAGE_SIGNING_PREFIX=1AB2C345V6
-export MAC_SIGNING_KEY_USER_NAME="Your Signing User Name"
+    | Variable | Default | Purpose |
+    |----------|---------|---------|
+    | `ANNOTATION_SERVICE_TIMEOUT` | `30 seconds` | Annosaurus request timeout |
+    | `ANNOTATION_SERVICE_PAGE_SIZE` | `1000` | Annotations fetched per page |
+    | `ANNOTATION_SERVICE_PAGING` | `parallel` | `parallel` or `sequential` paging |
+    | `ANNOTATION_SERVICE_PAGE_COUNT` | `2` | Simultaneous page requests when paging is `parallel` |
+    | `CONCEPT_SERVICE_TIMEOUT` | `5 seconds` | ONI request timeout |
+    | `CONCEPT_SERVICE_TEMPLATE_FILTERS` | `["^dsg.*"]` | Regexes for link templates hidden in the UI |
+    | `MEDIA_SERVICE_TIMEOUT` | `10 seconds` | Vampire Squid request timeout |
+    | `PANOPTES_SERVICE_TIMEOUT` | `60 seconds` | Panoptes request timeout |
+    | `PREFERENCES_SERVICE_TIMEOUT` | `5 seconds` | User preferences request timeout |
+    | `APP_DEFAULTS_GROUP` | `ROV` | Initial group for new annotations |
+    | `APP_DEFAULTS_ACTIVITY` | `descend` | Initial activity for new annotations |
+    | `APP_DEFAULTS_CAMERAID` | _(empty)_ | Default camera ID |
+    | `APP_IMAGE_COPYRIGHT_OWNER` | _(empty)_ | Copyright owner shown in the text overlay on framegrabs |
+    | `SHARKTOPODA_DEFAULTS_CONTROL_PORT` | `8800` | UDP port for controlling Sharktopoda |
+    | `SHARKTOPODA_DEFAULTS_FRAMEGRAB_PORT` | `5000` | Port for frame captures from Sharktopoda |
+    | `LOCALIZATION_DEFAULTS_INCOMING_PORT` | `5561` | Incoming localization port |
+    | `LOCALIZATION_DEFAULTS_OUTGOING_PORT` | `5562` | Outgoing localization port |
+
+    See `reference.conf` for the rest, including the `APP_ANNOTATION_*` association names.
+
+### Code signing on macOS (optional)
+
+If `MAC_CODE_SIGNER` is set when you build on a Mac, the build signs the packaged app with `codesign` using that identity, for example:
+
+```bash
+export MAC_CODE_SIGNER="Developer ID Application: Your Name (1AB2C345V6)"
 ```
 
 ## Build
 
 1. Optional: Run `./gradlew test` to run unit tests and verify the environment
-2. Source your env config: `source "/My/Path/To/env-config.sh"`
+2. Optional (macOS): `export MAC_CODE_SIGNER=...` to sign the app
 3. Run `./gradlew clean jpackage`
 4. The built package will be found in `vars-annotation/build/jpackage`. The app is packaged for whatever OS you run the build on, and includes its own bundled JVM so it can be distributed without requiring users to install Java.
 
@@ -64,12 +75,12 @@ export MAC_SIGNING_KEY_USER_NAME="Your Signing User Name"
 
 Show application dependencies:
 
-```
+```bash
 ./gradlew vars-annotation:dependencies --configuration implementation
 ```
 
 Check for available dependency updates:
 
-```
+```bash
 ./gradlew dependencyUpdates
 ```

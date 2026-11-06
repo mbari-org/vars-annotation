@@ -7,7 +7,7 @@
 [Sharktopoda](https://github.com/mbari-org/Sharktopoda) is the recommended video player for use with VARS. It is a macOS application that provides:
 
 - Robust video playback for H.264 and ProRes codecs
-- **Localization support** — draw bounding boxes directly on the video to define spatial regions of interest for annotations
+- **Localization support**: draw bounding boxes directly on the video to define spatial regions of interest for annotations
 
 ## Installation
 
@@ -19,9 +19,9 @@ Sharktopoda and VARS communicate via a simple [UDP](https://en.wikipedia.org/wik
 
 ### Configuring Sharktopoda
 
-Launch Sharktopoda and go to _Sharktopoda_ > _Preferences_. Set the port number — at MBARI we typically use `8800`. Make sure the **Run UDP Server** checkbox is checked.
+Launch Sharktopoda, go to **Sharktopoda > Settings**, and select **Network**. Set the **Server Port** (at MBARI we typically use `8800`).
 
-![Sharktopoda Settings](../images/sharktopoda-settings.png)
+![Sharktopoda Network Settings](../images/Sharktopoda2NetworkPrefs.png)
 
 ### Configuring VARS
 
@@ -29,14 +29,15 @@ Launch Sharktopoda and go to _Sharktopoda_ > _Preferences_. Set the port number 
 2. Open **Settings** (gear icon on the toolbar)
 3. Select the **Sharktopoda** tab
 4. Set the **Sharktopoda port** to match the value you set in Sharktopoda (e.g. `8800`)
-5. The **Framecapture port** can be left at its default value
+5. Set **Version** to **2**. Version 1 is the legacy Sharktopoda and does not support localizations
+6. The **Framecapture port** and other settings can be left at their default values
 
-![VARS Settings](../images/vars-annotation-settings2.png)
+![VARS Settings](../images/SharktopodaDialogPort.png)
 
 ## Drawing Bounding Boxes
 
 With both VARS and Sharktopoda running, open a video in VARS as normal. When you spot something of interest in the video, click and drag a bounding box around it directly in Sharktopoda. This creates a new annotation in VARS with the bounding box stored as a localization.
 
-If you are working with localizations, verify the annotation settings in Sharktopoda under _Sharktopoda_ > _Preferences_:
+If you are working with localizations, verify the annotation settings in Sharktopoda under **Sharktopoda > Settings**:
 
-![Sharktopoda Annotation Preferences](../images/Sharktopoda2AnnotationPrefs.png)
+![Sharktopoda Annotation Settings](../images/Sharktopoda2AnnotationPrefs.png)
