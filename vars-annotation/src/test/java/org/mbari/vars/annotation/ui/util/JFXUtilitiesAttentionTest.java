@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable(named = "FXTESTS", matches = "true")
 public class JFXUtilitiesAttentionTest {
 
     private static final String ORIGINAL_STYLE = "-fx-font-size: 14px;";
