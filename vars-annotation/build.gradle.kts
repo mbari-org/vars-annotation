@@ -82,14 +82,14 @@ configurations.all {
 // Define versions in variables to avoid hardcoding them in multiple places and to make it easier to update them.
 val annosaurusSdkVersion = "0.1.0"
 val caffeineVersion = "3.3.1"
-val configVersion = "1.4.9"
+val configVersion = "1.4.10"
 val controlsFxVersion = "11.2.6"
 val gsonVersion = "2.15.0"
 // Do NOT upgrade ikonli version without also upgrading imgfx version, otherwise icons won't render in the app.
 val ikonliVersion = "12.4.0"
 val imgfxVersion = "0.0.20"
 val jeromqVersion = "0.6.0"
-val logbackVersion = "1.6.6"
+val logbackVersion = "1.6.7"
 val mbariCommonsVersion = "0.0.8"
 val methanolVersion = "1.9.0"
 val okhttpLoggingInterceptorVersion = "3.14.9"
