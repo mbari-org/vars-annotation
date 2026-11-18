@@ -52,7 +52,7 @@ public class NewAnnotationBC extends AbstractBC {
 
     protected void init() {
 
-        String tooltip = toolBox.getI18nBundle().getString("buttons.newnumber");
+        String tooltip = toolBox.getI18nBundle().getString("buttons.new");
 //        Text icon = iconFactory.createIcon(MaterialIcon.FIBER_NEW, "30px");
         Text icon = Icons.FIBER_NEW.standardSize();
         initializeButton(tooltip, icon);
