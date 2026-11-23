@@ -78,7 +78,7 @@ public class UserEditorPaneController {
                 email != null;
 
         if (ok) {
-            return Optional.of(new User(username, password1, "User", firstName,
+            return Optional.of(new User(username, password1, "ReadOnly", firstName,
                     lastName, affiliation, email));
         }
         else {
