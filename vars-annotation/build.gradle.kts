@@ -263,12 +263,28 @@ val devJvmArgs = arrayListOf(
     "-Xms1g"
 )
 
+// Where the JVM writes its fatal error (hs_err) log, in the OS's temp directory. The
+// jpackage launcher expands ${VAR} environment variables in java options at launch time
+// (HotSpot itself can't), so these resolve on the user's machine, not the build machine.
+// The "\$" keeps Kotlin from interpolating them at build time. %p is the process id.
+val hsErrFileName = "vars-annotation_hs_err_pid%p.log"
+val hsErrFile = when (platform) {
+    "mac" -> "\${TMPDIR}$hsErrFileName"      // per-user temp dir; TMPDIR ends with "/"
+    "win" -> "\${TEMP}/$hsErrFileName"       // %TEMP%, e.g. C:\Users\<user>\AppData\Local\Temp
+    else -> "/tmp/$hsErrFileName"            // TMPDIR is often unset on Linux
+}
+
 // JVM args for jpackaged application (uses merged module)
 val runtimeJvmArgs = arrayListOf(
     "-Djdk.httpclient.HttpClient.log=requests,headers,content",
     "-XX:+TieredCompilation",
     "-XX:TieredStopAtLevel=1",
     "-Xms1g",
+    // Diagnostics for crash reports (see issue #208). An OutOfMemoryError otherwise kills a
+    // thread silently; this turns it into a fatal error that writes an hs_err log. ErrorFile
+    // puts that log in the temp dir (the default is the launch directory, if writable).
+    "-XX:+CrashOnOutOfMemoryError",
+    "-XX:ErrorFile=$hsErrFile",
     "--enable-native-access=javafx.graphics",
     "--add-opens", "java.base/java.lang.invoke=vars.annotation.merged.module",
     "--add-reads", "vars.annotation.merged.module=org.slf4j",

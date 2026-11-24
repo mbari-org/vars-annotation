@@ -67,6 +67,13 @@ public class App extends Application {
         Thread.setDefaultUncaughtExceptionHandler((thread, ex) -> {
             log.atError().withCause(ex).log("Exception in thread [" + thread.getName() + "]");
         });
+        // Log every JVM shutdown. If a user reports a crash and the log has no shutdown line,
+        // the process was killed outright (SIGKILL, e.g. macOS memory pressure), not exited.
+        var startMillis = System.currentTimeMillis();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            var uptimeSecs = (System.currentTimeMillis() - startMillis) / 1000;
+            log.atInfo().log("JVM shutting down after " + uptimeSecs + "s of uptime");
+        }, "vars-shutdown-logger"));
         // Show a splash screen while init() runs. Application.launch reads this property.
         System.setProperty("javafx.preloader", SplashPreloader.class.getName());
         launch(args);
@@ -104,8 +111,7 @@ public class App extends Application {
             alert.setContentText("An instance of VARS is already running. Exiting ...");
             alert.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
             alert.showAndWait();
-            Platform.exit();
-            System.exit(0);
+            exit(0, "another instance is already running");
         }
         else if (Initializer.getSettingsDirectory() == null) {
             // Must show stage before showing alert
@@ -119,8 +125,7 @@ public class App extends Application {
             alert.setContentText("VARS failed to create a directory for writing temporary information.");
             alert.getDialogPane().getStylesheets().addAll(toolBox.getStylesheets());
             alert.showAndWait();
-            Platform.exit();
-            System.exit(-1);
+            exit(-1, "unable to create a settings directory");
         }
         else {
             activeAppBeacon = new ActiveAppBeacon(BEACON_PORTS, BEACON_MESSAGE);
@@ -135,8 +140,7 @@ public class App extends Application {
         primaryStage.setOnCloseRequest(e -> {
             // Save size on exit
             JFXUtilities.saveStageSize(primaryStage, clazz);
-            Platform.exit();
-            System.exit(0);
+            exit(0, "main window closed");
         });
 
         toolBox.getEventBus()
@@ -167,6 +171,23 @@ public class App extends Application {
         // lets the main window paint first so the alert has something behind it.
         Initializer.getServiceConfigurationError()
                 .ifPresent(e -> Platform.runLater(() -> showServiceConfigurationAlert(primaryStage, e)));
+    }
+
+    @Override
+    public void stop() throws Exception {
+        // Reached via Platform.exit(), including Cmd-Q from the macOS app menu
+        log.atInfo().log("JavaFX application stopping");
+        super.stop();
+    }
+
+    /**
+     * Logs why the app is exiting, then exits. Use this instead of calling System.exit
+     * directly so every intentional exit is recorded in the log.
+     */
+    private static void exit(int status, String reason) {
+        log.atInfo().log("Exiting VARS Annotation (status " + status + "): " + reason);
+        Platform.exit();
+        System.exit(status);
     }
 
     private void showServiceConfigurationAlert(Stage primaryStage, ServiceConfigurationException e) {
@@ -200,8 +221,7 @@ public class App extends Application {
         }
         else {
             JFXUtilities.saveStageSize(primaryStage, getClass());
-            Platform.exit();
-            System.exit(0);
+            exit(0, "user chose Quit on the service configuration alert");
         }
     }
 
