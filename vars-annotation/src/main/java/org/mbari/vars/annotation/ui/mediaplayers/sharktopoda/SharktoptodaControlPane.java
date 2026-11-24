@@ -66,6 +66,7 @@ public class SharktoptodaControlPane extends Pane {
     Label elapsedTimeLabel = new Label("00:00:00");
     Label durationLabel = new Label("00:00:00");
     Label recordedTimestampLabel = new Label("--:--:--");
+    Label speedValueLabel = new Label();
     private Color color = Color.LIGHTGRAY;
 //    Text speedUpIcon = glyphsFactory.createIcon(MaterialIcon.ADD, "20px");
 //    Text speedDownIcon = glyphsFactory.createIcon(MaterialIcon.REMOVE, "20px");
@@ -117,6 +118,10 @@ public class SharktoptodaControlPane extends Pane {
         speed.setMinWidth(sideWidth);
         speed.setPrefWidth(sideWidth);
         speed.setMaxWidth(sideWidth);
+        speedValueLabel.setMaxWidth(Double.MAX_VALUE);
+        speedValueLabel.setAlignment(Pos.CENTER);
+        VBox speedBox = new VBox(0, speedValueLabel, speed);
+        speedBox.setAlignment(Pos.CENTER);
 
         sizeButton(getRewindButton(), 34, 34);
         sizeButton(getPlayButton(), 48, 46);
@@ -143,10 +148,10 @@ public class SharktoptodaControlPane extends Pane {
         right.setHalignment(HPos.RIGHT);
         topRow.getColumnConstraints().addAll(left, center, right);
         topRow.setAlignment(Pos.CENTER_LEFT);
-        topRow.add(speed, 0, 0);
+        topRow.add(speedBox, 0, 0);
         topRow.add(transport, 1, 0);
         topRow.add(recordedTimestampLabel, 2, 0);
-        GridPane.setValignment(speed, javafx.geometry.VPos.CENTER);
+        GridPane.setValignment(speedBox, javafx.geometry.VPos.CENTER);
         GridPane.setValignment(transport, javafx.geometry.VPos.CENTER);
         GridPane.setValignment(recordedTimestampLabel, javafx.geometry.VPos.CENTER);
 
@@ -185,13 +190,17 @@ public class SharktoptodaControlPane extends Pane {
 
             speedSlider = new JFXSlider(0, v, 2000);
             speedSlider.setPrefWidth(130);
-            speedSlider.setIndicatorPosition(JFXSlider.IndicatorPosition.RIGHT);
+            // The value is shown in speedValueLabel above the slider instead of the teardrop popup
+            speedSlider.getStyleClass().add("no-animated-thumb");
             String tooltip = toolBox.getI18nBundle().getString("mediaplayer.sharktopoda.speedslider.tooltip");
             speedSlider.setTooltip(new Tooltip(tooltip));
             StringBinding binding = Bindings.createStringBinding(() ->
                     String.format("%3.2fx", speedSlider.getValue() / 1000D),
                     speedSlider.valueProperty());
-            speedSlider.setValueFactory(p -> binding);
+            speedValueLabel.textProperty().bind(binding);
+            speedValueLabel.setTextFill(Color.GREEN);
+            speedValueLabel.setFont(Fonts.monospaced(11));
+            speedValueLabel.setTranslateY(-2);
         }
         return speedSlider;
     }
