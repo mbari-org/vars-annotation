@@ -368,6 +368,11 @@ jlink {
     // Use the configured Java toolchain
     javaHome.set(project.javaToolchains.launcherFor(java.toolchain).get().metadata.installationPath.asFile)
 
+    // Gson falls back to sun.misc.Unsafe to instantiate classes without a no-args constructor
+    // (e.g. the SDK's AnnotationCount). That lives in jdk.unsupported, which jlink only includes
+    // if something requires it; without it annotations silently fail to load in the packaged app.
+    // (declared below via mergedModule { requires(...) })
+
     options.set(listOf(
         "--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages", "--ignore-signing-information",
         // Ikonli 12.4.0+ jars (core, javafx, the icon packs) each ship an OSGI-INF/ folder of OSGi metadata.
@@ -382,6 +387,9 @@ jlink {
 
     mergedModule {
         additive = true
+
+        // See note above: Gson needs sun.misc.Unsafe (jdk.unsupported) in the jlinked runtime.
+        requires("jdk.unsupported")
 
         // Add uses clauses for Azure and OpenTelemetry service loaders if needed at runtime
         uses("io.opentelemetry.context.ContextStorageProvider")

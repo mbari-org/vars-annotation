@@ -152,7 +152,11 @@ public class MediaPaneController {
                         .thenAccept(ac ->
                             JFXUtilities.runOnFXThread(() -> {
                                 annotationCountTextField.setText(ac.getCount() + "");
-                            }));
+                            }))
+                        .exceptionally(ex -> {
+                            log.atError().withCause(ex).log("Failed to count annotations for " + media.getVideoReferenceUuid());
+                            return null;
+                        });
             }
         });
     }

@@ -102,8 +102,18 @@ public class AnnotationServiceDecorator {
         EventBus eventBus = toolBox.getEventBus();
         AtomicInteger loadedAnnotationCount = new AtomicInteger(0);
         return service.countAnnotations(videoReferenceUuid)
-                .whenComplete((v, ex) -> eventBus.send(new ShowProgress()))
-                .thenAccept(ac ->
+                .whenComplete((v, ex) -> {
+                    eventBus.send(new ShowProgress());
+                    if (ex != null) {
+                        // The count failed, so no pages will be loaded and nothing else will
+                        // hide the progress indicator or tell the user.
+                        eventBus.send(new HideProgress());
+                        showFindAnnotationsError(videoReferenceUuid, ex);
+                    }
+                })
+                // thenCompose (not thenAccept) so the returned future completes only after
+                // all pages have loaded, not as soon as the count arrives.
+                .thenCompose(ac ->
                         loadAnnotationPages(loadedAnnotationCount,
                                 ac.getCount(),
                                 ac,
